@@ -1,0 +1,83 @@
+# curso-factory — Definição de Cursos
+# Cada curso será processado pelo pipeline de 5 LLMs
+
+courses:
+  - slug: agentes-ia-autonomos
+    nome: "Agentes de IA Autônomos: Do Conceito à Produção"
+    nivel: avançado
+    modulos: 14
+    descricao: "Arquitetura de agentes, frameworks (LangGraph, CrewAI, Claude Agent SDK), memória, ferramentas, deploy e monitoramento."
+    tags: [ia, agentes, langraph, crewai, produção]
+    prerequisitos: [python, claude-code-cli]
+    duracao_estimada: "~280 min"
+    prioridade: P0
+
+  - slug: mcp-avancado
+    nome: "MCP Avançado: Servidores, Protocolos e Integrações"
+    nivel: avançado
+    modulos: 12
+    descricao: "Model Context Protocol em profundidade: criar servidores MCP, recursos, tools, sampling, integrações com browsers e IDEs."
+    tags: [mcp, protocolo, servidores, integração]
+    prerequisitos: [mcp-com-chrome, node-js]
+    duracao_estimada: "~240 min"
+    prioridade: P0
+
+  - slug: prompt-engineering-avancado
+    nome: "Prompt Engineering Avançado para Produtividade"
+    nivel: intermediário
+    modulos: 12
+    descricao: "Técnicas avançadas: chain-of-thought, few-shot, system prompts, prompt chaining, avaliação de outputs e otimização de custos."
+    tags: [prompt-engineering, ia, produtividade]
+    prerequisitos: [claude-code-cli]
+    duracao_estimada: "~200 min"
+    prioridade: P1
+
+  - slug: automacao-n8n-make
+    nome: "Automação com n8n e Make: Workflows sem Código"
+    nivel: intermediário
+    modulos: 10
+    descricao: "Criar workflows automatizados integrando APIs, planilhas, emails, Slack, bancos de dados e IA generativa."
+    tags: [automação, n8n, make, no-code, workflows]
+    prerequisitos: []
+    duracao_estimada: "~180 min"
+    prioridade: P1
+
+  - slug: dados-com-python
+    nome: "Dados com Python: Pandas, SQL e Visualização"
+    nivel: intermediário
+    modulos: 14
+    descricao: "Manipulação de dados com Pandas, consultas SQL, visualização com Plotly e Matplotlib, e análise exploratória."
+    tags: [python, dados, pandas, sql, visualização]
+    prerequisitos: [python]
+    duracao_estimada: "~260 min"
+    prioridade: P1
+
+  - slug: deploy-vercel-cloudflare
+    nome: "Deploy Moderno: Vercel, Cloudflare Workers e Edge"
+    nivel: intermediário
+    modulos: 10
+    descricao: "Deploy de sites estáticos e dinâmicos, serverless functions, Workers, KV, D1, DNS e domínios customizados."
+    tags: [deploy, vercel, cloudflare, edge, serverless]
+    prerequisitos: [node-js, github]
+    duracao_estimada: "~200 min"
+    prioridade: P2
+
+  - slug: api-design-rest-graphql
+    nome: "API Design: REST, GraphQL e Webhooks"
+    nivel: intermediário a avançado
+    modulos: 12
+    descricao: "Design de APIs RESTful, GraphQL, autenticação, rate limiting, documentação com OpenAPI e webhooks."
+    tags: [api, rest, graphql, webhooks, design]
+    prerequisitos: [python, node-js]
+    duracao_estimada: "~240 min"
+    prioridade: P2
+
+  - slug: llm-finops
+    nome: "LLM FinOps: Custos, Otimização e Governança de IA"
+    nivel: avançado
+    modulos: 10
+    descricao: "Gestão de custos com LLMs, cache semântico, roteamento inteligente, budget guards, dashboards e relatórios para C-Level."
+    tags: [finops, llm, custos, governança, otimização]
+    prerequisitos: [python, prompt-engineering-avancado]
+    duracao_estimada: "~200 min"
+    prioridade: P0

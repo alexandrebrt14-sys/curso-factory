@@ -1,0 +1,57 @@
+# curso-factory — Regras de Qualidade
+# Validação automática antes do deploy
+
+validation:
+  accent_check:
+    enabled: true
+    language: pt-BR
+    fail_on_missing: true
+    known_exceptions:
+      - URLs
+      - slugs
+      - imports
+      - código inline
+      - nomes de variáveis
+      - JSX/HTML attributes
+
+  html_validation:
+    enabled: true
+    check_closing_tags: true
+    check_valid_attributes: true
+    check_accessibility: true
+    required_elements:
+      - meta[charset]
+      - title
+      - main
+      - h1
+
+  link_check:
+    enabled: true
+    check_internal: true
+    check_external: false
+    fail_on_broken: true
+    url_must_not_contain_accents: true
+
+  content_quality:
+    min_modules_per_course: 8
+    max_modules_per_course: 16
+    min_steps_per_module: 3
+    max_steps_per_module: 8
+    required_sections_per_module:
+      - objetivos
+      - conteudo
+      - exercicio_pratico
+    max_reading_time_per_module_minutes: 25
+
+  finops:
+    budget_guard_enabled: true
+    alert_at_percent: 80
+    block_at_percent: 100
+    cost_report_after_each_course: true
+
+  anti_retrabalho:
+    atomic_generation: true
+    no_heredocs_over_50_lines: true
+    no_regex_substitution: true
+    validate_before_deploy: true
+    cache_approved_content: true
