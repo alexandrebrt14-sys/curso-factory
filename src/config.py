@@ -1,6 +1,6 @@
-"""Configuracao central do curso-factory.
+"""Configuração central do curso-factory.
 
-Carrega variaveis de ambiente e definicoes de cursos a partir de
+Carrega variáveis de ambiente e definições de cursos a partir de
 .env e config/courses.yaml. Define constantes de limites FinOps.
 """
 
@@ -13,7 +13,7 @@ from typing import Any
 import yaml
 from dotenv import load_dotenv
 
-# Raiz do projeto (dois niveis acima de src/)
+# Raiz do projeto (dois níveis acima de src/)
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = ROOT_DIR / "config"
 OUTPUT_DIR = ROOT_DIR / "output"
@@ -75,5 +75,5 @@ def get_api_key(provider: str) -> str:
     }
     key = keys.get(provider.lower(), "")
     if not key:
-        raise ValueError(f"Chave de API nao configurada para o provider: {provider}")
+        raise ValueError(f"Chave de API não configurada para o provider: {provider}")
     return key

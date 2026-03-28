@@ -18,7 +18,7 @@ from src.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
 
-# Precos aproximados por 1K tokens (input, output) em USD
+# Preços aproximados por 1K tokens (input, output) em USD
 PRICING: dict[str, tuple[float, float]] = {
     "perplexity": (0.001, 0.001),
     "openai": (0.005, 0.015),
@@ -27,7 +27,7 @@ PRICING: dict[str, tuple[float, float]] = {
     "anthropic": (0.015, 0.075),  # Claude Opus 4.6
 }
 
-# Mapeamento provider → modelo padrao
+# Mapeamento provider → modelo padrão
 DEFAULT_MODELS: dict[str, str] = {
     "perplexity": "sonar-pro",
     "openai": "gpt-4o",
@@ -45,7 +45,7 @@ ENDPOINTS: dict[str, str] = {
     "anthropic": "https://api.anthropic.com/v1/messages",
 }
 
-# Fallback: se o provider primario falhar, tentar o secundario
+# Fallback: se o provider primário falhar, tentar o secundário
 FALLBACK_MAP: dict[str, str] = {
     "openai": "anthropic",
     "anthropic": "openai",
@@ -106,7 +106,7 @@ class TokenBucket:
 
 
 class LLMClient:
-    """Cliente unificado para multiplos providers LLM."""
+    """Cliente unificado para múltiplos providers LLM."""
 
     def __init__(self, cost_tracker: Optional[CostTracker] = None) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
@@ -125,7 +125,7 @@ class LLMClient:
         return self._buckets[provider]
 
     def call(self, provider: str, prompt: str, **kwargs: Any) -> str:
-        """Chamada generica com circuit breaker, retry e fallback."""
+        """Chamada genérica com circuit breaker, retry e fallback."""
         circuit = self._get_circuit(provider)
         if circuit.is_open:
             logger.warning("Circuito aberto para %s, tentando fallback", provider)
@@ -159,7 +159,7 @@ class LLMClient:
     def _try_fallback(self, provider: str, prompt: str, **kwargs: Any) -> str:
         fallback = FALLBACK_MAP.get(provider)
         if not fallback:
-            raise RuntimeError(f"Sem fallback disponivel para {provider}")
+            raise RuntimeError(f"Sem fallback disponível para {provider}")
         logger.info("Usando fallback: %s → %s", provider, fallback)
         return self.call(fallback, prompt, **kwargs)
 
@@ -242,7 +242,7 @@ class LLMClient:
             provider, model, tokens_in, tokens_out, custo,
         )
 
-    # --- Metodos de conveniencia por provider ---
+    # --- Métodos de conveniência por provider ---
 
     def call_perplexity(self, prompt: str, **kwargs: Any) -> str:
         return self.call("perplexity", prompt, **kwargs)
