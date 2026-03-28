@@ -1,5 +1,6 @@
 # curso-factory — Definição de Cursos
 # Cada curso será processado pelo pipeline de 5 LLMs
+# Sincronizado com landing-page-geo/src/data/courses.ts em 2026-03-28
 
 courses:
   - slug: agentes-ia-autonomos
@@ -19,37 +20,37 @@ courses:
     descricao: "Model Context Protocol em profundidade: criar servidores MCP, recursos, tools, sampling, integrações com browsers e IDEs."
     tags: [mcp, protocolo, servidores, integração]
     prerequisitos: [mcp-com-chrome, node-js]
-    duracao_estimada: "~240 min"
+    duracao_estimada: "~245 min"
     prioridade: P0
 
   - slug: prompt-engineering-avancado
-    nome: "Prompt Engineering Avançado para Produtividade"
-    nivel: intermediário
+    nome: "Prompt Engineering Avançado: Técnicas Profissionais"
+    nivel: avançado
     modulos: 12
-    descricao: "Técnicas avançadas: chain-of-thought, few-shot, system prompts, prompt chaining, avaliação de outputs e otimização de custos."
-    tags: [prompt-engineering, ia, produtividade]
+    descricao: "Chain-of-thought, few-shot, constitutional AI, prompt chaining, avaliação sistemática e otimização de custos."
+    tags: [prompt-engineering, chain-of-thought, few-shot, avaliação]
     prerequisitos: [claude-code-cli]
-    duracao_estimada: "~200 min"
+    duracao_estimada: "~240 min"
     prioridade: P1
 
   - slug: automacao-n8n-make
-    nome: "Automação com n8n e Make: Workflows sem Código"
+    nome: "Automação com n8n e Make: Fluxos Inteligentes com IA"
     nivel: intermediário
     modulos: 10
-    descricao: "Criar workflows automatizados integrando APIs, planilhas, emails, Slack, bancos de dados e IA generativa."
-    tags: [automação, n8n, make, no-code, workflows]
+    descricao: "Criar automações visuais conectando APIs, LLMs, bancos de dados e serviços. Webhooks, triggers e integrações reais."
+    tags: [automação, n8n, make, webhooks, ia]
     prerequisitos: []
-    duracao_estimada: "~180 min"
+    duracao_estimada: "~200 min"
     prioridade: P1
 
   - slug: dados-com-python
-    nome: "Dados com Python: Pandas, SQL e Visualização"
+    nome: "Dados com Python: Análise, Visualização e Automação"
     nivel: intermediário
     modulos: 14
-    descricao: "Manipulação de dados com Pandas, consultas SQL, visualização com Plotly e Matplotlib, e análise exploratória."
-    tags: [python, dados, pandas, sql, visualização]
+    descricao: "Pandas, matplotlib, APIs de dados, limpeza, transformação e relatórios automatizados. Com cases reais de marketing e GEO."
+    tags: [python, dados, pandas, análise, visualização]
     prerequisitos: [python]
-    duracao_estimada: "~260 min"
+    duracao_estimada: "~300 min"
     prioridade: P1
 
   - slug: deploy-vercel-cloudflare
@@ -63,14 +64,44 @@ courses:
     prioridade: P2
 
   - slug: api-design-rest-graphql
-    nome: "API Design: REST, GraphQL e Webhooks"
-    nivel: intermediário a avançado
+    nome: "API Design: REST, GraphQL e Boas Práticas"
+    nivel: intermediário
     modulos: 12
-    descricao: "Design de APIs RESTful, GraphQL, autenticação, rate limiting, documentação com OpenAPI e webhooks."
-    tags: [api, rest, graphql, webhooks, design]
+    descricao: "Design de APIs escaláveis, REST vs GraphQL, autenticação, versionamento, documentação e testes automatizados."
+    tags: [api, rest, graphql, design, autenticação]
     prerequisitos: [python, node-js]
     duracao_estimada: "~240 min"
     prioridade: P2
+
+  - slug: geo-educacao-financeira-40plus
+    nome: "GEO para Educação Financeira 40+: Como Virar a Resposta Confiável da IA"
+    nivel: avançado
+    modulos: 8
+    descricao: >
+      GEO = Generative Engine Optimization (visibilidade em mecanismos de IA generativa como ChatGPT, Perplexity, Gemini).
+      Este curso ensina educadores financeiros, planners, creators e marcas a construir operação answer-first
+      para o público 40+, com conteúdo citável por IA generativa e ativos de confiança.
+    tags: [geo, educacao-financeira, ia-generativa, publico-40-plus, answer-first, fininfluencia]
+    prerequisitos: [seo-geo]
+    duracao_estimada: "~400 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "O Novo Funil da Descoberta Financeira"
+        descricao: "Finfluência vs. educação vs. recomendação (ANBIMA/CVM). Como IA generativa muda a descoberta. De SEO para GEO: answer engines como novo ponto de entrada."
+      - titulo: "Persona 40+ e Jobs-to-be-Done"
+        descricao: "Perfil comportamental do público 40+ online. Jobs: aposentadoria, casa própria, dinheiro do casal, reinvenção, proteção. Linguagem: clareza > hype."
+      - titulo: "Reverse Engineering dos Benchmarks"
+        descricao: "Análise de Me Poupe!, Nath Finanças, Primo Pobre e Gustavo Cerbasi. Flywheels, modelos de negócio, o que copiar vs. diferenciar para 40+."
+      - titulo: "GEO para Finanças"
+        descricao: "Clusters de perguntas de alta intenção. Páginas answer-first citáveis por ChatGPT/Perplexity/Gemini. FAQs, glossários, simuladores machine-readable. Schema.org."
+      - titulo: "IA Generativa com Governança"
+        descricao: "Pesquisa e clusterização com IA. Checagem factual. Privacidade e LGPD. Prompts seguros: o que a IA não deve decidir."
+      - titulo: "Ativos que Convertem Confiança"
+        descricao: "Calculadoras, diagnósticos, newsletter, WhatsApp, lives, comunidade, mentorias. Sequência de nutrição: da descoberta ao produto pago."
+      - titulo: "Oferta e Monetização"
+        descricao: "Isca gratuita, curso de entrada, assinatura recorrente, mentoria premium. Precificação por valor. Unit economics de infoproduto financeiro."
+      - titulo: "Plano de 90 Dias"
+        descricao: "Calendário editorial com 6 pilares. Backlog priorizado por intenção de busca. KPIs: citações por IA, tráfego orgânico, leads, conversão, NPS."
 
   - slug: llm-finops
     nome: "LLM FinOps: Custos, Otimização e Governança de IA"
@@ -79,5 +110,5 @@ courses:
     descricao: "Gestão de custos com LLMs, cache semântico, roteamento inteligente, budget guards, dashboards e relatórios para C-Level."
     tags: [finops, llm, custos, governança, otimização]
     prerequisitos: [python, prompt-engineering-avancado]
-    duracao_estimada: "~200 min"
+    duracao_estimada: "~211 min"
     prioridade: P0
