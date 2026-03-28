@@ -62,6 +62,9 @@
 - output/drafts/ — rascunhos
 - output/approved/ — aprovados
 - output/deployed/ — em produção
+- src/generators/ — geradores de TSX (Jinja2, schema builder, metadata sync, build validator)
+- src/schemas/ — JSON Schema para CourseDefinition
+- tests/ — testes unitários dos geradores
 
 ## Comandos CLI
 
