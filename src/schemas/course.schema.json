@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alexandrecaramaschi.com/schemas/course-definition.json",
+  "title": "CourseDefinition",
+  "description": "Schema de validação para definição completa de curso no curso-factory",
+  "type": "object",
+  "required": ["slug", "titulo", "nivel", "steps", "faq"],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Identificador único do curso em kebab-case ASCII"
+    },
+    "titulo": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Título do curso em PT-BR com acentuação completa"
+    },
+    "titulo_seo": {
+      "type": "string",
+      "description": "Título otimizado para SEO/tag <title>"
+    },
+    "descricao": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Meta description do curso"
+    },
+    "descricao_curta": {
+      "type": "string",
+      "description": "Subtítulo do hero"
+    },
+    "nivel": {
+      "type": "string",
+      "enum": ["iniciante", "intermediario", "avancado"],
+      "description": "Nível de dificuldade do curso"
+    },
+    "nivel_display": {
+      "type": "string",
+      "description": "Nível formatado para exibição (com acentos)"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags de classificação do curso"
+    },
+    "keywords_seo": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Palavras-chave para SEO"
+    },
+    "duracao_total_minutos": {
+      "type": "integer",
+      "minimum": 30,
+      "description": "Duração total estimada em minutos"
+    },
+    "duracao_display": {
+      "type": "string",
+      "description": "Duração formatada para exibição"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/StepDefinition" },
+      "description": "Módulos/etapas do curso"
+    },
+    "prerequisitos_display": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Pré-requisitos para exibição"
+    },
+    "faq": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/FAQItem" },
+      "description": "Perguntas frequentes do curso"
+    },
+    "hero_gradient_from": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$",
+      "description": "Cor inicial do gradiente do hero"
+    },
+    "hero_gradient_to": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$",
+      "description": "Cor final do gradiente do hero"
+    },
+    "autor_nome": {
+      "type": "string",
+      "description": "Nome do autor do curso"
+    },
+    "autor_credencial": {
+      "type": "string",
+      "description": "Credencial do autor"
+    },
+    "dominio": {
+      "type": "string",
+      "format": "uri",
+      "description": "Domínio base do site"
+    },
+    "badge_color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$",
+      "description": "Cor do badge de nível"
+    },
+    "local_storage_key": {
+      "type": "string",
+      "description": "Chave para localStorage do progresso"
+    },
+    "canonical_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL canônica do curso"
+    },
+    "breadcrumb_label": {
+      "type": "string",
+      "description": "Label para breadcrumb"
+    },
+    "component_name": {
+      "type": "string",
+      "description": "Nome do componente React em PascalCase"
+    }
+  },
+  "$defs": {
+    "StepDefinition": {
+      "type": "object",
+      "required": ["id", "title", "duration", "description", "content"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "ID ASCII kebab-case do step"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Título PT-BR com acentos"
+        },
+        "duration": {
+          "type": "string",
+          "pattern": "^\\d+ min$",
+          "description": "Duração estimada (ex: '18 min')"
+        },
+        "icon_key": {
+          "type": "string",
+          "description": "Chave do ícone SVG"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Descrição em uma linha"
+        },
+        "content": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "$ref": "#/$defs/CourseSection" },
+          "description": "Seções de conteúdo do step"
+        }
+      }
+    },
+    "CourseSection": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "code", "warning", "tip", "checkpoint"],
+          "description": "Tipo da seção de conteúdo"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Conteúdo PT-BR com acentuação"
+        },
+        "language": {
+          "type": ["string", "null"],
+          "description": "Linguagem para blocos de código"
+        },
+        "label": {
+          "type": ["string", "null"],
+          "description": "Label opcional"
+        }
+      }
+    },
+    "FAQItem": {
+      "type": "object",
+      "required": ["pergunta", "resposta"],
+      "properties": {
+        "pergunta": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Pergunta da FAQ"
+        },
+        "resposta": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Resposta da FAQ"
+        }
+      }
+    }
+  }
+}

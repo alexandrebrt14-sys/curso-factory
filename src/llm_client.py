@@ -24,7 +24,7 @@ PRICING: dict[str, tuple[float, float]] = {
     "openai": (0.005, 0.015),
     "google": (0.00025, 0.0005),
     "groq": (0.0001, 0.0002),
-    "anthropic": (0.003, 0.015),
+    "anthropic": (0.015, 0.075),  # Claude Opus 4.6
 }
 
 # Mapeamento provider → modelo padrao
@@ -33,7 +33,7 @@ DEFAULT_MODELS: dict[str, str] = {
     "openai": "gpt-4o",
     "google": "gemini-2.0-flash",
     "groq": "llama-3.3-70b-versatile",
-    "anthropic": "claude-sonnet-4-20250514",
+    "anthropic": "claude-opus-4-6",
 }
 
 # Endpoints base

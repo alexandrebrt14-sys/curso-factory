@@ -1,0 +1,105 @@
+{
+  "slug": "teste-geracao",
+  "titulo": "Teste de Geração",
+  "titulo_seo": "Teste de Geração | Curso Completo | Alexandre Caramaschi",
+  "descricao": "Curso de teste para validação do pipeline de geração de conteúdo educacional com acentuação PT-BR completa.",
+  "descricao_curta": "Validação completa do sistema de geração de cursos",
+  "nivel": "intermediario",
+  "nivel_display": "Intermediário",
+  "tags": ["teste", "geração", "validação"],
+  "keywords_seo": ["teste de geração", "curso factory", "validação automática"],
+  "duracao_total_minutos": 45,
+  "duracao_display": "~45 min",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "Introdução à Geração de Conteúdo",
+      "duration": "20 min",
+      "icon_key": "trendingUp",
+      "description": "Entenda como o pipeline de geração funciona do início ao fim",
+      "content": [
+        {
+          "type": "text",
+          "value": "Neste módulo você vai entender como funciona o pipeline de geração automática de conteúdo educacional. O sistema utiliza cinco LLMs especializados, cada um com uma função específica no processo de criação.",
+          "language": null,
+          "label": null
+        },
+        {
+          "type": "code",
+          "value": "from src.generators import TsxGenerator\n\ngenerator = TsxGenerator()\nresult = generator.render_page(course_definition)\nprint(f\"Página gerada: {len(result)} caracteres\")",
+          "language": "python",
+          "label": null
+        },
+        {
+          "type": "tip",
+          "value": "Sempre valide a acentuação PT-BR antes de fazer deploy. O accent_checker.py detecta automaticamente palavras sem acento que deveriam tê-lo.",
+          "language": null,
+          "label": "DICA"
+        },
+        {
+          "type": "checkpoint",
+          "value": "Você consegue executar o TsxGenerator e obter um arquivo page.tsx válido sem erros de sintaxe? Verifique se o componente possui 'use client' e 'export default'.",
+          "language": null,
+          "label": "CHECKPOINT"
+        }
+      ]
+    },
+    {
+      "id": "step-02",
+      "title": "Validação e Qualidade",
+      "duration": "25 min",
+      "icon_key": "checkCircle",
+      "description": "Aprenda a validar conteúdo gerado com os verificadores automáticos",
+      "content": [
+        {
+          "type": "text",
+          "value": "A validação é uma etapa crítica do pipeline. Sem ela, conteúdo com erros de acentuação, links quebrados ou HTML inválido pode ser publicado. O sistema possui três validadores principais que atuam em sequência.",
+          "language": null,
+          "label": null
+        },
+        {
+          "type": "code",
+          "value": "from src.generators import BuildValidator\n\nvalidator = BuildValidator(landing_page_dir)\nresult = validator.validate()\n\nif result[\"ok\"]:\n    print(\"Build aprovado com sucesso\")\nelse:\n    for erro in result[\"errors\"]:\n        print(f\"Erro: {erro}\")",
+          "language": "python",
+          "label": null
+        },
+        {
+          "type": "warning",
+          "value": "Nunca faça deploy sem executar todos os validadores. Conteúdo sem acentuação correta prejudica a credibilidade e o posicionamento nos mecanismos de busca.",
+          "language": null,
+          "label": "AVISO"
+        },
+        {
+          "type": "checkpoint",
+          "value": "Execute o BuildValidator no diretório da landing page. O build Next.js completou sem erros? Todos os arquivos TSX passaram na verificação de sintaxe?",
+          "language": null,
+          "label": "CHECKPOINT"
+        }
+      ]
+    }
+  ],
+  "prerequisitos_display": [
+    "Python 3.11 ou superior instalado",
+    "Node.js 18+ para build Next.js"
+  ],
+  "faq": [
+    {
+      "pergunta": "Quanto tempo leva para gerar um curso completo?",
+      "resposta": "O pipeline completo leva entre 3 e 8 minutos, dependendo da quantidade de módulos e da velocidade de resposta dos LLMs. O custo médio fica abaixo de USD 2,00 por curso."
+    },
+    {
+      "pergunta": "Como garantir que a acentuação PT-BR está correta?",
+      "resposta": "O agente de revisão (Claude) faz a verificação final de acentuação, e o accent_checker.py valida automaticamente antes do deploy. Palavras sem acento são bloqueadas pelo quality gate."
+    }
+  ],
+  "hero_gradient_from": "#032d60",
+  "hero_gradient_to": "#0176d3",
+  "autor_nome": "Alexandre Caramaschi",
+  "autor_credencial": "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil",
+  "dominio": "https://alexandrecaramaschi.com",
+  "badge_color": "#0176d3",
+  "local_storage_key": "teste-geracao-course-progress",
+  "canonical_url": "https://alexandrecaramaschi.com/educacao/teste-geracao",
+  "breadcrumb_label": "Teste de Geração",
+  "component_name": "TesteGeracaoCoursePage"
+}

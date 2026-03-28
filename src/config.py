@@ -34,8 +34,22 @@ DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", 
 SESSION_BUDGET_TOTAL: float = float(os.getenv("SESSION_BUDGET_TOTAL", "5.00"))
 MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "4096"))
 
+# --- Budget per course (AAA quality) ---
+CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5.00"))
+TOTAL_BUDGET_PER_COURSE: float = float(os.getenv("TOTAL_BUDGET_PER_COURSE", "10.00"))
+
+# --- Landing page integration ---
+LANDING_PAGE_DIR: Path = Path(os.getenv(
+    "LANDING_PAGE_DIR",
+    str(ROOT_DIR.parent / "landing-page-geo")
+))
+EDUCACAO_DIR: Path = LANDING_PAGE_DIR / "src" / "app" / "educacao"
+
 # --- Cache ---
 CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
+
+# --- Modelo Claude (AAA = Opus) ---
+CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-opus-4-6")
 
 
 def load_courses() -> list[dict[str, Any]]:

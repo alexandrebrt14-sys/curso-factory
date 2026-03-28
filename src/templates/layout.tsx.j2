@@ -1,0 +1,37 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "{{ titulo_seo | js_escape }}",
+  description: "{{ descricao | js_escape }}",
+  keywords: [
+{%- for kw in keywords_seo %}
+    "{{ kw | js_escape }}",
+{%- endfor %}
+  ],
+  openGraph: {
+    title: "{{ titulo_seo | js_escape }}",
+    description: "{{ descricao | js_escape }}",
+    url: "{{ canonical_url }}",
+    siteName: "{{ dominio }}",
+    type: "article",
+  },
+  alternates: {
+    canonical: "{{ canonical_url }}",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export default function {{ slug | pascal_case }}Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <section aria-label="{{ titulo_seo | js_escape }}">
+      {children}
+    </section>
+  );
+}

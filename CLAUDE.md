@@ -23,7 +23,7 @@
 2. GPT-4o → redação de módulos
 3. Gemini (2.0-flash) → análise de qualidade
 4. Groq (Llama 3.3) → classificação e tags
-5. Claude (sonnet-4-6) → revisão final e acentuação
+5. Claude (opus-4-6) → revisão final AAA e acentuação ($5 max/curso)
 
 ## Regras Anti-Retrabalho
 
@@ -44,10 +44,12 @@
 - Se qualquer validador falhar, NÃO fazer deploy
 
 ### FinOps
-- Budget guard ativo — respeitar limites diários por provider
+- Budget guard ativo: $5 max Claude, $10 max total por curso
 - Cache obrigatório — nunca reprocessar conteúdo já aprovado
 - Verificar custo antes de executar pipeline completo
 - API keys: fonte de verdade em geo-orchestrator/.env
+- Geração de TSX via Jinja2 templates (NUNCA string replace)
+- Validação automática: acentos + build + JSON Schema
 
 ## Estrutura de Arquivos
 

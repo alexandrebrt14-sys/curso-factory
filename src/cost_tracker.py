@@ -12,7 +12,10 @@ from datetime import datetime, date
 from pathlib import Path
 from typing import Optional
 
-from src.config import OUTPUT_DIR, DAILY_BUDGET_PER_PROVIDER, SESSION_BUDGET_TOTAL
+from src.config import (
+    OUTPUT_DIR, DAILY_BUDGET_PER_PROVIDER, SESSION_BUDGET_TOTAL,
+    CLAUDE_BUDGET_PER_COURSE, TOTAL_BUDGET_PER_COURSE,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +47,7 @@ class CostTracker:
 
     def track(
         self, provider: str, tokens_in: int, tokens_out: int,
-        model: str, custo_usd: float
+        model: str, custo_usd: float, course_id: str = ""
     ) -> None:
         """Registra uma chamada LLM com seu custo."""
         entry = {
@@ -55,6 +58,7 @@ class CostTracker:
             "tokens_out": tokens_out,
             "custo_usd": round(custo_usd, 6),
             "sessao": self.session_id,
+            "course_id": course_id,
         }
         self._entries.append(entry)
         self._save()
@@ -88,6 +92,46 @@ class CostTracker:
             logger.warning("Orçamento total da sessão excedido: USD %.4f", session_sum)
             return True
         return False
+
+    def get_course_total(self, course_id: str) -> dict[str, float]:
+        """Retorna custos por provider para um curso específico."""
+        totais: dict[str, float] = {}
+        for e in self._entries:
+            if e.get("course_id") == course_id:
+                p = e["provider"]
+                totais[p] = totais.get(p, 0.0) + e["custo_usd"]
+        return totais
+
+    def check_before_call(self, provider: str, course_id: str = "") -> bool:
+        """Verifica se a próxima chamada está dentro do budget.
+
+        Returns True se está OK, False se deve bloquear.
+        Aplica limites:
+        - Claude: máx $5.00 por curso
+        - Total: máx $10.00 por curso
+        """
+        if not course_id:
+            return not self.is_over_budget(provider)
+
+        course_costs = self.get_course_total(course_id)
+        total_course = sum(course_costs.values())
+        claude_course = course_costs.get("anthropic", 0.0)
+
+        if provider == "anthropic" and claude_course >= CLAUDE_BUDGET_PER_COURSE:
+            logger.warning(
+                "Budget Claude excedido para curso %s: USD %.2f >= %.2f",
+                course_id, claude_course, CLAUDE_BUDGET_PER_COURSE,
+            )
+            return False
+
+        if total_course >= TOTAL_BUDGET_PER_COURSE:
+            logger.warning(
+                "Budget total excedido para curso %s: USD %.2f >= %.2f",
+                course_id, total_course, TOTAL_BUDGET_PER_COURSE,
+            )
+            return False
+
+        return True
 
     def report(self) -> str:
         """Gera relatório formatado dos custos da sessão."""
