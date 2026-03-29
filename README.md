@@ -2,7 +2,8 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![5 LLMs](https://img.shields.io/badge/LLMs-5_orquestrados-0176d3)
-![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
+![Quality Gate](https://img.shields.io/badge/Quality_Gate-5_camadas-green)
+![PT-BR](https://img.shields.io/badge/idioma-PT--BR_acentuado-yellow)
 
 ---
 
@@ -10,29 +11,43 @@
 
 O curso-factory é uma fábrica de cursos educacionais de altíssima qualidade, construída sobre um pipeline de 5 LLMs orquestrados. O sistema recebe a definição de um curso em YAML, executa um pipeline de 5 etapas (pesquisa, redação, análise, classificação, revisão) e entrega módulos completos, validados e prontos para deploy.
 
-Todos os cursos são gerados com dados atualizados de 2026, passam por validação automática de qualidade, acentuação PT-BR e consistência editorial antes de serem aprovados para publicação.
+O padrão editorial segue o nível de publicações como **Harvard Business Review**, **MIT Sloan Management Review** e **HSM Management** — com profundidade analítica real, dados e evidências, formatação rica (tabelas, blocos de citação, hierarquia de títulos) e conformidade com os 6 princípios da andragogia de Malcolm Knowles.
+
+Todos os cursos são gerados com dados atualizados de 2026, passam por **validação automática de 5 camadas** (acentuação com auto-correção, qualidade de conteúdo, formatação, links e HTML) antes de serem aprovados para publicação.
 
 ---
 
 ## Problema que resolve
 
-### 1. Heredocs gigantes que quebram no shell
+### 1. Conteúdo superficial e genérico
+
+LLMs sem orientação forte produzem conteúdo tipo "blog post" — superficial, cheio de clichês ("nos dias de hoje", "é fundamental que") e sem dados. O curso-factory usa **prompts externos de alta densidade** (~150 linhas cada, em `src/templates/prompts/`) que forçam profundidade analítica, evidências, tabelas comparativas, exercícios situados em contextos profissionais reais e verbos de Bloom de nível superior nos objetivos de aprendizagem.
+
+### 2. Acentuação PT-BR inconsistente
+
+LLMs frequentemente produzem texto em português sem acentos ("producao" em vez de "produção"). O curso-factory implementa **barreira quádrupla**:
+1. Instrução no prompt do redator (GPT-4o) com tabela de 150+ palavras obrigatórias
+2. Detecção no analisador (Gemini) que reporta cada erro
+3. Correção na revisão final (Claude) com checklist exaustivo
+4. **Auto-correção programática** (`accent_checker.py`) com 300+ mapeamentos que corrige automaticamente antes do deploy, preservando URLs, código e variáveis
+
+### 3. Heredocs gigantes que quebram no shell
 
 Scripts que embutem HTML ou Markdown em heredocs dentro de shell scripts quebram com caracteres especiais, aspas e acentos. O curso-factory usa **templates Jinja2 em arquivos separados** (`src/templates/`), eliminando completamente heredocs do pipeline de geração.
 
-### 2. Scripts de substituição frágeis
+### 4. Scripts de substituição frágeis
 
 Scripts Python que fazem `str.replace()` ou regex para inserir conteúdo em pontos específicos de um arquivo erram o ponto de inserção quando o template muda. A solução é **geração atômica com validação automática**: cada módulo é gerado inteiro a partir do template, nunca por inserção parcial.
 
-### 3. Agentes falhando por API
+### 5. Falta de validação de qualidade de conteúdo
+
+Sem validação, módulos podem ser publicados sem tabelas, sem exercícios, sem princípios andragógicos ou com clichês proibidos. O **content_checker.py** valida automaticamente: presença de tabelas, contagem de palavras (2.500-4.000), hierarquia de títulos, blocos de citação, exercícios (mínimo 3), verbos de Bloom, princípios de Knowles e clichês proibidos.
+
+### 6. Agentes falhando por API
 
 Chamadas a APIs de LLMs falham por rate limiting, timeout ou indisponibilidade. O curso-factory implementa **circuit breaker**, **retry com backoff exponencial** e **fallback entre LLMs** — se o GPT-4o falha, Claude assume a redação; se Perplexity cai, Gemini faz a pesquisa.
 
-### 4. Retrabalho por falta de validação
-
-Sem validação automática, erros de acentuação, links quebrados e HTML malformado só são descobertos após o deploy. O curso-factory inclui um **quality gate pré-deploy** com 4 validadores independentes: acentuação PT-BR, HTML, links e regras de qualidade configuráveis.
-
-### 5. FinOps ineficiente
+### 7. FinOps ineficiente
 
 Sem controle de custos, o pipeline consome créditos desnecessariamente reprocessando conteúdo já gerado ou usando modelos caros para tarefas simples. A solução inclui **budget guard pré-execução**, **cost tracking em tempo real** e **cache de resultados** com TTL para evitar reprocessamento.
 
@@ -55,7 +70,14 @@ Definição YAML --> Orchestrator --> Pipeline (5 etapas)
                         |
                         v
                    Quality Gate
-                   (4 validadores)
+                   (5 camadas de validação)
+                        |
+                   +----+----+----+----+----+
+                   | Ac | Co | Fm | Lk | Ht |
+                   +----+----+----+----+----+
+                   Ac=Acentos (auto-fix) Co=Conteúdo Fm=Formatação
+                   Lk=Links Ht=HTML
+
                         |
                         v
                 output/approved/
@@ -70,12 +92,24 @@ O pipeline executa em **waves paralelas**: pesquisa e redação podem rodar em p
 | Etapa | Provider | Modelo | Papel | Por que este LLM |
 |-------|----------|--------|-------|-------------------|
 | **1. RESEARCH** | Perplexity | sonar-pro | Coleta dados atualizados, fontes, tendências 2026 | Único LLM com acesso a web em tempo real e citações |
-| **2. DRAFT** | OpenAI | gpt-4o | Redige módulos com base nos dados coletados | Melhor redator longo em PT-BR, consistência de tom |
+| **2. DRAFT** | OpenAI | gpt-4o | Redige módulos com padrão editorial HSM/HBR/MIT Sloan | Melhor redator longo em PT-BR, consistência de tom |
 | **3. ANALYZE** | Google | gemini-2.5-pro | Revisa qualidade pedagógica, andragogia, formatação, acentuação | Análise profunda e estruturada com alto contexto |
 | **4. CLASSIFY** | Groq | llama-3.3-70b | Classifica nível, tags, pré-requisitos, duração estimada | Latência ultra-baixa para classificação rápida |
-| **5. REVIEW** | Anthropic | claude-opus-4-6 | Revisão final: acentuação PT-BR, qualidade editorial HSM/HBR, formatação | Melhor em instruções complexas e revisão crítica |
+| **5. REVIEW** | Anthropic | claude-opus-4-6 | Revisão final: acentuação PT-BR, qualidade editorial, formatação | Melhor em instruções complexas e revisão crítica |
 
-Cada agente herda de `BaseAgent` (`src/agents/base.py`), que implementa retry com backoff exponencial, fallback para outro LLM e integração com o circuit breaker.
+### Prompts externos de alta densidade
+
+Cada agente carrega seu prompt de um arquivo Markdown externo em `src/templates/prompts/`:
+
+| Arquivo | Linhas | Conteúdo |
+|---------|--------|----------|
+| `research.md` | ~70 | Categorias de pesquisa, fontes prioritárias, formato de saída com nível de confiança |
+| `draft.md` | ~200 | Estrutura obrigatória do módulo (6 seções), andragogia detalhada, verbos de Bloom, tabela de acentuação, exemplos de profundidade, autoavaliação |
+| `analyze.md` | ~110 | 7 dimensões de análise com critérios, tabela andragógica, formato JSON de saída |
+| `classify.md` | ~80 | 6 classificações obrigatórias, formato JSON padronizado |
+| `review.md` | ~160 | Tabela de 150+ palavras para correção, checklist editorial, correção ativa (não apenas comentários) |
+
+Os agentes carregam automaticamente o prompt externo. Se o arquivo não existir, usam um template inline como fallback.
 
 ---
 
@@ -84,43 +118,100 @@ Cada agente herda de `BaseAgent` (`src/agents/base.py`), que implementa retry co
 ### Etapa 1 — Pesquisa (Perplexity)
 
 O agente pesquisador recebe o tópico do módulo e coleta:
-- Dados atualizados de 2026 com fontes citáveis
-- Tendências de mercado e tecnologia
-- Exemplos práticos e cases reais
-- Estatísticas e métricas relevantes
+- Dados atualizados de 2026 com fontes citáveis e nível de confiança
+- Tendências de mercado e tecnologia com dados quantitativos
+- Análise competitiva de 5+ cursos concorrentes em tabela
+- 3-5 estudos de caso reais e verificáveis para exercícios
 
 ### Etapa 2 — Redação (GPT-4o)
 
-O agente redator recebe os dados da pesquisa e gera:
-- Conteúdo completo do módulo em PT-BR
-- Exemplos de código quando aplicável
-- Exercícios práticos
-- Resumo executivo
+O agente redator recebe os dados da pesquisa e gera módulos com:
+- **Abertura com impacto** (dado surpreendente, caso real ou pergunta provocativa)
+- **Objetivos de aprendizagem** com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)
+- **Fundamentação conceitual** com evidências, dados e analogias sofisticadas
+- **Estudo de caso** estruturado (Contexto → Desafio → Abordagem → Resultado → Lições)
+- **Tabela comparativa** obrigatória (mínimo 1 por módulo)
+- **3+ exercícios práticos** com contexto profissional, critérios de avaliação e progressão Bloom
+- **Síntese executiva** com checklist de aplicação imediata
 
 ### Etapa 3 — Análise (Gemini)
 
-O agente analista revisa o rascunho verificando:
-- Coerência com o programa do curso
-- Gaps de conteúdo
-- Acessibilidade e clareza
-- Nível de dificuldade consistente
+O agente analista revisa o rascunho em 7 dimensões:
+- Coerência e rigor intelectual (profundidade vs. superficialidade)
+- Qualidade editorial (tom, clichês, parágrafos)
+- Formatação visual (tabelas, hierarquia, negrito, citações)
+- Conformidade andragógica (6 princípios de Knowles, nota por princípio)
+- Gaps de conteúdo (saltos cognitivos, omissões)
+- Exercícios (contexto profissional, Bloom, critérios)
+- Acentuação PT-BR (lista de todas as palavras sem acento)
 
 ### Etapa 4 — Classificação (Groq)
 
-O agente classificador atribui metadados:
-- Nível (iniciante, intermediário, avançado)
-- Tags e palavras-chave
-- Pré-requisitos
-- Duração estimada de estudo
+O agente classificador atribui metadados estruturados:
+- Nível com justificativa
+- Tags temáticas (5-10)
+- Pré-requisitos com nível esperado
+- Duração estimada por módulo e total
+- Categoria e perfil do público-alvo
 
 ### Etapa 5 — Revisão (Claude)
 
-O agente revisor faz a passada final:
-- Acentuação PT-BR completa (dicionário expandido com 150+ palavras)
-- Qualidade editorial padrão HSM/HBR/MIT Sloan
-- Conformidade andragógica (6 princípios de Knowles)
-- Formatação rica: tabelas, listas, hierarquia de títulos, blocos de citação
-- Validação técnica do conteúdo e precisão factual
+O agente revisor faz a passada final com **correção ativa** (não apenas comentários):
+- Correção de acentuação PT-BR com tabela de 150+ palavras
+- Reescrita de parágrafos superficiais com dados e análise
+- Eliminação de clichês proibidos
+- Adição de tabelas onde faltam
+- Verificação e correção de exercícios
+- Validação de princípios andragógicos
+
+---
+
+## Quality Gate — 5 Camadas de Validação
+
+O quality gate é a barreira final antes da publicação. Nenhum conteúdo é aprovado sem passar por todas as 5 camadas:
+
+### Camada 1: Acentuação PT-BR (com auto-correção)
+
+| Capacidade | Detalhe |
+|------------|---------|
+| Dicionário | 300+ mapeamentos (palavras sem acento → forma correta) |
+| Auto-correção | `fix_accents()` corrige automaticamente, preservando capitalização |
+| Proteção | Ignora URLs, blocos de código, slugs, variáveis, tags HTML, Markdown links |
+| Detecção de blocos de código | Rastreia ``` para não alterar código |
+| Relatório | Lista cada erro com linha, palavra errada, correção e contexto |
+
+### Camada 2: Qualidade de Conteúdo (`content_checker.py`)
+
+| Verificação | Critério | Tipo |
+|-------------|----------|------|
+| Contagem de palavras | 2.500-4.000 por módulo | Bloqueante |
+| Tabelas | Mínimo 1 por módulo | Bloqueante |
+| Subtítulos | Mínimo 5-7 seções (H2/H3) | Bloqueante |
+| Hierarquia de títulos | Sem pulos (H2→H4 proibido) | Bloqueante |
+| Blocos de citação | Ao menos 1 para insights centrais | Bloqueante |
+| Exercícios | Mínimo 3 com contexto profissional | Bloqueante |
+| Clichês proibidos | 18 expressões banidas | Bloqueante |
+| Verbos de Bloom | Nível 3+ nos objetivos (proibido: "entender", "conhecer") | Bloqueante |
+| Princípios andragógicos | 5 indicadores de Knowles verificados | Bloqueante (3+ ausentes) |
+| Parágrafos longos | Máximo 5 linhas | Aviso |
+| Emojis | Proibidos em todo conteúdo | Bloqueante |
+| Termos em negrito | Mínimo 3 por módulo | Aviso |
+
+### Camada 3: Links
+
+- Detecção de acentos em URLs (bloqueante — incidente 2026-03-27: 55 hrefs corrompidos)
+- Verificação de links internos
+
+### Camada 4: HTML (apenas para conteúdo HTML)
+
+- Fechamento de tags
+- Elementos obrigatórios (meta charset, title, main, h1)
+- Acessibilidade (lang, alt em imagens)
+
+### Camada 5: FinOps
+
+- Budget guard: $5 max Claude, $10 max total por curso
+- Cache obrigatório: SHA-256, TTL 24h
 
 ---
 
@@ -140,32 +231,61 @@ O conteúdo produzido segue o padrão de publicações de referência:
 
 Todo conteúdo aplica os 6 princípios da aprendizagem de adultos:
 
-1. **Necessidade de saber** — cada módulo abre explicando POR QUE o conhecimento é necessário
-2. **Autoconceito** — o aluno é tratado como profissional autônomo, nunca de forma condescendente
-3. **Experiência prévia** — conceitos novos se conectam com vivências profissionais do aluno
-4. **Prontidão** — demonstração de aplicabilidade imediata no contexto de trabalho
-5. **Orientação a problemas** — conteúdo organizado em torno de problemas reais, não taxonomias abstratas
+1. **Necessidade de saber** — cada módulo abre explicando POR QUE o conhecimento é necessário, com dados quantitativos sobre o impacto
+2. **Autoconceito** — o aluno é tratado como profissional autônomo, nunca de forma condescendente. Verbos: "considere", "analise", "avalie" (nunca "vamos aprender")
+3. **Experiência prévia** — conceitos novos se conectam com vivências profissionais do aluno: "Se você já enfrentou...", "Na sua rotina profissional..."
+4. **Prontidão** — demonstração de aplicabilidade imediata no contexto de trabalho: "aplique hoje", "na próxima reunião"
+5. **Orientação a problemas** — conteúdo organizado em torno de problemas reais, não taxonomias abstratas. Comece com o problema, depois a solução.
 6. **Motivação intrínseca** — aprendizado conectado com crescimento profissional e domínio
+
+### Taxonomia de Bloom nos Objetivos
+
+Objetivos de aprendizagem devem usar EXCLUSIVAMENTE verbos de nível 3-6:
+
+| Nível | Verbos Aceitos | Exemplo |
+|-------|---------------|---------|
+| 3 - Aplicar | aplicar, implementar, executar, demonstrar, calcular | "Implementar um pipeline de dados com validação automática" |
+| 4 - Analisar | analisar, comparar, diferenciar, diagnosticar, categorizar | "Diagnosticar gargalos de performance usando métricas de latência" |
+| 5 - Avaliar | avaliar, justificar, priorizar, recomendar, defender | "Avaliar trade-offs entre consistência eventual e forte" |
+| 6 - Criar | criar, projetar, formular, propor, desenvolver | "Projetar um plano de migração incremental com rollback" |
+
+**Proibidos** (níveis 1-2, superficiais): entender, conhecer, saber, compreender, lembrar, memorizar, listar, descrever, identificar.
 
 ### Formatação Rica
 
 Cada módulo inclui obrigatoriamente:
 
-- Tabelas comparativas (ao menos uma por módulo)
-- Listas numeradas para processos, com marcadores para enumerações
-- Hierarquia clara de títulos (H2 > H3 > H4)
-- Negrito para termos-chave na primeira ocorrência
-- Blocos de citação para insights centrais e conceitos memoráveis
-- Exercícios com progressão de complexidade (Taxonomia de Bloom)
+- **Tabelas comparativas** (ao menos uma por módulo): comparações, frameworks, antes/depois, matrizes de decisão
+- **Listas numeradas** para processos sequenciais, **com marcadores** para enumerações
+- **Hierarquia clara** de títulos (H2 > H3 > H4, sem pulos)
+- **Negrito** para termos-chave na primeira ocorrência
+- **Blocos de citação (>)** para insights centrais e conceitos memoráveis
+- **Exercícios** com progressão de complexidade (Taxonomia de Bloom), contexto profissional real e critérios de avaliação
 
-### Acentuação PT-BR
+### Expressões Proibidas
 
-O pipeline possui tripla barreira contra palavras sem acento:
+O pipeline detecta e bloqueia automaticamente:
 
-1. **Instrução ao redator (GPT-4o)**: prompt com lista explícita de palavras obrigatoriamente acentuadas
+| Clichê Proibido | Substituição |
+|-----------------|-------------|
+| "nos dias de hoje" | Use o ano específico ou período |
+| "é fundamental que" | Vá direto ao ponto |
+| "não é segredo que" | Comece pela informação |
+| "o futuro é agora" | Elimine |
+| "em um mundo cada vez mais" | Seja específico |
+| "vamos explorar" | Elimine |
+| "como sabemos" | Cite a fonte |
+| "é importante ressaltar" | Ressalte diretamente |
+| "vale a pena destacar" | Destaque diretamente |
+
+### Acentuação PT-BR — Barreira Quádrupla
+
+O pipeline possui 4 barreiras contra palavras sem acento:
+
+1. **Instrução ao redator (GPT-4o)**: prompt com tabela de palavras obrigatoriamente acentuadas
 2. **Análise de qualidade (Gemini)**: detecta e reporta palavras sem acento no relatório
-3. **Revisão final (Claude)**: corrige todas as ocorrências com dicionário de 150+ palavras
-4. **Validador local (accent_checker.py)**: barreira programática pré-deploy com 150+ mapeamentos
+3. **Revisão final (Claude)**: corrige todas as ocorrências com tabela de 150+ palavras
+4. **Auto-correção programática (accent_checker.py)**: barreira pré-deploy com 300+ mapeamentos, preservação de contexto (URLs, código, variáveis) e correção automática
 
 ---
 
@@ -253,24 +373,6 @@ python cli.py cost-report
 python cli.py cache-clear
 ```
 
-### Exemplos de definição YAML
-
-```yaml
-# config/courses.yaml
-courses:
-  geo-fundamentos:
-    title: "GEO Fundamentos — Otimização para Motores Generativos"
-    audience: "Profissionais de marketing digital e SEO"
-    level: "intermediário"
-    modules:
-      - title: "O que é GEO e por que importa em 2026"
-        topics: ["definição", "diferença-seo-geo", "métricas"]
-      - title: "Entidades e Knowledge Graph"
-        topics: ["schema-org", "wikidata", "entity-consistency"]
-      - title: "llms.txt e ai-agents.json"
-        topics: ["discovery-files", "implementação", "validação"]
-```
-
 ---
 
 ## Estrutura do projeto
@@ -290,40 +392,43 @@ curso-factory/
 │   ├── config.py             # Configurações globais
 │   ├── models.py             # Pydantic models (Course, Module, Step)
 │   ├── orchestrator.py       # Orquestração do pipeline
-│   ├── pipeline.py           # Execução em waves paralelas
-│   ├── router.py             # Roteamento por tipo de tarefa
 │   ├── llm_client.py         # Cliente HTTP unificado com circuit breaker
-│   ├── rate_limiter.py       # Token bucket por provider
 │   ├── cost_tracker.py       # Rastreamento de custos em tempo real
-│   ├── finops.py             # Governança FinOps com budget guard
 │   ├── cache.py              # Cache de resultados (SHA-256, TTL 24h)
 │   ├── agents/
-│   │   ├── base.py           # Classe base com retry e fallback
+│   │   ├── base.py           # Classe base com carregamento de prompt externo
 │   │   ├── researcher.py     # Perplexity — pesquisa
 │   │   ├── writer.py         # GPT-4o — redação
 │   │   ├── analyzer.py       # Gemini — análise de qualidade
 │   │   ├── classifier.py     # Groq — classificação
-│   │   └── reviewer.py       # Claude — revisão final
+│   │   ├── reviewer.py       # Claude — revisão final
+│   │   └── pipeline.py       # Orquestração em waves paralelas
 │   ├── templates/
-│   │   ├── course.html.j2    # Template Jinja2 para página do curso
-│   │   ├── module.html.j2    # Template para módulo individual
-│   │   └── prompts/          # Prompts separados por agente
-│   │       ├── research.md
-│   │       ├── draft.md
-│   │       ├── analyze.md
-│   │       ├── classify.md
-│   │       └── review.md
+│   │   ├── layout.tsx.j2     # Template Jinja2 para layout Next.js
+│   │   ├── page.tsx.j2       # Template para página interativa do curso
+│   │   └── prompts/          # Prompts externos de alta densidade
+│   │       ├── research.md   # (~70 linhas) Pesquisa e fundamentação
+│   │       ├── draft.md      # (~200 linhas) Redação com andragogia e Bloom
+│   │       ├── analyze.md    # (~110 linhas) Análise de qualidade 7D
+│   │       ├── classify.md   # (~80 linhas) Classificação e metadados
+│   │       └── review.md     # (~160 linhas) Revisão e correção ativa
+│   ├── generators/
+│   │   ├── schema_builder.py # Builds CourseDefinition from pipeline output
+│   │   ├── metadata_sync.py  # Syncs course metadata to landing page
+│   │   └── build_validator.py # TSX build validation + syntax check
+│   ├── schemas/
+│   │   └── course.schema.json # JSON Schema para CourseDefinition
 │   └── validators/
-│       ├── accent_checker.py  # Valida acentuação PT-BR
-│       ├── html_validator.py  # Valida HTML gerado
-│       ├── link_checker.py    # Valida links e hrefs
-│       └── quality_gate.py    # Gate de qualidade pré-deploy
-├── scripts/
-│   ├── create_course.sh      # Wrapper para criar curso completo
-│   └── batch_create.sh       # Criação em lote
+│       ├── accent_checker.py  # 300+ mapeamentos, detecção + auto-correção
+│       ├── content_checker.py # Tabelas, exercícios, Bloom, andragogia, clichês
+│       ├── html_validator.py  # Tags, acessibilidade, semântica
+│       ├── link_checker.py    # Acentos em URLs, links internos
+│       └── quality_gate.py    # Gate unificado de 5 camadas com auto-fix
+├── tests/
+│   ├── fixtures/sample_course.json
+│   └── test_generators.py
 ├── docs/
-│   ├── ARCHITECTURE.md       # Documentação técnica da arquitetura
-│   └── FINOPS.md             # Documentação de FinOps
+│   └── FINOPS.md             # Documentação de custos e budget guard
 └── output/
     ├── drafts/               # Rascunhos em progresso
     ├── approved/             # Aprovados pelo quality gate
@@ -334,15 +439,20 @@ curso-factory/
 
 ## Convenções
 
-- **Idioma do conteúdo**: Português do Brasil com acentuação completa
+- **Idioma do conteúdo**: Português do Brasil com acentuação completa (enforced por 4 barreiras)
 - **Idioma do código**: Inglês
+- **Padrão editorial**: HSM Management + Harvard Business Review + MIT Sloan Management Review
+- **Andragogia**: 6 princípios de Knowles aplicados e validados automaticamente
+- **Bloom**: Verbos nível 3-6 nos objetivos (aplicar, analisar, avaliar, criar)
 - **Arquivos Python**: snake_case (`cost_tracker.py`, `accent_checker.py`)
 - **Comandos CLI**: kebab-case (`create-module`, `run-step`, `cost-report`)
-- **HTTP**: httpx async para todas as chamadas LLM (sem SDKs oficiais)
+- **HTTP**: httpx para todas as chamadas LLM (sem SDKs oficiais)
 - **Models**: Pydantic v2 para domínio, dataclass para infraestrutura
 - **Cache**: SHA-256 do input como chave, TTL 24h, em `output/.cache/`
 - **Custos**: registrados por chamada em `output/cost_history.jsonl`
-- **Templates**: Jinja2 para HTML, Markdown para prompts
+- **Templates**: Jinja2 para HTML/TSX, Markdown para prompts
+- **Prompts**: Arquivos externos em `src/templates/prompts/`, carregados automaticamente pelos agentes
+- **Sem emojis**: proibido em todo conteúdo de curso e documentação
 
 ---
 

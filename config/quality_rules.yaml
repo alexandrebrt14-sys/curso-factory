@@ -1,19 +1,139 @@
-# curso-factory — Regras de Qualidade
-# Validação automática antes do deploy
+# curso-factory �� Regras de Qualidade
+# Validação automática de 5 camadas antes do deploy
 
 validation:
+  # Camada 1: Acentuação PT-BR
   accent_check:
     enabled: true
     language: pt-BR
     fail_on_missing: true
+    auto_fix: true  # Corrige automaticamente antes de validar
+    dictionary_size: 300  # 300+ mapeamentos
     known_exceptions:
       - URLs
       - slugs
       - imports
       - código inline
+      - blocos de código (```)
       - nomes de variáveis
       - JSX/HTML attributes
+      - caminhos de arquivo
+      - Markdown links
 
+  # Camada 2: Qualidade de conteúdo
+  content_quality:
+    enabled: true
+    min_modules_per_course: 8
+    max_modules_per_course: 16
+    min_steps_per_module: 3
+    max_steps_per_module: 8
+    min_words_per_module: 2500
+    max_words_per_module: 4000
+    min_headings_per_module: 5
+    required_sections_per_module:
+      - objetivos_aprendizagem
+      - fundamentacao_conceitual
+      - estudo_de_caso
+      - tabela_comparativa
+      - exercicios_praticos  # mínimo 3
+      - sintese_executiva
+    max_reading_time_per_module_minutes: 25
+    min_tables_per_module: 1
+    min_blockquotes_per_module: 1
+    min_exercises_per_module: 3
+    min_bold_terms_per_module: 3
+    max_paragraph_lines: 5
+
+  # Padrão editorial HSM/HBR/MIT Sloan
+  editorial_style:
+    reference_publications:
+      - "Harvard Business Review"
+      - "MIT Sloan Management Review"
+      - "HSM Management"
+    tone: "analitico_propositivo"
+    require_tables_per_module: 1
+    require_bloom_verbs_in_objectives: true
+    bloom_accepted_levels: [3, 4, 5, 6]  # Aplicar, Analisar, Avaliar, Criar
+    bloom_forbidden_verbs:
+      - "entender"
+      - "conhecer"
+      - "saber"
+      - "compreender"
+      - "lembrar"
+      - "memorizar"
+      - "listar"
+      - "descrever"
+      - "identificar"
+      - "reconhecer"
+      - "definir"
+    bloom_accepted_verbs:
+      - "analisar"
+      - "comparar"
+      - "diferenciar"
+      - "diagnosticar"
+      - "categorizar"
+      - "avaliar"
+      - "justificar"
+      - "priorizar"
+      - "recomendar"
+      - "defender"
+      - "criar"
+      - "projetar"
+      - "formular"
+      - "propor"
+      - "desenvolver"
+      - "aplicar"
+      - "implementar"
+      - "executar"
+      - "demonstrar"
+      - "calcular"
+
+  # Andragogia (Malcolm Knowles)
+  andragogy:
+    enabled: true
+    principles_required:
+      - necessidade_de_saber
+      - autoconceito
+      - experiencia_previa
+      - prontidao
+      - orientacao_a_problemas
+      - motivacao_intrinseca
+    min_principles_present: 4  # Mínimo 4 de 6 para aprovação
+    fail_if_missing: 3  # Bloqueia se 3+ ausentes
+
+  # Clichês e expressões proibidas
+  forbidden_expressions:
+    enabled: true
+    fail_on_found: true
+    expressions:
+      - "nos dias de hoje"
+      - "é fundamental que"
+      - "não é segredo que"
+      - "o futuro é agora"
+      - "em um mundo cada vez mais"
+      - "vamos explorar"
+      - "como sabemos"
+      - "é importante ressaltar"
+      - "diante desse cenário"
+      - "nesse contexto"
+      - "vale a pena destacar"
+      - "em última análise"
+      - "grosso modo"
+      - "vamos aprender"
+      - "agora você vai entender"
+      - "como todos sabem"
+      - "desde os primórdios"
+      - "desde tempos imemoriais"
+
+  # Camada 3: Links
+  link_check:
+    enabled: true
+    check_internal: true
+    check_external: false
+    fail_on_broken: true
+    url_must_not_contain_accents: true  # Crítico — incidente 2026-03-27
+
+  # Camada 4: HTML
   html_validation:
     enabled: true
     check_closing_tags: true
@@ -25,64 +145,26 @@ validation:
       - main
       - h1
 
-  link_check:
-    enabled: true
-    check_internal: true
-    check_external: false
-    fail_on_broken: true
-    url_must_not_contain_accents: true
-
-  content_quality:
-    min_modules_per_course: 8
-    max_modules_per_course: 16
-    min_steps_per_module: 3
-    max_steps_per_module: 8
-    required_sections_per_module:
-      - objetivos
-      - conteudo
-      - exercicio_pratico
-      - tabela_comparativa
-      - sintese_executiva
-    max_reading_time_per_module_minutes: 25
-    min_words_per_module: 2500
-    max_words_per_module: 4000
-
-  editorial_style:
-    reference_publications:
-      - "Harvard Business Review"
-      - "MIT Sloan Management Review"
-      - "HSM Management"
-    tone: "analitico_propositivo"
-    require_tables_per_module: 1
-    require_bloom_verbs_in_objectives: true
-    andragogy_principles_required:
-      - necessidade_de_saber
-      - autoconceito
-      - experiencia_previa
-      - prontidao
-      - orientacao_a_problemas
-      - motivacao_intrinseca
-    forbidden_cliches:
-      - "nos dias de hoje"
-      - "é fundamental que"
-      - "não é segredo que"
-      - "o futuro é agora"
-      - "em um mundo cada vez mais"
-    max_paragraph_lines: 5
-    require_bold_key_terms: true
-    require_blockquotes_for_insights: true
-    exercises_min_per_module: 3
-    exercises_require_professional_context: true
-
+  # Camada 5: FinOps
   finops:
     budget_guard_enabled: true
     alert_at_percent: 80
     block_at_percent: 100
     cost_report_after_each_course: true
+    max_claude_per_course_usd: 5.00
+    max_total_per_course_usd: 10.00
 
+  # Proibições globais
+  global_prohibitions:
+    emojis: true
+    superlativos_sem_evidencia: true
+    credenciais_inventadas: true
+
+  # Anti-retrabalho
   anti_retrabalho:
     atomic_generation: true
     no_heredocs_over_50_lines: true
     no_regex_substitution: true
     validate_before_deploy: true
     cache_approved_content: true
+    prompts_in_external_files: true  # src/templates/prompts/*.md

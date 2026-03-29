@@ -2,6 +2,8 @@
 
 Revisa qualidade, coerência e acessibilidade do conteúdo
 gerado na etapa de redação.
+
+Prompt externo: src/templates/prompts/analyze.md
 """
 
 from __future__ import annotations
@@ -15,7 +17,9 @@ class Analyzer(Agent):
     nome = "analyzer"
     provider = "google"
     model = "gemini-2.5-pro"
+    prompt_file = "analyze.md"
 
+    # Fallback inline caso o arquivo externo não exista
     TEMPLATE = (
         "Você é um analista de qualidade educacional e design instrucional, com padrão editorial "
         "de Harvard Business Review, MIT Sloan e HSM Management.\n\n"
@@ -34,4 +38,7 @@ class Analyzer(Agent):
     )
 
     def build_prompt(self, context: str) -> str:
+        template = self._load_prompt_template()
+        if template:
+            return template.replace("{context}", context)
         return self.TEMPLATE.format(context=context)

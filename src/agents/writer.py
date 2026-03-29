@@ -2,6 +2,8 @@
 
 Gera conteúdo dos módulos do curso usando os dados
 da etapa de pesquisa como base.
+
+Prompt externo: src/templates/prompts/draft.md
 """
 
 from __future__ import annotations
@@ -15,7 +17,9 @@ class Writer(Agent):
     nome = "writer"
     provider = "openai"
     model = "gpt-4o"
+    prompt_file = "draft.md"
 
+    # Fallback inline caso o arquivo externo não exista
     TEMPLATE = (
         "Você é um redator educacional de elite, com padrão editorial de Harvard Business Review, "
         "MIT Sloan Management Review e HSM Management.\n\n"
@@ -38,22 +42,17 @@ class Writer(Agent):
         "- Negrito para termos-chave na primeira ocorrência\n"
         "- Blocos de citação (>) para insights centrais\n"
         "- Hierarquia clara de títulos (H2 > H3 > H4)\n\n"
-        "ESTRUTURA DE CADA MÓDULO:\n"
-        "1. Abertura com impacto (dado/caso/pergunta) + Objetivos de Aprendizagem\n"
-        "2. Fundamentação conceitual com evidências e dados\n"
-        "3. Estudo de caso ou demonstração prática\n"
-        "4. Quadro comparativo ou síntese visual (tabela)\n"
-        "5. Exercícios práticos (mínimo 3, com progressão de complexidade)\n"
-        "6. Síntese executiva + checklist de aplicação + ponte para próximo módulo\n\n"
         "ORTOGRAFIA E ACENTUAÇÃO (INVIOLÁVEL):\n"
         "- Português do Brasil com acentuação COMPLETA e ortografia correta\n"
         "- NUNCA escrever sem acento: não, você, também, até, produção, informação, "
-        "educação, módulo, conteúdo, tópico, prática, técnica, lógica, análise, código, "
-        "método, será, está, específico, diagnóstico, estratégico, didático, pedagógico\n"
+        "educação, módulo, conteúdo, tópico, prática, técnica, lógica, análise, código\n"
         "- NUNCA adicionar acentos em URLs, slugs, variáveis ou código\n"
         "- Sem emojis\n\n"
         "--- DADOS DA PESQUISA ---\n{context}"
     )
 
     def build_prompt(self, context: str) -> str:
+        template = self._load_prompt_template()
+        if template:
+            return template.replace("{context}", context)
         return self.TEMPLATE.format(context=context)

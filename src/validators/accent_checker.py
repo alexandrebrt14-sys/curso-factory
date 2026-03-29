@@ -1,7 +1,8 @@
-"""Verificador de acentuação PT-BR.
+"""Verificador e corretor automático de acentuação PT-BR.
 
-Detecta palavras comuns que DEVEM ter acento mas aparecem sem.
-Ignora URLs, slugs, blocos de código e nomes de variáveis.
+Detecta palavras comuns que DEVEM ter acento mas aparecem sem,
+e oferece correção automática. Ignora URLs, slugs, blocos de
+código e nomes de variáveis.
 """
 
 from __future__ import annotations
@@ -41,6 +42,28 @@ ACCENT_MAP: dict[str, str] = {
     "dificeis": "difíceis",
     "possiveis": "possíveis",
     "disponiveis": "disponíveis",
+    "voces": "vocês",
+    "nos": "nós",
+    "ele": "ele",  # não acentuado, excluir
+    "obvio": "óbvio",
+    "obvia": "óbvia",
+    "serio": "sério",
+    "seria": "séria",
+    "varios": "vários",
+    "varias": "várias",
+    "necessaria": "necessária",
+    "necessarias": "necessárias",
+    "primaria": "primária",
+    "secundaria": "secundária",
+    "contrario": "contrário",
+    "voluntario": "voluntário",
+    "extraordinario": "extraordinário",
+    "contemporaneo": "contemporâneo",
+    "espontaneo": "espontâneo",
+    "instantaneo": "instantâneo",
+    "simultaneo": "simultâneo",
+    "heterogeneo": "heterogêneo",
+    "homogeneo": "homogêneo",
     # --- Substantivos -ção ---
     "producao": "produção",
     "informacao": "informação",
@@ -97,6 +120,44 @@ ACCENT_MAP: dict[str, str] = {
     "formulacao": "formulação",
     "elaboracao": "elaboração",
     "regulamentacao": "regulamentação",
+    "inovacao": "inovação",
+    "adocao": "adoção",
+    "evolucao": "evolução",
+    "prevencao": "prevenção",
+    "protecao": "proteção",
+    "deteccao": "detecção",
+    "selecao": "seleção",
+    "construcao": "construção",
+    "destruicao": "destruição",
+    "reducao": "redução",
+    "conexao": "conexão",
+    "expansao": "expansão",
+    "decisao": "decisão",
+    "precisao": "precisão",
+    "dimensao": "dimensão",
+    "extensao": "extensão",
+    "comissao": "comissão",
+    "permissao": "permissão",
+    "submissao": "submissão",
+    "discussao": "discussão",
+    "promocao": "promoção",
+    "emocao": "emoção",
+    "nocao": "noção",
+    "opcao": "opção",
+    "excecao": "exceção",
+    "relacao": "relação",
+    "populacao": "população",
+    "observacao": "observação",
+    "orientacao": "orientação",
+    "concentracao": "concentração",
+    "colaboracao": "colaboração",
+    "negociacao": "negociação",
+    "certificacao": "certificação",
+    "especializacao": "especialização",
+    "personalizacao": "personalização",
+    "padronizacao": "padronização",
+    "monetizacao": "monetização",
+    "digitalizacao": "digitalização",
     # --- Substantivos -ência/-ância ---
     "experiencia": "experiência",
     "eficiencia": "eficiência",
@@ -117,6 +178,36 @@ ACCENT_MAP: dict[str, str] = {
     "inteligencia": "inteligência",
     "audiencia": "audiência",
     "influencia": "influência",
+    "urgencia": "urgência",
+    "emergencia": "emergência",
+    "prevalencia": "prevalência",
+    "equivalencia": "equivalência",
+    "diferenca": "diferença",
+    "presenca": "presença",
+    "ausencia": "ausência",
+    "essencia": "essência",
+    "potencia": "potência",
+    "ciencia": "ciência",
+    "consciencia": "consciência",
+    "gerencia": "gerência",
+    "resistencia": "resistência",
+    "existencia": "existência",
+    "persistencia": "persistência",
+    "recorrencia": "recorrência",
+    "concorrencia": "concorrência",
+    "preferencia": "preferência",
+    "transferencia": "transferência",
+    "inferencia": "inferência",
+    "aderencia": "aderência",
+    "coerencia": "coerência",
+    "seguranca": "segurança",
+    "confianca": "confiança",
+    "lideranca": "liderança",
+    "governanca": "governança",
+    "mudanca": "mudança",
+    "alianca": "aliança",
+    "esperanca": "esperança",
+    "semelhanca": "semelhança",
     # --- Proparoxítonas (-ico, -ulo, -tico, etc.) ---
     "conteudo": "conteúdo",
     "modulo": "módulo",
@@ -184,7 +275,71 @@ ACCENT_MAP: dict[str, str] = {
     "sintese": "síntese",
     "hipotese": "hipótese",
     "ambito": "âmbito",
+    "especifica": "específica",
+    "basica": "básica",
+    "praticas": "práticas",
+    "tecnicas": "técnicas",
+    "modulos": "módulos",
+    "topicos": "tópicos",
+    "codigos": "códigos",
+    "metodos": "métodos",
+    "numeros": "números",
+    "titulos": "títulos",
+    "graficos": "gráficos",
+    "relatorios": "relatórios",
+    "cenarios": "cenários",
+    "usuarios": "usuários",
+    "criterios": "critérios",
+    "exercicios": "exercícios",
+    "beneficios": "benefícios",
+    "capitulos": "capítulos",
+    "obstaculos": "obstáculos",
+    "diagnosticos": "diagnósticos",
+    "orgao": "órgão",
+    "orgaos": "órgãos",
+    "agil": "ágil",
+    "fragil": "frágil",
+    "movel": "móvel",
+    "nivel": "nível",
+    "niveis": "níveis",
+    "responsavel": "responsável",
+    "sustentavel": "sustentável",
+    "flexivel": "flexível",
+    "acessivel": "acessível",
+    "compativel": "compatível",
+    "variavel": "variável",
+    "notavel": "notável",
+    "consideravel": "considerável",
+    "provavel": "provável",
+    "inevitavel": "inevitável",
+    "viavel": "viável",
+    "amigavel": "amigável",
+    "mensuravel": "mensurável",
+    "escalavel": "escalável",
+    "razoavel": "razoável",
+    "indispensavel": "indispensável",
+    "vulneravel": "vulnerável",
+    "gerenciavel": "gerenciável",
+    "previsivel": "previsível",
+    "imprevisivel": "imprevisível",
+    # --- Verbos acentuados ---
+    "estara": "estará",
+    "devera": "deverá",
+    "podera": "poderá",
+    "tera": "terá",
+    "fara": "fará",
+    "dara": "dará",
+    "havera": "haverá",
+    "ficara": "ficará",
+    "tornara": "tornará",
+    "permitira": "permitirá",
+    "contribuira": "contribuirá",
+    "garantira": "garantirá",
+    "e" : None,  # Não mapear "e" para "é" — ambiguidade com conjunção
 }
+
+# Remover entradas None (marcadores de exclusão)
+ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if v is not None}
 
 # Padrões que indicam contexto a ignorar (URLs, código, slugs)
 IGNORE_PATTERNS = [
@@ -193,6 +348,11 @@ IGNORE_PATTERNS = [
     re.compile(r"```[\s\S]*?```", re.MULTILINE),
     re.compile(r"\[.*?\]\(.*?\)"),  # Links Markdown
     re.compile(r"<[^>]+>"),  # Tags HTML
+    re.compile(r"!\[.*?\]\(.*?\)"),  # Imagens Markdown
+    re.compile(r"\{[^}]+\}"),  # Placeholders tipo {variable}
+    re.compile(r"[a-zA-Z_]\w*\.[a-zA-Z_]\w*"),  # Atributos objeto.attr
+    re.compile(r"[a-zA-Z_]\w*\("),  # Chamadas de função func(
+    re.compile(r"/[a-z0-9_-]+(?:/[a-z0-9_-]+)*"),  # Caminhos de URL /path/to
 ]
 
 
@@ -204,6 +364,15 @@ def _mask_ignored(text: str) -> str:
     return masked
 
 
+def _is_in_code_block(lines: list[str], line_num: int) -> bool:
+    """Verifica se a linha está dentro de um bloco de código (```)."""
+    in_code = False
+    for i in range(line_num):
+        if lines[i].strip().startswith("```"):
+            in_code = not in_code
+    return in_code
+
+
 def check_accents(text: str) -> list[AccentError]:
     """Verifica acentuação PT-BR no texto.
 
@@ -213,6 +382,10 @@ def check_accents(text: str) -> list[AccentError]:
     linhas = text.split("\n")
 
     for num_linha, linha in enumerate(linhas, start=1):
+        # Ignorar linhas dentro de blocos de código
+        if _is_in_code_block(linhas, num_linha - 1):
+            continue
+
         masked = _mask_ignored(linha)
         palavras = re.findall(r"\b([a-zA-Z]+)\b", masked)
         for palavra in palavras:
@@ -228,6 +401,65 @@ def check_accents(text: str) -> list[AccentError]:
                 ))
 
     return erros
+
+
+def fix_accents(text: str) -> tuple[str, int]:
+    """Corrige automaticamente acentuação PT-BR no texto.
+
+    Preserva URLs, blocos de código, slugs e variáveis.
+
+    Returns:
+        Tupla com (texto_corrigido, total_de_correções).
+    """
+    linhas = text.split("\n")
+    resultado: list[str] = []
+    total_correcoes = 0
+    in_code_block = False
+
+    for linha in linhas:
+        stripped = linha.strip()
+
+        # Rastrear blocos de código
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            resultado.append(linha)
+            continue
+
+        # Dentro de bloco de código: não alterar
+        if in_code_block:
+            resultado.append(linha)
+            continue
+
+        # Mascarar regiões protegidas
+        masked = _mask_ignored(linha)
+
+        # Encontrar palavras na versão mascarada e corrigir na original
+        linha_corrigida = list(linha)
+        correcoes_linha: list[tuple[int, int, str]] = []
+
+        for match in re.finditer(r"\b([a-zA-Z]+)\b", masked):
+            palavra = match.group(1)
+            lower = palavra.lower()
+            if lower in ACCENT_MAP:
+                correcao = ACCENT_MAP[lower]
+                # Preservar capitalização original
+                if palavra[0].isupper():
+                    correcao = correcao[0].upper() + correcao[1:]
+                if palavra.isupper():
+                    correcao = correcao.upper()
+
+                start = match.start()
+                end = match.end()
+                correcoes_linha.append((start, end, correcao))
+                total_correcoes += 1
+
+        # Aplicar correções de trás para frente (para não deslocar posições)
+        for start, end, correcao in reversed(correcoes_linha):
+            linha_corrigida[start:end] = list(correcao)
+
+        resultado.append("".join(linha_corrigida))
+
+    return "\n".join(resultado), total_correcoes
 
 
 def format_report(erros: list[AccentError]) -> str:

@@ -2,6 +2,8 @@
 
 Classifica nível, tags, pré-requisitos e duração estimada
 do curso com base no conteúdo analisado.
+
+Prompt externo: src/templates/prompts/classify.md
 """
 
 from __future__ import annotations
@@ -15,7 +17,9 @@ class Classifier(Agent):
     nome = "classifier"
     provider = "groq"
     model = "llama-3.3-70b-versatile"
+    prompt_file = "classify.md"
 
+    # Fallback inline caso o arquivo externo não exista
     TEMPLATE = (
         "Você é um classificador de conteúdo educacional.\n"
         "Com base no conteúdo e análise abaixo, determine:\n\n"
@@ -31,4 +35,7 @@ class Classifier(Agent):
     )
 
     def build_prompt(self, context: str) -> str:
+        template = self._load_prompt_template()
+        if template:
+            return template.replace("{context}", context)
         return self.TEMPLATE.format(context=context)

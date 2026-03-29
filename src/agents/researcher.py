@@ -2,6 +2,8 @@
 
 Busca dados atualizados sobre o tema do curso para
 fundamentar a criação de conteúdo educacional.
+
+Prompt externo: src/templates/prompts/research.md
 """
 
 from __future__ import annotations
@@ -15,7 +17,9 @@ class Researcher(Agent):
     nome = "researcher"
     provider = "perplexity"
     model = "sonar-pro"
+    prompt_file = "research.md"
 
+    # Fallback inline caso o arquivo externo não exista
     TEMPLATE = (
         "Você é um pesquisador educacional com rigor acadêmico, especializado em fundamentar "
         "cursos online de alto padrão (Harvard Business Review, MIT Sloan, HSM Management).\n\n"
@@ -32,4 +36,7 @@ class Researcher(Agent):
     )
 
     def build_prompt(self, context: str) -> str:
+        template = self._load_prompt_template()
+        if template:
+            return template.replace("{context}", context)
         return self.TEMPLATE.format(context=context)

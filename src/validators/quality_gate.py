@@ -2,6 +2,10 @@
 
 Se qualquer validador falhar, bloqueia o deploy e gera
 relatório detalhado com o status de cada verificação.
+
+Inclui: acentuação (detecção + auto-correção), HTML,
+links e qualidade de conteúdo (tabelas, formatação,
+exercícios, andragogia, Bloom, clichês).
 """
 
 from __future__ import annotations
@@ -13,7 +17,15 @@ from pathlib import Path
 from typing import Optional
 
 from src.models import QualityReport
-from src.validators.accent_checker import check_accents, format_report as accent_report
+from src.validators.accent_checker import (
+    check_accents,
+    fix_accents,
+    format_report as accent_report,
+)
+from src.validators.content_checker import (
+    check_content,
+    format_report as content_report,
+)
 from src.validators.html_validator import validate_html, format_report as html_report
 from src.validators.link_checker import check_links, format_report as link_report
 
@@ -27,23 +39,66 @@ class GateResult:
     acentuacao_ok: bool = True
     html_ok: bool = True
     links_ok: bool = True
+    conteudo_ok: bool = True
     erros: list[str] = field(default_factory=list)
     avisos: list[str] = field(default_factory=list)
     relatorios: list[str] = field(default_factory=list)
+    texto_corrigido: str = ""
+    acentos_corrigidos: int = 0
 
 
 class QualityGate:
-    """Executa todos os validadores e decide se o conteúdo pode ser publicado."""
+    """Executa todos os validadores e decide se o conteúdo pode ser publicado.
 
-    def __init__(self, base_dir: Optional[Path] = None) -> None:
+    O gate executa 4 camadas de validação:
+    1. Acentuação PT-BR (detecção + auto-correção)
+    2. Qualidade de conteúdo (tabelas, formatação, exercícios, andragogia)
+    3. Links (acentos em URLs, links internos)
+    4. HTML (tags, acessibilidade, semântica) — apenas para conteúdo HTML
+
+    Se auto_fix=True, o gate corrige automaticamente acentos e retorna
+    o texto corrigido em GateResult.texto_corrigido.
+    """
+
+    def __init__(
+        self,
+        base_dir: Optional[Path] = None,
+        auto_fix: bool = True,
+    ) -> None:
         self.base_dir = base_dir
+        self.auto_fix = auto_fix
 
-    def check_text(self, text: str, curso_id: str = "unknown") -> GateResult:
-        """Valida texto puro (Markdown) com verificação de acentuação e links."""
+    def check_text(
+        self,
+        text: str,
+        curso_id: str = "unknown",
+        module_name: str = "",
+    ) -> GateResult:
+        """Valida texto puro (Markdown) com todas as verificações.
+
+        Executa: acentuação, conteúdo, links.
+        Se auto_fix=True, corrige acentos automaticamente.
+        """
         result = GateResult()
 
-        # 1. Verificação de acentuação
-        accent_errors = check_accents(text)
+        # 0. Auto-correção de acentos (se habilitada)
+        working_text = text
+        if self.auto_fix:
+            working_text, num_correcoes = fix_accents(text)
+            result.acentos_corrigidos = num_correcoes
+            result.texto_corrigido = working_text
+            if num_correcoes > 0:
+                logger.info(
+                    "Auto-correção: %d acento(s) corrigido(s) em '%s'",
+                    num_correcoes,
+                    curso_id,
+                )
+                result.relatorios.append(
+                    f"Auto-correção: {num_correcoes} acento(s) corrigido(s) automaticamente."
+                )
+
+        # 1. Verificação de acentuação (no texto corrigido, para detectar residuais)
+        accent_errors = check_accents(working_text)
         if accent_errors:
             result.acentuacao_ok = False
             result.aprovado = False
@@ -53,10 +108,23 @@ class QualityGate:
                 )
         result.relatorios.append(accent_report(accent_errors))
 
-        # 2. Verificação de links
-        link_errors = check_links(text, self.base_dir)
+        # 2. Verificação de qualidade de conteúdo
+        content_errors = check_content(working_text, module_name)
+        blocking_errors = [e for e in content_errors if e.tipo == "error"]
+        warnings = [e for e in content_errors if e.tipo == "warning"]
+
+        if blocking_errors:
+            result.conteudo_ok = False
+            result.aprovado = False
+            for e in blocking_errors:
+                result.erros.append(f"Conteúdo [{e.categoria}]: {e.mensagem}")
+        for e in warnings:
+            result.avisos.append(f"Conteúdo [{e.categoria}]: {e.mensagem}")
+        result.relatorios.append(content_report(content_errors))
+
+        # 3. Verificação de links
+        link_errors = check_links(working_text, self.base_dir)
         if link_errors:
-            # Acentos em URLs são erro crítico; links quebrados são aviso
             criticos = [e for e in link_errors if e.tipo == "accent_in_url"]
             avisos = [e for e in link_errors if e.tipo != "accent_in_url"]
             if criticos:
@@ -72,11 +140,16 @@ class QualityGate:
                      curso_id, "APROVADO" if result.aprovado else "REPROVADO")
         return result
 
-    def check_html(self, html: str, curso_id: str = "unknown") -> GateResult:
+    def check_html(
+        self,
+        html: str,
+        curso_id: str = "unknown",
+        module_name: str = "",
+    ) -> GateResult:
         """Valida HTML completo com todas as verificações."""
-        result = self.check_text(html, curso_id)
+        result = self.check_text(html, curso_id, module_name)
 
-        # 3. Verificação de HTML
+        # 4. Verificação de HTML
         html_errors = validate_html(html)
         if html_errors:
             result.html_ok = False
@@ -107,11 +180,18 @@ class QualityGate:
         """Gera relatório completo formatado."""
         status = "APROVADO" if gate_result.aprovado else "REPROVADO"
         linhas = [
-            "=" * 50,
+            "=" * 60,
             f"  QUALITY GATE: {status}",
-            "=" * 50,
+            "=" * 60,
             "",
         ]
+
+        if gate_result.acentos_corrigidos > 0:
+            linhas.append(
+                f"  Auto-correção: {gate_result.acentos_corrigidos} acento(s) corrigido(s)"
+            )
+            linhas.append("")
+
         for rel in gate_result.relatorios:
             linhas.append(rel)
             linhas.append("")
@@ -121,5 +201,5 @@ class QualityGate:
         if gate_result.avisos:
             linhas.append(f"Avisos: {len(gate_result.avisos)}")
 
-        linhas.append("=" * 50)
+        linhas.append("=" * 60)
         return "\n".join(linhas)

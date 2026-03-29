@@ -2,6 +2,8 @@
 
 Faz revisão completa do conteúdo com foco especial em
 acentuação PT-BR e consistência editorial.
+
+Prompt externo: src/templates/prompts/review.md
 """
 
 from __future__ import annotations
@@ -15,7 +17,9 @@ class Reviewer(Agent):
     nome = "reviewer"
     provider = "anthropic"
     model = "claude-opus-4-6"
+    prompt_file = "review.md"
 
+    # Fallback inline caso o arquivo externo não exista
     TEMPLATE = (
         "Você é o revisor editorial final de um pipeline de cursos educacionais de alto padrão.\n"
         "O padrão editorial é Harvard Business Review / MIT Sloan / HSM Management.\n\n"
@@ -41,13 +45,12 @@ class Reviewer(Agent):
         "- Negrito para termos-chave, blocos de citação para insights\n"
         "- Parágrafos de no máximo 5 linhas\n"
         "- Sem emojis\n\n"
-        "ANDRAGOGIA:\n"
-        "- Cada módulo explica POR QUE o conhecimento é necessário?\n"
-        "- O aluno é tratado como profissional autônomo?\n"
-        "- Exercícios usam contextos profissionais reais?\n\n"
         "Retorne o conteúdo revisado e corrigido NA ÍNTEGRA, com um bloco final de resumo.\n\n"
         "--- CONTEÚDO PARA REVISÃO ---\n{context}"
     )
 
     def build_prompt(self, context: str) -> str:
+        template = self._load_prompt_template()
+        if template:
+            return template.replace("{context}", context)
         return self.TEMPLATE.format(context=context)
