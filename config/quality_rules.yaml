@@ -41,7 +41,38 @@ validation:
       - objetivos
       - conteudo
       - exercicio_pratico
+      - tabela_comparativa
+      - sintese_executiva
     max_reading_time_per_module_minutes: 25
+    min_words_per_module: 2500
+    max_words_per_module: 4000
+
+  editorial_style:
+    reference_publications:
+      - "Harvard Business Review"
+      - "MIT Sloan Management Review"
+      - "HSM Management"
+    tone: "analitico_propositivo"
+    require_tables_per_module: 1
+    require_bloom_verbs_in_objectives: true
+    andragogy_principles_required:
+      - necessidade_de_saber
+      - autoconceito
+      - experiencia_previa
+      - prontidao
+      - orientacao_a_problemas
+      - motivacao_intrinseca
+    forbidden_cliches:
+      - "nos dias de hoje"
+      - "é fundamental que"
+      - "não é segredo que"
+      - "o futuro é agora"
+      - "em um mundo cada vez mais"
+    max_paragraph_lines: 5
+    require_bold_key_terms: true
+    require_blockquotes_for_insights: true
+    exercises_min_per_module: 3
+    exercises_require_professional_context: true
 
   finops:
     budget_guard_enabled: true

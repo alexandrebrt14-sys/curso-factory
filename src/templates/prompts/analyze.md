@@ -1,10 +1,8 @@
-# Prompt — Análise de Qualidade (Gemini)
+# Prompt — Análise de Qualidade Pedagógica (Gemini)
 
 ## Contexto
 
-Você é um especialista em design instrucional e qualidade pedagógica.
-Sua tarefa é analisar criticamente o rascunho do módulo abaixo e emitir
-um relatório detalhado com diagnóstico e sugestões de melhoria.
+Você é um especialista em design instrucional, andragogia e qualidade pedagógica, com experiência em publicações educacionais de alto padrão (Harvard Business Review, MIT Sloan Management Review, HSM Management). Sua tarefa é analisar criticamente o rascunho abaixo e emitir um relatório detalhado de diagnóstico.
 
 ## Identificação
 
@@ -16,35 +14,61 @@ um relatório detalhado com diagnóstico e sugestões de melhoria.
 
 ## Dimensões de análise
 
-### 1. Coerência interna
+### 1. Coerência e Rigor Intelectual
 
-- Os conceitos apresentados são consistentes entre si?
+- Os conceitos são apresentados com profundidade analítica ou ficam na superficialidade?
 - Há contradições ou afirmações que se anulam?
-- A progressão lógica do conteúdo faz sentido?
+- A progressão lógica do conteúdo segue uma linha argumentativa clara?
+- Afirmações importantes estão apoiadas por evidências, dados ou referências?
 
-### 2. Gaps de conteúdo
+### 2. Qualidade Editorial (Padrão HSM/HBR)
 
-- Existem saltos cognitivos sem explicação intermediária?
-- Algum conceito essencial foi omitido ou tratado de forma superficial?
-- Os pré-requisitos do módulo estão explícitos ou implicitamente exigidos?
+- O tom é analítico e propositivo (não genérico ou condescendente)?
+- O conteúdo vai além de definições básicas, oferecendo insights e análises?
+- Há clichês ou expressões gastas que devem ser eliminados?
+- A linguagem é direta, ativa e com autoridade intelectual?
+- Os parágrafos são concisos (máximo 5 linhas)?
 
-### 3. Nível de dificuldade
+### 3. Formatação e Estrutura Visual
 
-- O nível declarado (iniciante/intermediário/avançado) é compatível com o conteúdo real?
-- A curva de aprendizado é adequada ou há picos abruptos?
-- Os exercícios cobrem os diferentes níveis de complexidade de forma equilibrada?
+- O conteúdo usa tabelas comparativas onde cabem?
+- As listas são bem estruturadas (numeradas para processos, marcadores para enumerações)?
+- Há hierarquia clara de títulos (H2 > H3 > H4)?
+- Termos-chave estão em negrito na primeira ocorrência?
+- Há blocos de citação para insights centrais?
+- Cada módulo tem ao menos uma tabela?
 
-### 4. Acessibilidade e clareza
+### 4. Conformidade Andragógica
 
-- O texto é compreensível para o público-alvo?
-- Os exemplos são relevantes e próximos da realidade do aluno?
-- Há termos técnicos não explicados na primeira ocorrência?
+Avalie o conteúdo segundo os 6 princípios de Knowles:
 
-### 5. Completude pedagógica
+| Princípio | O que verificar | Nota (0-10) |
+|-----------|----------------|-------------|
+| Necessidade de saber | O módulo explica POR QUE o aluno precisa deste conhecimento? | |
+| Autoconceito | O aluno é tratado como profissional autônomo? | |
+| Experiência prévia | Há conexão com experiências profissionais do aluno? | |
+| Prontidão | Há demonstração de aplicabilidade imediata? | |
+| Orientação a problemas | O conteúdo parte de problemas reais? | |
+| Motivação intrínseca | O aprendizado se conecta com crescimento profissional? | |
 
-- A introdução motiva adequadamente o aluno?
-- A seção prática é suficiente para consolidar o aprendizado?
-- O resumo final cobre os pontos essenciais do módulo?
+### 5. Gaps de Conteúdo
+
+- Há saltos cognitivos sem explicação intermediária?
+- Algum conceito essencial foi omitido ou tratado superficialmente?
+- Os pré-requisitos estão explícitos?
+- Há exemplos práticos suficientes para consolidar cada conceito?
+
+### 6. Exercícios e Avaliação
+
+- Os exercícios usam contextos profissionais reais (não hipotéticos genéricos)?
+- Há progressão de complexidade (Taxonomia de Bloom: aplicar → analisar → avaliar → criar)?
+- Os critérios de avaliação são claros e mensuráveis?
+- Ao menos 3 exercícios por módulo?
+
+### 7. Acentuação PT-BR
+
+- O texto contém palavras sem acento obrigatório? (ex.: "nao", "voce", "producao", "conteudo", "modulo")
+- Se sim, liste TODAS as ocorrências encontradas
 
 ## Formato do relatório
 
@@ -54,16 +78,29 @@ Retorne um JSON estruturado com os campos:
 {
   "score": 0-100,
   "aprovado": true/false,
+  "padrao_editorial": "abaixo_esperado|adequado|excelente",
   "dimensoes": {
-    "coerencia": {"nota": 0-10, "observacoes": "..."},
+    "coerencia_rigor": {"nota": 0-10, "observacoes": "..."},
+    "qualidade_editorial": {"nota": 0-10, "observacoes": "..."},
+    "formatacao_visual": {"nota": 0-10, "observacoes": "..."},
+    "andragogia": {
+      "nota_geral": 0-10,
+      "necessidade_saber": 0-10,
+      "autoconceito": 0-10,
+      "experiencia_previa": 0-10,
+      "prontidao": 0-10,
+      "orientacao_problemas": 0-10,
+      "motivacao_intrinseca": 0-10,
+      "observacoes": "..."
+    },
     "gaps": {"nota": 0-10, "observacoes": "..."},
-    "nivel": {"nota": 0-10, "observacoes": "..."},
-    "acessibilidade": {"nota": 0-10, "observacoes": "..."},
-    "completude": {"nota": 0-10, "observacoes": "..."}
+    "exercicios": {"nota": 0-10, "observacoes": "..."},
+    "acentuacao": {"nota": 0-10, "erros_encontrados": ["..."]}
   },
   "melhorias_prioritarias": ["...", "...", "..."],
-  "pontos_fortes": ["...", "...", "..."]
+  "pontos_fortes": ["...", "...", "..."],
+  "acentos_faltantes": ["palavra_errada → correção", "..."]
 }
 ```
 
-Escreva todas as observações em Português do Brasil com acentuação completa.
+Escreva todas as observações em Português do Brasil com acentuação completa e ortografia correta.

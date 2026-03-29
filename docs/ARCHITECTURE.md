@@ -77,7 +77,7 @@ CourseFactory.run(nome)
   |
   +-- ResearchAgent.run(nome)          --> research_data: ResearchResult
   |
-  +-- DraftAgent.run(modulo, research) --> draft: DraftResult
+  +-- DraftAgent.run(módulo, research) --> draft: DraftResult
   |   (executado N vezes, um por módulo, em paralelo via ThreadPoolExecutor)
   |
   +-- AnalyzeAgent.run(draft)          --> quality: QualityReport

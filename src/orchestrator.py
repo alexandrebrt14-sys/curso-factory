@@ -62,21 +62,60 @@ class Orchestrator:
         self.classifier = Classifier(self.client)
         self.reviewer = Reviewer(self.client)
 
+    def _checkpoint_path(self, course_id: str) -> Path:
+        return DRAFTS_DIR / f"{course_id}_checkpoint.json"
+
+    def _save_checkpoint(self, course_id: str, result: PipelineResult, context: str) -> None:
+        """Salva checkpoint incremental após cada etapa concluída."""
+        data = result.to_dict()
+        data["_context"] = context
+        path = self._checkpoint_path(course_id)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        logger.info("Checkpoint salvo: %s (%d etapas)", path.name, len(result.etapas))
+
+    def _load_checkpoint(self, course_id: str) -> tuple[PipelineResult, str] | None:
+        """Carrega checkpoint se existir, para resume após desconexão."""
+        path = self._checkpoint_path(course_id)
+        if not path.exists():
+            return None
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        result = PipelineResult(course_id)
+        result.etapas = data.get("etapas", {})
+        result.erros = []  # Limpa erros anteriores para retry
+        context = data.get("_context", "")
+        logger.info("Checkpoint carregado: %d etapas concluídas anteriormente", len(result.etapas))
+        return result, context
+
     def run(self, course: Course) -> PipelineResult:
-        """Executa o pipeline completo para um curso."""
-        result = PipelineResult(course.id)
+        """Executa o pipeline completo para um curso, com resume de checkpoint."""
         DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+
+        # Tenta carregar checkpoint para resume
+        checkpoint = self._load_checkpoint(course.id)
+        if checkpoint:
+            result, context = checkpoint
+            logger.info("Retomando pipeline de checkpoint com etapas: %s", list(result.etapas.keys()))
+        else:
+            result = PipelineResult(course.id)
+            context = ""
 
         etapas = [
             ("research", self.researcher, self._build_research_context(course)),
-            ("draft", self.writer, None),
+            ("draft", self.writer, self._build_writer_context(course)),
             ("analyze", self.analyzer, None),
             ("classify", self.classifier, None),
             ("review", self.reviewer, None),
         ]
 
-        context = ""
         for nome, agente, ctx_inicial in etapas:
+            # Pula etapas já concluídas (resume)
+            if nome in result.etapas:
+                context = result.etapas[nome]
+                logger.info("Etapa '%s' já concluída (checkpoint), pulando", nome)
+                continue
+
             # Verifica orçamento antes de cada etapa
             if self.cost_tracker.is_over_budget(agente.provider):
                 msg = f"Orçamento excedido para {agente.provider}. Pipeline interrompido na etapa '{nome}'."
@@ -85,23 +124,38 @@ class Orchestrator:
                 break
 
             logger.info("Iniciando etapa: %s (provider: %s)", nome, agente.provider)
-            prompt_context = ctx_inicial if ctx_inicial else context
+            # Se a etapa tem contexto inicial E há contexto do pipeline anterior, combina ambos
+            if ctx_inicial and context:
+                prompt_context = ctx_inicial + "\n\n--- CONTEXTO ANTERIOR DO PIPELINE ---\n" + context
+            elif ctx_inicial:
+                prompt_context = ctx_inicial
+            else:
+                prompt_context = context
 
             try:
                 output = agente.execute(prompt_context)
                 result.etapas[nome] = output
-                context = output  # Passa output como contexto para a próxima etapa
+                context = output
                 logger.info("Etapa '%s' concluída com sucesso", nome)
+                # Salva checkpoint após cada etapa
+                self._save_checkpoint(course.id, result, context)
             except Exception as exc:
                 msg = f"Erro na etapa '{nome}': {exc}"
                 logger.error(msg)
                 result.erros.append(msg)
+                # Salva checkpoint mesmo com erro para preservar etapas anteriores
+                self._save_checkpoint(course.id, result, context)
                 break
         else:
             result.sucesso = True
 
-        # Salva resultado em output/drafts/
+        # Salva resultado final
         self._save_result(course.id, result)
+        # Remove checkpoint se pipeline concluiu com sucesso
+        cp = self._checkpoint_path(course.id)
+        if result.sucesso and cp.exists():
+            cp.unlink()
+            logger.info("Checkpoint removido (pipeline concluído com sucesso)")
         logger.info("Pipeline %s para curso '%s'",
                      "concluído com sucesso" if result.sucesso else "interrompido com erros",
                      course.id)
@@ -120,6 +174,26 @@ class Orchestrator:
             f"Descrição: {course.descricao}\n"
             f"Nível: {course.nivel.value}\n"
             f"Tags: {', '.join(course.tags)}\n"
+            f"{modulos_txt}"
+        )
+
+    def _build_writer_context(self, course: Course) -> str:
+        """Monta contexto para o redator com estrutura obrigatória dos módulos."""
+        modulos_txt = ""
+        if course.modulos:
+            modulos_txt = "\n\nESTRUTURA OBRIGATÓRIA DOS MÓDULOS (gere TODOS, sem pular nenhum):\n"
+            for i, m in enumerate(course.modulos, 1):
+                modulos_txt += f"\nMódulo {i}: {m.titulo}\n"
+                if m.descricao:
+                    modulos_txt += f"  Conteúdo esperado: {m.descricao}\n"
+        return (
+            f"INSTRUÇÕES: Gere o conteúdo COMPLETO de TODOS os {len(course.modulos)} módulos listados abaixo.\n"
+            f"Cada módulo deve ter: objetivos, conteúdo principal detalhado, exemplos práticos, resumo e exercícios.\n"
+            f"NÃO resuma nem pule módulos. Gere o conteúdo integral de cada um.\n"
+            f"IMPORTANTE: Todo o texto DEVE usar Português do Brasil com acentuação completa e ortografia correta.\n"
+            f"\nCurso: {course.titulo}\n"
+            f"Descrição: {course.descricao}\n"
+            f"Nível: {course.nivel.value}\n"
             f"{modulos_txt}"
         )
 

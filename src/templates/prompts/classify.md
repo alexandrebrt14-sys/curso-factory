@@ -2,9 +2,7 @@
 
 ## Contexto
 
-Você é um especialista em taxonomia educacional e catalogação de cursos online.
-Sua tarefa é classificar o conteúdo abaixo com metadados precisos e padronizados
-para indexação, descoberta e recomendação.
+Você é um especialista em taxonomia educacional e catalogação de cursos online. Sua tarefa é classificar o conteúdo abaixo com metadados precisos e padronizados para indexação, descoberta e recomendação em plataformas educacionais.
 
 ## Identificação
 
@@ -21,14 +19,15 @@ para indexação, descoberta e recomendação.
 Escolha exatamente um:
 
 - `iniciante` — não exige conhecimento prévio do tema
-- `intermediario` — pressupõe familiaridade básica com o tema
-- `avancado` — exige domínio sólido de conceitos anteriores
+- `intermediário` — pressupõe familiaridade básica com o tema
+- `avançado` — exige domínio sólido de conceitos anteriores
 
-Justifique a escolha em 1–2 frases.
+Justifique a escolha em 1–2 frases, referenciando elementos específicos do conteúdo.
 
 ### 2. Tags temáticas
 
 Liste de 5 a 10 tags que descrevam o conteúdo, priorizando:
+
 - Termos técnicos específicos do domínio
 - Ferramentas e tecnologias mencionadas
 - Habilidades e competências desenvolvidas
@@ -36,21 +35,25 @@ Liste de 5 a 10 tags que descrevam o conteúdo, priorizando:
 
 ### 3. Pré-requisitos
 
-Liste os conhecimentos que o aluno deve ter antes de iniciar este módulo.
-Se nenhum, indique explicitamente "Nenhum".
+Liste os conhecimentos que o aluno deve ter antes de iniciar este curso. Para cada pré-requisito, indique o nível esperado (básico, intermediário, avançado). Se nenhum, indique explicitamente "Nenhum".
 
 ### 4. Duração estimada por módulo
 
 Estime o tempo de estudo para cada módulo, considerando:
+
 - Leitura do conteúdo teórico
 - Realização dos exercícios práticos
 - Tempo de prática/experimentação
 
+Forneça a estimativa em minutos por módulo e o total em horas.
+
 ### 5. Categoria principal
 
-Escolha a categoria que melhor descreve o curso no contexto de plataformas
-como Hotmart, Udemy ou Coursera (ex.: "Tecnologia", "Negócios", "Design",
-"Marketing", "Desenvolvimento Pessoal", "Idiomas", etc.).
+Escolha a categoria que melhor descreve o curso no contexto de plataformas como Hotmart, Udemy ou Coursera (ex.: "Tecnologia", "Negócios", "Design", "Marketing", "Desenvolvimento Pessoal", "Idiomas", etc.).
+
+### 6. Perfil do público-alvo
+
+Descreva o aluno ideal: cargo, experiência, setor, motivação para fazer o curso.
 
 ## Formato de saída
 
@@ -58,12 +61,17 @@ Retorne um JSON com a seguinte estrutura:
 
 ```json
 {
-  "nivel": "iniciante|intermediario|avancado",
+  "nivel": "iniciante|intermediário|avançado",
   "nivel_justificativa": "...",
   "tags": ["tag1", "tag2", "..."],
-  "prerequisitos": ["...", "..."],
-  "duracao_minutos": 0,
-  "categoria": "..."
+  "prerequisitos": [
+    {"conhecimento": "...", "nivel_esperado": "básico|intermediário|avançado"}
+  ],
+  "duracao_por_modulo_minutos": [30, 25, ...],
+  "duracao_total_horas": 0,
+  "categoria": "...",
+  "publico_alvo": "...",
+  "palavras_chave_seo": ["...", "..."]
 }
 ```
 

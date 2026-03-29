@@ -17,15 +17,17 @@ class Researcher(Agent):
     model = "sonar-pro"
 
     TEMPLATE = (
-        "Você é um pesquisador educacional especializado em cursos online.\n"
-        "Pesquise dados atualizados, tendências e referências sobre o tema abaixo.\n"
-        "Foque em:\n"
-        "- Principais conceitos e fundamentos do tema\n"
-        "- Dados e estatísticas recentes\n"
-        "- Melhores práticas de ensino para o assunto\n"
-        "- Referências acadêmicas e de mercado relevantes\n"
-        "- Lacunas comuns em cursos existentes sobre o tema\n\n"
-        "Responda em português do Brasil com acentuação correta.\n\n"
+        "Você é um pesquisador educacional com rigor acadêmico, especializado em fundamentar "
+        "cursos online de alto padrão (Harvard Business Review, MIT Sloan, HSM Management).\n\n"
+        "Pesquise e forneça:\n"
+        "1. FUNDAMENTAÇÃO: conceitos-chave, frameworks teóricos, autores de referência\n"
+        "2. DADOS DE MERCADO: tamanho, crescimento, ticket médio, concorrentes (com tabelas)\n"
+        "3. EVIDÊNCIAS: pesquisas acadêmicas, estudos de caso reais, estatísticas com fontes\n"
+        "4. TENDÊNCIAS 2025-2026: metodologias (andragogia, microlearning), ferramentas emergentes\n"
+        "5. ANÁLISE COMPETITIVA: 5+ cursos concorrentes com preço, avaliação, pontos fortes/fracos\n"
+        "6. CASOS PARA EXERCÍCIOS: 3-5 casos reais verificáveis para uso como exemplos didáticos\n\n"
+        "FORMATO: Markdown estruturado com tabelas comparativas e referências completas.\n"
+        "IDIOMA: Português do Brasil com acentuação completa e ortografia correta.\n\n"
         "--- CONTEXTO DO CURSO ---\n{context}"
     )
 

@@ -71,9 +71,9 @@ O pipeline executa em **waves paralelas**: pesquisa e redação podem rodar em p
 |-------|----------|--------|-------|-------------------|
 | **1. RESEARCH** | Perplexity | sonar-pro | Coleta dados atualizados, fontes, tendências 2026 | Único LLM com acesso a web em tempo real e citações |
 | **2. DRAFT** | OpenAI | gpt-4o | Redige módulos com base nos dados coletados | Melhor redator longo em PT-BR, consistência de tom |
-| **3. ANALYZE** | Google | gemini-2.0-flash | Revisa qualidade, coerência, gaps, acessibilidade | Rápido e barato para análise estruturada |
+| **3. ANALYZE** | Google | gemini-2.5-pro | Revisa qualidade pedagógica, andragogia, formatação, acentuação | Análise profunda e estruturada com alto contexto |
 | **4. CLASSIFY** | Groq | llama-3.3-70b | Classifica nível, tags, pré-requisitos, duração estimada | Latência ultra-baixa para classificação rápida |
-| **5. REVIEW** | Anthropic | claude-sonnet-4-6 | Revisão final, acentuação PT-BR, consistência editorial | Melhor em instruções complexas e revisão crítica |
+| **5. REVIEW** | Anthropic | claude-opus-4-6 | Revisão final: acentuação PT-BR, qualidade editorial HSM/HBR, formatação | Melhor em instruções complexas e revisão crítica |
 
 Cada agente herda de `BaseAgent` (`src/agents/base.py`), que implementa retry com backoff exponencial, fallback para outro LLM e integração com o circuit breaker.
 
@@ -116,10 +116,56 @@ O agente classificador atribui metadados:
 ### Etapa 5 — Revisão (Claude)
 
 O agente revisor faz a passada final:
-- Acentuação PT-BR completa
-- Consistência editorial
-- Validação técnica do conteúdo
-- Formatação e estrutura
+- Acentuação PT-BR completa (dicionário expandido com 150+ palavras)
+- Qualidade editorial padrão HSM/HBR/MIT Sloan
+- Conformidade andragógica (6 princípios de Knowles)
+- Formatação rica: tabelas, listas, hierarquia de títulos, blocos de citação
+- Validação técnica do conteúdo e precisão factual
+
+---
+
+## Padrão de Qualidade Editorial
+
+### Referências Editoriais
+
+O conteúdo produzido segue o padrão de publicações de referência:
+
+| Publicação | Contribuição ao Estilo |
+|------------|----------------------|
+| **Harvard Business Review** | Profundidade analítica, insights baseados em evidências, tom propositivo |
+| **MIT Sloan Management Review** | Rigor acadêmico aplicado, frameworks de decisão, dados quantitativos |
+| **HSM Management** | Contextualização para o mercado brasileiro, cases locais e internacionais |
+
+### Andragogia (Malcolm Knowles)
+
+Todo conteúdo aplica os 6 princípios da aprendizagem de adultos:
+
+1. **Necessidade de saber** — cada módulo abre explicando POR QUE o conhecimento é necessário
+2. **Autoconceito** — o aluno é tratado como profissional autônomo, nunca de forma condescendente
+3. **Experiência prévia** — conceitos novos se conectam com vivências profissionais do aluno
+4. **Prontidão** — demonstração de aplicabilidade imediata no contexto de trabalho
+5. **Orientação a problemas** — conteúdo organizado em torno de problemas reais, não taxonomias abstratas
+6. **Motivação intrínseca** — aprendizado conectado com crescimento profissional e domínio
+
+### Formatação Rica
+
+Cada módulo inclui obrigatoriamente:
+
+- Tabelas comparativas (ao menos uma por módulo)
+- Listas numeradas para processos, com marcadores para enumerações
+- Hierarquia clara de títulos (H2 > H3 > H4)
+- Negrito para termos-chave na primeira ocorrência
+- Blocos de citação para insights centrais e conceitos memoráveis
+- Exercícios com progressão de complexidade (Taxonomia de Bloom)
+
+### Acentuação PT-BR
+
+O pipeline possui tripla barreira contra palavras sem acento:
+
+1. **Instrução ao redator (GPT-4o)**: prompt com lista explícita de palavras obrigatoriamente acentuadas
+2. **Análise de qualidade (Gemini)**: detecta e reporta palavras sem acento no relatório
+3. **Revisão final (Claude)**: corrige todas as ocorrências com dicionário de 150+ palavras
+4. **Validador local (accent_checker.py)**: barreira programática pré-deploy com 150+ mapeamentos
 
 ---
 
@@ -131,9 +177,9 @@ O agente revisor faz a passada final:
 |----------|--------|-------------------------|--------------------------|---------------|-------|
 | Perplexity | sonar-pro | US$ 3,00 | US$ 15,00 | US$ 5,00 | Pesquisa |
 | OpenAI | gpt-4o | US$ 2,50 | US$ 10,00 | US$ 8,00 | Redação |
-| Google | gemini-2.0-flash | US$ 0,10 | US$ 0,40 | US$ 2,00 | Análise |
+| Google | gemini-2.5-pro | US$ 1,25 | US$ 10,00 | US$ 5,00 | Análise |
 | Groq | llama-3.3-70b | US$ 0,59 | US$ 0,79 | US$ 1,00 | Classificação |
-| Anthropic | claude-sonnet-4-6 | US$ 3,00 | US$ 15,00 | US$ 8,00 | Revisão |
+| Anthropic | claude-opus-4-6 | US$ 15,00 | US$ 75,00 | US$ 8,00 | Revisão |
 
 ### Mecanismos de controle
 

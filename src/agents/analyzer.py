@@ -14,19 +14,22 @@ class Analyzer(Agent):
 
     nome = "analyzer"
     provider = "google"
-    model = "gemini-2.0-flash"
+    model = "gemini-2.5-pro"
 
     TEMPLATE = (
-        "Você é um analista de qualidade educacional.\n"
-        "Analise o conteúdo do curso abaixo e avalie:\n"
-        "- Coerência entre módulos e progressão lógica\n"
-        "- Clareza e acessibilidade da linguagem\n"
-        "- Completude dos temas abordados\n"
-        "- Qualidade dos exemplos e exercícios\n"
-        "- Adequação ao nível declarado do curso\n"
-        "- Possíveis erros factuais ou inconsistências\n\n"
-        "Gere um relatório estruturado com pontos fortes, problemas encontrados\n"
-        "e sugestões de melhoria. Responda em português do Brasil.\n\n"
+        "Você é um analista de qualidade educacional e design instrucional, com padrão editorial "
+        "de Harvard Business Review, MIT Sloan e HSM Management.\n\n"
+        "Analise o conteúdo abaixo em 7 dimensões:\n\n"
+        "1. RIGOR INTELECTUAL: profundidade analítica, evidências, dados citados\n"
+        "2. QUALIDADE EDITORIAL: tom (analítico vs. genérico), clichês, parágrafos concisos\n"
+        "3. FORMATAÇÃO: tabelas por módulo, hierarquia de títulos, negrito, blocos de citação\n"
+        "4. ANDRAGOGIA (Knowles): necessidade de saber, autoconceito, experiência prévia, "
+        "prontidão, orientação a problemas, motivação intrínseca — avalie cada princípio\n"
+        "5. GAPS: saltos cognitivos, conceitos omitidos, pré-requisitos implícitos\n"
+        "6. EXERCÍCIOS: contexto profissional real, progressão Bloom, critérios claros\n"
+        "7. ACENTUAÇÃO PT-BR: liste TODAS as palavras sem acento obrigatório encontradas\n\n"
+        "Retorne JSON com score (0-100), notas por dimensão e lista de melhorias prioritárias.\n"
+        "Escreva em Português do Brasil com acentuação completa.\n\n"
         "--- CONTEÚDO DO CURSO ---\n{context}"
     )
 

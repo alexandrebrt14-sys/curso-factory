@@ -19,11 +19,11 @@
 ## Arquitetura do Pipeline
 
 5 LLMs com papéis fixos — NÃO interpretar como sub-agentes do Claude Code:
-1. Perplexity (sonar-pro) → pesquisa e fontes atualizadas
-2. GPT-4o → redação de módulos
-3. Gemini (2.0-flash) → análise de qualidade
-4. Groq (Llama 3.3) → classificação e tags
-5. Claude (opus-4-6) → revisão final AAA e acentuação ($5 max/curso)
+1. Perplexity (sonar-pro) → pesquisa, fundamentação acadêmica e análise competitiva
+2. GPT-4o → redação de módulos com padrão editorial HSM/HBR/MIT Sloan e andragogia
+3. Gemini (2.5-pro) → análise de qualidade pedagógica e andragógica
+4. Groq (Llama 3.3) → classificação, tags e metadados
+5. Claude (opus-4-6) → revisão final: acentuação PT-BR, qualidade editorial, formatação ($5 max/curso)
 
 ## Regras Anti-Retrabalho
 
@@ -83,3 +83,53 @@ python cli.py batch config/courses.yaml  # Criação em lote
 4. Validação automática (acentos, HTML, links)
 5. Se aprovado → output/approved/
 6. Deploy manual ou via script
+
+## Padrão Editorial de Conteúdo — Regras Permanentes
+
+### Idioma
+- TODO conteúdo em Português do Brasil (PT-BR) com acentuação COMPLETA
+- Nunca: "nao", "voce", "producao" — Sempre: "não", "você", "produção"
+- Exceção: código em inglês, slugs de URL (sempre ASCII)
+
+### Estilo Editorial
+- Mesclagem de MIT Sloan Management Review + Harvard Business Review + HSM Management
+- Tom: analítico, direto, orientado por dados, sem jargão vazio
+- Frases curtas. Parágrafos de 2-3 frases. Sem floreios
+- Usar dados e estatísticas para sustentar argumentos
+- Evitar superlativos sem evidência ("o melhor", "revolucionário")
+
+### Estrutura Chunkável (para indexação por IA)
+- Cada artigo deve ter 5-7 seções semânticas (h2/h3)
+- Cada seção deve ser autocontida e compreensível isoladamente
+- Incluir pelo menos 1 TABELA comparativa por artigo
+- Respostas diretas ao ponto — LLMs priorizam informação concisa
+- Usar listas quando comparar 3+ itens
+
+### FAQ Obrigatório
+- Cada artigo DEVE terminar com seção de Perguntas Frequentes
+- 5-7 perguntas por artigo
+- Perguntas devem refletir queries reais de executivos
+- Respostas diretas em 2-3 frases (chunkáveis por LLMs)
+
+### Tabelas Obrigatórias
+- Cada artigo DEVE ter pelo menos 1 tabela comparativa
+- Formato: HTML table com thead/tbody
+- Usar para: antes/depois, comparativos, frameworks
+
+### Termos Proibidos
+- "Especialista #1", "GEO Brasil" (exceto contexto educacional), "Source Rank"
+- Superlativos sem evidência
+- Emojis no conteúdo
+
+### Schema e Metadados
+- Cada artigo deve ter JSON-LD (Article schema)
+- Meta description: 150-160 caracteres
+- Keywords: 5-10 termos relevantes
+- Canonical URL obrigatória
+- OG tags completas
+
+### Credencial do Autor
+- Nome: Alexandre Caramaschi
+- Título: CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil
+- URL: https://alexandrecaramaschi.com
+- NUNCA usar: "Especialista #1", credenciais inventadas
