@@ -314,6 +314,185 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
   );
 }
 
+/* ───────── RICH TEXT RENDERER ───────── */
+function renderInline(str: string): React.ReactNode[] {
+  const parts = str.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} className="font-semibold text-[var(--text)]">{part.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
+function renderTable(rows: string[], baseKey: number): React.ReactNode {
+  const parsed = rows
+    .filter((r) => !r.match(/^[\s|:-]+$/))
+    .map((r) =>
+      r.split("|").filter(Boolean).map((c) => c.trim())
+    );
+  if (parsed.length < 2) return null;
+  const header = parsed[0];
+  const body = parsed.slice(1);
+  return (
+    <div key={`tbl-${baseKey}`} className="overflow-x-auto my-4 rounded-[var(--radius)] border border-[var(--border)]">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-[var(--accent)]/5 border-b border-[var(--border)]">
+            {header.map((cell, ci) => (
+              <th key={ci} className="px-3 py-2.5 text-left font-semibold text-[var(--text)] text-[13px] uppercase tracking-wider">
+                {renderInline(cell)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {body.map((row, ri) => (
+            <tr key={ri} className={`border-b border-[var(--border-light)] ${ri % 2 === 1 ? "bg-[var(--bg-muted)]/50" : ""}`}>
+              {row.map((cell, ci) => (
+                <td key={ci} className="px-3 py-2 text-[var(--text-muted)] text-[13px]">
+                  {renderInline(cell)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function FormattedText({ value }: { value: string }) {
+  const lines = value.split("\n");
+  const elements: React.ReactNode[] = [];
+  let tableBuffer: string[] = [];
+  let bulletBuffer: { key: number; text: string }[] = [];
+  let numBuffer: { key: number; num: string; text: string }[] = [];
+
+  const flushTable = () => {
+    if (tableBuffer.length > 0) {
+      elements.push(renderTable(tableBuffer, elements.length));
+      tableBuffer = [];
+    }
+  };
+  const flushBullets = () => {
+    if (bulletBuffer.length > 0) {
+      elements.push(
+        <ul key={`ul-${elements.length}`} className="my-3 space-y-2 pl-1">
+          {bulletBuffer.map((b) => (
+            <li key={b.key} className="flex gap-2.5 items-start">
+              <span className="text-[var(--accent)] flex-shrink-0 mt-[3px] text-[10px]">
+                <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="currentColor"/></svg>
+              </span>
+              <span className="text-justify flex-1">{renderInline(b.text)}</span>
+            </li>
+          ))}
+        </ul>
+      );
+      bulletBuffer = [];
+    }
+  };
+  const flushNums = () => {
+    if (numBuffer.length > 0) {
+      elements.push(
+        <ol key={`ol-${elements.length}`} className="my-3 space-y-2 pl-1">
+          {numBuffer.map((n) => (
+            <li key={n.key} className="flex gap-2.5 items-start">
+              <span className="text-[var(--accent)] font-bold flex-shrink-0 min-w-[1.5rem] text-right">{n.num}.</span>
+              <span className="text-justify flex-1">{renderInline(n.text)}</span>
+            </li>
+          ))}
+        </ol>
+      );
+      numBuffer = [];
+    }
+  };
+
+  for (let j = 0; j < lines.length; j++) {
+    const line = lines[j];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      flushTable();
+      flushBullets();
+      flushNums();
+      continue;
+    }
+
+    /* Table row */
+    if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+      flushBullets();
+      flushNums();
+      tableBuffer.push(trimmed);
+      continue;
+    }
+    flushTable();
+
+    /* Section heading (line ending with :) */
+    if (
+      trimmed.match(/^[A-Z\u00C0-\u024F\d].{3,100}:\s*$/) &&
+      !trimmed.startsWith("--") &&
+      trimmed.length < 120
+    ) {
+      flushBullets();
+      flushNums();
+      elements.push(
+        <h4
+          key={`h-${j}`}
+          className="font-bold text-[var(--text)] text-[15px] mt-6 mb-2 pb-1.5 border-b border-[var(--border-light)]"
+        >
+          {renderInline(trimmed.replace(/:$/, ""))}
+        </h4>
+      );
+      continue;
+    }
+
+    /* Blockquote */
+    if (trimmed.startsWith("> ")) {
+      flushBullets();
+      flushNums();
+      elements.push(
+        <blockquote
+          key={`bq-${j}`}
+          className="my-4 pl-4 border-l-4 border-[var(--accent)] bg-[var(--accent)]/5 py-3 pr-4 rounded-r-[var(--radius)] text-[var(--text)] italic leading-[1.75]"
+        >
+          {renderInline(trimmed.slice(2))}
+        </blockquote>
+      );
+      continue;
+    }
+
+    /* Bullet point */
+    if (trimmed.startsWith("-- ") || trimmed.startsWith("--")) {
+      flushNums();
+      bulletBuffer.push({ key: j, text: trimmed.replace(/^--\s*/, "") });
+      continue;
+    }
+    flushBullets();
+
+    /* Numbered list */
+    const numMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
+    if (numMatch) {
+      numBuffer.push({ key: j, num: numMatch[1], text: numMatch[2] });
+      continue;
+    }
+    flushNums();
+
+    /* Regular paragraph */
+    elements.push(
+      <p key={`p-${j}`} className="mb-3 text-justify leading-[1.75]">
+        {renderInline(trimmed)}
+      </p>
+    );
+  }
+
+  flushTable();
+  flushBullets();
+  flushNums();
+
+  return <div className="text-[var(--text)] text-[15px]">{elements}</div>;
+}
+
 /* ───────── COMPONENT: StepCard ───────── */
 function StepCard({
   step,
@@ -385,29 +564,21 @@ function StepCard({
             {step.content.map((section, i) => {
               switch (section.type) {
                 case "text":
-                  return (
-                    <div key={i} className="text-[var(--text)] text-[15px] leading-relaxed whitespace-pre-line">
-                      {section.value.split("\n").map((line, j) => (
-                        <p key={j} className={line.match(/^\d+\./) ? "pl-4 mb-1" : line.startsWith("--") ? "pl-4 mb-1" : "mb-3"}>
-                          {line.startsWith("--") ? line.replace("--", "\u2022") : line}
-                        </p>
-                      ))}
-                    </div>
-                  );
+                  return <FormattedText key={i} value={section.value} />;
                 case "code":
                   return <CodeBlock key={i} code={section.value} language={section.language} />;
                 case "warning":
                   return (
                     <div key={i} className="flex gap-3 p-4 rounded-[var(--radius)] bg-[#fff8e1] border border-[#ffe082]">
                       <span className="flex-shrink-0 mt-0.5">{icons.alertTriangle}</span>
-                      <p className="text-sm text-[#5d4037] leading-relaxed">{section.value}</p>
+                      <p className="text-sm text-[#5d4037] leading-relaxed text-justify">{section.value}</p>
                     </div>
                   );
                 case "tip":
                   return (
                     <div key={i} className="flex gap-3 p-4 rounded-[var(--radius)] bg-[var(--accent-lighter)] border border-[var(--accent)]/20">
                       <span className="flex-shrink-0 mt-0.5">{icons.lightbulb}</span>
-                      <p className="text-sm text-[var(--accent-dark)] leading-relaxed">{section.value}</p>
+                      <p className="text-sm text-[var(--accent-dark)] leading-relaxed text-justify">{section.value}</p>
                     </div>
                   );
                 case "checkpoint":
@@ -416,7 +587,7 @@ function StepCard({
                       <span className="flex-shrink-0 mt-0.5">{icons.circleCheck}</span>
                       <div>
                         <span className="text-xs font-bold text-[var(--success)] uppercase tracking-wider block mb-1">Checkpoint</span>
-                        <p className="text-sm text-[var(--success)] leading-relaxed">{section.value}</p>
+                        <p className="text-sm text-[var(--success)] leading-relaxed text-justify">{section.value}</p>
                       </div>
                     </div>
                   );
@@ -424,6 +595,14 @@ function StepCard({
                   return null;
               }
             })}
+
+            {/* Reading progress indicator */}
+            <div className="mt-4 pt-3 border-t border-[var(--border-light)]">
+              <div className="flex items-center gap-2 text-xs text-[var(--text-light)]">
+                <span className="flex-shrink-0">{icons.clock}</span>
+                <span>Tempo estimado: {step.duration}</span>
+              </div>
+            </div>
 
             {/* Complete step button */}
             <div className="pt-4 flex items-center gap-3">
@@ -439,11 +618,11 @@ function StepCard({
                 {isCompleted ? (
                   <>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    Concluido
+                    Concluído
                   </>
                 ) : (
                   <>
-                    Marcar como concluido
+                    Marcar como concluído
                     {icons.chevronRight}
                   </>
                 )}
@@ -547,11 +726,11 @@ export default function {{ component_name }}() {
                 </div>
                 <div className="flex items-center gap-2 text-white/80">
                   {icons.bookOpen}
-                  <span>{STEPS.length} modulos</span>
+                  <span>{STEPS.length} módulos</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/80">
                   {icons.graduationCap}
-                  <span>Nivel: {{ nivel_display | js_escape }}</span>
+                  <span>Nível: {{ nivel_display | js_escape }}</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/80">
                   {icons.layers}
@@ -568,7 +747,7 @@ export default function {{ component_name }}() {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 flex-1">
                 <span className="text-sm font-semibold text-[var(--text)] whitespace-nowrap">
-                  {completed.size}/{STEPS.length} concluidos
+                  {completed.size}/{STEPS.length} concluídos
                 </span>
                 <div className="flex-1 h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden">
                   <div
@@ -605,7 +784,7 @@ export default function {{ component_name }}() {
               <aside className="hidden lg:block">
                 <div className="sticky top-[110px]">
                   <h4 className="font-bold text-[var(--text)] text-sm mb-4 uppercase tracking-wider">
-                    Modulos
+                    Módulos
                   </h4>
                   <nav className="space-y-1">
                     {STEPS.map((step, i) => (
@@ -643,7 +822,7 @@ export default function {{ component_name }}() {
 
                   {/* Prerequisites card */}
                   <div className="mt-8 p-4 rounded-[var(--radius)] bg-[var(--bg-muted)] border border-[var(--border-light)]">
-                    <h5 className="font-bold text-sm text-[var(--text)] mb-2">Pre-requisitos</h5>
+                    <h5 className="font-bold text-sm text-[var(--text)] mb-2">Pré-requisitos</h5>
                     <ul className="text-xs text-[var(--text-muted)] space-y-2">
 {% for prereq in prerequisitos_display %}
                       <li className="flex items-start gap-2">
@@ -660,7 +839,7 @@ export default function {{ component_name }}() {
               <div className="space-y-4">
                 {/* Intro card */}
                 <div className="p-6 rounded-[var(--radius-lg)] bg-[var(--card-dark)] text-white mb-6">
-                  <h2 className="text-xl font-bold mb-3">O que voce vai aprender</h2>
+                  <h2 className="text-xl font-bold mb-3">O que você vai aprender</h2>
                   <p className="text-sm text-[#a6adc8] leading-relaxed mb-4">
                     {{ descricao | js_escape }}
                   </p>
@@ -693,16 +872,16 @@ export default function {{ component_name }}() {
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--success)] flex items-center justify-center shadow-[0_4px_16px_rgba(46,132,74,0.3)]">
                       {icons.checkCircleLg}
                     </div>
-                    <h2 className="text-2xl font-bold text-[var(--success)] mb-2">Curso concluido com sucesso!</h2>
+                    <h2 className="text-2xl font-bold text-[var(--success)] mb-2">Curso concluído com sucesso!</h2>
                     <p className="text-[var(--text-muted)] mb-6 max-w-lg mx-auto">
-                      Parabens! Voce completou todos os {STEPS.length} modulos do curso {{ titulo | js_escape }}.
+                      Parabéns! Você completou todos os {STEPS.length} módulos do curso {{ titulo | js_escape }}.
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-3">
                       <a href="/educacao" className="sf-btn-primary" style={% raw %}{{ color: "#fff" }}{% endraw %}>
                         Explorar outros cursos
                       </a>
                       <a href="/conteudos" className="sf-btn-outline">
-                        Ler artigos tecnicos
+                        Ler artigos técnicos
                       </a>
                     </div>
                   </div>
@@ -743,7 +922,7 @@ export default function {{ component_name }}() {
                     </p>
                     <p className="text-sm text-[var(--text-muted)] leading-relaxed">
                       Este curso faz parte do material educacional da Brasil GEO, empresa brasileira
-                      especializada em Generative Engine Optimization. Para duvidas, entre em contato
+                      especializada em Generative Engine Optimization. Para dúvidas, entre em contato
                       pelo WhatsApp ou LinkedIn.
                     </p>
                   </div>

@@ -151,15 +151,34 @@ Exemplo:
 
 ### Formatação Rica (OBRIGATÓRIO — verifique CADA item)
 
-- **Títulos e subtítulos**: hierarquia clara H2 → H3 → H4, sem pulos
-- **Negrito**: para termos-chave, conceitos e definições na PRIMEIRA ocorrência
-- **Itálico**: para ênfase contextual e títulos de publicações
-- **Listas ordenadas (1. 2. 3.)**: para processos, etapas e procedimentos sequenciais
-- **Listas com marcadores (- ou *)**: para enumerações não sequenciais e características
-- **Tabelas**: ao menos UMA por módulo para comparações, frameworks ou sínteses
-- **Blocos de citação (>)**: para insights centrais e conceitos memoráveis
-- **Blocos de código (```)**: para exemplos técnicos, comandos e configurações
-- **Sem emojis**: proibido em qualquer parte do conteúdo
+O conteúdo será renderizado por um componente `FormattedText` que interpreta a seguinte marcação:
+
+- **Negrito**: use `**texto**` para termos-chave na PRIMEIRA ocorrência. O renderer converte para `<strong>`.
+- **Sub-headings**: linhas que terminam com `:` e começam com maiúscula são renderizadas como `<h4>` com border-bottom. Use para separar seções dentro do módulo (ex: "Análise competitiva das sete superfícies:").
+- **Bullet points**: linhas que começam com `-- ` (dois hífens + espaço) são renderizadas como lista com dot azul estilizado. NUNCA use `- ` (um hífen), use SEMPRE `-- ` (dois hífens).
+- **Listas numeradas**: linhas com `1. texto`, `2. texto` são renderizadas como lista ordenada com número azul.
+- **Tabelas markdown**: use pipes para tabelas comparativas. O renderer cria uma `<table>` estilizada com header uppercase, zebra striping e bordas. Formato:
+  ```
+  | Coluna 1 | Coluna 2 | Coluna 3 |
+  |---|---|---|
+  | dado | dado | dado |
+  ```
+  IMPORTANTE: tabelas devem ser formatadas como UMA ÚNICA LINHA com `\n` separando as rows, pois estão dentro de strings JavaScript.
+- **Blockquotes**: linhas que começam com `> ` são renderizadas como citação com borda lateral azul e fundo destacado. Use para insights centrais e conceitos memoráveis.
+- **Blocos de código**: use type "code" com language para exemplos técnicos.
+- **Parágrafos**: texto normal é renderizado com `text-justify` e `leading-[1.75]` para leitura confortável.
+- **Sem emojis**: proibido em qualquer parte do conteúdo.
+
+### Layout e Legibilidade (Padrão Microsoft Learn + Salesforce Trailhead)
+
+O objetivo é criar uma experiência de leitura premium para conteúdo longo:
+
+- **Parágrafos curtos**: máximo 5 linhas. Quebre em múltiplos parágrafos se necessário.
+- **Sub-headings frequentes**: use um sub-heading (linha terminando em `:`) a cada 2-3 parágrafos para criar hierarquia visual e facilitar scanning.
+- **Tabelas comparativas**: ao menos UMA tabela por módulo. Tabelas quebram a monotonia do texto e permitem comparações rápidas.
+- **Blockquotes estratégicos**: use `> ` para 1-2 insights centrais por módulo. São os "destaques" que o leitor lembra.
+- **Listas estruturadas**: prefira listas (`-- item`) a parágrafos com enumerações inline. Listas são mais fáceis de scanear.
+- **Alternância de formatos**: alterne entre parágrafos, listas, tabelas e blockquotes para criar ritmo visual. Nunca mais de 3 parágrafos seguidos sem algum elemento visual.
 
 ### Ortografia e Acentuação PT-BR (INVIOLÁVEL)
 

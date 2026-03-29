@@ -53,12 +53,25 @@
 - PROIBIDOS (nível 1-2): entender, conhecer, saber, compreender, lembrar, memorizar, listar, descrever, identificar
 
 ### Formatação Obrigatória por Módulo
-- Ao menos 1 tabela comparativa
+- Ao menos 1 tabela comparativa (formato markdown com pipes)
 - Ao menos 3 exercícios com contexto profissional e progressão Bloom
-- Hierarquia de títulos H2 > H3 > H4 (sem pulos)
-- Negrito em termos-chave na primeira ocorrência
-- Blocos de citação (>) para insights centrais
+- Sub-headings (linha terminando com `:`) a cada 2-3 parágrafos
+- Negrito em termos-chave na primeira ocorrência usando `**termo**`
+- Blockquotes (`> `) para insights centrais — ao menos 1-2 por módulo
+- Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen)
+- Nunca mais de 3 parágrafos seguidos sem elemento visual
 - 2.500-4.000 palavras por módulo
+
+### Padrão de Layout (FormattedText — UX Microsoft Learn + Salesforce Trailhead)
+O template `page.tsx.j2` inclui um componente `FormattedText` que renderiza:
+- `**bold**` → `<strong>` com font-semibold
+- Linha terminando com `:` → `<h4>` sub-heading com border-bottom
+- `-- item` → bullet list com dot azul (accent color)
+- `1. item` → ordered list com número azul
+- `| col | col |` → `<table>` com header uppercase e zebra striping
+- `> texto` → blockquote com borda lateral azul
+- Parágrafos → text-justify com leading-[1.75]
+- Warning/tip/checkpoint → text-justify aplicado
 
 ### Expressões Proibidas
 - "nos dias de hoje", "é fundamental que", "não é segredo que"

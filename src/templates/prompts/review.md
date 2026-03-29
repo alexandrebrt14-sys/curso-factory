@@ -106,16 +106,26 @@ Verifique e CORRIJA:
 - "vale a pena destacar" → destaque diretamente
 - "grosso modo" → seja preciso
 
-### 3. Formatação e Estrutura Visual
+### 3. Formatação e Estrutura Visual (Padrão Microsoft Learn + Salesforce Trailhead)
 
-Verifique a presença OBRIGATÓRIA de todos os itens. Se faltar, ADICIONE:
+O conteúdo é renderizado por um componente `FormattedText` que interpreta marcação específica. Verifique a presença OBRIGATÓRIA de todos os itens e a conformidade com o formato esperado:
 
-- **Tabelas comparativas**: ao menos UMA por módulo (comparações, frameworks, antes/depois, matrizes de decisão)
-- **Listas estruturadas**: numeradas para processos sequenciais, com marcadores para enumerações
-- **Hierarquia de títulos**: H2 > H3 > H4 sem pulos (nunca H2 direto para H4)
-- **Negrito**: para termos-chave e conceitos na PRIMEIRA ocorrência
-- **Blocos de citação (>)**: para insights centrais e conceitos memoráveis — ao menos 2 por módulo
-- **Blocos de código (```)**: para exemplos técnicos, com linguagem especificada
+**Marcação que o renderer reconhece:**
+- `**texto**` → negrito (font-semibold)
+- Linha terminando com `:` (iniciando com maiúscula) → sub-heading com border-bottom
+- `-- item` (dois hífens + espaço) → bullet point com dot azul. NUNCA `- item` (um hífen).
+- `1. texto` → lista numerada com número azul
+- `| col | col |` → tabela estilizada com header uppercase e zebra striping
+- `> texto` → blockquote com borda lateral azul e fundo destacado
+- Texto simples → parágrafo com text-justify
+
+**Verificações obrigatórias:**
+- **Tabelas comparativas**: ao menos UMA por módulo. Formato: linhas com pipes separadas por `\n`. Se faltar, ADICIONE.
+- **Sub-headings frequentes**: a cada 2-3 parágrafos deve haver um sub-heading (linha terminando com `:`). Cria hierarquia visual e facilita scanning. Se o texto tiver blocos longos sem heading, QUEBRE com sub-headings.
+- **Negrito**: para termos-chave e conceitos na PRIMEIRA ocorrência usando `**termo**`. Se faltar, ADICIONE.
+- **Blockquotes**: ao menos 1-2 por módulo para insights centrais usando `> `. Se faltar, ADICIONE.
+- **Alternância de formatos**: nunca mais de 3 parágrafos seguidos sem algum elemento visual (tabela, lista, blockquote ou sub-heading). Se encontrar blocos monótonos, QUEBRE com elementos visuais.
+- **Listas com `-- `**: verificar que usam `-- ` (dois hífens), NUNCA `- ` (um hífen).
 - **Parágrafos**: máximo 5 linhas cada, uma ideia central por parágrafo. Quebre parágrafos longos.
 - **PROIBIDO**: emojis em qualquer parte do conteúdo
 
