@@ -88,6 +88,52 @@ class Orchestrator:
         logger.info("Checkpoint carregado: %d etapas concluídas anteriormente", len(result.etapas))
         return result, context
 
+    def _build_template_vars(self, nome: str, course: Course, context: str) -> dict:
+        """Return the named template variables required by each step's .md prompt.
+
+        Each external prompt template uses specific named placeholders instead of
+        the generic {context} variable.  This method maps step names to their
+        expected variable sets so the orchestrator can forward them to execute().
+
+        Args:
+            nome: Pipeline step name ('research', 'analyze', 'classify', etc.).
+            course: The Course object being processed.
+            context: The accumulated pipeline context at this point in the run.
+
+        Returns:
+            Dict of keyword arguments to pass to agent.execute().
+        """
+        if nome == "research":
+            # research.md: {course_name}, {course_description}, {target_modules}
+            modulos_list = ""
+            if course.modulos:
+                lines = [f"  - {m.titulo}: {m.descricao}" for m in course.modulos]
+                modulos_list = "\n".join(lines)
+            else:
+                modulos_list = "A definir conforme pesquisa"
+            return {
+                "course_name": course.titulo,
+                "course_description": course.descricao or f"Curso completo sobre {course.titulo}",
+                "target_modules": modulos_list,
+            }
+
+        if nome == "analyze":
+            # analyze.md: {course_name}, {draft_content}
+            return {
+                "course_name": course.titulo,
+                "draft_content": context,
+            }
+
+        if nome == "classify":
+            # classify.md: {course_name}, {content}
+            return {
+                "course_name": course.titulo,
+                "content": context,
+            }
+
+        # draft.md and review.md use {context} only — no extra vars needed.
+        return {}
+
     def run(self, course: Course) -> PipelineResult:
         """Executa o pipeline completo para um curso, com resume de checkpoint."""
         DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -103,7 +149,7 @@ class Orchestrator:
 
         etapas = [
             ("research", self.researcher, self._build_research_context(course)),
-            ("draft", self.writer, self._build_writer_context(course)),
+            ("draft", self.writer, None),  # Draft handled specially below
             ("analyze", self.analyzer, None),
             ("classify", self.classifier, None),
             ("review", self.reviewer, None),
@@ -124,6 +170,23 @@ class Orchestrator:
                 break
 
             logger.info("Iniciando etapa: %s (provider: %s)", nome, agente.provider)
+
+            # ── Draft: gerar módulo a módulo para obter conteúdo completo ──
+            if nome == "draft" and course.modulos and len(course.modulos) > 1:
+                try:
+                    all_modules = self._draft_modules_iterative(course, context)
+                    result.etapas[nome] = all_modules
+                    context = all_modules
+                    logger.info("Etapa 'draft' concluída: %d módulos gerados", len(course.modulos))
+                    self._save_checkpoint(course.id, result, context)
+                    continue
+                except Exception as exc:
+                    msg = f"Erro na etapa 'draft' (iterativo): {exc}"
+                    logger.error(msg)
+                    result.erros.append(msg)
+                    self._save_checkpoint(course.id, result, context)
+                    break
+
             # Se a etapa tem contexto inicial E há contexto do pipeline anterior, combina ambos
             if ctx_inicial and context:
                 prompt_context = ctx_inicial + "\n\n--- CONTEXTO ANTERIOR DO PIPELINE ---\n" + context
@@ -132,8 +195,13 @@ class Orchestrator:
             else:
                 prompt_context = context
 
+            # Build named template vars so external .md templates receive their
+            # expected placeholders (course_name, draft_content, content, etc.)
+            # instead of leaving them unfilled in the sent prompt.
+            template_vars = self._build_template_vars(nome, course, context)
+
             try:
-                output = agente.execute(prompt_context)
+                output = agente.execute(prompt_context, **template_vars)
                 result.etapas[nome] = output
                 context = output
                 logger.info("Etapa '%s' concluída com sucesso", nome)
@@ -161,6 +229,60 @@ class Orchestrator:
                      course.id)
         logger.info(self.cost_tracker.report())
         return result
+
+    def _draft_modules_iterative(self, course: Course, research_context: str) -> str:
+        """Gera conteúdo módulo a módulo para garantir profundidade.
+
+        Em vez de pedir todos os módulos numa única call (que gera apenas 1),
+        chama o writer N vezes — uma para cada módulo — passando o contexto
+        de pesquisa e os módulos anteriores como referência.
+        """
+        all_output: list[str] = []
+
+        for i, modulo in enumerate(course.modulos, 1):
+            logger.info("Draft módulo %d/%d: %s", i, len(course.modulos), modulo.titulo)
+
+            # Contexto específico para este módulo
+            prev_titles = [m.titulo for m in course.modulos[:i - 1]]
+            next_titles = [m.titulo for m in course.modulos[i:]]
+
+            prompt = (
+                f"INSTRUÇÃO: Gere o conteúdo COMPLETO do Módulo {i} abaixo.\n"
+                f"Este é o módulo {i} de {len(course.modulos)} do curso '{course.titulo}'.\n"
+                f"Nível: {course.nivel.value}\n\n"
+                f"MÓDULO A GERAR:\n"
+                f"  Título: {modulo.titulo}\n"
+                f"  Conteúdo esperado: {modulo.descricao or 'conforme pesquisa'}\n\n"
+            )
+
+            if prev_titles:
+                prompt += "Módulos anteriores (já escritos): " + ", ".join(prev_titles) + "\n"
+            if next_titles:
+                prompt += "Próximos módulos (ainda não escritos): " + ", ".join(next_titles) + "\n"
+
+            prompt += (
+                "\nGere 2.500-4.000 palavras seguindo a estrutura obrigatória:\n"
+                "1. Abertura com Impacto (250-350 palavras)\n"
+                "2. Fundamentação Conceitual (800-1.200 palavras)\n"
+                "3. Análise de Caso (400-600 palavras)\n"
+                "4. Quadro Comparativo (tabela obrigatória)\n"
+                "5. Exercícios Práticos (mínimo 3)\n"
+                "6. Síntese Executiva (200-250 palavras)\n\n"
+                "IMPORTANTE: Português do Brasil com acentuação COMPLETA.\n"
+            )
+
+            if research_context:
+                prompt += "\n--- DADOS DA PESQUISA ---\n" + research_context[:3000]
+
+            if self.cost_tracker.is_over_budget(self.writer.provider):
+                logger.warning("Orçamento excedido no módulo %d. Parando draft.", i)
+                break
+
+            output = self.writer.execute(prompt)
+            all_output.append(f"# Módulo {i}: {modulo.titulo}\n\n{output}")
+            logger.info("Módulo %d gerado: %d palavras", i, len(output.split()))
+
+        return "\n\n---\n\n".join(all_output)
 
     def _build_research_context(self, course: Course) -> str:
         """Monta o contexto inicial para a etapa de pesquisa."""

@@ -8,7 +8,7 @@ Prompt externo: src/templates/prompts/classify.md
 
 from __future__ import annotations
 
-from src.agents.base import Agent
+from src.agents.base import Agent, _safe_substitute
 
 
 class Classifier(Agent):
@@ -34,8 +34,16 @@ class Classifier(Agent):
         "--- CONTEÚDO E ANÁLISE ---\n{context}"
     )
 
-    def build_prompt(self, context: str) -> str:
+    def build_prompt(self, context: str, **template_vars: str) -> str:
+        """Build the classification prompt, filling all named placeholders.
+
+        classify.md uses {course_name} and {content} — not {context}.
+        The caller must supply these via template_vars.  Falls back to the
+        inline TEMPLATE when the .md file is missing.
+        """
         template = self._load_prompt_template()
         if template:
-            return template.replace("{context}", context)
+            substitutions = {"context": context}
+            substitutions.update(template_vars)
+            return _safe_substitute(template, substitutions)
         return self.TEMPLATE.format(context=context)
