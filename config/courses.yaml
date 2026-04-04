@@ -1,6 +1,6 @@
 # curso-factory — Definição de Cursos
 # Cada curso será processado pelo pipeline de 5 LLMs
-# Sincronizado com landing-page-geo/src/data/courses.ts em 2026-03-28
+# Fonte de verdade do catálogo — exportado via `python cli.py emit-catalog` para output/course_catalog.json
 
 courses:
   - slug: agentes-ia-autonomos
@@ -22,6 +22,31 @@ courses:
     prerequisitos: [mcp-com-chrome, node-js]
     duracao_estimada: "~245 min"
     prioridade: P0
+    estrutura_modulos:
+      - titulo: "Fundamentos do MCP: arquitetura e conceitos-chave"
+        descricao: "Protocolo cliente-servidor, JSON-RPC, capabilities negotiation, ciclo de vida de conexões."
+      - titulo: "Primeiro Servidor MCP: setup com TypeScript SDK"
+        descricao: "Inicializar projeto, implementar server básico, registrar capabilities, testar com Claude Desktop."
+      - titulo: "Resources: expor dados estruturados ao LLM"
+        descricao: "Definir recursos estáticos e dinâmicos, URIs, MIME types, templates de recurso."
+      - titulo: "Tools: criar ferramentas executáveis pelo modelo"
+        descricao: "Definir tools com JSON Schema, input validation, error handling, ferramentas assíncronas."
+      - titulo: "Prompts: templates reutilizáveis e dinâmicos"
+        descricao: "Prompt templates com argumentos, system prompts, embedded resources em prompts."
+      - titulo: "Sampling: solicitar completions do cliente"
+        descricao: "Server-initiated sampling, control de modelo e temperatura, human-in-the-loop."
+      - titulo: "Transporte: stdio, SSE, HTTP e WebSocket"
+        descricao: "Comparação de transportes, streaming, reconexão, proxy e tunneling."
+      - titulo: "Autenticação e segurança: OAuth, tokens, sandboxing"
+        descricao: "OAuth 2.0 para MCP, rate limiting, permissões granulares, sandboxing de ferramentas."
+      - titulo: "Integração com IDEs: VS Code, JetBrains, Cursor"
+        descricao: "Configuração em claude_desktop_config.json, extensões VS Code, debug de conexões MCP."
+      - titulo: "Integração com browsers: Chrome, automação web"
+        descricao: "MCP Chrome server, navegação automatizada, extração de dados, formulários."
+      - titulo: "Multi-Server Orchestration: compor servidores MCP"
+        descricao: "Múltiplos servers simultâneos, roteamento de requests, agregação de capabilities."
+      - titulo: "Deploy em produção: Docker, monitoramento, scaling"
+        descricao: "Containerizar MCP servers, health checks, métricas, horizontal scaling, CI/CD."
 
   - slug: prompt-engineering-avancado
     nome: "Prompt Engineering Avançado: Técnicas Profissionais"
@@ -32,6 +57,31 @@ courses:
     prerequisitos: [claude-code-cli]
     duracao_estimada: "~240 min"
     prioridade: P1
+    estrutura_modulos:
+      - titulo: "Fundamentos de Prompt Engineering"
+        descricao: "O que é prompt engineering, por que importa, e como LLMs processam instruções."
+      - titulo: "Anatomia de um Prompt Eficaz"
+        descricao: "Componentes: instrução, contexto, exemplos, restrições, formato de saída."
+      - titulo: "Zero-Shot e Few-Shot Learning"
+        descricao: "Quando usar cada técnica, seleção de exemplos, impacto na qualidade."
+      - titulo: "Chain-of-Thought (CoT)"
+        descricao: "Raciocínio passo a passo, CoT zero-shot, auto-consistency, tree-of-thought."
+      - titulo: "Role Prompting e System Prompts"
+        descricao: "Definição de persona, system vs user prompts, guardrails comportamentais."
+      - titulo: "Structured Output (JSON, XML)"
+        descricao: "Forçar formato de saída, JSON mode, schemas de validação, parsing robusto."
+      - titulo: "Prompt Chaining e Decomposição"
+        descricao: "Dividir tarefas complexas, pipelines de prompts, passagem de contexto entre etapas."
+      - titulo: "Retrieval-Augmented Generation (RAG)"
+        descricao: "Embeddings, vector stores, chunking strategies, prompts com contexto externo."
+      - titulo: "Prompt Templates e Variáveis"
+        descricao: "Templates reutilizáveis, variáveis dinâmicas, versionamento de prompts."
+      - titulo: "Avaliação e Métricas de Qualidade"
+        descricao: "Benchmarks, human eval, LLM-as-judge, métricas automáticas, A/B testing."
+      - titulo: "Otimização de Custo e Latência"
+        descricao: "Redução de tokens, cache, batch processing, roteamento por complexidade."
+      - titulo: "Prompt Engineering para Produção"
+        descricao: "CI/CD de prompts, monitoramento, fallbacks, versionamento, observability."
 
   - slug: automacao-n8n-make
     nome: "Automação com n8n e Make: Fluxos Inteligentes com IA"
@@ -42,6 +92,27 @@ courses:
     prerequisitos: []
     duracao_estimada: "~200 min"
     prioridade: P1
+    estrutura_modulos:
+      - titulo: "Introdução a Automação"
+        descricao: "O que é automação, ROI de automatizar processos, panorama de ferramentas no-code/low-code."
+      - titulo: "n8n: Instalação e Interface"
+        descricao: "Instalação local e cloud, tour pela interface, conceitos de workflow, nós e conexões."
+      - titulo: "Primeiro Workflow no n8n"
+        descricao: "Webhook trigger, HTTP request, transformação de dados, envio de email automático."
+      - titulo: "Make: Conta e Interface"
+        descricao: "Cadastro, tour pela interface, conceitos de cenário, módulos, conexões e data stores."
+      - titulo: "Primeiro Cenário no Make"
+        descricao: "Watch trigger, HTTP module, router, filtros e aggregators."
+      - titulo: "Integrações com APIs REST"
+        descricao: "Autenticação OAuth/API Key, paginação, tratamento de erros, rate limiting."
+      - titulo: "Processamento de Dados e Transformações"
+        descricao: "Mapear campos, filtrar registros, loops, merge de dados, formatação de datas e números."
+      - titulo: "Integração com IA (OpenAI, Claude)"
+        descricao: "Nós de IA no n8n, módulos OpenAI no Make, classificação automática, geração de texto."
+      - titulo: "Webhooks e Triggers Avançados"
+        descricao: "Webhooks bidirecionais, cron schedules, file watchers, event-driven architecture."
+      - titulo: "Deploy, Monitoramento e Boas Práticas"
+        descricao: "Self-hosting n8n com Docker, monitoramento de execuções, idempotência, naming conventions, documentação."
 
   - slug: dados-com-python
     nome: "Dados com Python: Análise, Visualização e Automação"
@@ -62,6 +133,27 @@ courses:
     prerequisitos: [node-js, github]
     duracao_estimada: "~200 min"
     prioridade: P2
+    estrutura_modulos:
+      - titulo: "Por que deploy importa: do localhost ao mundo"
+        descricao: "Conceitos de deploy, ambientes (dev/staging/prod), CI/CD, latência e edge computing."
+      - titulo: "Vercel: deploy automático para Next.js"
+        descricao: "Conectar repo GitHub, preview deployments, build settings, ISR, edge functions."
+      - titulo: "Variáveis de ambiente e segredos"
+        descricao: "Env vars na Vercel e Cloudflare, .env.local, secrets management, rotação de chaves."
+      - titulo: "Serverless Functions na Vercel"
+        descricao: "API routes, edge functions, streaming, timeouts, cold starts, otimização."
+      - titulo: "Cloudflare Workers: JavaScript no edge"
+        descricao: "Wrangler CLI, Workers runtime, KV store, bindings, routing."
+      - titulo: "Cloudflare D1 e R2: banco e storage no edge"
+        descricao: "SQLite distribuído com D1, object storage com R2, bindings em Workers."
+      - titulo: "DNS e domínios customizados"
+        descricao: "Registrar domínio, configurar DNS, SSL/TLS, redirect rules, propagação."
+      - titulo: "GitHub Actions: CI/CD automatizado"
+        descricao: "Workflows YAML, build-test-deploy, matrix strategy, secrets, artifacts."
+      - titulo: "Monitoramento e rollback"
+        descricao: "Vercel analytics, Cloudflare analytics, alertas, rollback instantâneo, logs."
+      - titulo: "Projeto final: pipeline completo"
+        descricao: "Deploy full-stack: Next.js na Vercel + Worker API + D1 + domínio customizado + CI/CD."
 
   - slug: api-design-rest-graphql
     nome: "API Design: REST, GraphQL e Boas Práticas"
@@ -103,6 +195,115 @@ courses:
       - titulo: "Plano de 90 Dias"
         descricao: "Calendário editorial com 6 pilares. Backlog priorizado por intenção de busca. KPIs: citações por IA, tráfego orgânico, leads, conversão, NPS."
 
+  - slug: geo-educacao-financeira-sub18
+    nome: "GEO para Educação Financeira Sub-18: Como Criar Conteúdo que a IA Recomenda para Jovens"
+    nivel: intermediário
+    descricao: >
+      GEO = Generative Engine Optimization (visibilidade em mecanismos de IA generativa como ChatGPT, Perplexity, Gemini).
+      Este curso ensina educadores financeiros, escolas, fintechs jovens e creators a construir conteúdo answer-first
+      sobre educação financeira para menores de 18 anos — crianças e adolescentes.
+      NÃO é um curso de finanças pessoais genérico. É sobre como a vertical de educação financeira infantojuvenil
+      pode ser encontrada, entendida e confiada quando pais, professores e os próprios jovens perguntam à IA.
+      Contexto: BNCC já inclui educação financeira no currículo escolar, 78% dos adolescentes usam IA no dia a dia,
+      mesada digital cresce 40% ao ano (dados Caixa Tem, PicPay, Nubank). Benchmarks: Me Poupe! Kids, Turma da Mônica
+      Financeira, Canal do Dudu, Cerbasi para Famílias.
+    tags: [geo, educacao-financeira, jovens, sub-18, ia-generativa, answer-first, bncc, mesada-digital]
+    prerequisitos: [seo-geo]
+    duracao_estimada: "~200 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "O Cenário da Educação Financeira Infantojuvenil no Brasil"
+        descricao: "BNCC e educação financeira obrigatória. Dados: mesada digital, fintechs jovens (Caixa Tem, PicPay, Nubank Under 18). Como crianças e adolescentes descobrem conteúdo financeiro via IA."
+      - titulo: "Persona por Faixa Etária: 6-10, 11-14 e 15-17"
+        descricao: "Diferenças cognitivas e de linguagem por faixa. Jobs-to-be-done de cada grupo: mesada, primeiro celular, compras online, poupança, primeiro emprego. Quem decide: pais, professores ou o próprio jovem."
+      - titulo: "Benchmarks de Educação Financeira para Jovens"
+        descricao: "Me Poupe! Kids, Turma da Mônica Financeira, Canal do Dudu, Cerbasi Famílias, apps de mesada (Mozper, GoHenry, Greenlight). O que funciona e o que falta no mercado brasileiro."
+      - titulo: "GEO para Conteúdo Infantojuvenil"
+        descricao: "Perguntas reais de pais e jovens à IA. Páginas answer-first adaptadas por faixa etária. FAQs para pais vs. FAQs para adolescentes. Schema.org EducationalContent. Linguagem segura e acessível."
+      - titulo: "IA, Segurança e LGPD para Menores"
+        descricao: "LGPD e dados de menores (consentimento parental obrigatório). COPPA como referência. IA responsável: o que jovens podem e não podem fazer com IA financeira. Prompts seguros para contexto educacional."
+      - titulo: "Gamificação e Ativos Interativos"
+        descricao: "Quizzes, simuladores de mesada, desafios de poupança, badges e rankings. Engajamento por faixa etária. Ferramentas: Kahoot, Quizizz, calculadoras interativas."
+      - titulo: "Distribuição e Parcerias com Escolas"
+        descricao: "Como chegar em escolas e professores. Material didático alinhado à BNCC. Parcerias com secretarias de educação. Plataformas de distribuição: Google Classroom, Khan Academy, YouTube Edu."
+      - titulo: "Plano de Lançamento em 60 Dias"
+        descricao: "Calendário editorial para 3 públicos (pais, professores, adolescentes). Backlog priorizado. KPIs: citações por IA, adoção escolar, downloads de materiais, engajamento jovem."
+
+  - slug: seo-geo-revendedoras-joias
+    nome: "SEO e GEO para Revendedoras de Joias e Semijoias: Autoridade e Vendas na Era da IA"
+    nivel: intermediário
+    modulos: 8
+    descricao: >
+      Curso completo que une SEO clássico e GEO (Generative Engine Optimization)
+      para revendedoras de joias e semijoias. Da pesquisa de palavras-chave à citação
+      em ChatGPT e Perplexity, passando por E-E-A-T, busca visual, SEO local,
+      WhatsApp Business e métricas da era generativa. Mercado brasileiro de USD 15 bi
+      com margens de 10-500%. Público-alvo: revendedoras autônomas e pequenas marcas
+      que querem dominar tráfego orgânico e generativo na economia da IA.
+    tags: [seo, geo, joias, semijoias, revendedoras, ecommerce, whatsapp, eeat, busca-visual, seo-local]
+    prerequisitos: []
+    duracao_estimada: "~480 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "Fundamentação, Inteligência de Mercado e Psicologia do Consumidor Joalheiro"
+        descricao: "Motivadores emocionais de compra em 2025 (autoexpressão, sustentabilidade, conquista). Tendências: minimalismo geométrico, mistura de metais, pedras vibrantes, retorno do ouro amarelo. Economia da revenda: margens 10-30% vs. 100-500% fabricação própria. Vocabulário semântico do setor (banho de ouro 18k, ródio negro, zircônia cravejada, antialérgico). Mapeamento de intenção de busca: termos coloquiais vs. técnicos."
+      - titulo: "A Fundação Inabalável do SEO Clássico em E-commerce de Acessórios"
+        descricao: "Auditoria técnica on-page: mobile-first, velocidade, cache, lazy loading, HTTPS. Pesquisa de palavras-chave: intenção transacional vs. informacional, SEMrush, Google Keyword Planner, cauda longa. Otimização de conteúdo: descrições únicas (eliminar duplicado do fabricante), heading tags H1-H3, meta descriptions persuasivas. Monitoramento: Google Search Console, erros 404, indexabilidade, sitemaps XML."
+      - titulo: "A Nova Fronteira — Dominando GEO e AEO"
+        descricao: "Do clique à conversação: ChatGPT, Perplexity, Bing Copilot, Google AI Overviews. Conversão 4,4x a 23x maior no tráfego de IA. RAG (Retrieval-Augmented Generation): como LLMs selecionam fontes. Conteúdo answer-first: FAQs rigorosas, definições diretas, blocos Q&A. Otimização de entidades: de palavras-chave soltas para tópicos interconectados. Linguagem técnica natural para LLMs."
+      - titulo: "A Engenharia da Confiança — E-E-A-T para Revendedoras Autônomas"
+        descricao: "E-E-A-T no contexto YMYL de joias (fraude de materiais, valores altos). Experiência: vídeos não editados, tutoriais de composição, fotos autorais. Especialização: guias de cuidados, artigos sobre banhos de ouro, FAQs técnicas. Autoridade: backlinks de portais de moda, eventos, menções orgânicas. Confiabilidade: políticas de troca, HTTPS, certificados, resposta a 100% das avaliações. Digital PR e Link Building local."
+      - titulo: "Otimização de Busca Visual, Multimodalidade e Google Lens"
+        descricao: "SEO visual: WebP, compressão <100kb, lazy loading, nomenclatura descritiva. Alt Text semântico em linguagem natural. Product Schema: name, description, brand, offers, aggregateRating. Google Merchant Center + Google Lens (1 bi buscas visuais/mês). Direção de arte para conversão: fotos contextuais, iluminação, proporção, estilo de vida. Aumento de 25-40% no tráfego de busca visual com dados estruturados."
+      - titulo: "Hegemonia Geográfica e SEO Local (Estudo de Caso: Goiânia)"
+        descricao: "Perfil da Empresa no Google (GBP): categorias corretas, catálogo integrado, atualizações semanais. 3 pilares do algoritmo local: Relevância, Proximidade, Destaque. Consistência NAP obsessiva em todos os canais. Local Link Building: portais regionais, parcerias, feiras (FENINJER). Estudo de caso: Setor Campinas/Goiânia como polo joalheiro. Captação de reviews qualificados."
+      - titulo: "Social Commerce, Catálogos e o Ecossistema do WhatsApp Business"
+        descricao: "SEO interno no WhatsApp: títulos e descrições ricas em palavras-chave no catálogo. Scripts de conversão: de 'quanto custa?' para consultoria de moda (cross-selling, up-selling). Status do WhatsApp: 5-10 postagens/dia com gatilhos de escassez. Listas de transmissão segmentadas. WhatsApp Pay para reduzir fricção. Integração Instagram Shopping + WhatsApp. Automação de FAQs."
+      - titulo: "Stack Tecnológico, Automação com IA e KPIs da Era Generativa"
+        descricao: "IA como assistente treinada nos dados da marca (preservar E-E-A-T). Prompts especializados para nicho joalheiro: descrições, campanhas, suporte. Ferramentas: Clearscope, AIOSEO, Profound. Novos KPIs: Frequência de Citação, Share of Voice Generativo, Tráfego de Referência de IAs, Índice de Sentimento. Painel de métricas: do 'Posição 1 no Google' para visibilidade em LLMs. Plano de execução contínua."
+
+  - slug: seo-geo-advogados
+    nome: "SEO e GEO para Advogados: Como Ser Encontrado com Ética no Google, no Maps e nas IAs"
+    nivel: intermediário
+    modulos: 14
+    descricao: >
+      14 módulos práticos com OAB, LGPD, SEO local, dados estruturados, conteúdo citável
+      e plano de 90 dias para advogados e pequenos escritórios aparecerem com mais autoridade
+      quando o cliente pesquisa no Google, no Maps e pergunta à IA.
+    tags: [seo, geo, advocacia, oab, lgpd, marketing-juridico, ia, direito]
+    prerequisitos: [seo-geo]
+    duracao_estimada: "~320 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "O Novo Cliente Jurídico Digital em 2026"
+        descricao: "Jornada de contratação jurídica via Google, Maps, AI Overviews, ChatGPT, Gemini, Claude, Perplexity. Queries de urgência, confiança e comparação. Autodiagnóstico de presença digital."
+      - titulo: "OAB, Código de Ética e Provimento 205/2021: O Que Pode, O Que Pesa Risco e O Que É Vedado"
+        descricao: "Publicidade informativa vs. captação. Discrição e sobriedade. Impulsionamento, chatbot, palavra-chave responsiva. Vedações: promessa de resultado, ostentação, casos concretos. Matriz de risco."
+      - titulo: "ICP, Área de Atuação e Tese Comercial do Escritório"
+        descricao: "Escritório local, boutique consultiva ou híbrido. Áreas de urgência vs. relacionamento vs. autoridade. Matriz de ICP por subárea jurídica."
+      - titulo: "Pesquisa de Intenção Jurídica e Arquitetura da Demanda"
+        descricao: "Como o leigo pesquisa problemas jurídicos. Intenção informacional, local, reputacional e transacional. Keyword research jurídico. Clusters por problema, área e cidade."
+      - titulo: "SEO On-Page para Home, Páginas de Atuação, Bios e Contato"
+        descricao: "Templates de home institucional, página de área, bio de advogado. Títulos, metas, headings. Explicar serviços sem prometer vitória. Links internos."
+      - titulo: "Conteúdo People-First, YMYL e E-E-A-T Jurídico"
+        descricao: "Conteúdo jurídico em faixa de exigência máxima. Autoria, revisão, política editorial. Citação de legislação e fontes. Calendário editorial de 90 dias."
+      - titulo: "SEO Local para Advogados: Google Search, Maps e Business Profile"
+        descricao: "Setup de Business Profile. Local Pack, Maps, branded local. Avaliações, reputação e respostas institucionais. Checklist de presença local."
+      - titulo: "Entidade Digital do Advogado e do Escritório"
+        descricao: "OAB/CNA, site, LinkedIn, diretórios. About page, perfis de sócios. Desambiguação de marca e reputação algorítmica. Consistência entre fontes públicas."
+      - titulo: "Dados Estruturados para Advocacia sem Tecniquês"
+        descricao: "JSON-LD, Organization, LocalBusiness, LegalService. Campos críticos. FAQ como ativo editorial. Validação e handoff para dev."
+      - titulo: "GEO para Advogados: Como Ser Citado por ChatGPT, Gemini, Claude e Perplexity"
+        descricao: "Mecanismos generativos e síntese de respostas. Prompt clusters por área do direito. Páginas answer-first. Blocos citáveis. Defensive GEO."
+      - titulo: "IA Generativa com Sigilo, LGPD e Revisão Humana"
+        descricao: "IA na produção de conteúdo jurídico. Revisão humana obrigatória. Controlador vs. operador. Prompt hygiene, anonimização. Política interna de IA."
+      - titulo: "Conversão Ética: Site, Formulário, WhatsApp, Chatbot e Intake"
+        descricao: "CTAs sóbrios e institucionais. Formulários com minimização de dados. WhatsApp como triagem. Chatbot para primeiras informações. Fluxo LGPD."
+      - titulo: "Autoridade Externa, Digital PR Jurídico e Reputação Institucional"
+        descricao: "Artigos, entrevistas, docência, mídia. Backlinks institucionais. PR jurídico sem expor casos. Vedação a rankings pagos (Provimento 205)."
+      - titulo: "Medição, Monitoramento e Plano de 90 Dias"
+        descricao: "KPIs de visibilidade orgânica, local e GEO. Search Console, Business Profile, analytics. Scorecard por área e cidade. Roadmap 30/60/90."
+
   - slug: llm-finops
     nome: "LLM FinOps: Custos, Otimização e Governança de IA"
     nivel: avançado
@@ -112,3 +313,24 @@ courses:
     prerequisitos: [python, prompt-engineering-avancado]
     duracao_estimada: "~211 min"
     prioridade: P0
+    estrutura_modulos:
+      - titulo: "Introdução ao LLM FinOps: por que custos de IA importam"
+        descricao: "Panorama de gastos com LLMs em 2026, anatomia de uma fatura OpenAI/Anthropic/Google, framework FinOps aplicado a IA."
+      - titulo: "Anatomia dos custos: tokens, modelos e pricing tiers"
+        descricao: "Input vs output tokens, pricing por modelo, batch API, cached prompts, comparativo de custos entre providers."
+      - titulo: "Monitoramento em tempo real: dashboards e alertas"
+        descricao: "Logging estruturado de custos, dashboards com Grafana/Streamlit, alertas por threshold, cost attribution por feature."
+      - titulo: "Cache semântico: reduzir chamadas repetidas com embeddings"
+        descricao: "Exact match vs semantic cache, embeddings para similaridade, TTL, invalidação, Redis/pgvector."
+      - titulo: "Roteamento inteligente: modelo certo para cada tarefa"
+        descricao: "Classificador de complexidade, cascade (Haiku → Sonnet → Opus), fallback chains, A/B testing de modelos."
+      - titulo: "Budget guards: limites, quotas e circuit breakers"
+        descricao: "Rate limiting por usuário/feature, budget caps diários/mensais, circuit breaker pattern, graceful degradation."
+      - titulo: "Otimização de prompts: menos tokens, mesma qualidade"
+        descricao: "Prompt compression, few-shot selection, template reuse, structured output vs free-form, medição de qualidade."
+      - titulo: "Batch processing e async: reduzir custos com filas"
+        descricao: "Batch API (50% desconto), filas de processamento, priorização, dead letter queues, idempotência."
+      - titulo: "Relatórios para C-Level: ROI, TCO e business cases"
+        descricao: "Calcular ROI de IA, TCO completo (infra + API + ops), apresentar para diretoria, benchmarks de mercado."
+      - titulo: "Governança e compliance: políticas, audit trails e LGPD"
+        descricao: "Políticas de uso de IA, audit trails, data residency, LGPD, classificação de dados, revisão humana."

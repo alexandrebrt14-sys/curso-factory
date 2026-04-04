@@ -16,18 +16,46 @@ from pathlib import Path
 
 def cmd_create(args: argparse.Namespace) -> int:
     """Cria um curso completo via pipeline multi-LLM."""
-    from src.config import load_config
+    import logging
     from src.agents.pipeline import CourseFactory
+    from src.config import load_courses
 
-    config = load_config()
-    factory = CourseFactory(config)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
 
+    # Tenta encontrar config do curso no courses.yaml
+    course_config = None
+    for c in load_courses():
+        if args.nome.lower() in c.get("nome", "").lower():
+            # Monta lista de modulos se existir estrutura_modulos
+            modulos = []
+            for m in c.get("estrutura_modulos", []):
+                modulos.append({"titulo": m["titulo"], "descricao": m.get("descricao", "")})
+            course_config = {
+                "nivel": c.get("nivel", "intermediario"),
+                "descricao": c.get("descricao", ""),
+                "tags": c.get("tags", []),
+                "pre_requisitos": c.get("prerequisitos", []),
+                "modulos": modulos,
+            }
+            break
+
+    factory = CourseFactory()
     print(f"Iniciando criação do curso: {args.nome}")
+    print("Pipeline: Perplexity > GPT-4o > Gemini > Groq > Claude")
     try:
-        result = factory.run(args.nome)
-        print(f"Curso criado com sucesso em: {result.output_path}")
-        print(f"Custo total: ${result.total_cost:.4f}")
-        return 0
+        result = factory.run(args.nome, course_config=course_config)
+        custo_total = sum(factory.cost_tracker.get_session_total().values())
+        print(f"\nPipeline {'concluído com sucesso' if result.sucesso else 'interrompido com erros'}")
+        print(f"Etapas executadas: {', '.join(result.etapas.keys())}")
+        if result.erros:
+            for e in result.erros:
+                print(f"  ERRO: {e}")
+        print(f"Custo total: ${custo_total:.4f}")
+        print(factory.cost_tracker.report())
+        return 0 if result.sucesso else 1
     except Exception as exc:
         print(f"Erro ao criar curso: {exc}", file=sys.stderr)
         return 1
@@ -126,6 +154,35 @@ def cmd_batch(args: argparse.Namespace) -> int:
     return 0 if falhas == 0 else 1
 
 
+def cmd_emit_catalog(args: argparse.Namespace) -> int:
+    """Gera o artefato course_catalog.json em output/.
+
+    O artefato é consumido pela landing-page-geo via worker externo.
+    O curso-factory nunca escreve diretamente na estrutura da landing page.
+    """
+    import logging
+    from pathlib import Path
+    from src.generators.metadata_sync import MetadataSync
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+
+    output_dir = Path(args.output_dir) if args.output_dir else None
+    syncer = MetadataSync(output_dir=output_dir)
+    result = syncer.sync()
+
+    if result["ok"]:
+        print(f"Catálogo gerado: {result['catalog_path']}")
+        print(f"Cursos incluídos: {result['course_count']}")
+        return 0
+    else:
+        for err in result["errors"]:
+            print(f"ERRO: {err}", file=sys.stderr)
+        return 1
+
+
 def cmd_cache_clear(args: argparse.Namespace) -> int:
     """Limpa o cache de resultados de chamadas aos LLMs."""
     import shutil
@@ -171,6 +228,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_batch = subparsers.add_parser("batch", help="Cria múltiplos cursos em lote via YAML")
     p_batch.add_argument("config", metavar="CONFIG", help="Caminho para o arquivo YAML de lote")
     p_batch.set_defaults(func=cmd_batch)
+
+    # emit-catalog
+    p_catalog = subparsers.add_parser(
+        "emit-catalog",
+        help="Gera output/course_catalog.json (artefato consumido pela landing page via worker)",
+    )
+    p_catalog.add_argument(
+        "--output-dir",
+        dest="output_dir",
+        default=None,
+        metavar="DIR",
+        help="Diretório de saída (padrão: output/ na raiz do projeto)",
+    )
+    p_catalog.set_defaults(func=cmd_emit_catalog)
 
     # cache-clear
     p_cache = subparsers.add_parser("cache-clear", help="Limpa o cache de resultados dos LLMs")
