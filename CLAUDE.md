@@ -1,6 +1,15 @@
 # curso-factory — Instruções Claude Code
 
-## 2026-04-09 — Mudanças da auditoria de ecossistema
+## 2026-04-09 — Mudanças da auditoria de ecossistema (Wave D)
+
+### NOVO: course_id propagado em cost_tracker (F32)
+- **Commit:** `72ee757` — `feat(cost-tracker): propaga course_id em todas chamadas LLM`
+- **Antes:** `cost_tracker.track()` sempre recebia `course_id=""`, tornando IMPOSSÍVEL responder "qual curso custou X" no `cost-report` ou aplicar budget guard granular por curso.
+- **Depois:** `LLMClient.set_course_context(course_id)` é chamado pelo `Orchestrator.run()` no início. Todas as chamadas LLM subsequentes propagam automaticamente.
+- **Como usar:** `python cli.py cost-report` agora pode agrupar por `course_id`. `cost_tracker.get_course_total('llm-finops')` retorna dados precisos por curso.
+- **Compat backward:** se `set_course_context` não for chamado, comportamento idêntico ao anterior.
+
+## 2026-04-09 — Mudanças da auditoria de ecossistema (Wave A-C)
 
 ### 1. CLI `drafts-to-tsx` (F12)
 - **Commit:** `bc2f36e` — `feat(cli): drafts-to-tsx`
