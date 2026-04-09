@@ -1,5 +1,26 @@
 # curso-factory — Instruções Claude Code
 
+## 2026-04-09 — Mudanças da auditoria de ecossistema
+
+### 1. CLI `drafts-to-tsx` (F12)
+- **Commit:** `bc2f36e` — `feat(cli): drafts-to-tsx`
+- **Arquivos:** `cli.py` (+novo subcomando), `src/converters/__init__.py`, `src/converters/draft_to_course.py`
+- **Uso:** `python cli.py drafts-to-tsx [--input output/drafts] [--output output/converted_from_drafts]`
+- **Resultado da execução desta sessão:** **12/12 drafts órfãos convertidos** para TSX deployable. Output em `output/converted_from_drafts/` com `page.tsx` + `layout.tsx` válidos por curso.
+- **Próximo passo do owner:** revisar manualmente cada `output/converted_from_drafts/{slug}/page.tsx`, decidir quais publicar, mover aprovados para `output/deployed/`, commit final.
+- **Cursos liberados:** automacao-com-n8n (×2), deploy-moderno, geo-para-educacao-financeira-40 e -sub-18, llm-finops (×2), mcp-avancado (×2), prompt-engineering-avancado, seo-e-geo-para-advogados, seo-e-geo-para-revendedoras-de-joias.
+- **Conversor é best-effort:** parseia markdown da etapa `review` (preferida) ou `draft` (fallback), splita por headings, gera CourseSections (TEXT, CODE, TIP, CHECKPOINT). Cursos com 1 step só (sem headings claros) são clamped para 30 min mínimo.
+
+### 2. Pre-commit secret_guard (F44)
+- **Commit:** `8638b3f` — `sec(precommit): instala secret_guard`
+- **Arquivos:** `.tools/secret_guard.py`, `.githooks/pre-commit`
+- **Já ativado** localmente
+
+### Achados pendentes neste repo
+
+- **F13 (CRÍTICO):** `voice_guard.py` programático ainda não existe. Padrão editorial Alexandre é enforced só por prompt — sem barreira de código. Onda 2.
+- **F38 → BAIXO:** `curso-factory` chama LLMs direto em vez de usar `geo-orchestrator`. Crosscheck Gemini concordou que esse achado estava superdimensionado. Migração para SDK fica para Onda 3 (B-019).
+
 ## Regras Fundamentais
 
 ### Idioma
