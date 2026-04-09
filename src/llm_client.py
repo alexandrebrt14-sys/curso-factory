@@ -113,6 +113,22 @@ class LLMClient:
         self._circuits: dict[str, CircuitState] = {}
         self._buckets: dict[str, TokenBucket] = {}
         self._http = httpx.Client(timeout=60.0)
+        # course_id ativo — setado pelo Orchestrator antes de iniciar o
+        # pipeline. Achado F32 da auditoria 2026-04-08: antes deste campo,
+        # cost_tracker.track sempre recebia course_id="" e era impossivel
+        # rastrear "qual curso custou X". Agora cada chamada LLM eh
+        # automaticamente tagueada com o curso ativo.
+        self.current_course_id: str = ""
+
+    def set_course_context(self, course_id: str) -> None:
+        """Define o curso ativo para fins de tracking de custo.
+
+        Chamado pelo Orchestrator no inicio do pipeline. Todas as chamadas
+        LLM subsequentes (via call/_log_cost) propagarao este course_id
+        para o CostTracker, permitindo relatorios precisos por curso e
+        budget guard granular.
+        """
+        self.current_course_id = course_id or ""
 
     def _get_circuit(self, provider: str) -> CircuitState:
         if provider not in self._circuits:
@@ -236,10 +252,15 @@ class LLMClient:
     def _log_cost(self, provider: str, model: str, tokens_in: int, tokens_out: int) -> None:
         price_in, price_out = PRICING.get(provider, (0.0, 0.0))
         custo = (tokens_in / 1000 * price_in) + (tokens_out / 1000 * price_out)
-        self.cost_tracker.track(provider, tokens_in, tokens_out, model, custo)
+        # Propaga course_id ativo (vazio se nao setado, mantendo compat)
+        self.cost_tracker.track(
+            provider, tokens_in, tokens_out, model, custo,
+            course_id=self.current_course_id,
+        )
         logger.info(
-            "LLM %s/%s: %d tok_in, %d tok_out, USD %.4f",
+            "LLM %s/%s: %d tok_in, %d tok_out, USD %.4f (curso=%s)",
             provider, model, tokens_in, tokens_out, custo,
+            self.current_course_id or "n/a",
         )
 
     # --- Métodos de conveniência por provider ---

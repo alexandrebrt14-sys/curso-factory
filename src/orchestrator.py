@@ -138,6 +138,12 @@ class Orchestrator:
         """Executa o pipeline completo para um curso, com resume de checkpoint."""
         DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
 
+        # Achado F32 — propaga course_id para todas as chamadas LLM, fazendo
+        # com que o cost_tracker registre cada call sob o curso correto
+        # (antes ficava com course_id="" tornando impossivel rastrear
+        # custo por curso).
+        self.client.set_course_context(course.id)
+
         # Tenta carregar checkpoint para resume
         checkpoint = self._load_checkpoint(course.id)
         if checkpoint:
