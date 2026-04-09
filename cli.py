@@ -183,6 +183,50 @@ def cmd_emit_catalog(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
+    """Converte drafts JSON em output/drafts/ para TSX deployable.
+
+    Achado F12 da auditoria 2026-04-08: 13 drafts com investimento LLM ja
+    gasto (15-17k palavras cada) ficaram orfaos sem nunca ser convertidos.
+    Este comando faz best-effort de conversao, recuperando o investimento.
+
+    Drafts que falharem parsing sao logados como warnings e o batch
+    continua. Operador revisa o output em output/converted_from_drafts/
+    e copia manualmente para output/deployed/ os que aprovou.
+    """
+    from src.converters.draft_to_course import convert_drafts_directory
+
+    input_dir = Path(args.input)
+    output_dir = Path(args.output)
+
+    print(f"Convertendo drafts de {input_dir} -> {output_dir}")
+    print()
+
+    result = convert_drafts_directory(input_dir, output_dir)
+
+    if "error" in result:
+        print(f"ERRO: {result['error']}")
+        return 1
+
+    print(f"Total de drafts: {result['total']}")
+    print(f"Convertidos: {result['converted']}")
+    print(f"Falhados: {result['failed']}")
+    print()
+
+    for item in result["files"]:
+        if item["status"] == "ok":
+            print(f"  OK   {item['file']} -> {item['slug']}/ ({item['steps']} steps)")
+        else:
+            print(f"  FAIL {item['file']} ({item.get('reason', 'desconhecido')})")
+
+    print()
+    if result["converted"] > 0:
+        print(f"Output em: {output_dir}")
+        print("Revise manualmente antes de copiar para output/deployed/")
+
+    return 0 if result["failed"] == 0 else 0  # nao falhar batch por individuais
+
+
 def cmd_cache_clear(args: argparse.Namespace) -> int:
     """Limpa o cache de resultados de chamadas aos LLMs."""
     import shutil
@@ -246,6 +290,25 @@ def build_parser() -> argparse.ArgumentParser:
     # cache-clear
     p_cache = subparsers.add_parser("cache-clear", help="Limpa o cache de resultados dos LLMs")
     p_cache.set_defaults(func=cmd_cache_clear)
+
+    # drafts-to-tsx (achado F12 da auditoria 2026-04-08)
+    p_d2t = subparsers.add_parser(
+        "drafts-to-tsx",
+        help="Converte drafts JSON orfaos para TSX deployable (F12)",
+    )
+    p_d2t.add_argument(
+        "--input",
+        default="output/drafts",
+        metavar="DIR",
+        help="Diretorio com drafts *.json (default: output/drafts)",
+    )
+    p_d2t.add_argument(
+        "--output",
+        default="output/converted_from_drafts",
+        metavar="DIR",
+        help="Diretorio destino para os TSX (default: output/converted_from_drafts)",
+    )
+    p_d2t.set_defaults(func=cmd_drafts_to_tsx)
 
     return parser
 
