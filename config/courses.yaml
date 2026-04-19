@@ -361,3 +361,33 @@ courses:
         descricao: "Reviews no Google sem incentivo financeiro. Depoimentos com consentimento documentado. Cases anonimizados. Publicações em mídia especializada. Parcerias com universidades e SBOs."
       - titulo: "KPIs, monitoramento e plano 90 dias"
         descricao: "Métricas de SEO local (impressões GBP, ações no perfil), orgânico (Search Console), GEO (menções em LLMs, referrals de IA). Roadmap 30/60/90 dias com metas realistas por porte de clínica."
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # Cursos do cliente HERREIRA (rodar com: python cli.py create "..." --client herreira)
+  # Fonte de verdade expandida: /Sandyboxclaude/herreira/cursos/catalogo.yaml
+  # Os cursos abaixo são os priorizados P0 que geram primeiro.
+  # ═══════════════════════════════════════════════════════════════════════
+
+  - slug: introducao-as-semijoias
+    nome: "Introdução às Semijoias: Materiais, Banhos e Pedras"
+    nivel: iniciante
+    modulos: 6
+    descricao: "Base técnica para quem está começando na revenda: como são feitas as semijoias, diferença entre banho de ouro 18K e ródio, tipos de pedras (naturais vs zircônias), padrões de qualidade e como falar sobre produto com segurança."
+    tags: [semijoias, banho-ouro-18k, produto, iniciante, herreira]
+    prerequisitos: []
+    duracao_estimada: "~130 min"
+    prioridade: P0
+    cliente: herreira
+    estrutura_modulos:
+      - titulo: "O que é semijoia: matéria-prima, liga base e diferenciais vs bijuteria"
+        descricao: "Latão, bronze e estanho. Por que a base importa. Diferença entre semijoia de qualidade e bijuteria fantasia. Herreira e os padrões de liga usados desde 2008."
+      - titulo: "Banho de ouro 18K: processo, espessura e durabilidade"
+        descricao: "Eletrodeposição, micras de espessura, por que o 18K é referência. Fatores que fazem o banho durar mais: primer de cobre, camada de níquel, acabamento. Garantia Herreira."
+      - titulo: "Ródio branco e ródio negro: aplicações e estética"
+        descricao: "Quando usar ródio. Diferenças visuais e de preço. Manutenção do ródio em peças de uso diário. Coleções Herreira que usam ródio em peças modernas."
+      - titulo: "Pedras naturais: esmeralda, rubi, safira, ametista, turmalina"
+        descricao: "Principais pedras usadas na joalheria brasileira. Como explicar origem e tratamento sem enganar a cliente. Valor agregado de pedra natural nas coleções especiais."
+      - titulo: "Zircônias: qualidade internacional vs brasileira"
+        descricao: "Zircônia Swarovski, Preciosa, nacional. Como identificar qualidade. Por que zircônia de qualidade eleva a percepção de valor da peça e justifica o preço."
+      - titulo: "Coleções Herreira: filosofia, naming e storytelling"
+        descricao: "Essência, Leveza, África, Celebrare, Valor do Tempo, Paty 4.4, Vitesse, Cápsula do Amor. Conceito por trás de cada coleção. Como usar o naming nas vendas sem soar decorado."

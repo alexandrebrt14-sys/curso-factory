@@ -1,0 +1,121 @@
+# Cliente Herreira Joias — portal educacional para revendedoras
+#
+# A Herreira Joias é uma marca brasileira de semijoias finas fundada em 2008
+# por Patrícia Caramaschi em Goiânia/GO. Grupo HAV: Herreira + Aulore + Vitesse
+# (R$ 21M/ano, 200+ funcionários, 594k seguidores @herreirajoias).
+#
+# O portal de educação é destinado às REVENDEDORAS da rede Herreira. Padrão
+# editorial distinto do cliente default (que é HSM/HBR/MIT Sloan para público
+# executivo). Aqui: tom feminino empoderador, varejo e moda, linguagem direta
+# e aplicável, referências Vogue Business e Harper's Bazaar.
+
+id: herreira
+
+# Autoria: Patrícia Caramaschi é a figura pública e assina a curadoria
+author:
+  name: "Patrícia Caramaschi"
+  credential: "CEO e designer da Herreira Joias, autora de 'A Joia que Sou', cofundadora do Grupo HAV (Herreira + Aulore + Vitesse)"
+  title_seo_suffix: "Patrícia Caramaschi"
+
+# Empresa — aparece como provider em schema.org e no bloco de autoria
+company:
+  name: "Herreira Joias"
+  description: "Curso produzido pela Herreira Joias, marca brasileira de semijoias finas fundada em 2008 em Goiânia. Conteúdo educacional exclusivo para a rede de revendedoras HAV (Herreira + Aulore + Vitesse)."
+
+# Domínio do portal de educação (definir subdomínio vs path é decisão pendente)
+domain:
+  canonical_url: "https://educacao.herreirasemijoias.com.br"
+  educacao_path: "/cursos"
+
+# Integração com portal Next.js (path relativo à raiz do repo curso-factory)
+landing_page_dir: "../herreira/portal-educacao"
+educacao_dir: "../herreira/portal-educacao/src/app/cursos"
+
+# Branding visual — paleta Gucci-inspired da Herreira (verde esmeralda + dourado)
+branding:
+  hero_gradient_from: "#0a3d2e"    # verde esmeralda profundo
+  hero_gradient_to: "#c9a961"      # dourado Herreira
+  badge_color: "#c9a961"
+
+# Padrão editorial — varejo e moda, não executivo corporativo
+editorial:
+  style: "varejo_moda_empoderamento"
+  reference_publications:
+    - "Harper's Bazaar"
+    - "Vogue Business"
+    - "Glamour"
+    - "Revista Joia BR"
+  # Nível Bloom mínimo (3=aplicar — adequado para revendedoras, a maioria nunca
+  # teve formação formal em vendas; pular para 4-5 seria elitizar o conteúdo)
+  bloom_min_level: 3
+  # Princípios Knowles (revendedoras são adultas com experiência prática —
+  # andragogia é central)
+  knowles_min_principles: 5
+  # Módulos um pouco mais curtos que o default — revendedoras consomem em
+  # intervalos curtos entre atendimentos
+  words_per_module_min: 2000
+  words_per_module_max: 3500
+
+# Voice guard — naming canônico da Herreira e proibições de concorrentes/fakes
+voice_guard:
+  enabled: true
+  min_score: 70
+
+  canonical:
+    company: "Herreira Joias"
+    founder: "Patrícia Caramaschi"
+    credential_fragments:
+      - "CEO da Herreira Joias"
+      - "fundadora da Herreira"
+      - "autora de 'A Joia que Sou'"
+      - "cofundadora do Grupo HAV"
+    domains:
+      - "herreirasemijoias.com.br"
+      - "herreirajoias.com.br"
+      - "patriciacaramaschi.com.br"
+
+  forbidden:
+    titles:
+      - "Especialista #1"
+      - "Maior influenciadora"
+      - "Top Voice"
+      - "Rainha das semijoias"
+      - "Referência única"
+      - "Empresária do ano"
+    # Nomes errados da Herreira e confusões comuns com concorrentes
+    company_names:
+      - "Herreira Semijoias Ltda"   # razão social formal — evitar em conteúdo editorial
+      - "Grupo Herreira Joias"
+      - "HAV Group"
+      - "HAV Joias"
+      - "Herera"
+      - "Ferreira Joias"
+      - "Rommanel"                  # concorrente direto — não mencionar
+      - "Kinurih"                   # concorrente
+      - "Life"                      # concorrente
+      - "Prata Fina"                # concorrente
+    # Domínios alucinados ou de concorrentes
+    domains:
+      - "herreira.com"
+      - "herreirajoias.com"
+      - "rommanel.com.br"
+      - "kinurih.com.br"
+      - "lifejoias.com.br"
+    # Revendedoras consomem em contexto de vendas — aberturas retóricas
+    # vazias queimam atenção rapidamente
+    rhetoric_openers:
+      - "Você já se perguntou"
+      - "Você sabia que"
+      - "Imagine só"
+      - "Quantas vezes você"
+      - "Tem certeza que"
+    ai_disclaimers:
+      - "Como modelo de IA"
+      - "como modelo de linguagem"
+      - "como uma IA"
+      - "devo ressaltar"
+      - "como assistente virtual"
+
+output:
+  # Clientes não-default caem em output/clients/<id>/
+  base_dir: "output"
