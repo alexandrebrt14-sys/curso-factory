@@ -1,0 +1,55 @@
+# Configuração de providers LLM.
+#
+# Centraliza pricing, endpoint, modelo padrão e fallback para cada provider.
+# Antes desta config, tudo estava hardcoded em src/llm_client.py.
+#
+# Mudança de modelo ou de tabela de preço = edição deste arquivo. Não
+# requer alterar código Python.
+
+providers:
+  perplexity:
+    endpoint: "https://api.perplexity.ai/chat/completions"
+    default_model: "sonar-pro"
+    # Preço por 1K tokens (input, output) em USD
+    pricing:
+      input: 0.001
+      output: 0.001
+    fallback: "google"
+    protocol: "openai_compat"
+
+  openai:
+    endpoint: "https://api.openai.com/v1/chat/completions"
+    default_model: "gpt-4o"
+    pricing:
+      input: 0.005
+      output: 0.015
+    fallback: "anthropic"
+    protocol: "openai_compat"
+
+  google:
+    # {model} é substituído pelo nome do modelo antes da chamada
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    default_model: "gemini-2.5-pro"
+    pricing:
+      input: 0.00025
+      output: 0.0005
+    fallback: "openai"
+    protocol: "google"
+
+  groq:
+    endpoint: "https://api.groq.com/openai/v1/chat/completions"
+    default_model: "llama-3.3-70b-versatile"
+    pricing:
+      input: 0.0001
+      output: 0.0002
+    fallback: "openai"
+    protocol: "openai_compat"
+
+  anthropic:
+    endpoint: "https://api.anthropic.com/v1/messages"
+    default_model: "claude-opus-4-6"
+    pricing:
+      input: 0.015
+      output: 0.075
+    fallback: "openai"
+    protocol: "anthropic"

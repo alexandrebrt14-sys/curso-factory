@@ -15,44 +15,12 @@ import httpx
 
 from src.config import get_api_key, MAX_TOKENS_PER_CALL
 from src.cost_tracker import CostTracker
+# Pricing, endpoints, modelos padrão e fallback vêm de config/providers.yaml
+# via src.providers. Os dicts abaixo são re-exportados para compatibilidade
+# com eventuais imports externos.
+from src.providers import DEFAULT_MODELS, ENDPOINTS, FALLBACK_MAP, PRICING
 
 logger = logging.getLogger(__name__)
-
-# Preços aproximados por 1K tokens (input, output) em USD
-PRICING: dict[str, tuple[float, float]] = {
-    "perplexity": (0.001, 0.001),
-    "openai": (0.005, 0.015),
-    "google": (0.00025, 0.0005),
-    "groq": (0.0001, 0.0002),
-    "anthropic": (0.015, 0.075),  # Claude Opus 4.6
-}
-
-# Mapeamento provider → modelo padrão
-DEFAULT_MODELS: dict[str, str] = {
-    "perplexity": "sonar-pro",
-    "openai": "gpt-4o",
-    "google": "gemini-2.0-flash",
-    "groq": "llama-3.3-70b-versatile",
-    "anthropic": "claude-opus-4-6",
-}
-
-# Endpoints base
-ENDPOINTS: dict[str, str] = {
-    "perplexity": "https://api.perplexity.ai/chat/completions",
-    "openai": "https://api.openai.com/v1/chat/completions",
-    "google": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-    "groq": "https://api.groq.com/openai/v1/chat/completions",
-    "anthropic": "https://api.anthropic.com/v1/messages",
-}
-
-# Fallback: se o provider primário falhar, tentar o secundário
-FALLBACK_MAP: dict[str, str] = {
-    "openai": "anthropic",
-    "anthropic": "openai",
-    "google": "openai",
-    "groq": "openai",
-    "perplexity": "google",
-}
 
 
 @dataclass
@@ -142,10 +110,11 @@ class LLMClient:
 
     def call(self, provider: str, prompt: str, **kwargs: Any) -> str:
         """Chamada genérica com circuit breaker, retry e fallback."""
+        fallback_depth = kwargs.pop("_fallback_depth", 0)
         circuit = self._get_circuit(provider)
         if circuit.is_open:
             logger.warning("Circuito aberto para %s, tentando fallback", provider)
-            return self._try_fallback(provider, prompt, **kwargs)
+            return self._try_fallback(provider, prompt, _fallback_depth=fallback_depth, **kwargs)
 
         bucket = self._get_bucket(provider)
         bucket.wait_and_consume()
@@ -170,14 +139,20 @@ class LLMClient:
                 else:
                     logger.error("Todas as tentativas falharam para %s", provider)
 
-        return self._try_fallback(provider, prompt, **kwargs)
+        return self._try_fallback(provider, prompt, _fallback_depth=fallback_depth, **kwargs)
 
     def _try_fallback(self, provider: str, prompt: str, **kwargs: Any) -> str:
         fallback = FALLBACK_MAP.get(provider)
         if not fallback:
-            raise RuntimeError(f"Sem fallback disponível para {provider}")
-        logger.info("Usando fallback: %s → %s", provider, fallback)
-        return self.call(fallback, prompt, **kwargs)
+            raise RuntimeError(f"Sem fallback disponivel para {provider}")
+        # Evita recursao infinita: limita cadeia de fallback
+        depth = kwargs.pop("_fallback_depth", 0)
+        if depth >= 2:
+            raise RuntimeError(f"Cadeia de fallback esgotada apos {depth} tentativas (ultimo: {provider})")
+        # Remove model do provider original para usar o default do fallback
+        kwargs.pop("model", None)
+        logger.info("Usando fallback: %s > %s (depth=%d)", provider, fallback, depth + 1)
+        return self.call(fallback, prompt, _fallback_depth=depth + 1, **kwargs)
 
     def _do_call(self, provider: str, prompt: str, **kwargs: Any) -> str:
         """Executa a chamada HTTP real para o provider."""
@@ -235,14 +210,23 @@ class LLMClient:
 
     def _call_google(self, api_key: str, model: str, prompt: str, max_tokens: int) -> str:
         url = ENDPOINTS["google"].format(model=model) + f"?key={api_key}"
+        # Gemini 2.5 Pro usa thinking mode que consome tokens extras
+        # Multiplicar max_tokens para compensar o thinking budget
+        effective_max = max_tokens * 4 if "pro" in model else max_tokens
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"maxOutputTokens": max_tokens},
+            "generationConfig": {"maxOutputTokens": effective_max},
         }
-        resp = self._http.post(url, json=payload)
+        resp = self._http.post(url, json=payload, timeout=120.0)
         resp.raise_for_status()
         data = resp.json()
-        text = data["candidates"][0]["content"]["parts"][0]["text"]
+        # Extrair texto ignorando thinking parts (thought=True)
+        parts = data["candidates"][0]["content"].get("parts", [])
+        text_parts = [p["text"] for p in parts if "text" in p and not p.get("thought")]
+        text = "\n".join(text_parts)
+        if not text:
+            # Fallback: pegar qualquer part com texto
+            text = parts[0].get("text", "") if parts else ""
         usage = data.get("usageMetadata", {})
         tokens_in = usage.get("promptTokenCount", 0)
         tokens_out = usage.get("candidatesTokenCount", 0)

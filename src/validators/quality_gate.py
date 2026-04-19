@@ -14,7 +14,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from src.models import QualityReport
 from src.validators.accent_checker import (
@@ -28,6 +28,10 @@ from src.validators.content_checker import (
 )
 from src.validators.html_validator import validate_html, format_report as html_report
 from src.validators.link_checker import check_links, format_report as link_report
+from src.validators.voice_guard import voice_guard_check
+
+if TYPE_CHECKING:
+    from src.clients.context import ClientContext
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +44,13 @@ class GateResult:
     html_ok: bool = True
     links_ok: bool = True
     conteudo_ok: bool = True
+    voice_guard_ok: bool = True
     erros: list[str] = field(default_factory=list)
     avisos: list[str] = field(default_factory=list)
     relatorios: list[str] = field(default_factory=list)
     texto_corrigido: str = ""
     acentos_corrigidos: int = 0
+    voice_guard_score: int = 0
 
 
 class QualityGate:
@@ -64,9 +70,14 @@ class QualityGate:
         self,
         base_dir: Optional[Path] = None,
         auto_fix: bool = True,
+        client: "ClientContext | None" = None,
     ) -> None:
         self.base_dir = base_dir
         self.auto_fix = auto_fix
+        if client is None:
+            from src.clients import load_client
+            client = load_client("default")
+        self.client = client
 
     def check_text(
         self,
@@ -136,8 +147,25 @@ class QualityGate:
                 result.avisos.append(f"Link: [{e.tipo}] {e.url} (linha {e.linha})")
         result.relatorios.append(link_report(link_errors))
 
-        logger.info("Quality gate (texto) para '%s': %s",
-                     curso_id, "APROVADO" if result.aprovado else "REPROVADO")
+        # 4. Voice Guard (barreira programática de padrão editorial do cliente)
+        vg = voice_guard_check(working_text, client=self.client)
+        result.voice_guard_score = vg.score
+        if not vg.aprovado:
+            result.voice_guard_ok = False
+            result.aprovado = False
+            for e in vg.erros_criticos:
+                result.erros.append(f"Voice Guard [crítico]: {e}")
+            for e in vg.erros:
+                if e not in vg.erros_criticos:
+                    result.erros.append(f"Voice Guard: {e}")
+        for a in vg.avisos:
+            result.avisos.append(f"Voice Guard: {a}")
+        result.relatorios.append(vg.report())
+
+        logger.info("Quality gate (texto) para '%s': %s (vg_score=%d)",
+                     curso_id,
+                     "APROVADO" if result.aprovado else "REPROVADO",
+                     vg.score)
         return result
 
     def check_html(

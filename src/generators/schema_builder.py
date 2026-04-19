@@ -18,6 +18,7 @@ from src.models import (
     SectionType,
     StepDefinition,
 )
+from src.parsers import extract_module_blocks, parse_module_to_sections
 
 if TYPE_CHECKING:
     from src.clients.context import ClientContext
@@ -119,134 +120,23 @@ class SchemaBuilder:
         return course
 
     def _parse_markdown_to_steps(self, markdown: str) -> list[StepDefinition]:
-        """Converte markdown revisado em lista estruturada de StepDefinition.
+        """Converte markdown revisado em StepDefinitions via parser compartilhado.
 
-        Detecta os seguintes padrões:
-        - ## Título (header = novo step)
-        - ```linguagem ... ``` (bloco de código)
-        - > DICA: ... (tip)
-        - > AVISO: ... (warning)
-        - > CHECKPOINT: ... (checkpoint)
-        - Texto regular (text)
+        Delega a extração de módulos e parsing de seções para
+        `src.parsers.markdown_parser`, garantindo paridade com o conversor
+        de drafts órfãos.
         """
         if not markdown or not markdown.strip():
             return []
 
+        blocks = extract_module_blocks(markdown)
+        if not blocks:
+            return []
+
         steps: list[StepDefinition] = []
-        current_title: str | None = None
-        current_sections: list[CourseSection] = []
-        step_counter = 0
-
-        lines = markdown.split("\n")
-        i = 0
-
-        while i < len(lines):
-            line = lines[i]
-
-            # Detecta header ## = novo step
-            header_match = re.match(r"^##\s+(.+)$", line)
-            if header_match:
-                # Salva step anterior se existir
-                if current_title is not None and current_sections:
-                    steps.append(
-                        self._build_step(step_counter, current_title, current_sections)
-                    )
-                step_counter += 1
-                current_title = header_match.group(1).strip()
-                current_sections = []
-                i += 1
-                continue
-
-            # Detecta bloco de código
-            code_match = re.match(r"^```(\w*)$", line)
-            if code_match:
-                language = code_match.group(1) or "text"
-                code_lines: list[str] = []
-                i += 1
-                while i < len(lines) and not lines[i].startswith("```"):
-                    code_lines.append(lines[i])
-                    i += 1
-                i += 1  # Pula o ``` de fechamento
-                code_content = "\n".join(code_lines)
-                if code_content.strip():
-                    current_sections.append(
-                        CourseSection(
-                            type=SectionType.CODE,
-                            value=code_content,
-                            language=language,
-                        )
-                    )
-                continue
-
-            # Detecta blockquotes especiais
-            tip_match = re.match(r"^>\s*DICA:\s*(.+)$", line)
-            if tip_match:
-                current_sections.append(
-                    CourseSection(
-                        type=SectionType.TIP,
-                        value=tip_match.group(1).strip(),
-                        label="DICA",
-                    )
-                )
-                i += 1
-                continue
-
-            warning_match = re.match(r"^>\s*AVISO:\s*(.+)$", line)
-            if warning_match:
-                current_sections.append(
-                    CourseSection(
-                        type=SectionType.WARNING,
-                        value=warning_match.group(1).strip(),
-                        label="AVISO",
-                    )
-                )
-                i += 1
-                continue
-
-            checkpoint_match = re.match(r"^>\s*CHECKPOINT:\s*(.+)$", line)
-            if checkpoint_match:
-                current_sections.append(
-                    CourseSection(
-                        type=SectionType.CHECKPOINT,
-                        value=checkpoint_match.group(1).strip(),
-                        label="CHECKPOINT",
-                    )
-                )
-                i += 1
-                continue
-
-            # Texto regular (ignora linhas vazias isoladas)
-            if line.strip():
-                # Acumula texto consecutivo em uma única seção
-                text_lines: list[str] = [line]
-                i += 1
-                while i < len(lines):
-                    next_line = lines[i]
-                    if (
-                        next_line.startswith("##")
-                        or next_line.startswith("```")
-                        or next_line.startswith("> DICA:")
-                        or next_line.startswith("> AVISO:")
-                        or next_line.startswith("> CHECKPOINT:")
-                        or not next_line.strip()
-                    ):
-                        break
-                    text_lines.append(next_line)
-                    i += 1
-                text_content = "\n".join(text_lines)
-                if text_content.strip():
-                    current_sections.append(
-                        CourseSection(type=SectionType.TEXT, value=text_content)
-                    )
-                continue
-
-            i += 1
-
-        # Salva último step
-        if current_title is not None and current_sections:
-            steps.append(
-                self._build_step(step_counter, current_title, current_sections)
-            )
+        for idx, (title, content) in enumerate(blocks):
+            sections = parse_module_to_sections(content)
+            steps.append(self._build_step(idx, title, sections))
 
         logger.info("Markdown parseado: %d steps extraídos", len(steps))
         return steps
