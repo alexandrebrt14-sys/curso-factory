@@ -10,6 +10,10 @@ author:
   credential: "CEO da ACME Consultoria, ex-diretora de Dados no Itaú"
   title_seo_suffix: "Maria Silva"
 
+company:
+  name: "ACME Consultoria"
+  description: "Este curso faz parte do programa educacional da ACME Consultoria, especializada em analytics e estratégia de dados para empresas brasileiras."
+
 domain:
   canonical_url: "https://acme-consultoria.com.br"
   educacao_path: "/cursos"

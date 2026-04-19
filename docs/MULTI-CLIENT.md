@@ -36,6 +36,10 @@ author:
   name: "Nome Completo do Autor"
   credential: "CEO da Empresa X, ex-Y na Z"
 
+company:
+  name: "Empresa X"
+  description: "Este curso faz parte do programa educacional da Empresa X, especializada em <nicho>."
+
 domain:
   canonical_url: "https://empresa.com.br"
   educacao_path: "/cursos"
@@ -99,6 +103,8 @@ Dentro de cada output: `drafts/`, `approved/`, `deployed/`, `costs.json`.
 | `author` | `name` | Aparece no SEO, hero, schema.org |
 | `author` | `credential` | Linha de credencial curta (ex: "CEO da X, ex-Y na Z") |
 | `author` | `title_seo_suffix` | Sufixo do `<title>` (default = `author.name`) |
+| `company` | `name` | Aparece como `provider` no JSON-LD de schema.org |
+| `company` | `description` | Texto que aparece no bloco de autoria do curso (1-2 frases curtas) |
 | `domain` | `canonical_url` | URL raiz (sem trailing slash, ex: `https://empresa.com`) |
 | `domain` | `educacao_path` | Path dos cursos (ex: `/cursos`, `/educacao`, `/academy`) |
 | raiz | `landing_page_dir` | Path relativo à raiz do repo apontando para a landing page; deixe vazio se não houver |

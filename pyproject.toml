@@ -23,8 +23,9 @@ dependencies = [
 curso-factory = "cli:main"
 
 [project.urls]
-Homepage = "https://alexandrecaramaschi.com/educacao"
+Homepage = "https://github.com/alexandrebrt14-sys/curso-factory"
 Repository = "https://github.com/alexandrebrt14-sys/curso-factory"
+Documentation = "https://github.com/alexandrebrt14-sys/curso-factory/tree/main/docs"
 
 [build-system]
 requires = ["setuptools>=68.0"]

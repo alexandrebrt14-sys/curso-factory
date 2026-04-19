@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alexandrecaramaschi.com/schemas/course-definition.json",
+  "$id": "https://github.com/alexandrebrt14-sys/curso-factory/schemas/course-definition.json",
   "title": "CourseDefinition",
   "description": "Schema de validação para definição completa de curso no curso-factory",
   "type": "object",

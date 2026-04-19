@@ -150,6 +150,13 @@ class CourseDefinition(BaseModel):
     autor_credencial: str = "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
     dominio: str = "https://alexandrecaramaschi.com"
     educacao_path: str = "/educacao"
+    # Empresa — schema.org provider e bloco de autoria
+    company_name: str = "Brasil GEO"
+    company_description: str = (
+        "Este curso faz parte do material educacional da Brasil GEO, empresa "
+        "brasileira especializada em Generative Engine Optimization. Para dúvidas, "
+        "entre em contato pelo WhatsApp ou LinkedIn."
+    )
     badge_color: str = Field(default="#0176d3")
 
     # Computed

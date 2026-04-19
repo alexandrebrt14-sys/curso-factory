@@ -11,6 +11,12 @@ author:
   credential: "TODO Credencial curta (ex: 'CEO da Empresa X, ex-Y na Z')"
   title_seo_suffix: "TODO Nome Curto"
 
+# Empresa — aparece como provider em schema.org e no bloco de autoria do curso.
+# Se não for uma empresa, preencha com o nome comercial do autor mesmo.
+company:
+  name: "TODO Empresa"
+  description: "TODO Descrição curta (1 a 2 frases) que aparece no bloco do autor do curso."
+
 # Domínio onde os cursos serão publicados
 domain:
   canonical_url: "https://TODO.com.br"

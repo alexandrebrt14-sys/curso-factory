@@ -700,14 +700,14 @@ export default function {{ component_name }}() {
       <Breadcrumbs
         items={[
           { label: "Inicio", href: "/" },
-          { label: "Educacao", href: "/educacao" },
+          { label: "Cursos", href: "{{ educacao_path }}" },
           { label: "{{ breadcrumb_label | js_escape }}" },
         ]}
       />
 
       <main id="main-content">
         {/* Hero */}
-        <section className="py-16 sm:py-20 px-6" style={% raw %}{{ background: "linear-gradient(135deg, {{ hero_gradient_from }} 0%, {{ hero_gradient_to }} 100%)" }}{% endraw %}>
+        <section className="py-16 sm:py-20 px-6" style={{ '{{' }} background: "linear-gradient(135deg, {{ hero_gradient_from }} 0%, {{ hero_gradient_to }} 100%)" {{ '}}' }}>
           <div className="max-w-[var(--max)] mx-auto">
             <div className="max-w-3xl">
               <span className="sf-label mb-3 block text-white/80">{{ descricao_curta | js_escape }}</span>
@@ -877,7 +877,7 @@ export default function {{ component_name }}() {
                       Parabéns! Você completou todos os {STEPS.length} módulos do curso {{ titulo | js_escape }}.
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-3">
-                      <a href="/educacao" className="sf-btn-primary" style={% raw %}{{ color: "#fff" }}{% endraw %}>
+                      <a href="{{ educacao_path }}" className="sf-btn-primary" style={% raw %}{{ color: "#fff" }}{% endraw %}>
                         Explorar outros cursos
                       </a>
                       <a href="/conteudos" className="sf-btn-outline">
@@ -921,9 +921,7 @@ export default function {{ component_name }}() {
                       {{ autor_credencial | js_escape }}
                     </p>
                     <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                      Este curso faz parte do material educacional da Brasil GEO, empresa brasileira
-                      especializada em Generative Engine Optimization. Para dúvidas, entre em contato
-                      pelo WhatsApp ou LinkedIn.
+                      {{ company_description | js_escape }}
                     </p>
                   </div>
                 </div>
@@ -938,7 +936,7 @@ export default function {{ component_name }}() {
       {/* JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={% raw %}{{
+        dangerouslySetInnerHTML={{ '{{' }}
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@graph": [
@@ -948,13 +946,13 @@ export default function {{ component_name }}() {
                 description: "{{ descricao | js_escape }}",
                 provider: {
                   "@type": "Organization",
-                  name: "Brasil GEO",
-                  url: "https://{{ dominio }}",
+                  name: "{{ company_name | js_escape }}",
+                  url: "{{ dominio }}",
                 },
                 instructor: {
                   "@type": "Person",
                   name: "{{ autor_nome | js_escape }}",
-                  url: "https://alexandrecaramaschi.com",
+                  url: "{{ dominio }}",
                   jobTitle: "{{ autor_credencial | js_escape }}",
                 },
                 educationalLevel: "{{ nivel_display | js_escape }}",
@@ -985,14 +983,14 @@ export default function {{ component_name }}() {
               {
                 "@type": "BreadcrumbList",
                 itemListElement: [
-                  { "@type": "ListItem", position: 1, name: "Inicio", item: "https://{{ dominio }}" },
-                  { "@type": "ListItem", position: 2, name: "Educacao", item: "https://{{ dominio }}/educacao" },
+                  { "@type": "ListItem", position: 1, name: "Inicio", item: "{{ dominio }}" },
+                  { "@type": "ListItem", position: 2, name: "Cursos", item: "{{ dominio }}{{ educacao_path }}" },
                   { "@type": "ListItem", position: 3, name: "{{ breadcrumb_label | js_escape }}" },
                 ],
               },
             ],
           }),
-        }}{% endraw %}
+        {{ '}}' }}
       />
     </>
   );

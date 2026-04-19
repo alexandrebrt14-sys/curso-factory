@@ -109,6 +109,11 @@ class SchemaBuilder:
             autor_credencial=client.author.credential,
             dominio=client.domain.canonical_url,
             educacao_path=client.domain.educacao_path,
+            company_name=client.company.name or client.author.name,
+            company_description=(
+                client.company.description
+                or f"Curso produzido por {client.author.name}."
+            ),
         )
 
         logger.info(

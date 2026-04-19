@@ -28,6 +28,14 @@ class Author:
 
 
 @dataclass
+class Company:
+    """Dados da empresa que aparecem como `provider` em schema.org e no bloco
+    de autoria do curso."""
+    name: str = ""
+    description: str = ""
+
+
+@dataclass
 class Domain:
     """Domínio canônico e caminho dos cursos."""
     canonical_url: str
@@ -92,6 +100,7 @@ class ClientContext:
     id: str
     author: Author
     domain: Domain
+    company: Company = field(default_factory=Company)
     branding: Branding = field(default_factory=Branding)
     editorial: Editorial = field(default_factory=Editorial)
     voice_guard: VoiceGuardConfig = field(default_factory=VoiceGuardConfig)

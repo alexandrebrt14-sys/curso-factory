@@ -69,7 +69,7 @@ class TsxGenerator:
                 "duration": step.duration,
                 "icon_key": step.icon_key,
                 "description": step.description,
-                "sections": [
+                "content": [
                     {
                         "type": section.type.value,
                         "value": section.value,
@@ -103,7 +103,10 @@ class TsxGenerator:
             "autor_nome": course.autor_nome,
             "autor_credencial": course.autor_credencial,
             "dominio": course.dominio,
+            "educacao_path": course.educacao_path,
             "canonical_url": course.canonical_url,
+            "company_name": course.company_name,
+            "company_description": course.company_description,
             "local_storage_key": course.local_storage_key,
             "component_name": course.component_name,
             "badge_color": course.badge_color,
@@ -122,7 +125,11 @@ class TsxGenerator:
             "descricao": course.descricao,
             "keywords_seo": course.keywords_seo,
             "dominio": course.dominio,
+            "educacao_path": course.educacao_path,
             "canonical_url": course.canonical_url,
+            "autor_nome": course.autor_nome,
+            "autor_credencial": course.autor_credencial,
+            "company_name": course.company_name,
         }
 
         return template.render(context)

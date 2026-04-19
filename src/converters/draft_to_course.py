@@ -35,7 +35,10 @@ import logging
 import re
 from datetime import timedelta
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from src.clients.context import ClientContext
 
 from src.models import (
     CourseDefinition,
@@ -127,16 +130,25 @@ def _extract_review_or_draft_text(etapas: dict) -> str:
     return ""
 
 
-def convert_draft_to_course(draft_path: Path) -> CourseDefinition | None:
+def convert_draft_to_course(
+    draft_path: Path,
+    client: "ClientContext | None" = None,  # noqa: F821
+) -> CourseDefinition | None:
     """Converte um draft JSON para CourseDefinition. Best-effort.
 
     Args:
         draft_path: Caminho para output/drafts/{slug}_{timestamp}.json
+        client: ClientContext para injetar autor/domínio/empresa. Se None,
+                usa o cliente "default".
 
     Returns:
         CourseDefinition se conseguiu parsear; None se falhou.
         Falhas sao logadas como warnings — caller continua o batch.
     """
+    if client is None:
+        from src.clients import load_client
+        client = load_client("default")
+
     try:
         raw = draft_path.read_text(encoding="utf-8")
         data = json.loads(raw)
@@ -185,14 +197,22 @@ def convert_draft_to_course(draft_path: Path) -> CourseDefinition | None:
     # clamp para o minimo legal sem inflar artificialmente o display.
     duracao_total = max(30, duracao_total)
 
+    # Tags e keywords default, enriquecidas com info do cliente
+    base_tags = ["Educacao"]
+    if client.company.name:
+        base_tags.append(client.company.name)
+    base_keywords = [course_id, titulo.lower()]
+    if client.author.name:
+        base_keywords.append(client.author.name.lower())
+
     try:
         course = CourseDefinition(
             slug=_slugify(course_id),
             titulo=titulo,
             descricao=descricao,
             nivel=NivelCurso.INTERMEDIARIO,
-            tags=["GEO", "Educacao", "Brasil GEO"],
-            keywords_seo=[course_id, titulo.lower(), "alexandre caramaschi"],
+            tags=base_tags,
+            keywords_seo=base_keywords,
             duracao_total_minutos=duracao_total,
             duracao_display=f"~{duracao_total} min",
             steps=steps,
@@ -205,6 +225,18 @@ def convert_draft_to_course(draft_path: Path) -> CourseDefinition | None:
                     ),
                 ),
             ],
+            autor_nome=client.author.name,
+            autor_credencial=client.author.credential,
+            dominio=client.domain.canonical_url,
+            educacao_path=client.domain.educacao_path,
+            company_name=client.company.name or client.author.name,
+            company_description=(
+                client.company.description
+                or f"Curso produzido por {client.author.name}."
+            ),
+            hero_gradient_from=client.branding.hero_gradient_from,
+            hero_gradient_to=client.branding.hero_gradient_to,
+            badge_color=client.branding.badge_color,
         )
     except Exception as exc:
         logger.warning(
@@ -225,13 +257,23 @@ def convert_draft_to_course(draft_path: Path) -> CourseDefinition | None:
 def convert_drafts_directory(
     input_dir: Path,
     output_dir: Path,
+    client: "ClientContext | None" = None,
 ) -> dict[str, Any]:
     """Converte todos os *.json de input_dir para TSX em output_dir.
+
+    Args:
+        input_dir: diretório com drafts *.json (tipicamente output/drafts/).
+        output_dir: destino dos TSX convertidos.
+        client: ClientContext para injetar autor/domínio. Se None, usa default.
 
     Returns:
         Dict com resumo: {converted: int, failed: int, files: [...]}
     """
     from src.generators.tsx_generator import TsxGenerator
+
+    if client is None:
+        from src.clients import load_client
+        client = load_client("default")
 
     if not input_dir.exists():
         return {"converted": 0, "failed": 0, "files": [], "error": f"input_dir nao existe: {input_dir}"}
@@ -246,7 +288,7 @@ def convert_drafts_directory(
     for draft_path in sorted(input_dir.glob("*.json")):
         if "checkpoint" in draft_path.name.lower():
             continue
-        course = convert_draft_to_course(draft_path)
+        course = convert_draft_to_course(draft_path, client=client)
         if not course:
             failed += 1
             results.append({

@@ -12,6 +12,7 @@ from src.clients.context import (
     Author,
     Branding,
     ClientContext,
+    Company,
     Domain,
     Editorial,
     VoiceGuardCanonical,
@@ -59,6 +60,12 @@ def load_client(client_id: str = "default") -> ClientContext:
     domain = Domain(
         canonical_url=domain_d.get("canonical_url", ""),
         educacao_path=domain_d.get("educacao_path", "/educacao"),
+    )
+
+    company_d = data.get("company", {})
+    company = Company(
+        name=company_d.get("name", ""),
+        description=company_d.get("description", ""),
     )
 
     branding_d = data.get("branding", {})
@@ -109,6 +116,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         id=data.get("id", client_id),
         author=author,
         domain=domain,
+        company=company,
         branding=branding,
         editorial=editorial,
         voice_guard=voice_guard,

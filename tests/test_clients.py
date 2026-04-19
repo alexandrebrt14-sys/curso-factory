@@ -46,6 +46,14 @@ def test_default_client_voice_guard_canonical():
     assert "alexandrecaramaschi.com" in vg.canonical.domains
 
 
+def test_default_client_company_populated():
+    """Default tem seção company com nome e descrição preenchidos."""
+    client = load_client("default")
+    assert client.company.name == "Brasil GEO"
+    assert "Brasil GEO" in client.company.description
+    assert len(client.company.description) > 50
+
+
 def test_default_client_forbidden_list_populated():
     """Default tem lista de proibições preservada do voice_guard original."""
     client = load_client("default")
@@ -195,3 +203,114 @@ def test_get_client_from_env_override(monkeypatch):
     monkeypatch.setenv("CURSO_FACTORY_CLIENT", "acme")
     client = get_client_from_env()
     assert client.id == "acme"
+
+
+# ─── Template Jinja2 não contém hardcodes do cliente default ───────────
+
+
+def test_page_template_has_no_client_hardcodes():
+    """Sentinela: page.tsx.j2 não pode ter 'Brasil GEO' ou
+    'alexandrecaramaschi.com' hardcoded. Tudo deve vir de variáveis Jinja2.
+    """
+    template_path = ROOT / "src" / "templates" / "page.tsx.j2"
+    assert template_path.exists()
+    content = template_path.read_text(encoding="utf-8")
+
+    # Sentinela: nenhuma string do cliente default pode aparecer literalmente
+    forbidden = ["Brasil GEO", "alexandrecaramaschi.com", "Alexandre Caramaschi"]
+    for term in forbidden:
+        assert term not in content, (
+            f"page.tsx.j2 contém hardcode '{term}'. "
+            f"Use variável Jinja2 ({{{{company_name}}}}, {{{{dominio}}}} ou {{{{autor_nome}}}}) em vez disso."
+        )
+
+
+def test_tsx_render_isolates_clients_no_leaks():
+    """Renderização TSX de um curso sob cliente B não pode vazar dados do A.
+
+    Sentinela E2E contra regressão: durante o refactor 2026-04-19 descobriu-se
+    que `{% raw %}` blocks no page.tsx.j2 estavam impedindo interpolação
+    Jinja2 de variáveis dentro do JSON-LD (bug pré-existente). Este teste
+    garante que variáveis críticas sejam interpoladas de fato.
+    """
+    from src.generators.schema_builder import SchemaBuilder
+    from src.generators.tsx_generator import TsxGenerator
+
+    acme = load_client("acme")
+    sb = SchemaBuilder()
+    lorem = ("Paragrafo profundo com conteudo educacional detalhado. " * 50)
+    md = (
+        "## Modulo Um\n\n" + lorem + "\n\n> CHECKPOINT: Revise.\n\n" + lorem +
+        "\n\n## Modulo Dois\n\n" + lorem + "\n\n> CHECKPOINT: Aplique.\n\n" + lorem
+    )
+    yaml_d = {
+        "titulo": "Curso ACME",
+        "descricao": "Descricao vinte caracteres minimo para validacao.",
+    }
+    course = sb.build("curso-acme", yaml_d, md, {}, client=acme)
+
+    gen = TsxGenerator()
+    page = gen.render_page(course)
+    layout = gen.render_layout(course)
+
+    # Nenhum dado do cliente default pode vazar
+    for term in ["Brasil GEO", "alexandrecaramaschi.com", "Alexandre Caramaschi"]:
+        assert term not in page, f"page.tsx vaza default: {term!r}"
+        assert term not in layout, f"layout.tsx vaza default: {term!r}"
+
+    # Dados do ACME devem estar presentes
+    assert "Maria Silva" in page
+    assert "ACME Consultoria" in page
+    assert "acme-consultoria.com.br" in page
+    assert "acme-consultoria.com.br" in layout
+
+    # Path customizado do cliente aplicado
+    assert "/cursos" in page
+    assert 'href="/cursos"' in page
+
+    # Bug de duplicação de protocolo (https://https://) corrigido
+    assert "https://https://" not in page
+    assert "https://https://" not in layout
+
+    # Variáveis Jinja2 que deveriam ser interpoladas e ficaram literais (bug raw)
+    import re
+    unrendered = [m.group() for m in re.finditer(r"\{\{\s+[a-z_]+\s+\}\}", page)]
+    assert not unrendered, (
+        f"Variáveis Jinja2 não renderizadas em page.tsx: {unrendered}. "
+        f"Provavelmente algum {{% raw %}} bloqueando — use {{{{ '{{' }}}} em vez."
+    )
+
+
+def test_course_definition_injects_company_from_client():
+    """SchemaBuilder injeta company_name e company_description do ClientContext."""
+    from src.generators.schema_builder import SchemaBuilder
+
+    client = load_client("default")
+    sb = SchemaBuilder()
+
+    # Markdown com bastante texto (>6000 chars) para cada step
+    # produzir duração suficiente (min 30 min total)
+    lorem = (
+        "Este é um parágrafo longo que simula conteúdo educacional real "
+        "com profundidade analítica, dados de mercado e aplicações práticas "
+        "para o profissional que está aprendendo o tema em questão. "
+    ) * 30
+    md = (
+        f"## Módulo Um\n\n{lorem}\n\n"
+        f"> CHECKPOINT: Revise os conceitos.\n\n"
+        f"{lorem}\n\n"
+        f"## Módulo Dois\n\n{lorem}\n\n"
+        f"> CHECKPOINT: Aplique em seu contexto.\n\n"
+        f"{lorem}\n"
+    )
+    yaml_def = {
+        "titulo": "Curso de Teste",
+        "descricao": "Descrição com pelo menos vinte caracteres para passar na validação Pydantic.",
+    }
+
+    course = sb.build("curso-teste", yaml_def, md, {}, client=client)
+    # Os campos vêm do ClientContext, não dos defaults do Pydantic
+    assert course.autor_nome == client.author.name
+    assert course.dominio == client.domain.canonical_url
+    assert course.company_name == client.company.name
+    assert course.company_description == client.company.description

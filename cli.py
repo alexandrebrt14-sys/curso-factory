@@ -211,13 +211,20 @@ def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
     """
     from src.converters.draft_to_course import convert_drafts_directory
 
+    try:
+        client = _resolve_client(args)
+    except FileNotFoundError as exc:
+        print(f"ERRO: {exc}", file=sys.stderr)
+        return 1
+
     input_dir = Path(args.input)
     output_dir = Path(args.output)
 
     print(f"Convertendo drafts de {input_dir} -> {output_dir}")
+    print(f"Cliente: {client.id} ({client.author.name})")
     print()
 
-    result = convert_drafts_directory(input_dir, output_dir)
+    result = convert_drafts_directory(input_dir, output_dir, client=client)
 
     if "error" in result:
         print(f"ERRO: {result['error']}")
@@ -362,6 +369,7 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="DIR",
         help="Diretorio destino para os TSX (default: output/converted_from_drafts)",
     )
+    _add_client_arg(p_d2t)
     p_d2t.set_defaults(func=cmd_drafts_to_tsx)
 
     return parser

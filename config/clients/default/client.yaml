@@ -12,6 +12,11 @@ author:
   credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
   title_seo_suffix: "Alexandre Caramaschi"
 
+# Empresa — aparece como provider no schema.org e no bloco de autoria
+company:
+  name: "Brasil GEO"
+  description: "Este curso faz parte do material educacional da Brasil GEO, empresa brasileira especializada em Generative Engine Optimization. Para dúvidas, entre em contato pelo WhatsApp ou LinkedIn."
+
 # Domínio e estrutura de URL
 domain:
   canonical_url: "https://alexandrecaramaschi.com"
