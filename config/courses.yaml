@@ -334,3 +334,30 @@ courses:
         descricao: "Calcular ROI de IA, TCO completo (infra + API + ops), apresentar para diretoria, benchmarks de mercado."
       - titulo: "Governança e compliance: políticas, audit trails e LGPD"
         descricao: "Políticas de uso de IA, audit trails, data residency, LGPD, classificação de dados, revisão humana."
+
+  - slug: seo-geo-para-dentistas
+    nome: "SEO e GEO para Dentistas: Captar Pacientes no Google e em Respostas Generativas"
+    nivel: intermediário
+    modulos: 8
+    descricao: "Visibilidade orgânica e generativa para consultórios e clínicas odontológicas respeitando o Código de Ética Odontológica do CFO, a Resolução CFO-196 e a LGPD. SEO local, conteúdo científico citável, GEO para ChatGPT/Perplexity/Gemini, Google Business Profile e conversão por WhatsApp com consentimento."
+    tags: [seo, geo, odontologia, marketing-saude, cfo, lgpd]
+    prerequisitos: []
+    duracao_estimada: "~180 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "Fundamentos regulatórios: CFO-196, Código de Ética e LGPD para odontologia"
+        descricao: "O que pode e o que não pode na comunicação odontológica. Vedações: sensacionalismo, antes-e-depois, preços, garantia de resultado. Limites da mídia paga. LGPD aplicada a dados de saúde (art. 11)."
+      - titulo: "SEO local para consultórios: Google Business Profile e citações NAP"
+        descricao: "Otimização do perfil GBP odontológico, categorização correta (Dental clinic/Dentist), reviews com conformidade CFO, citations em diretórios de saúde, schema LocalBusiness e Dentist."
+      - titulo: "Conteúdo científico citável: do paper à página answer-first"
+        descricao: "Tradução de evidência clínica em conteúdo educacional. Referências a Cochrane, SciELO, RBO. Estrutura answer-first para perguntas frequentes. Bloco citável para ChatGPT e Perplexity."
+      - titulo: "GEO para odontologia: presença em ChatGPT, Perplexity e Gemini"
+        descricao: "Como mecanismos generativos citam fontes odontológicas. Estrutura de autoridade: autor identificado, CRO visível, credenciais. Páginas FAQ estruturadas. Medição de share-of-voice generativo."
+      - titulo: "Jornada do paciente digital: do sintoma ao agendamento"
+        descricao: "Mapa de dor/busca por procedimento (ortodontia, implantes, clareamento, endodontia). Keywords informacionais vs transacionais. Conversão sem promessa de resultado. CTA conforme CFO."
+      - titulo: "WhatsApp Business e intake digital dentro da LGPD"
+        descricao: "Primeira conversa via WhatsApp. Script de triagem. Consentimento explícito para dados de saúde. Opt-in registrado. Encaminhamento presencial obrigatório para avaliação clínica."
+      - titulo: "Reputação institucional e prova social compliant"
+        descricao: "Reviews no Google sem incentivo financeiro. Depoimentos com consentimento documentado. Cases anonimizados. Publicações em mídia especializada. Parcerias com universidades e SBOs."
+      - titulo: "KPIs, monitoramento e plano 90 dias"
+        descricao: "Métricas de SEO local (impressões GBP, ações no perfil), orgânico (Search Console), GEO (menções em LLMs, referrals de IA). Roadmap 30/60/90 dias com metas realistas por porte de clínica."
