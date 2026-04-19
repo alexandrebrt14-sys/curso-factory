@@ -6,6 +6,37 @@ O Curso Factory é um pipeline multi-LLM orquestrado que transforma um nome
 de curso em conteúdo educacional completo, revisado e pronto para publicação.
 Cada estágio é executado pelo LLM mais adequado para aquela função específica.
 
+Desde a refatoração 2026-04-19, o framework é **multi-tenant**: todo o pipeline
+recebe um `ClientContext` injetado (ver `src/clients/context.py`) que encapsula
+autor, domínio, branding, padrão editorial e regras de voice guard. Isso
+permite rodar a fábrica para diferentes empresas sem mudar código.
+
+---
+
+## Camada de Multi-tenancy
+
+```
+config/clients/<id>/client.yaml
+        |
+        v
+src/clients/loader.py::load_client(id)
+        |
+        v
+ClientContext (author, domain, branding, editorial, voice_guard, ...)
+        |
+        +--> CourseFactory(client=...)
+        +--> Orchestrator(client_context=...)
+        +--> SchemaBuilder.build(..., client=...)
+        +--> QualityGate(client=...)
+        +--> voice_guard_check(text, client=...)
+```
+
+Cliente `default` preserva o comportamento pré-refactor (Brasil GEO /
+Alexandre Caramaschi). Qualquer outro `<id>` é totalmente isolado em
+`output/clients/<id>/`.
+
+Playbook de integração de novo cliente: ver [MULTI-CLIENT.md](MULTI-CLIENT.md).
+
 ---
 
 ## Diagrama do Pipeline
@@ -131,15 +162,32 @@ O pipeline implementa três camadas de proteção contra retrabalho desnecessár
 
 ## Módulos Principais
 
-| Módulo                        | Responsabilidade                              |
-|-------------------------------|-----------------------------------------------|
-| `src/agents/pipeline.py`      | Orquestrador principal do pipeline            |
-| `src/agents/research.py`      | Integração com Perplexity API                 |
-| `src/agents/draft.py`         | Integração com OpenAI GPT-4o                  |
-| `src/agents/analyze.py`       | Integração com Google Gemini                  |
-| `src/agents/classify.py`      | Integração com Groq                           |
-| `src/agents/review.py`        | Integração com Anthropic Claude               |
-| `src/agents/cost_tracker.py`  | Rastreamento de custos por provider           |
-| `src/validators/quality.py`   | Validação pedagógica local (pré-LLM)          |
-| `src/validators/accents.py`   | Validação de acentuação PT-BR                 |
-| `src/config.py`               | Carregamento de configuração e variáveis      |
+| Módulo                               | Responsabilidade                                             |
+|--------------------------------------|--------------------------------------------------------------|
+| `cli.py`                             | CLI principal (create/clients/batch/validate/cost-report)    |
+| `src/clients/context.py`             | Dataclass `ClientContext` (author, domain, voice_guard, ...) |
+| `src/clients/loader.py`              | `load_client(id)` + `list_clients()`                         |
+| `src/providers.py`                   | Carregamento de `config/providers.yaml` (pricing, endpoints) |
+| `src/agents/pipeline.py`             | `CourseFactory` — wrapper de alto nível para CLI             |
+| `src/orchestrator.py`                | Orchestrator: 5 etapas, checkpoint incremental, resume       |
+| `src/llm_client.py`                  | HTTP unificado: circuit breaker, retry, fallback, cost log   |
+| `src/agents/researcher.py`           | Agente Perplexity (sonar-pro)                                |
+| `src/agents/writer.py`               | Agente GPT-4o (draft)                                        |
+| `src/agents/analyzer.py`             | Agente Gemini 2.5 Pro (analyze)                              |
+| `src/agents/classifier.py`           | Agente Groq (classify)                                       |
+| `src/agents/reviewer.py`             | Agente Claude Opus 4.6 (review)                              |
+| `src/validators/quality_gate.py`     | QualityGate: 4 camadas (acentos, conteúdo, links, voice_guard) |
+| `src/validators/accent_checker.py`   | 300+ mapeamentos + auto-correção PT-BR                       |
+| `src/validators/content_checker.py`  | Bloom, Knowles, tabelas, clichês                             |
+| `src/validators/link_checker.py`     | Acentos em URLs (bloqueante)                                 |
+| `src/validators/voice_guard.py`      | 4 dimensões ponderadas por `ClientContext`                   |
+| `src/validators/html_validator.py`   | Fechamento de tags, acessibilidade                           |
+| `src/parsers/markdown_parser.py`     | Fonte única: slugify, extract_module_blocks, parse sections   |
+| `src/generators/schema_builder.py`   | Markdown → `CourseDefinition` validado                       |
+| `src/generators/tsx_generator.py`    | `CourseDefinition` → `page.tsx` + `layout.tsx` (Jinja2)      |
+| `src/generators/metadata_sync.py`    | Emite `output/course_catalog.json` consumido via worker      |
+| `src/converters/draft_to_course.py`  | Recovery: drafts órfãos JSON → `CourseDefinition`            |
+| `src/indexer/course_indexer.py`      | Embeddings OpenAI + upsert Supabase pgvector                 |
+| `src/cost_tracker.py`                | Registro de custo por chamada com budget guard               |
+| `src/config.py`                      | Env vars, budgets, paths                                     |
+| `src/unified_finops.py`              | Adapter pro calls.db unificado (geo-finops)                  |

@@ -2,7 +2,8 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![5 LLMs](https://img.shields.io/badge/LLMs-5_orquestrados-0176d3)
-![Quality Gate](https://img.shields.io/badge/Quality_Gate-5_camadas-green)
+![Quality Gate](https://img.shields.io/badge/Quality_Gate-4_camadas-green)
+![Multi-tenant](https://img.shields.io/badge/multi--tenant-ClientContext-8e44ad)
 ![PT-BR](https://img.shields.io/badge/idioma-PT--BR_acentuado-yellow)
 
 ---
@@ -11,9 +12,26 @@
 
 O curso-factory é uma fábrica de cursos educacionais de altíssima qualidade, construída sobre um pipeline de 5 LLMs orquestrados. O sistema recebe a definição de um curso em YAML, executa um pipeline de 5 etapas (pesquisa, redação, análise, classificação, revisão) e entrega módulos completos, validados e prontos para deploy.
 
-O padrão editorial segue o nível de publicações como **Harvard Business Review**, **MIT Sloan Management Review** e **HSM Management** — com profundidade analítica real, dados e evidências, formatação rica (tabelas, blocos de citação, hierarquia de títulos) e conformidade com os 6 princípios da andragogia de Malcolm Knowles.
+O padrão editorial do cliente padrão (`default`) segue o nível de publicações como **Harvard Business Review**, **MIT Sloan Management Review** e **HSM Management** — com profundidade analítica real, dados e evidências, formatação rica (tabelas, blocos de citação, hierarquia de títulos) e conformidade com os 6 princípios da andragogia de Malcolm Knowles. Cada cliente pode configurar o próprio padrão via `config/clients/<id>/client.yaml`.
 
-Todos os cursos são gerados com dados atualizados de 2026, passam por **validação automática de 5 camadas** (acentuação com auto-correção, qualidade de conteúdo, formatação, links e HTML) antes de serem aprovados para publicação.
+Todos os cursos são gerados com dados atualizados, passam por **validação automática em 4 camadas** (acentuação com auto-correção, qualidade de conteúdo, links e voice guard) antes de serem aprovados para publicação.
+
+## Multi-cliente (multi-tenancy)
+
+A curso-factory nasceu para a Brasil GEO (Alexandre Caramaschi), mas foi refatorada para ser **replicável**. Toda variação entre clientes — autor, domínio, branding, padrão editorial, voice guard rules — está consolidada em `config/clients/<id>/client.yaml`.
+
+```bash
+# Lista clientes configurados
+python cli.py clients
+
+# Gera curso sob o cliente default (Alexandre/Brasil GEO)
+python cli.py create "Meu Curso"
+
+# Gera curso sob outro cliente
+python cli.py create "Meu Curso" --client minhaempresa
+```
+
+Para adicionar um novo cliente em 3 passos, consulte o playbook em [docs/MULTI-CLIENT.md](docs/MULTI-CLIENT.md).
 
 ---
 
@@ -166,9 +184,9 @@ O agente revisor faz a passada final com **correção ativa** (não apenas comen
 
 ---
 
-## Quality Gate — 5 Camadas de Validação
+## Quality Gate — 4 Camadas de Validação + FinOps
 
-O quality gate é a barreira final antes da publicação. Nenhum conteúdo é aprovado sem passar por todas as 5 camadas:
+O quality gate é a barreira final antes da publicação. Nenhum conteúdo é aprovado sem passar por todas as 4 camadas bloqueantes (+ FinOps como guarda pré-execução e HTML como camada opcional para conteúdo renderizado):
 
 ### Camada 1: Acentuação PT-BR (com auto-correção)
 
@@ -202,16 +220,30 @@ O quality gate é a barreira final antes da publicação. Nenhum conteúdo é ap
 - Detecção de acentos em URLs (bloqueante — incidente 2026-03-27: 55 hrefs corrompidos)
 - Verificação de links internos
 
-### Camada 4: HTML (apenas para conteúdo HTML)
+### Camada 4: Voice Guard (padrão editorial por cliente)
+
+Barreira programática que bate o texto contra o `voice_guard` do `ClientContext` ativo. Score 0-100 em 4 dimensões ponderadas:
+
+| Dimensão | Peso | O que mede |
+|----------|------|------------|
+| Anti-clichê editorial | 30 | 18 expressões proibidas ("nos dias de hoje", "é fundamental que", ...) |
+| Bloom + andragogia | 30 | Verbos Bloom nível 3+ nos objetivos; bonus por ≥3 verbos aceitos |
+| Naming canônico | 25 | Empresa/fundador canônicos vs. títulos/domínios/nomes proibidos do cliente |
+| Estilo HBR/MIT Sloan | 15 | Sem disclaimers de IA, sem aberturas retóricas, parágrafos curtos |
+
+Score < `min_score` (padrão 70) **ou** qualquer erro crítico (título inventado, domínio alucinado, nome errado da empresa) → `aprovado = False`. Configurável por cliente em `config/clients/<id>/client.yaml` → `voice_guard:`.
+
+### Camada opcional: HTML (apenas para conteúdo renderizado)
 
 - Fechamento de tags
 - Elementos obrigatórios (meta charset, title, main, h1)
 - Acessibilidade (lang, alt em imagens)
 
-### Camada 5: FinOps
+### Guarda de FinOps (pré-execução)
 
 - Budget guard: $5 max Claude, $10 max total por curso
 - Cache obrigatório: SHA-256, TTL 24h
+- Pricing, endpoints e fallback entre providers em `config/providers.yaml`
 
 ---
 
@@ -437,11 +469,22 @@ curso-factory/
 
 ---
 
+## Documentação
+
+| Documento | Quando ler |
+|-----------|-----------|
+| [docs/MULTI-CLIENT.md](docs/MULTI-CLIENT.md) | Adicionar um novo cliente (empresa, nicho, autor). Inclui playbook passo-a-passo, campos de `client.yaml` e integração com QualityGate. |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entender o pipeline interno (orchestrator, agents, validators, generators) e onde encaixar mudanças. |
+| [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
+| [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
+
+---
+
 ## Convenções
 
 - **Idioma do conteúdo**: Português do Brasil com acentuação completa (enforced por 4 barreiras)
 - **Idioma do código**: Inglês
-- **Padrão editorial**: HSM Management + Harvard Business Review + MIT Sloan Management Review
+- **Padrão editorial (cliente default)**: HSM Management + Harvard Business Review + MIT Sloan Management Review
 - **Andragogia**: 6 princípios de Knowles aplicados e validados automaticamente
 - **Bloom**: Verbos nível 3-6 nos objetivos (aplicar, analisar, avaliar, criar)
 - **Arquivos Python**: snake_case (`cost_tracker.py`, `accent_checker.py`)

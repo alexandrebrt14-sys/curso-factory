@@ -1,5 +1,32 @@
 # curso-factory — Instruções Claude Code
 
+## 2026-04-19 — Refactor multi-tenant (Ondas 1-5)
+
+### Mudança estrutural: ClientContext
+- **Antes:** credencial Alexandre, domínio `alexandrecaramaschi.com`, padrão HSM/HBR/MIT Sloan e regras do voice guard estavam **hardcoded** em `models.py`, `voice_guard.py`, `pyproject.toml`, etc. Rodar a fábrica para outro cliente exigia fork.
+- **Depois:** tudo que varia por cliente vem de `config/clients/<id>/client.yaml`. O framework carrega o YAML em um `ClientContext` (`src/clients/context.py`) e injeta em CourseFactory, Orchestrator, SchemaBuilder, QualityGate e voice_guard_check.
+- **Cliente `default`** preserva 100% do comportamento pré-refactor (Brasil GEO). Qualquer `<id>` diferente escreve em `output/clients/<id>/`.
+- **CLI:** `python cli.py create "Curso" --client minhaempresa` ou `export CURSO_FACTORY_CLIENT=<id>`.
+- **Como listar:** `python cli.py clients`.
+- **Playbook completo:** [docs/MULTI-CLIENT.md](docs/MULTI-CLIENT.md).
+
+### Consolidação técnica
+- **Parser compartilhado** `src/parsers/markdown_parser.py`: fonte única de `slugify`, `extract_module_blocks`, `parse_module_to_sections`. Antes, `schema_builder.py` e `draft_to_course.py` tinham implementações paralelas divergentes.
+- **Providers em YAML** `config/providers.yaml` + `src/providers.py`: pricing, endpoints, default_model e fallback. `llm_client.py` só orquestra — mudança de preço/modelo é edição YAML.
+- **Voice Guard no QualityGate**: agora é a 4ª camada bloqueante. Score < `client.voice_guard.min_score` (padrão 70) ou erro crítico → `aprovado=False`.
+
+### Limpeza
+- `.gitignore` exclui `output/`, `*.egg-info/`, `.pytest_cache/`, `.mypy_cache/`.
+- `tests/fixtures/sample_course.json`: `nivel` corrigido de `intermediario` → `intermediário` (5/5 testes voltaram a verde).
+- `src/indexer/course_indexer.py`: removido hardcode `C:/Sandyboxclaude/...`; lê `LANDING_PAGE_DIR` do env ou derive de path relativo.
+
+### Commits da refatoração
+- `d3c1077` — refactor: multi-tenancy via ClientContext + limpeza de fundação
+- `203f126` — refactor: consolidação técnica (markdown_parser, providers.yaml, voice_guard em QualityGate)
+
+### Regra para trabalhos futuros
+Ao tocar em qualquer lógica sensível a autor/domínio/padrão editorial: passe pelo `ClientContext`, **não** hardcode. Se precisar de uma constante que varia por cliente, é campo de YAML.
+
 ## 2026-04-09 — Mudanças da auditoria de ecossistema (Wave D)
 
 ### NOVO: course_id propagado em cost_tracker (F32)
@@ -27,8 +54,8 @@
 
 ### Achados pendentes neste repo
 
-- **F13 (CRÍTICO):** `voice_guard.py` programático ainda não existe. Padrão editorial Alexandre é enforced só por prompt — sem barreira de código. Onda 2.
-- **F38 → BAIXO:** `curso-factory` chama LLMs direto em vez de usar `geo-orchestrator`. Crosscheck Gemini concordou que esse achado estava superdimensionado. Migração para SDK fica para Onda 3 (B-019).
+- **F13 (CRÍTICO):** ~~`voice_guard.py` programático ainda não existe.~~ **RESOLVIDO** na onda 2026-04-09 (B-012) e depois parametrizado por ClientContext em 2026-04-19.
+- **F38 → BAIXO:** `curso-factory` chama LLMs direto em vez de usar `geo-orchestrator`. Crosscheck Gemini concordou que esse achado estava superdimensionado. Migração para SDK fica para uma onda futura.
 
 ## Regras Fundamentais
 
@@ -37,11 +64,13 @@
 - NUNCA: "nao", "voce", "producao" — SEMPRE: "não", "você", "produção"
 - Exceção: código, variáveis, commits, nomes de arquivo em inglês
 
-### Nomenclatura
+### Nomenclatura (cliente `default`)
 - Credencial canônica: "Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
 - NUNCA usar: "Especialista #1", "GEO Brasil", "Source Rank"
 - Domínios válidos: alexandrecaramaschi.com, brasilgeo.ai
 - NUNCA referenciar: geobrasil.com.br, sourcerank.ai
+
+**Importante:** essas regras valem para o cliente `default`. Ao trabalhar com outro cliente (`--client <id>`), as regras de naming vêm do `config/clients/<id>/client.yaml`. Não misture: jamais hardcode credencial Alexandre no código — tudo passa pelo `ClientContext`.
 
 ### Sem Emojis
 - Proibido emojis em qualquer conteúdo de curso ou documentação
@@ -185,10 +214,13 @@ O template `page.tsx.j2` inclui um componente `FormattedText` que renderiza:
 ## Comandos CLI
 
 ```bash
-python cli.py create "Nome do Curso"     # Cria curso completo
-python cli.py validate output/drafts/    # Valida rascunhos (5 camadas)
-python cli.py cost-report                # Relatório de custos
-python cli.py batch config/courses.yaml  # Criação em lote
+python cli.py clients                                # Lista clientes em config/clients/
+python cli.py create "Nome do Curso"                 # Cria curso sob cliente default
+python cli.py create "Nome do Curso" --client acme   # Cria sob cliente específico
+python cli.py validate output/drafts/                # Valida rascunhos
+python cli.py cost-report                            # Relatório de custos
+python cli.py batch config/courses.yaml              # Criação em lote
+python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 ```
 
 ## Workflow de Criação de Curso
@@ -201,8 +233,10 @@ python cli.py batch config/courses.yaml  # Criação em lote
 6. Se aprovado → output/approved/
 7. Deploy manual ou via script
 
-## Credencial do Autor
+## Credencial do Autor (cliente `default`)
 - Nome: Alexandre Caramaschi
 - Título: CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil
 - URL: https://alexandrecaramaschi.com
 - NUNCA usar: "Especialista #1", credenciais inventadas
+
+**Para outro cliente:** consulte `config/clients/<id>/client.yaml` → seção `author:` e `voice_guard.canonical:`. O voice guard bloqueia textos que violem o naming canônico do cliente ativo.
