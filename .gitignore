@@ -1,11 +1,35 @@
+# Secrets e ambiente
 .env
+.env.*
+!.env.example
+
+# Cache e build
 .cache/
+.pytest_cache/
 __pycache__/
 *.pyc
-output/drafts/
-output/approved/
-output/deployed/
-.venv/
-dist/
+*.pyo
+.mypy_cache/
+.ruff_cache/
+
+# Artefatos Python
 *.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Outputs gerados (não versionar)
+output/
+!output/.gitkeep
+
+# Node (caso adicione front-end)
 node_modules/
+
+# IDEs
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

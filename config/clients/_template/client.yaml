@@ -1,0 +1,66 @@
+# Template de cliente — copie este diretório para config/clients/<novo>/
+# e edite os campos marcados com TODO.
+#
+# Consulte docs/MULTI-CLIENT.md para o playbook completo de integração.
+
+id: TODO_cliente_id
+
+# Autoria e credencial canônica (aparece no SEO, hero e schema.org)
+author:
+  name: "TODO Nome Completo do Autor"
+  credential: "TODO Credencial curta (ex: 'CEO da Empresa X, ex-Y na Z')"
+  title_seo_suffix: "TODO Nome Curto"
+
+# Domínio onde os cursos serão publicados
+domain:
+  canonical_url: "https://TODO.com.br"
+  educacao_path: "/cursos"  # ou "/aulas", "/educacao", "/academy" ...
+
+# Caminho relativo (a partir da raiz do repo curso-factory) para a landing
+# page deste cliente, quando existir. Deixe vazio se ainda não há landing.
+landing_page_dir: "../TODO-landing"
+educacao_dir: "../TODO-landing/src/app/cursos"
+
+# Branding visual do hero do curso
+branding:
+  hero_gradient_from: "#111111"
+  hero_gradient_to: "#444444"
+  badge_color: "#111111"
+
+# Padrão editorial deste cliente
+# Estilos suportados: hsm_hbr_mit_sloan | business | academic | technical
+editorial:
+  style: "business"
+  reference_publications: []
+  bloom_min_level: 3
+  knowles_min_principles: 4
+  words_per_module_min: 2000
+  words_per_module_max: 4000
+
+# Voice guard — deixe enabled=false se o cliente ainda não tem naming rígido
+voice_guard:
+  enabled: true
+  min_score: 70
+
+  canonical:
+    company: "TODO Empresa"
+    founder: "TODO Fundador"
+    credential_fragments: []
+    domains:
+      - "TODO.com.br"
+
+  forbidden:
+    titles: []
+    company_names: []
+    domains: []
+    rhetoric_openers: []
+    # Anti-disclaimers de modelo de IA — válidos para qualquer cliente
+    ai_disclaimers:
+      - "Como modelo de IA"
+      - "como modelo de linguagem"
+      - "como uma IA"
+      - "devo ressaltar"
+      - "como assistente"
+
+output:
+  base_dir: "output"

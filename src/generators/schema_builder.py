@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src.models import (
     CourseDefinition,
@@ -18,6 +18,9 @@ from src.models import (
     SectionType,
     StepDefinition,
 )
+
+if TYPE_CHECKING:
+    from src.clients.context import ClientContext
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +34,7 @@ class SchemaBuilder:
         yaml_def: dict[str, Any],
         reviewed_content: str,
         classify_result: dict[str, Any],
+        client: "ClientContext | None" = None,
     ) -> CourseDefinition:
         """Constrói e valida um CourseDefinition.
 
@@ -75,6 +79,15 @@ class SchemaBuilder:
             int(s.duration.replace(" min", "")) for s in steps
         ) if steps else 180
 
+        if client is None:
+            from src.clients import load_client
+            client = load_client("default")
+
+        # Branding vem do cliente por padrão; YAML pode sobrescrever por curso
+        hero_from = yaml_def.get("hero_gradient_from", client.branding.hero_gradient_from)
+        hero_to = yaml_def.get("hero_gradient_to", client.branding.hero_gradient_to)
+        badge = yaml_def.get("badge_color", client.branding.badge_color)
+
         course = CourseDefinition(
             slug=slug,
             titulo=yaml_def.get("titulo", yaml_def.get("nome", slug)),
@@ -87,8 +100,14 @@ class SchemaBuilder:
             faq=faq_items,
             duracao_total_minutos=duracao_total,
             duracao_display=f"~{duracao_total} min",
-            hero_gradient_from=yaml_def.get("hero_gradient_from", "#032d60"),
-            hero_gradient_to=yaml_def.get("hero_gradient_to", "#0176d3"),
+            hero_gradient_from=hero_from,
+            hero_gradient_to=hero_to,
+            badge_color=badge,
+            # Autoria injetada do ClientContext
+            autor_nome=client.author.name,
+            autor_credencial=client.author.credential,
+            dominio=client.domain.canonical_url,
+            educacao_path=client.domain.educacao_path,
         )
 
         logger.info(

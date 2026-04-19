@@ -3,15 +3,24 @@ CLI principal do Curso Factory.
 
 Uso:
     python cli.py create "Nome do Curso"
+    python cli.py create "Nome do Curso" --client minha_empresa
     python cli.py validate PATH
     python cli.py cost-report
     python cli.py batch config/courses.yaml
+    python cli.py clients                 # lista clientes configurados
     python cli.py cache-clear
 """
 
 import argparse
 import sys
 from pathlib import Path
+
+
+def _resolve_client(args: argparse.Namespace):
+    """Carrega ClientContext a partir de --client ou env CURSO_FACTORY_CLIENT."""
+    from src.clients import load_client
+    client_id = getattr(args, "client", None) or "default"
+    return load_client(client_id)
 
 
 def cmd_create(args: argparse.Namespace) -> int:
@@ -25,11 +34,16 @@ def cmd_create(args: argparse.Namespace) -> int:
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
 
+    try:
+        client = _resolve_client(args)
+    except FileNotFoundError as exc:
+        print(f"ERRO: {exc}", file=sys.stderr)
+        return 1
+
     # Tenta encontrar config do curso no courses.yaml
     course_config = None
     for c in load_courses():
         if args.nome.lower() in c.get("nome", "").lower():
-            # Monta lista de modulos se existir estrutura_modulos
             modulos = []
             for m in c.get("estrutura_modulos", []):
                 modulos.append({"titulo": m["titulo"], "descricao": m.get("descricao", "")})
@@ -42,8 +56,9 @@ def cmd_create(args: argparse.Namespace) -> int:
             }
             break
 
-    factory = CourseFactory()
+    factory = CourseFactory(client=client)
     print(f"Iniciando criação do curso: {args.nome}")
+    print(f"Cliente: {client.id} ({client.author.name})")
     print("Pipeline: Perplexity > GPT-4o > Gemini > Groq > Claude")
     try:
         result = factory.run(args.nome, course_config=course_config)
@@ -227,6 +242,29 @@ def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
     return 0 if result["failed"] == 0 else 0  # nao falhar batch por individuais
 
 
+def cmd_clients(args: argparse.Namespace) -> int:
+    """Lista clientes configurados em config/clients/."""
+    from src.clients import list_clients, load_client
+
+    ids = list_clients()
+    if not ids:
+        print("Nenhum cliente configurado em config/clients/.")
+        print("Copie config/clients/_template/ para criar um novo.")
+        return 1
+
+    print(f"Clientes configurados ({len(ids)}):")
+    print()
+    for cid in ids:
+        try:
+            c = load_client(cid)
+            vg = "ON" if c.voice_guard.enabled else "off"
+            print(f"  {cid:<20} {c.author.name} @ {c.domain.canonical_url}")
+            print(f"  {'':<20} voice_guard={vg} min_score={c.voice_guard.min_score} style={c.editorial.style}")
+        except Exception as exc:
+            print(f"  {cid:<20} ERRO ao carregar: {exc}")
+    return 0
+
+
 def cmd_cache_clear(args: argparse.Namespace) -> int:
     """Limpa o cache de resultados de chamadas aos LLMs."""
     import shutil
@@ -247,6 +285,16 @@ def cmd_cache_clear(args: argparse.Namespace) -> int:
     return 0
 
 
+def _add_client_arg(sub: argparse.ArgumentParser) -> None:
+    """Adiciona o argumento --client em subcomandos que precisam de ClientContext."""
+    sub.add_argument(
+        "--client",
+        default=None,
+        metavar="ID",
+        help="ID do cliente em config/clients/<id>/ (default: 'default')",
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="curso-factory",
@@ -257,7 +305,12 @@ def build_parser() -> argparse.ArgumentParser:
     # create
     p_create = subparsers.add_parser("create", help="Cria um curso completo via pipeline")
     p_create.add_argument("nome", metavar="NOME", help="Nome do curso a ser criado")
+    _add_client_arg(p_create)
     p_create.set_defaults(func=cmd_create)
+
+    # clients
+    p_clients = subparsers.add_parser("clients", help="Lista clientes configurados")
+    p_clients.set_defaults(func=cmd_clients)
 
     # validate
     p_validate = subparsers.add_parser("validate", help="Valida rascunhos de um caminho")
@@ -271,6 +324,7 @@ def build_parser() -> argparse.ArgumentParser:
     # batch
     p_batch = subparsers.add_parser("batch", help="Cria múltiplos cursos em lote via YAML")
     p_batch.add_argument("config", metavar="CONFIG", help="Caminho para o arquivo YAML de lote")
+    _add_client_arg(p_batch)
     p_batch.set_defaults(func=cmd_batch)
 
     # emit-catalog

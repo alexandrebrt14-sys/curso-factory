@@ -7,11 +7,14 @@ de cursos a partir de nome e configuração opcional.
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src.cost_tracker import CostTracker
 from src.models import Course, NivelCurso
 from src.orchestrator import Orchestrator, PipelineResult
+
+if TYPE_CHECKING:
+    from src.clients.context import ClientContext
 
 logger = logging.getLogger(__name__)
 
@@ -20,13 +23,21 @@ class CourseFactory:
     """Fábrica de cursos que orquestra o pipeline completo via CLI.
 
     Uso típico:
-        factory = CourseFactory()
-        result = factory.run("Meu Curso de GEO", {"nivel": "intermediario"})
+        factory = CourseFactory()                       # cliente default
+        factory = CourseFactory(client=load_client("minha_empresa"))
+        result = factory.run("Meu Curso", {"nivel": "intermediario"})
     """
 
-    def __init__(self) -> None:
+    def __init__(self, client: "ClientContext | None" = None) -> None:
+        if client is None:
+            from src.clients import load_client
+            client = load_client("default")
+        self.client = client
         self.cost_tracker = CostTracker()
-        self.orchestrator = Orchestrator(cost_tracker=self.cost_tracker)
+        self.orchestrator = Orchestrator(
+            cost_tracker=self.cost_tracker,
+            client_context=client,
+        )
 
     def run(
         self,
@@ -61,6 +72,13 @@ class CourseFactory:
         }
         nivel = nivel_map.get(nivel_str.lower(), NivelCurso.INTERMEDIARIO)
 
+        # Converte módulos do YAML para objetos Module
+        modulos_raw = config.get("modulos", [])
+        modulos = []
+        for i, m in enumerate(modulos_raw, 1):
+            from src.models import Module
+            modulos.append(Module(titulo=m["titulo"], descricao=m.get("descricao", ""), ordem=i))
+
         course = Course(
             id=slug,
             titulo=nome,
@@ -68,6 +86,7 @@ class CourseFactory:
             nivel=nivel,
             tags=config.get("tags", []),
             pre_requisitos=config.get("pre_requisitos", []),
+            modulos=modulos,
         )
 
         logger.info(

@@ -143,10 +143,13 @@ class CourseDefinition(BaseModel):
     hero_gradient_from: str = Field(default="#032d60")
     hero_gradient_to: str = Field(default="#0176d3")
 
-    # Author / Schema.org
+    # Author / Schema.org — injetados pelo ClientContext via SchemaBuilder.
+    # Defaults mantidos apenas para compatibilidade com fixtures antigas;
+    # em uso real, SchemaBuilder.build(client=...) sobrescreve.
     autor_nome: str = "Alexandre Caramaschi"
     autor_credencial: str = "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
     dominio: str = "https://alexandrecaramaschi.com"
+    educacao_path: str = "/educacao"
     badge_color: str = Field(default="#0176d3")
 
     # Computed
@@ -159,11 +162,14 @@ class CourseDefinition(BaseModel):
         if not self.local_storage_key:
             self.local_storage_key = f"{self.slug}-course-progress"
         if not self.canonical_url:
-            self.canonical_url = f"{self.dominio}/educacao/{self.slug}"
+            dominio_norm = self.dominio.rstrip("/")
+            path_norm = self.educacao_path if self.educacao_path.startswith("/") else f"/{self.educacao_path}"
+            self.canonical_url = f"{dominio_norm}{path_norm}/{self.slug}"
         if not self.breadcrumb_label:
             self.breadcrumb_label = self.titulo
         if not self.titulo_seo:
-            self.titulo_seo = f"{self.titulo} | Curso Completo | Alexandre Caramaschi"
+            autor = self.autor_nome or "Curso"
+            self.titulo_seo = f"{self.titulo} | Curso Completo | {autor}"
         if not self.descricao_curta:
             self.descricao_curta = self.descricao
         if not self.component_name:

@@ -15,6 +15,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+import os
+
 import httpx
 from dotenv import load_dotenv
 from rich.console import Console
@@ -22,17 +24,22 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
 # ───────────────────── Configuração ─────────────────────
 
-# Carrega chaves do geo-orchestrator/.env (fonte de verdade)
-_ENV_PATH = Path("C:/Sandyboxclaude/geo-orchestrator/.env")
-load_dotenv(_ENV_PATH)
-
-import os
+# Carrega .env do projeto (fonte preferencial). Fallback: geo-orchestrator/.env
+# se GEO_ORCHESTRATOR_ENV for definido (sem hardcode de path absoluto).
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(_PROJECT_ROOT / ".env")
+_EXTERNAL_ENV = os.environ.get("GEO_ORCHESTRATOR_ENV")
+if _EXTERNAL_ENV:
+    load_dotenv(Path(_EXTERNAL_ENV), override=False)
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 SUPABASE_URL = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
 
-LANDING_PAGE_DIR = Path("C:/Sandyboxclaude/landing-page-geo")
+# LANDING_PAGE_DIR vem do .env; fallback: irmão do repo ("../landing-page-geo")
+LANDING_PAGE_DIR = Path(
+    os.environ.get("LANDING_PAGE_DIR", str(_PROJECT_ROOT.parent / "landing-page-geo"))
+)
 COURSES_FILE = LANDING_PAGE_DIR / "src" / "app" / "educacao" / "page.tsx"
 
 EMBEDDING_MODEL = "text-embedding-3-small"

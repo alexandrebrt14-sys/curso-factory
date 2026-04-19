@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src.config import OUTPUT_DIR
 from src.cost_tracker import CostTracker
@@ -25,6 +25,9 @@ from src.agents.writer import Writer
 from src.agents.analyzer import Analyzer
 from src.agents.classifier import Classifier
 from src.agents.reviewer import Reviewer
+
+if TYPE_CHECKING:
+    from src.clients.context import ClientContext
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +56,16 @@ class PipelineResult:
 class Orchestrator:
     """Orquestra as 5 etapas do pipeline de criação de cursos."""
 
-    def __init__(self, cost_tracker: CostTracker | None = None) -> None:
+    def __init__(
+        self,
+        cost_tracker: CostTracker | None = None,
+        client_context: "ClientContext | None" = None,
+    ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
+        if client_context is None:
+            from src.clients import load_client
+            client_context = load_client("default")
+        self.client_context = client_context
         self.client = LLMClient(self.cost_tracker)
         self.researcher = Researcher(self.client)
         self.writer = Writer(self.client)

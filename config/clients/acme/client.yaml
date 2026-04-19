@@ -1,0 +1,73 @@
+# Cliente de EXEMPLO — ACME Consultoria (fictício)
+#
+# Referência mostrando como configurar um cliente distinto do default.
+# Use este arquivo como guia ao criar o seu próprio cliente.
+
+id: acme
+
+author:
+  name: "Maria Silva"
+  credential: "CEO da ACME Consultoria, ex-diretora de Dados no Itaú"
+  title_seo_suffix: "Maria Silva"
+
+domain:
+  canonical_url: "https://acme-consultoria.com.br"
+  educacao_path: "/cursos"
+
+# Sem landing page integrada ainda — deixe comentado até existir
+# landing_page_dir: "../acme-landing"
+# educacao_dir: "../acme-landing/src/app/cursos"
+
+branding:
+  hero_gradient_from: "#0a0a23"
+  hero_gradient_to: "#00b894"
+  badge_color: "#00b894"
+
+editorial:
+  # Estilo menos rígido que o default HSM/HBR/MIT Sloan
+  style: "business"
+  reference_publications:
+    - "Harvard Business Review"
+    - "McKinsey Quarterly"
+  bloom_min_level: 3
+  knowles_min_principles: 4
+  words_per_module_min: 2000
+  words_per_module_max: 3500
+
+voice_guard:
+  enabled: true
+  min_score: 70
+
+  canonical:
+    company: "ACME Consultoria"
+    founder: "Maria Silva"
+    credential_fragments:
+      - "CEO da ACME Consultoria"
+      - "ex-diretora de Dados no Itaú"
+    domains:
+      - "acme-consultoria.com.br"
+
+  forbidden:
+    titles:
+      - "Guru #1"
+      - "Maior especialista"
+      - "Top Voice"
+    # Cuidado: forbidden é substring match, evite palavras que sejam subset
+    # do nome canônico. 'ACME' sozinho bateria em 'ACME Consultoria'.
+    company_names:
+      - "ACME Tech"
+      - "Acme Brasil"
+      - "Grupo ACME"
+    domains:
+      - "acme.net"
+    rhetoric_openers:
+      - "Voce ja se perguntou"
+      - "Imagine se"
+    ai_disclaimers:
+      - "Como modelo de IA"
+      - "como modelo de linguagem"
+      - "como uma IA"
+      - "devo ressaltar"
+
+output:
+  base_dir: "output"

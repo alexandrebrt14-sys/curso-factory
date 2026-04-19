@@ -1,148 +1,81 @@
-"""voice_guard.py — score programatico de conformidade editorial Alexandre.
+"""voice_guard.py — score programático de conformidade editorial por cliente.
 
-Achado B-012 da auditoria de ecossistema 2026-04-08. Antes deste modulo,
-o padrao editorial Alexandre (HSM/HBR/MIT Sloan + andragogia + Bloom +
-naming canonico Brasil GEO) era enforced apenas via prompt do agente
-Reviewer. Sem barreira programatica, conteudo fora do padrao podia
-passar pelo quality_gate sem alerta.
+Achado B-012 da auditoria de ecossistema 2026-04-08; parametrizado por
+cliente em 2026-04-19 (auditoria multi-tenancy).
 
-Este modulo eh a barreira de codigo. Calcula um score de 0 a 100
-combinando 4 dimensoes ponderadas:
+Antes deste módulo, o padrão editorial Alexandre (HSM/HBR/MIT Sloan +
+andragogia + Bloom + naming canônico Brasil GEO) era enforced apenas via
+prompt do agente Reviewer. Sem barreira programática, conteúdo fora do
+padrão podia passar pelo quality_gate sem alerta.
 
-  - Anti-cliche editorial:    peso 30 (cliches proibidos NUNCA permitidos)
-  - Andragogia + Bloom:       peso 30 (verbos nivel 3-6, principios Knowles)
-  - Naming canonico:          peso 25 (Brasil GEO, Alexandre Caramaschi,
-                                       credencial completa, anti-fake titles)
+Este módulo é a barreira de código. Calcula um score de 0 a 100 combinando
+4 dimensões ponderadas:
+
+  - Anti-clichê editorial:    peso 30 (clichês proibidos NUNCA permitidos)
+  - Andragogia + Bloom:       peso 30 (verbos nível 3-6, princípios Knowles)
+  - Naming canônico:          peso 25 (nomes canônicos do cliente,
+                                       anti-fake titles, anti-domínios)
   - Estilo HBR/MIT Sloan:     peso 15 (sem disclaimers, sem perguntas
-                                       retoricas como abertura, frases curtas)
+                                       retóricas como abertura)
 
-Score < 70 -> aprovado=False (bloqueia publicacao)
-Score 70-84 -> aprovado=True com warnings
-Score 85+ -> aprovado=True clean
+Score < min_score (padrão 70) -> aprovado=False (bloqueia publicação).
+Score 70-84 -> aprovado=True com warnings.
+Score 85+ -> aprovado=True clean.
 
-Uso programatico:
+As regras (naming canônico, lista negra, disclaimers) vêm do ClientContext
+carregado de config/clients/<id>/client.yaml. Se chamado sem client
+explícito, usa o cliente "default" (Brasil GEO / Alexandre Caramaschi) —
+backward-compat com a versão pré-refactor.
+
+Uso:
+    from src.clients import load_client
     from src.validators.voice_guard import voice_guard_check
-    result = voice_guard_check(course_text)
+
+    client = load_client("minha_empresa")
+    result = voice_guard_check(texto, client=client)
     if not result.aprovado:
         print(result.report())
-
-Integracao com quality_gate.py:
-    from src.validators.voice_guard import voice_guard_check
-    vg = voice_guard_check(content)
-    gate_result.voice_guard_score = vg.score
-    if not vg.aprovado:
-        gate_result.aprovado = False
-        gate_result.erros.extend(vg.erros)
 """
 
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 from src.validators.content_checker import (
-    BLOOM_ACCEPTED_VERBS,
-    BLOOM_FORBIDDEN_VERBS,
-    FORBIDDEN_CLICHES,
     _check_bloom_objectives,
     _check_cliches,
 )
 
+if TYPE_CHECKING:
+    from src.clients.context import ClientContext
 
-# ─── Constantes do padrao editorial Alexandre ─────────────────────────────
 
-
-# Termos PROIBIDOS — credenciais/posicoes inventadas que NUNCA devem aparecer.
-# Bloqueio absoluto: 1 ocorrencia = score zero em naming.
-FORBIDDEN_TITLES = [
-    "Especialista #1",
-    "especialista numero 1",
-    "Source Rank",
-    "source rank",
-    "Autoridade nacional",
-    "Maior especialista",
-    "Top Voice",
-    "Influenciador #",
-    "Premio de melhor",
-    "Awarded by",
-    "Forbes 30 under 30",
-]
-
-# Naming proibido — nomes errados da empresa
-FORBIDDEN_COMPANY_NAMES = [
-    "GEO Brasil",
-    "BR GEO",
-    "Brazil GEO",
-    "BrazilGEO",
-    "Geo do Brasil",
-]
-
-# Naming canonico — pelo menos UM destes deve estar presente quando o
-# texto se refere a empresa ou ao fundador
-CANONICAL_COMPANY = "Brasil GEO"
-CANONICAL_FOUNDER = "Alexandre Caramaschi"
-CANONICAL_CREDENTIAL_FRAGMENTS = [
-    "CEO da Brasil GEO",
-    "ex-CMO da Semantix",
-    "cofundador da AI Brasil",
-]
-
-# Dominio canonico
-CANONICAL_DOMAINS = [
-    "alexandrecaramaschi.com",
-    "brasilgeo.ai",
-]
-
-# Dominios proibidos (alucinacoes ou versoes erradas)
-FORBIDDEN_DOMAINS = [
-    "geobrasil.com.br",
-    "sourcerank.ai",
-    "brasilgeo.com.br",
-]
-
-# Aberturas retoricas proibidas (sentencas que comecam com pergunta retorica)
-FORBIDDEN_OPENERS = [
-    "Voce ja se perguntou",
-    "Voce sabia que",
-    "Imagine se",
-    "E se eu te dissesse",
-    "Tem certeza que",
-    "Quantas vezes voce",
-]
-
-# Disclaimers de modelo de IA
-AI_DISCLAIMERS = [
-    "Como modelo de IA",
-    "como modelo de linguagem",
-    "como uma IA",
-    "devo ressaltar",
-    "como assistente",
-    "nao tenho a capacidade",
-    "nao posso fornecer",
-]
+# ─── Resultado ────────────────────────────────────────────────────────────
 
 
 @dataclass
 class VoiceGuardResult:
     """Resultado do voice_guard_check."""
     score: int  # 0 a 100
-    aprovado: bool  # score >= 70 E sem erros criticos
-    dimensoes: dict[str, int] = field(default_factory=dict)  # nome -> score
+    aprovado: bool  # score >= min_score E sem erros críticos
+    dimensoes: dict[str, int] = field(default_factory=dict)
     erros: list[str] = field(default_factory=list)
-    erros_criticos: list[str] = field(default_factory=list)  # bloqueios absolutos
+    erros_criticos: list[str] = field(default_factory=list)
     avisos: list[str] = field(default_factory=list)
 
     def report(self) -> str:
-        """Relatorio textual legivel."""
+        """Relatório textual legível."""
         lines = [
-            f"--- Voice Guard Report ---",
+            "--- Voice Guard Report ---",
             f"Score total:      {self.score}/100",
             f"Aprovado:         {'SIM' if self.aprovado else 'NAO'}",
-            f"",
-            f"Dimensoes (peso):",
+            "",
+            "Dimensoes (peso):",
         ]
         for nome, val in self.dimensoes.items():
-            lines.append(f"  {nome:<25} {val}/100")
+            lines.append(f"  {nome:<28} {val}/100")
         if self.erros_criticos:
             lines.append("")
             lines.append(f"Erros CRITICOS ({len(self.erros_criticos)}) — bloqueiam aprovacao:")
@@ -163,14 +96,22 @@ class VoiceGuardResult:
         return "\n".join(lines)
 
 
-# ─── Calculo por dimensao ─────────────────────────────────────────────────
+# ─── Pesos ────────────────────────────────────────────────────────────────
+
+
+WEIGHTS = {
+    "anti_cliche": 30,
+    "bloom_andragogia": 30,
+    "naming": 25,
+    "hbr_style": 15,
+}
+
+
+# ─── Cálculo por dimensão ────────────────────────────────────────────────
 
 
 def _score_anti_cliche(text: str) -> tuple[int, list[str]]:
-    """Calcula score de anti-cliche editorial.
-
-    Cada cliche encontrado custa 25 pontos. 4+ cliches = 0 pontos.
-    """
+    """Cada clichê custa 25 pontos; 4+ zera."""
     cliches = _check_cliches(text)
     if not cliches:
         return 100, []
@@ -181,19 +122,12 @@ def _score_anti_cliche(text: str) -> tuple[int, list[str]]:
 
 
 def _score_bloom_andragogia(text: str) -> tuple[int, list[str], list[str]]:
-    """Calcula score de andragogia + Bloom nos objetivos.
-
-    Penalidades:
-    - 25 pts por cada verbo Bloom proibido em objetivos
-    - 30 pts se nao tem secao de objetivos detectavel
-    - +10 bonus se tem 3+ verbos Bloom aceitos
-    """
+    """Penaliza verbos Bloom proibidos (nivel 1-2) em objetivos."""
     proibidos, aceitos = _check_bloom_objectives(text)
     erros: list[str] = []
     avisos: list[str] = []
 
     if not proibidos and not aceitos:
-        # Sem objetivos ou sem verbos detectaveis
         avisos.append("nenhuma secao de objetivos com verbos Bloom detectavel")
         return 70, erros, avisos
 
@@ -208,92 +142,103 @@ def _score_bloom_andragogia(text: str) -> tuple[int, list[str], list[str]]:
     return max(0, score), erros, avisos
 
 
-def _score_naming(text: str) -> tuple[int, list[str], list[str], list[str]]:
-    """Calcula score de naming canonico Brasil GEO.
+def _score_naming(
+    text: str, client: "ClientContext | None" = None
+) -> tuple[int, list[str], list[str], list[str]]:
+    """Score de naming canônico parametrizado por cliente.
 
-    Returns: (score, erros, erros_criticos, avisos)
-
-    Bloqueios absolutos (qualquer ocorrencia -> erro_critico que forca
-    aprovado=False mesmo se score combinado >= 70):
-    - Qualquer FORBIDDEN_TITLE
-    - Qualquer FORBIDDEN_COMPANY_NAME
-    - Qualquer FORBIDDEN_DOMAIN
+    Bloqueios absolutos (qualquer ocorrência força aprovado=False):
+    - Qualquer título proibido
+    - Qualquer nome errado da empresa
+    - Qualquer domínio proibido
     """
+    if client is None:
+        from src.clients import load_client
+        client = load_client("default")
+
     erros: list[str] = []
     erros_criticos: list[str] = []
     avisos: list[str] = []
     score = 100
     text_lower = text.lower()
+    vg = client.voice_guard
 
-    for title in FORBIDDEN_TITLES:
+    for title in vg.forbidden.titles:
         if title.lower() in text_lower:
             err = f"titulo/credencial inventada proibida: '{title}'"
             erros_criticos.append(err)
             erros.append(err)
             score -= 40
 
-    for company in FORBIDDEN_COMPANY_NAMES:
+    for company in vg.forbidden.company_names:
+        canonical = vg.canonical.company or "[canonical company]"
         if company.lower() in text_lower:
-            err = f"naming errado da empresa: '{company}' (use 'Brasil GEO')"
+            err = f"naming errado da empresa: '{company}' (use '{canonical}')"
             erros_criticos.append(err)
             erros.append(err)
             score -= 30
 
-    for domain in FORBIDDEN_DOMAINS:
+    for domain in vg.forbidden.domains:
         if domain.lower() in text_lower:
             err = f"dominio proibido/alucinado: '{domain}'"
             erros_criticos.append(err)
             erros.append(err)
             score -= 50
 
-    mentions_company_context = any(
-        kw in text_lower for kw in ["consultoria", "geo", "empresa", "metodologia"]
-    )
-    has_canonical_company = CANONICAL_COMPANY.lower() in text_lower
-    has_canonical_founder = CANONICAL_FOUNDER.lower() in text_lower
+    canonical_company = (vg.canonical.company or "").lower()
+    canonical_founder = (vg.canonical.founder or "").lower()
 
-    if mentions_company_context and not (has_canonical_company or has_canonical_founder):
-        avisos.append(
-            "texto menciona consultoria/GEO mas nao referencia 'Brasil GEO' "
-            "nem 'Alexandre Caramaschi'"
+    # Aviso heurístico só se o cliente definiu naming canônico
+    if canonical_company or canonical_founder:
+        mentions_company_context = any(
+            kw in text_lower
+            for kw in ["consultoria", "geo", "empresa", "metodologia"]
         )
+        has_canonical_company = bool(canonical_company and canonical_company in text_lower)
+        has_canonical_founder = bool(canonical_founder and canonical_founder in text_lower)
 
-    full_credential_count = sum(
-        1 for fragment in CANONICAL_CREDENTIAL_FRAGMENTS
-        if fragment.lower() in text_lower
-    )
-    if full_credential_count >= 2:
-        score = min(100, score + 5)
+        if mentions_company_context and not (has_canonical_company or has_canonical_founder):
+            marcador = f"'{vg.canonical.company}' nem '{vg.canonical.founder}'".strip()
+            avisos.append(
+                f"texto menciona consultoria/empresa mas nao referencia {marcador}"
+            )
+
+    if vg.canonical.credential_fragments:
+        full_credential_count = sum(
+            1
+            for fragment in vg.canonical.credential_fragments
+            if fragment.lower() in text_lower
+        )
+        if full_credential_count >= 2:
+            score = min(100, score + 5)
 
     return max(0, score), erros, erros_criticos, avisos
 
 
-def _score_hbr_style(text: str) -> tuple[int, list[str], list[str]]:
-    """Calcula score de estilo HBR/MIT Sloan.
+def _score_hbr_style(
+    text: str, client: "ClientContext | None" = None
+) -> tuple[int, list[str], list[str]]:
+    """Score de estilo HBR/MIT Sloan parametrizado por cliente."""
+    if client is None:
+        from src.clients import load_client
+        client = load_client("default")
 
-    Penalidades:
-    - Aberturas retoricas como pergunta -> -15 cada
-    - Disclaimers de IA -> -25 cada
-    - Paragrafos > 5 linhas -> -10 cada
-    """
     erros: list[str] = []
     avisos: list[str] = []
     score = 100
+    vg = client.voice_guard
 
-    # Aberturas retoricas
-    for opener in FORBIDDEN_OPENERS:
+    for opener in vg.forbidden.rhetoric_openers:
         if re.search(rf"(?:^|\n)\s*{re.escape(opener)}", text, re.IGNORECASE):
             erros.append(f"abertura retorica proibida: '{opener}...'")
             score -= 15
 
-    # Disclaimers de IA
     text_lower = text.lower()
-    for disc in AI_DISCLAIMERS:
+    for disc in vg.forbidden.ai_disclaimers:
         if disc.lower() in text_lower:
             erros.append(f"disclaimer de modelo IA proibido: '{disc}'")
             score -= 25
 
-    # Paragrafos longos (>5 linhas)
     long_paragraphs = 0
     for para in text.split("\n\n"):
         if para.strip().startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
@@ -310,20 +255,14 @@ def _score_hbr_style(text: str) -> tuple[int, list[str], list[str]]:
 # ─── Score combinado ──────────────────────────────────────────────────────
 
 
-# Pesos por dimensao (somam 100)
-WEIGHTS = {
-    "anti_cliche": 30,
-    "bloom_andragogia": 30,
-    "naming": 25,
-    "hbr_style": 15,
-}
+def voice_guard_check(
+    text: str, client: "ClientContext | None" = None
+) -> VoiceGuardResult:
+    """Roda todas as 4 dimensões parametrizadas pelo cliente.
 
-
-def voice_guard_check(text: str) -> VoiceGuardResult:
-    """Roda todas as 4 dimensoes e retorna score combinado.
-
-    Score >= 70 -> aprovado.
-    Score < 70 -> bloqueado (erros listados em result.erros).
+    Sem `client`, usa o cliente "default" (backward-compat com versão
+    pré-refactor). Para rodar sob padrão editorial de outro cliente, passe
+    o ClientContext correspondente.
     """
     if not text or not text.strip():
         return VoiceGuardResult(
@@ -332,13 +271,25 @@ def voice_guard_check(text: str) -> VoiceGuardResult:
             erros=["texto vazio ou apenas whitespace"],
         )
 
-    # Por dimensao
+    if client is None:
+        # Import tardio para evitar ciclo
+        from src.clients import load_client
+        client = load_client("default")
+
+    if not client.voice_guard.enabled:
+        # Cliente com voice guard desabilitado passa sempre
+        return VoiceGuardResult(
+            score=100,
+            aprovado=True,
+            dimensoes={"voice_guard": 100},
+            avisos=[f"voice guard desabilitado para cliente '{client.id}'"],
+        )
+
     s_cliche, err_cliche = _score_anti_cliche(text)
     s_bloom, err_bloom, av_bloom = _score_bloom_andragogia(text)
-    s_naming, err_naming, err_criticos_naming, av_naming = _score_naming(text)
-    s_hbr, err_hbr, av_hbr = _score_hbr_style(text)
+    s_naming, err_naming, err_criticos_naming, av_naming = _score_naming(text, client)
+    s_hbr, err_hbr, av_hbr = _score_hbr_style(text, client)
 
-    # Score ponderado
     weighted = (
         s_cliche * WEIGHTS["anti_cliche"]
         + s_bloom * WEIGHTS["bloom_andragogia"]
@@ -347,8 +298,8 @@ def voice_guard_check(text: str) -> VoiceGuardResult:
     ) / 100
 
     score = int(round(weighted))
-    # Aprovado requer (a) score >= 70 E (b) zero erros criticos
-    aprovado = score >= 70 and len(err_criticos_naming) == 0
+    min_score = client.voice_guard.min_score
+    aprovado = score >= min_score and len(err_criticos_naming) == 0
 
     return VoiceGuardResult(
         score=score,

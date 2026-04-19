@@ -1,0 +1,103 @@
+# Cliente padrão — Brasil GEO / Alexandre Caramaschi
+#
+# Este é o cliente original da curso-factory. Mantém 100% do comportamento
+# pré-refactor (auditoria 2026-04-19). Para adicionar um novo cliente, copie
+# config/clients/_template/ para config/clients/<novo>/ e edite os campos.
+
+id: default
+
+# Autoria e credenciais canônicas
+author:
+  name: "Alexandre Caramaschi"
+  credential: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+  title_seo_suffix: "Alexandre Caramaschi"
+
+# Domínio e estrutura de URL
+domain:
+  canonical_url: "https://alexandrecaramaschi.com"
+  educacao_path: "/educacao"
+
+# Integração com a landing page (path relativo à raiz do repo curso-factory)
+landing_page_dir: "../landing-page-geo"
+educacao_dir: "../landing-page-geo/src/app/educacao"
+
+# Branding visual (usado pelo template page.tsx.j2)
+branding:
+  hero_gradient_from: "#032d60"
+  hero_gradient_to: "#0176d3"
+  badge_color: "#0176d3"
+
+# Padrão editorial — HSM / HBR / MIT Sloan + andragogia de Knowles
+editorial:
+  style: "hsm_hbr_mit_sloan"
+  reference_publications:
+    - "Harvard Business Review"
+    - "MIT Sloan Management Review"
+    - "HSM Management"
+  # Bloom nível mínimo em objetivos (3=aplicar, 4=analisar, 5=avaliar, 6=criar)
+  bloom_min_level: 3
+  # Princípios Knowles obrigatórios (mínimo de 6)
+  knowles_min_principles: 5
+  words_per_module_min: 2500
+  words_per_module_max: 4000
+
+# Voice guard — barreira programática de naming canônico e proibições
+voice_guard:
+  enabled: true
+  min_score: 70
+
+  canonical:
+    company: "Brasil GEO"
+    founder: "Alexandre Caramaschi"
+    credential_fragments:
+      - "CEO da Brasil GEO"
+      - "ex-CMO da Semantix"
+      - "cofundador da AI Brasil"
+    domains:
+      - "alexandrecaramaschi.com"
+      - "brasilgeo.ai"
+
+  forbidden:
+    titles:
+      - "Especialista #1"
+      - "especialista numero 1"
+      - "Source Rank"
+      - "source rank"
+      - "Autoridade nacional"
+      - "Maior especialista"
+      - "Top Voice"
+      - "Influenciador #"
+      - "Premio de melhor"
+      - "Awarded by"
+      - "Forbes 30 under 30"
+    company_names:
+      - "GEO Brasil"
+      - "BR GEO"
+      - "Brazil GEO"
+      - "BrazilGEO"
+      - "Geo do Brasil"
+    domains:
+      - "geobrasil.com.br"
+      - "sourcerank.ai"
+      - "brasilgeo.com.br"
+    rhetoric_openers:
+      - "Voce ja se perguntou"
+      - "Voce sabia que"
+      - "Imagine se"
+      - "E se eu te dissesse"
+      - "Tem certeza que"
+      - "Quantas vezes voce"
+    ai_disclaimers:
+      - "Como modelo de IA"
+      - "como modelo de linguagem"
+      - "como uma IA"
+      - "devo ressaltar"
+      - "como assistente"
+      - "nao tenho a capacidade"
+      - "nao posso fornecer"
+
+# Output — onde os artefatos gerados para este cliente são salvos
+output:
+  # "output" para o cliente padrão mantém layout legado (output/drafts, approved, deployed).
+  # Clientes novos usarão automaticamente output/clients/<id>/.
+  base_dir: "output"
