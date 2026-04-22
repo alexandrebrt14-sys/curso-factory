@@ -362,6 +362,29 @@ courses:
       - titulo: "KPIs, monitoramento e plano 90 dias"
         descricao: "Métricas de SEO local (impressões GBP, ações no perfil), orgânico (Search Console), GEO (menções em LLMs, referrals de IA). Roadmap 30/60/90 dias com metas realistas por porte de clínica."
 
+  - slug: escrita-academica-profunda-geo
+    nome: "Escrita Acadêmica Profunda para Publicação em GEO e LLM Research"
+    nivel: avançado
+    modulos: 6
+    descricao: "Como estruturar, escrever e publicar papers rigorosos sobre Generative Engine Optimization (GEO), retrieval e IA generativa em SSRN, ArXiv (cs.IR), Zenodo, Semantic Scholar e journals Q1 como Information Sciences, JASIST e IP&M. Paradigmas de pesquisa (empirical, Design Science Research de Hevner, Action Design Research de Sein, systematic review), reproducibility em pesquisa com LLM, estatística para N pequeno, workflow de submissão, peer-review, altmetrics e caso prático do paper SSRN 6460680 do Alexandre Caramaschi."
+    tags: [escrita-academica, paper, ssrn, arxiv, zenodo, semantic-scholar, q1-journals, geo, llm-research, peer-review, design-science-research]
+    prerequisitos: [geo-fundamentos, metodologia-cientifica-basica]
+    duracao_estimada: "~240 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "Fundamentos de escrita acadêmica: IMRAD, paradigmas de pesquisa e ciclo de vida do paper"
+        descricao: "Estrutura IMRAD clássica (Introduction, Methods, Results, Discussion) e variações aceitas em CS/IR. Paradigmas disponíveis: empirical, Design Science Research (Hevner 2004; Wieringa 2014), Action Design Research (Sein 2011), qualitative, systematic review (Kitchenham 2007). Ciclo ideação → literatura → design → experimento → redação → submissão → review → revisão → publicação. Identificadores persistentes: ORCID, DOI, Handle, arXiv-id."
+      - titulo: "Canais de publicação: SSRN, ArXiv (cs.IR), Zenodo, Semantic Scholar e journals Q1"
+        descricao: "SSRN (pre-print com DOI rápido, open review, indexação Elsevier). ArXiv moderado (Cornell), track cs.IR para pesquisa em GEO/retrieval/LLM. Zenodo (CERN, DOI paralelo, datasets e software). Semantic Scholar (claim authorship via Crossref). Journals Q1 em information sciences: Information Sciences (Elsevier), JASIST (Wiley), Information Processing & Management, SIGIR proceedings. Workshops de entrada: SIGIR workshops, ECIR, CHIIR, CIKM. Comparativo de APC, tempo médio de review, rigor e scope adequado para GEO."
+      - titulo: "Metodologia e rigor em pesquisa com LLM"
+        descricao: "Reproducibility checklist: seeds, temperature, prompt templates, model cutoffs, versionamento. Estatística para N pequeno: effect size (Cohen d, Hedges g), intervalos de confiança, Bayes factor. Multiple-testing corrections: Holm-Bonferroni, FDR de Benjamini-Hochberg. Pre-registration: OSF Registries, AEA Registry, AsPredicted. Gestão de viés em avaliação com LLM-as-a-judge. Ablation studies obrigatórios em papers de retrieval."
+      - titulo: "Writing craft: abstract estruturado, related work tematizado e contribution statement"
+        descricao: "Abstract estruturado no padrão Emerald/Q1 (purpose, design/methodology/approach, findings, originality/value). Hedging language apropriado (may, suggest, appears to) vs linguagem determinística. Related Work organizado tematicamente por construto, não cronologicamente. Contribution statement explícito ao final da introdução (3-5 bullets). Discussion que responde as research questions declaradas, não apenas resume findings. Limitations section honesta e threats to validity (internal, external, construct, conclusion)."
+      - titulo: "Publicando e divulgando: metadata, cross-posting e altmetrics"
+        descricao: "Metadata por canal: JEL codes (SSRN), ACM CCS 2012 (ArXiv CS), MSC codes (math), keywords controlados, subject classification. Cross-posting strategy sem violar exclusivity policies (SSRN permite; journals Q1 variam — ler copyright transfer). Divulgação pós-publicação: LinkedIn com citação DOI completa, Substack com thread tecnica, Medium, ResearchGate. Altmetrics: Plum Print no SSRN, Altmetric.com, Impactstory. Medição honesta de impacto: citations via Google Scholar, Crossref, OpenAlex."
+      - titulo: "Caso prático: paper SSRN 6460680 e roadmap dos próximos 3 papers do Alexandre Caramaschi"
+        descricao: "Decomposição do paper publicado Algorithmic Authority: A Practitioner Framework for GEO (DOI 10.2139/ssrn.6460680): como o framework 10-layer → Algorithmic Citability → ECS foi construído. Lições aprendidas na primeira submissão: review time, feedback editorial, revisões. Roadmap dos 3 working papers em preparação no repo alexandrebrt14-sys/papers com targets ArXiv cs.IR, workshop SIGIR/WWW e Information Sciences Q1. Ética acadêmica: Wikipedia WP:BIO (notability) vs Wikidata (permissivo), conflito de interesse em practitioner research, disclosure de vínculos comerciais."
+
   # ═══════════════════════════════════════════════════════════════════════
   # Cursos do cliente HERREIRA (rodar com: python cli.py create "..." --client herreira)
   # Fonte de verdade expandida: /Sandyboxclaude/herreira/cursos/catalogo.yaml
