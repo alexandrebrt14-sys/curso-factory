@@ -476,6 +476,7 @@ curso-factory/
 | [docs/MULTI-CLIENT.md](docs/MULTI-CLIENT.md) | Adicionar um novo cliente (empresa, nicho, autor). Inclui playbook passo-a-passo, campos de `client.yaml` e integração com QualityGate. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entender o pipeline interno (orchestrator, agents, validators, generators) e onde encaixar mudanças. |
 | [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
+| [docs/knowledge/geo-aeo/README.md](docs/knowledge/geo-aeo/README.md) | **Base de conhecimento GEO/AEO/Agentic Commerce.** Síntese de 25+ papers (2025–2026) em 30 instruções operacionais, 7 princípios mestres, checklists e thresholds quantitativos. Camada doutrinária dos 5 LLMs do pipeline. |
 | [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
 
 ---
