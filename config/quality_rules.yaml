@@ -124,6 +124,43 @@ validation:
       - "como todos sabem"
       - "desde os primórdios"
       - "desde tempos imemoriais"
+      # Humanizador 2.6.2 — padrões de cara de IA
+      - "marco importante"
+      - "papel crucial"
+      - "momento decisivo"
+      - "no cenário atual"
+      - "em um contexto em constante evolução"
+      - "solução inovadora"
+      - "experiência fluida"
+      - "tecnologia de ponta"
+      - "abordagem poderosa"
+      - "ambiente dinâmico"
+      - "especialistas apontam"
+      - "estudos indicam"
+      - "o mercado entende"
+      - "muitos acreditam"
+      - "análises sugerem"
+      - "cabe ressaltar"
+      - "é importante observar"
+      - "não se trata apenas de"
+      - "a verdadeira questão é"
+      - "o que realmente importa"
+      - "no fim, tudo se resume a"
+      - "o futuro é promissor"
+      - "abre caminho para novas possibilidades"
+      - "representa um passo importante"
+      - "game changer"
+      - "atua como"
+      - "se posiciona como"
+      - "cumpre o papel de"
+
+  # Anti-invenção (Humanizador 2.6.2) — humanizar não é inventar
+  anti_invencao:
+    enabled: true
+    allow_marker: "[FALTA EVIDÊNCIA:"  # Redator pode marcar lacunas para o revisor
+    fail_if_unresolved_markers_above: 5  # Mais que 5 marcadores sobrando = reprovar
+    ban_vague_attribution: true  # "especialistas apontam" sem citação = erro
+    require_source_for_percentages: true  # Todo "%" deve ter fonte próxima
 
   # Camada 3: Links
   link_check:

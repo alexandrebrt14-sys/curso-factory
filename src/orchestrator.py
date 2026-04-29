@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -46,7 +46,7 @@ class PipelineResult:
     def to_dict(self) -> dict[str, Any]:
         return {
             "course_id": self.course_id,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "etapas": self.etapas,
             "erros": self.erros,
             "sucesso": self.sucesso,
@@ -316,29 +316,9 @@ class Orchestrator:
             f"{modulos_txt}"
         )
 
-    def _build_writer_context(self, course: Course) -> str:
-        """Monta contexto para o redator com estrutura obrigatória dos módulos."""
-        modulos_txt = ""
-        if course.modulos:
-            modulos_txt = "\n\nESTRUTURA OBRIGATÓRIA DOS MÓDULOS (gere TODOS, sem pular nenhum):\n"
-            for i, m in enumerate(course.modulos, 1):
-                modulos_txt += f"\nMódulo {i}: {m.titulo}\n"
-                if m.descricao:
-                    modulos_txt += f"  Conteúdo esperado: {m.descricao}\n"
-        return (
-            f"INSTRUÇÕES: Gere o conteúdo COMPLETO de TODOS os {len(course.modulos)} módulos listados abaixo.\n"
-            f"Cada módulo deve ter: objetivos, conteúdo principal detalhado, exemplos práticos, resumo e exercícios.\n"
-            f"NÃO resuma nem pule módulos. Gere o conteúdo integral de cada um.\n"
-            f"IMPORTANTE: Todo o texto DEVE usar Português do Brasil com acentuação completa e ortografia correta.\n"
-            f"\nCurso: {course.titulo}\n"
-            f"Descrição: {course.descricao}\n"
-            f"Nível: {course.nivel.value}\n"
-            f"{modulos_txt}"
-        )
-
     def _save_result(self, course_id: str, result: PipelineResult) -> None:
         """Salva o resultado do pipeline em JSON."""
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         filename = f"{course_id}_{timestamp}.json"
         path = DRAFTS_DIR / filename
         with open(path, "w", encoding="utf-8") as f:

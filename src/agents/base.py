@@ -57,13 +57,19 @@ class Agent:
     provider: str = "openai"
     model: str = ""
     prompt_file: str = ""  # Nome do arquivo .md em templates/prompts/
+    language: str = "pt-br"  # Wave 8: idioma do prompt; "pt-br" = comportamento legado
 
     def __init__(self, client: LLMClient) -> None:
         self.client = client
         self._prompt_template: str | None = None
 
     def _load_prompt_template(self) -> str:
-        """Carrega o prompt do arquivo externo em templates/prompts/."""
+        """Carrega o prompt do arquivo externo em templates/prompts/.
+
+        Wave 8: usa `lang_resolver` com cascata <lang>/ -> pt-br/ -> raiz.
+        Isso preserva compat (prompts na raiz continuam funcionando) e
+        habilita prompts traduzidos quando existem.
+        """
         if self._prompt_template is not None:
             return self._prompt_template
 
@@ -71,20 +77,25 @@ class Agent:
             self._prompt_template = ""
             return ""
 
-        path = PROMPTS_DIR / self.prompt_file
-        if not path.exists():
+        # Import tardio para evitar circular com src.i18n
+        from src.agents.lang_resolver import resolve_prompt_path
+
+        try:
+            path = resolve_prompt_path(self.prompt_file, self.language)
+        except FileNotFoundError:
             logger.warning(
-                "Arquivo de prompt não encontrado: %s. Usando prompt inline.",
-                path,
+                "Arquivo de prompt '%s' não encontrado em nenhum idioma. Usando prompt inline.",
+                self.prompt_file,
             )
             self._prompt_template = ""
             return ""
 
         self._prompt_template = path.read_text(encoding="utf-8")
         logger.info(
-            "Prompt carregado de %s (%d caracteres)",
+            "Prompt carregado de %s (%d caracteres, lang=%s)",
             path.name,
             len(self._prompt_template),
+            self.language,
         )
         return self._prompt_template
 

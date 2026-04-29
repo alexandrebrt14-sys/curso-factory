@@ -70,3 +70,47 @@ voice_guard:
 
 output:
   base_dir: "output"
+
+# ─── Waves 6-10 — features opcionais (default off) ─────────────────────
+#
+# Descomente e ajuste o que quiser ativar. Tudo é opcional; sem este
+# bloco, o cliente funciona como antes da Wave 6.
+#
+# features:
+#   # Wave 6 — Engagement (gamificação + microlearning + SRS)
+#   engagement:
+#     gamification_enabled: true
+#     streak_enabled: true
+#     badges_enabled: true
+#     leagues_enabled: false
+#     srs_enabled: true
+#     srs_interval_initial_days: 1
+#     quiz_pass_threshold: 0.7
+#
+#   # Wave 7 — Tutor IA conversacional runtime
+#   tutor:
+#     enabled: true
+#     persona: "curiosa-paciente"      # | "provocativa-direta" | "academica-rigorosa"
+#     name: "Caramella"
+#     model: "claude-haiku-4-5-20251001"
+#     budget_per_user_per_month: 2.00  # USD
+#     daily_budget: 10.00              # USD
+#
+#   # Wave 9 — Certificação verificável
+#   certification:
+#     enabled: true
+#     pass_threshold: 0.7
+#     blockchain_opt_in: false
+#     linkedin_integration: false
+#
+#   # Wave 10 — Agent Legibility + comércio agêntico
+#   agentic:
+#     enabled: true
+#     emit_llms_txt: true
+#     mcp_server: false                # exige servidor próprio rodando
+#     a2a_endpoints: false             # exige integração com pagamento agêntico
+#
+# Wave 8 — idioma default do cliente. Currículo continua aceitando
+# `--language en` por curso individual.
+# editorial:
+#   language: "pt-br"                  # | "en" | "es"

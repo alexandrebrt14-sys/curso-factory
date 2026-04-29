@@ -9,12 +9,16 @@ from typing import Any
 import yaml
 
 from src.clients.context import (
+    AgenticConfig,
     Author,
     Branding,
+    CertificationConfig,
     ClientContext,
     Company,
     Domain,
     Editorial,
+    EngagementConfig,
+    TutorConfig,
     VoiceGuardCanonical,
     VoiceGuardConfig,
     VoiceGuardForbidden,
@@ -112,6 +116,49 @@ def load_client(client_id: str = "default") -> ClientContext:
     output_d = data.get("output", {})
     output_base_dir = _resolve_path(output_d.get("base_dir", "output"), _ROOT) or _ROOT / "output"
 
+    # Waves 6-10 features (todas opcionais, default off; ligar no client.yaml)
+    features_d = data.get("features", {})
+
+    eng_d = features_d.get("engagement", {})
+    engagement = EngagementConfig(
+        gamification_enabled=bool(eng_d.get("gamification_enabled", False)),
+        streak_enabled=bool(eng_d.get("streak_enabled", True)),
+        badges_enabled=bool(eng_d.get("badges_enabled", True)),
+        leagues_enabled=bool(eng_d.get("leagues_enabled", False)),
+        srs_enabled=bool(eng_d.get("srs_enabled", True)),
+        srs_interval_initial_days=int(eng_d.get("srs_interval_initial_days", 1)),
+        quiz_pass_threshold=float(eng_d.get("quiz_pass_threshold", 0.7)),
+    )
+
+    tut_d = features_d.get("tutor", {})
+    tutor = TutorConfig(
+        enabled=bool(tut_d.get("enabled", False)),
+        persona=tut_d.get("persona", "curiosa-paciente"),
+        name=tut_d.get("name", ""),
+        model=tut_d.get("model", "claude-haiku-4-5-20251001"),
+        budget_per_user_per_month=float(tut_d.get("budget_per_user_per_month", 2.0)),
+        daily_budget=float(tut_d.get("daily_budget", 10.0)),
+    )
+
+    cert_d = features_d.get("certification", {})
+    certification = CertificationConfig(
+        enabled=bool(cert_d.get("enabled", False)),
+        pass_threshold=float(cert_d.get("pass_threshold", 0.7)),
+        blockchain_opt_in=bool(cert_d.get("blockchain_opt_in", False)),
+        linkedin_integration=bool(cert_d.get("linkedin_integration", False)),
+    )
+
+    ag_d = features_d.get("agentic", {})
+    agentic = AgenticConfig(
+        enabled=bool(ag_d.get("enabled", False)),
+        emit_llms_txt=bool(ag_d.get("emit_llms_txt", True)),
+        mcp_server=bool(ag_d.get("mcp_server", False)),
+        a2a_endpoints=bool(ag_d.get("a2a_endpoints", False)),
+    )
+
+    # Wave 8 — idioma default do cliente
+    client_language = ed_d.get("language", "pt-br")
+
     return ClientContext(
         id=data.get("id", client_id),
         author=author,
@@ -123,6 +170,11 @@ def load_client(client_id: str = "default") -> ClientContext:
         landing_page_dir=landing_page_dir,
         educacao_dir=educacao_dir,
         output_base_dir=output_base_dir,
+        tutor=tutor,
+        engagement=engagement,
+        certification=certification,
+        agentic=agentic,
+        language=client_language,
     )
 
 

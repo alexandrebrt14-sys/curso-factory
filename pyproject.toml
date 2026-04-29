@@ -19,13 +19,25 @@ dependencies = [
     "rich>=13.7",
 ]
 
+[project.optional-dependencies]
+# Wave 9 — geração de QR code em certificados HTML
+certification = ["qrcode[pil]>=7.4"]
+# Wave 7 — endpoint de exemplo do Tutor IA (examples/tutor_api.py)
+tutor-api = ["fastapi>=0.110", "uvicorn>=0.27"]
+# Atalho para todas as features opcionais
+all = ["qrcode[pil]>=7.4", "fastapi>=0.110", "uvicorn>=0.27"]
+# Dev dependencies (testes, coverage)
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "pytest-cov>=5.0"]
+
 [project.scripts]
 curso-factory = "cli:main"
 
 [project.urls]
 Homepage = "https://github.com/alexandrebrt14-sys/curso-factory"
 Repository = "https://github.com/alexandrebrt14-sys/curso-factory"
-Documentation = "https://github.com/alexandrebrt14-sys/curso-factory/tree/main/docs"
+Documentation = "https://github.com/alexandrebrt14-sys/curso-factory/wiki"
+Changelog = "https://github.com/alexandrebrt14-sys/curso-factory/blob/main/CHANGELOG.md"
+Issues = "https://github.com/alexandrebrt14-sys/curso-factory/issues"
 
 [build-system]
 requires = ["setuptools>=68.0"]

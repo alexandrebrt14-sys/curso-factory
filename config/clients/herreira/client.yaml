@@ -20,7 +20,7 @@ author:
 # Empresa — aparece como provider em schema.org e no bloco de autoria
 company:
   name: "Herreira Joias"
-  description: "Curso produzido pela Herreira Joias, marca brasileira de semijoias finas fundada em 2008 em Goiânia. Conteúdo educacional exclusivo para a rede de revendedoras HAV (Herreira + Aulore + Vitesse)."
+  description: "Curso produzido pela Herreira Joias, marca brasileira de semijoias finas com matriz e fábrica em Goiânia/GO e filial atacado em São Paulo/SP (The Office Frei Caneca). Marca atual relançada em 2011 (cofundação Patrícia + Alexandre Caramaschi em 2008). Conteúdo educacional exclusivo para a rede de revendedoras HAV (Herreira + Aulore + Vitesse)."
 
 # Domínio do portal de educação (definir subdomínio vs path é decisão pendente)
 domain:

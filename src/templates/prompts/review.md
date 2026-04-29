@@ -129,6 +129,41 @@ O conteúdo é renderizado por um componente `FormattedText` que interpreta marc
 - **Parágrafos**: máximo 5 linhas cada, uma ideia central por parágrafo. Quebre parágrafos longos.
 - **PROIBIDO**: emojis em qualquer parte do conteúdo
 
+### 3.5. Auditoria anti-"cara de IA" (Humanizador 2.6.2) — NOVA CAMADA
+
+Varra o texto e CORRIJA cada ocorrência dos 21 padrões de escrita artificial:
+
+1. Grandeza artificial ("marco importante", "papel crucial", "no cenário atual") → diga o que aconteceu, não o tamanho metafórico
+2. Linguagem promocional ("solução inovadora", "tecnologia de ponta") → descreva função, impacto e limite
+3. Gerúndio ornamental ("promovendo", "fortalecendo", "contribuindo para") → use verbo no presente ou passado com sujeito claro
+4. Atribuição vaga ("especialistas apontam", "estudos indicam") → cite pesquisa específica OU remova a afirmação
+5. Conectivos de palestra ("nesse contexto", "cabe ressaltar", "vale destacar") → elimine, vá direto ao ponto
+6. Abstração vazia ("valor", "impacto", "sinergia", "maturidade") → substitua por efeito concreto mensurável
+7. Verbos de pose ("atua como", "se posiciona como", "cumpre o papel de") → use verbo direto
+8. Simetria artificial (três blocos iguais, regra de três em toda parte) → quebre a cadência
+9. Frase de efeito teatral ("a verdadeira questão é", "no fim, tudo se resume a") → elimine
+10. Tom servil ("ótima pergunta", "espero que isso ajude") → elimine
+11. Hedging excessivo ("pode talvez", "de certa forma", "em alguma medida") → afirme com convicção ou remova
+12. Conclusão otimista vazia ("o futuro é promissor", "abre caminho para novas possibilidades") → elimine
+13. Falta de agente / voz passiva desnecessária ("foi realizado", "será implementado") → nomeie quem faz
+14. Pergunta retórica fabricada ("mas o que isso significa na prática?") → elimine ou substitua por afirmação
+15. Variação elegante demais (trocar termo-chave por sinônimos) → mantenha termo canônico para o mesmo conceito
+16. Prosa fragmentada (frases muito curtas empilhadas) → junte frases quando a separação não acrescenta força
+17. Listas secas como slide (bullets que renomeiam obviedades) → converta em prosa ou elimine
+18. Intensificadores gastos ("brutal", "poderoso", "absurdo", "incrível", "game changer") → corte ou meça com número
+19. Palavras "bonitas" desgastadas ("estratégico", "jornada", "potencializar", "impulsionar", "robusto", "dinâmico", "excelência") → remova quando não medirem nada
+20. Nominalização excessiva ("implementação", "utilização", "operacionalização") → use o verbo
+21. Ausência de voz autoral no gênero que pede opinião → adicione ângulo analítico claro
+
+### 3.6. Sinalização de falta de substância (Humanizador 2.6.2)
+
+Regra inviolável: **humanizar não é inventar**.
+
+- Se o texto trouxer afirmação sem evidência (dado, fonte, caso) e a pesquisa em `{context}` não suportar, NÃO invente dado plausível. Marque com `[FALTA EVIDÊNCIA: <descrição>]` e reporte no bloco final
+- Se encontrar marcadores `[FALTA EVIDÊNCIA: ...]` vindos do redator, reporte no bloco final em "Evidências pendentes" em vez de apagar silenciosamente
+- Nunca transforme "o mercado entende" em "67% das empresas, segundo a McKinsey" sem que o número exista em `{context}`
+- Reprove o módulo se houver 3+ afirmações substantivas sem evidência que você não consiga corrigir
+
 ### 4. Princípios Andragógicos (Knowles)
 
 Verifique se CADA módulo contém:
@@ -171,6 +206,8 @@ Correções de formatação: [número]
 Tabelas adicionadas: [número]
 Exercícios corrigidos/adicionados: [número]
 Clichês removidos: [número]
+Padrões anti-IA corrigidos (1-21): [número por categoria]
+Evidências pendentes: [lista de marcadores [FALTA EVIDÊNCIA: ...] não resolvidos]
 Principais ajustes: [lista dos 5 ajustes mais relevantes]
 Aprovado para publicação: sim/não
 Motivo (se não aprovado): ...
