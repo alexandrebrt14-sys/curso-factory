@@ -6,11 +6,16 @@ CostEntry e QualityReport.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
+
+
+def _now_utc() -> datetime:
+    """Wall-clock UTC; substitui datetime.utcnow() (deprecated em 3.12)."""
+    return datetime.now(timezone.utc)
 
 
 class NivelCurso(str, Enum):
@@ -26,6 +31,10 @@ class Step(BaseModel):
     conteudo: str = Field(default="", description="Conteúdo textual da etapa")
     tipo: str = Field(default="texto", description="Tipo: texto, vídeo, quiz, exercício")
     duracao_minutos: int = Field(default=5, ge=1, le=120, description="Duração estimada em minutos")
+    # Wave 6 (engagement): chave estável para SRS quando o step ensina conceito
+    concept_id: Optional[str] = Field(default=None, description="ID do conceito para SRS")
+    # Wave 6 (engagement): payload de quiz quando tipo=='quiz'
+    quiz_payload: Optional[dict] = Field(default=None, description="Quiz inline opcional")
 
     @field_validator("titulo")
     @classmethod
@@ -41,6 +50,8 @@ class Module(BaseModel):
     descricao: str = Field(default="", description="Descrição resumida do módulo")
     etapas: list[Step] = Field(default_factory=list, description="Lista de etapas do módulo")
     ordem: int = Field(default=1, ge=1, description="Ordem do módulo dentro do curso")
+    # Wave 6 (engagement): conceitos que viram cartões SRS ao concluir o módulo
+    srs_concepts: list[str] = Field(default_factory=list, description="Conceitos para revisão espaçada")
 
     @field_validator("titulo")
     @classmethod
@@ -60,6 +71,12 @@ class Course(BaseModel):
     pre_requisitos: list[str] = Field(default_factory=list, description="Pré-requisitos do curso")
     duracao_horas: Optional[float] = Field(default=None, ge=0.5, description="Duração total estimada")
     modulos: list[Module] = Field(default_factory=list, description="Módulos do curso")
+    # Wave 8 (i18n): idioma do curso. Fallback "pt-br" mantém compat.
+    language: str = Field(default="pt-br", description="Idioma do curso (pt-br | en | es | ...)")
+    # Wave 6 (engagement): badges que o curso destrava
+    badges_alvo: list[str] = Field(default_factory=list, description="IDs do catálogo de badges")
+    # Wave 9 (skill graph): skills tagueadas com schema.org URIs
+    skills: list[str] = Field(default_factory=list, description="Schema.org/Skill IDs")
 
     @field_validator("id")
     @classmethod
@@ -144,19 +161,15 @@ class CourseDefinition(BaseModel):
     hero_gradient_to: str = Field(default="#0176d3")
 
     # Author / Schema.org — injetados pelo ClientContext via SchemaBuilder.
-    # Defaults mantidos apenas para compatibilidade com fixtures antigas;
-    # em uso real, SchemaBuilder.build(client=...) sobrescreve.
-    autor_nome: str = "Alexandre Caramaschi"
-    autor_credencial: str = "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
-    dominio: str = "https://alexandrecaramaschi.com"
+    # Sem defaults com identidade — quem instancia CourseDefinition precisa
+    # passar os campos do cliente. Isso garante que nenhuma identidade vaza
+    # entre clientes por engano.
+    autor_nome: str = ""
+    autor_credencial: str = ""
+    dominio: str = ""
     educacao_path: str = "/educacao"
-    # Empresa — schema.org provider e bloco de autoria
-    company_name: str = "Brasil GEO"
-    company_description: str = (
-        "Este curso faz parte do material educacional da Brasil GEO, empresa "
-        "brasileira especializada em Generative Engine Optimization. Para dúvidas, "
-        "entre em contato pelo WhatsApp ou LinkedIn."
-    )
+    company_name: str = ""
+    company_description: str = ""
     badge_color: str = Field(default="#0176d3")
 
     # Computed
@@ -168,15 +181,15 @@ class CourseDefinition(BaseModel):
     def model_post_init(self, __context: Any) -> None:
         if not self.local_storage_key:
             self.local_storage_key = f"{self.slug}-course-progress"
-        if not self.canonical_url:
+        if not self.canonical_url and self.dominio:
             dominio_norm = self.dominio.rstrip("/")
             path_norm = self.educacao_path if self.educacao_path.startswith("/") else f"/{self.educacao_path}"
             self.canonical_url = f"{dominio_norm}{path_norm}/{self.slug}"
         if not self.breadcrumb_label:
             self.breadcrumb_label = self.titulo
         if not self.titulo_seo:
-            autor = self.autor_nome or "Curso"
-            self.titulo_seo = f"{self.titulo} | Curso Completo | {autor}"
+            sufixo = self.autor_nome or self.company_name or "Curso Completo"
+            self.titulo_seo = f"{self.titulo} | Curso Completo | {sufixo}"
         if not self.descricao_curta:
             self.descricao_curta = self.descricao
         if not self.component_name:
@@ -186,7 +199,7 @@ class CourseDefinition(BaseModel):
 
 class CostEntry(BaseModel):
     """Registro de custo de uma chamada LLM."""
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=_now_utc)
     provider: str = Field(..., description="Nome do provider LLM")
     model: str = Field(..., description="Modelo utilizado")
     tokens_in: int = Field(..., ge=0, description="Tokens de entrada")
@@ -198,7 +211,7 @@ class CostEntry(BaseModel):
 class QualityReport(BaseModel):
     """Relatório de qualidade gerado pelos validadores."""
     curso_id: str = Field(..., description="ID do curso avaliado")
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=_now_utc)
     acentuacao_ok: bool = Field(default=False, description="Acentuação PT-BR correta")
     html_ok: bool = Field(default=False, description="HTML válido")
     links_ok: bool = Field(default=False, description="Links válidos e sem acentos")

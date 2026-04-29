@@ -8,6 +8,8 @@
 
 ---
 
+> **Status (2026-04-29):** refatoração profunda em 5 waves concluída. CLI 100% funcional (8 subcomandos), 74 testes verde, zero código morto, identidade do cliente 100% via `ClientContext` (sem hardcode). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## O que é
 
 O curso-factory é uma fábrica de cursos educacionais de altíssima qualidade, construída sobre um pipeline de 5 LLMs orquestrados. O sistema recebe a definição de um curso em YAML, executa um pipeline de 5 etapas (pesquisa, redação, análise, classificação, revisão) e entrega módulos completos, validados e prontos para deploy.

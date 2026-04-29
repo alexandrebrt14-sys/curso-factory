@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Wiki — documentação completa
+    url: https://github.com/alexandrebrt14-sys/curso-factory/wiki
+    about: Antes de abrir uma issue, veja se a resposta está na wiki (Quick-Start, CLI-Reference, FAQ por gap).
+  - name: Roadmap & Gaps
+    url: https://github.com/alexandrebrt14-sys/curso-factory/wiki/Roadmap-and-Gaps
+    about: Lista de gaps já mapeados — confira antes de propor algo novo.

@@ -1,0 +1,35 @@
+# CODEOWNERS — auto-request review baseado em path
+# Sintaxe: <pattern> <owner1> <owner2> ...
+# Documentação: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default — qualquer arquivo precisa de review do Alexandre
+*                                  @alexandrebrt14-sys
+
+# Áreas críticas — review obrigatório do Alexandre (não delegável)
+/cli.py                            @alexandrebrt14-sys
+/src/orchestrator.py               @alexandrebrt14-sys
+/src/llm_client.py                 @alexandrebrt14-sys
+/src/clients/                      @alexandrebrt14-sys
+/src/validators/voice_guard.py     @alexandrebrt14-sys
+/config/clients/default/           @alexandrebrt14-sys
+
+# CI / segurança — review obrigatório do Alexandre
+/.github/workflows/                @alexandrebrt14-sys
+/.github/dependabot.yml            @alexandrebrt14-sys
+/.github/CODEOWNERS                @alexandrebrt14-sys
+/SECURITY.md                       @alexandrebrt14-sys
+/.tools/                           @alexandrebrt14-sys
+/.githooks/                        @alexandrebrt14-sys
+
+# Cliente herreira (segmento varejo) — colaboradora do projeto
+/config/clients/herreira/          @alexandrebrt14-sys @analuiza-geo
+
+# Base de conhecimento GEO — review do Alexandre
+/docs/knowledge/geo-aeo/           @alexandrebrt14-sys
+
+# Templates de prompts — qualquer mudança afeta produção; review obrigatório
+/src/templates/prompts/            @alexandrebrt14-sys
+
+# Schemas e modelos — quebra de contrato afeta multi-tenant
+/src/schemas/                      @alexandrebrt14-sys
+/src/models.py                     @alexandrebrt14-sys

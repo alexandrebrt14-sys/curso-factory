@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
@@ -195,7 +195,7 @@ class QualityGate:
         """Converte GateResult para o modelo QualityReport."""
         return QualityReport(
             curso_id=curso_id,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             acentuacao_ok=gate_result.acentuacao_ok,
             html_ok=gate_result.html_ok,
             links_ok=gate_result.links_ok,

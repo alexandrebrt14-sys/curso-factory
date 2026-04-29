@@ -95,6 +95,51 @@ class VoiceGuardConfig:
 
 
 @dataclass
+class TutorConfig:
+    """Wave 7 — configuração do Tutor IA conversacional (runtime).
+
+    Tutor é o 6º agente que vive no servidor, fora do pipeline de geração.
+    Aluno conversa com tutor que sabe tudo sobre o curso atual.
+    """
+    enabled: bool = False
+    persona: str = "curiosa-paciente"
+    name: str = ""
+    model: str = "claude-haiku-4-5-20251001"
+    budget_per_user_per_month: float = 2.0
+    daily_budget: float = 10.0
+
+
+@dataclass
+class EngagementConfig:
+    """Wave 6 — configuração da camada de engajamento."""
+    gamification_enabled: bool = False
+    streak_enabled: bool = True
+    badges_enabled: bool = True
+    leagues_enabled: bool = False
+    srs_enabled: bool = True
+    srs_interval_initial_days: int = 1
+    quiz_pass_threshold: float = 0.7
+
+
+@dataclass
+class CertificationConfig:
+    """Wave 9 — configuração de certificação."""
+    enabled: bool = False
+    pass_threshold: float = 0.7
+    blockchain_opt_in: bool = False
+    linkedin_integration: bool = False
+
+
+@dataclass
+class AgenticConfig:
+    """Wave 10 — configuração de agent legibility (llms.txt + MCP/A2A)."""
+    enabled: bool = False
+    emit_llms_txt: bool = True
+    mcp_server: bool = False
+    a2a_endpoints: bool = False
+
+
+@dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
     id: str
@@ -107,6 +152,13 @@ class ClientContext:
     landing_page_dir: Path | None = None
     educacao_dir: Path | None = None
     output_base_dir: Path = field(default_factory=lambda: Path("output"))
+    # Wave 6-10 — features opcionais (default off; ligar via client.yaml)
+    tutor: TutorConfig = field(default_factory=TutorConfig)
+    engagement: EngagementConfig = field(default_factory=EngagementConfig)
+    certification: CertificationConfig = field(default_factory=CertificationConfig)
+    agentic: AgenticConfig = field(default_factory=AgenticConfig)
+    # Wave 8 — idioma default do cliente (override per curso possível)
+    language: str = "pt-br"
 
     @property
     def output_dir(self) -> Path:

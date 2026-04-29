@@ -1,5 +1,33 @@
 # curso-factory — Instruções Claude Code
 
+## 2026-04-29 — Refactor profundo em 5 waves (base reusável para outros segmentos)
+
+Pivô para tornar o curso-factory base de arquitetura para portais educacionais em **outros segmentos**, sem fork. As waves:
+
+1. **Auditoria** — mapa de bugs (4 subcomandos do CLI quebrados por imports inexistentes), código morto (`unified_finops.py`, `_build_writer_context`), duplicações de prompt e divergências entre CLAUDE.md e código real.
+2. **Fundação** — CLI reescrito (`validate`, `cost-report`, `batch`, `cache-clear` agora funcionam; `cmd_cost_report` lê o log real do `CostTracker` em vez da API fictícia que existia antes). `writer.py` e `reviewer.py` adotam `**template_vars` para paridade com os outros 3 agents.
+3. **Consolidação** — `unified_finops.py` removido (zero referências). `Cache` plugado no `LLMClient` (cache hit antes de circuit/retry). Defaults "Alexandre Caramaschi" / "Brasil GEO" removidos de `models.py:CourseDefinition` (`""` em vez de hardcode — quem instancia injeta via `ClientContext`). `SchemaBuilder` ganha clamp `max(30, duracao)`. Scripts ad-hoc movidos para `scripts/legacy/`.
+4. **Testes** — bateria expandida de **24 → 74 testes**: `test_cli` (11), `test_parsers` (14), `test_converters` (7), `test_cost_cache` (8), `test_validators_smoke` (10). Cobre todos os 8 subcomandos, parser canônico, conversor de drafts, FinOps, accent_checker, quality_gate e voice_guard. Toda chamada `datetime.utcnow()` migrada para `datetime.now(timezone.utc)`.
+5. **Docs** — `docs/ARCHITECTURE.md` reescrito como guia portal-agnóstico (camadas, o que é reusável, o que é segmento-específico, gaps conhecidos). Para novo portal: copiar `config/clients/_template/`, preencher YAML, eventualmente ajustar prompts.
+
+**Estado final:** 74/74 pytest verde, 8/8 subcomandos do CLI funcionais, zero código morto detectado, zero default de identidade no model.
+
+## 2026-04-25 — Base de conhecimento GEO/AEO/Agentic Commerce
+
+Foi adicionada uma camada doutrinária permanente em [docs/knowledge/geo-aeo/](docs/knowledge/geo-aeo/) que sintetiza 25+ papers acadêmicos (2025–2026) em 30 instruções operacionais, 7 princípios mestres, 4 checklists e tabela de thresholds quantitativos.
+
+**Quando usar.** Cursos sobre GEO, AEO, marketing por IA, comércio agêntico, MCP/A2A, RAG, knowledge graphs ou qualquer tema correlato devem usar este corpus como fonte primária. Cada agente do pipeline tem responsabilidades específicas:
+
+- **Pesquisa (Perplexity)** → fontes-âncora aceitas em `50-fontes-e-links.md`. Toda afirmação factual deve casar com pelo menos um paper deste catálogo.
+- **Redação (GPT-4o)** → princípios de `00-principios-mestres.md`, estrutura TL;DR/BLUF de `31-checklist-reescrita.md`, densidade de entidades 1/100 palavras (Instrução 17).
+- **Análise (Gemini)** → verificar os 16 pilares de `30-checklist-auditoria-geo16.md` em cada módulo.
+- **Classificação (Groq)** → tags com termos canônicos do `02-glossario.md`.
+- **Revisão (Claude)** → varredura final contra `01-anti-patterns.md`.
+
+**Princípio operacional.** Em conflito entre uma diretiva tática e um princípio mestre, **prevalece o princípio mestre**. A tese central: *GEO técnico é necessário, não suficiente. Estrutura validável vence prosa eloquente. Mídia conquistada explica a maior parte da variância de citação. Agent legibility é a nova SEO.*
+
+**Manutenção.** Revisão trimestral. Novos papers entram simultaneamente em `2X-papers-bloco-*.md`, `40-thresholds-quantitativos.md` e `50-fontes-e-links.md`.
+
 ## 2026-04-19 — Refactor multi-tenant (Ondas 1-5)
 
 ### Mudança estrutural: ClientContext

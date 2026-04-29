@@ -8,7 +8,7 @@ Prompt externo: src/templates/prompts/draft.md
 
 from __future__ import annotations
 
-from src.agents.base import Agent
+from src.agents.base import Agent, _safe_substitute
 
 
 class Writer(Agent):
@@ -51,8 +51,9 @@ class Writer(Agent):
         "--- DADOS DA PESQUISA ---\n{context}"
     )
 
-    def build_prompt(self, context: str) -> str:
+    def build_prompt(self, context: str, **template_vars: str) -> str:
         template = self._load_prompt_template()
+        substitutions = {"context": context, **template_vars}
         if template:
-            return template.replace("{context}", context)
-        return self.TEMPLATE.format(context=context)
+            return _safe_substitute(template, substitutions)
+        return _safe_substitute(self.TEMPLATE, substitutions)

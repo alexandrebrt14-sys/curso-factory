@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 import httpx
 
+from src.cache import Cache
 from src.config import get_api_key, MAX_TOKENS_PER_CALL
 from src.cost_tracker import CostTracker
 # Pricing, endpoints, modelos padrão e fallback vêm de config/providers.yaml
@@ -76,8 +77,14 @@ class TokenBucket:
 class LLMClient:
     """Cliente unificado para múltiplos providers LLM."""
 
-    def __init__(self, cost_tracker: Optional[CostTracker] = None) -> None:
+    def __init__(
+        self,
+        cost_tracker: Optional[CostTracker] = None,
+        cache: Optional[Cache] = None,
+        use_cache: bool = True,
+    ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
+        self.cache = cache if cache is not None else (Cache() if use_cache else None)
         self._circuits: dict[str, CircuitState] = {}
         self._buckets: dict[str, TokenBucket] = {}
         self._http = httpx.Client(timeout=60.0)
@@ -109,8 +116,18 @@ class LLMClient:
         return self._buckets[provider]
 
     def call(self, provider: str, prompt: str, **kwargs: Any) -> str:
-        """Chamada genérica com circuit breaker, retry e fallback."""
+        """Chamada genérica com cache, circuit breaker, retry e fallback."""
         fallback_depth = kwargs.pop("_fallback_depth", 0)
+
+        # Cache hit antes de qualquer trabalho (inclui rate limit / circuit / retry).
+        # Só cacheia chamadas idempotentes (sem max_retries customizado etc.) para
+        # evitar reaproveitar uma resposta vinda de um cenário anômalo.
+        model_for_cache = kwargs.get("model") or DEFAULT_MODELS.get(provider, "")
+        if self.cache is not None and fallback_depth == 0:
+            cached = self.cache.get(prompt, provider, model_for_cache)
+            if cached is not None:
+                return cached
+
         circuit = self._get_circuit(provider)
         if circuit.is_open:
             logger.warning("Circuito aberto para %s, tentando fallback", provider)
@@ -126,6 +143,8 @@ class LLMClient:
             try:
                 result = self._do_call(provider, prompt, **kwargs)
                 circuit.record_success()
+                if self.cache is not None and fallback_depth == 0:
+                    self.cache.set(prompt, provider, model_for_cache, result)
                 return result
             except Exception as exc:
                 circuit.record_failure()

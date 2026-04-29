@@ -32,7 +32,7 @@ PERPLEXITY_API_KEY: str = os.getenv("PERPLEXITY_API_KEY", "")
 # --- Limites FinOps (em USD) ---
 DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", "2.00"))
 SESSION_BUDGET_TOTAL: float = float(os.getenv("SESSION_BUDGET_TOTAL", "5.00"))
-MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "4096"))
+MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "16384"))
 
 # --- Budget per course (AAA quality) ---
 CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5.00"))

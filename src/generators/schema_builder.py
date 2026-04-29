@@ -79,6 +79,8 @@ class SchemaBuilder:
         duracao_total = sum(
             int(s.duration.replace(" min", "")) for s in steps
         ) if steps else 180
+        # Schema exige >= 30 min; clamp para o piso legal sem inflar artificialmente.
+        duracao_total = max(30, duracao_total)
 
         if client is None:
             from src.clients import load_client

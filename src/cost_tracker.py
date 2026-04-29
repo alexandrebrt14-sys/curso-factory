@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -26,7 +26,7 @@ class CostTracker:
     """Rastreia custos de chamadas LLM com persistência em JSON."""
 
     def __init__(self, session_id: Optional[str] = None) -> None:
-        self.session_id = session_id or datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        self.session_id = session_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         self._entries: list[dict] = []
         self._load()
 
@@ -51,7 +51,7 @@ class CostTracker:
     ) -> None:
         """Registra uma chamada LLM com seu custo."""
         entry = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "provider": provider,
             "model": model,
             "tokens_in": tokens_in,
