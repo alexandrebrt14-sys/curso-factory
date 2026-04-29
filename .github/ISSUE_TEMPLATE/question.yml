@@ -1,0 +1,30 @@
+name: Pergunta / How-to
+description: Dúvida que não está coberta pela wiki
+title: "[how-to] "
+labels: ["question", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Para perguntas sobre uso básico, comece pela [Wiki](https://github.com/alexandrebrt14-sys/curso-factory/wiki) — em particular [[Quick-Start]], [[CLI-Reference]] e [[Multi-Client-Setup]].
+
+  - type: textarea
+    id: pergunta
+    attributes:
+      label: O que você quer fazer
+    validations:
+      required: true
+
+  - type: textarea
+    id: tentou
+    attributes:
+      label: O que você já tentou
+      description: Comandos rodados, páginas da wiki consultadas, links que viu.
+    validations:
+      required: true
+
+  - type: input
+    id: wiki_consultada
+    attributes:
+      label: Página(s) da wiki consultada(s)
+      placeholder: "Quick-Start, CLI-Reference"
