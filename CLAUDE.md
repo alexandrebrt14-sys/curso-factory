@@ -1,5 +1,20 @@
 # curso-factory — Instruções Claude Code
 
+## REGRA #0 — IDIOMA
+
+Todo conteúdo gerado pelo orquestrador em PT-BR com acentuação completa. Exceção: código, commits, docstrings, identifiers técnicos.
+
+## REGRA #1 — Contexto enriquecido GEO 2026 (mandatório)
+
+Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agente (Perplexity research, GPT-4o writer, Gemini analyzer, Groq classifier, Claude reviewer), quality gate, FinOps por LLM, ou design de pipeline para novo segmento: ler primeiro [`docs/GEO_KNOWLEDGE_BASE_2026.md`](docs/GEO_KNOWLEDGE_BASE_2026.md) e [`docs/GEO_OPERATING_SYSTEM.md`](docs/GEO_OPERATING_SYSTEM.md).
+
+- **KB (~30 KB)** consolida estado da arte 2025-2026 adaptado ao curso-factory: papers fundadores GEO, KPIs aplicáveis a cursos gerados (mention rate da aula, citation share, prompt coverage), framework operacional 5 camadas alinhado ao pipeline de 5 LLMs, integração com a base existente `docs/knowledge/geo-aeo/` (30 instruções, 7 princípios, 25 papers — 2026-04-25). **§11 é a aplicação específica deste repo.**
+- **OS (~27 KB)** é o playbook operacional integrado ao pipeline: cadência por sprint de geração de curso, FinOps detalhado por LLM (Perplexity sonar-pro, GPT-4o, Gemini 2.5, Groq Llama, Claude Opus), KPI dashboard YAML para qualidade pós-deploy, prompt portfolio para validação de cursos GEO-otimizados.
+- **Pesquisa bruta** em [`docs/research/geo-knowledge-2026/`](docs/research/geo-knowledge-2026/) (Perplexity sonar-pro com citações reais).
+- **Complementa** (não substitui) `docs/knowledge/geo-aeo/` — KB 2026 traz vendor stack atualizado, top columnists, prompt portfolio e métricas executáveis que a base de 2026-04-25 não cobria.
+
+Citar `§X.Y` do KB/OS ao tomar decisões. Atualizar trimestralmente.
+
 ## 2026-04-29 — Refactor profundo em 5 waves (base reusável para outros segmentos)
 
 Pivô para tornar o curso-factory base de arquitetura para portais educacionais em **outros segmentos**, sem fork. As waves:
