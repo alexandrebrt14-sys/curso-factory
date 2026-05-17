@@ -867,3 +867,83 @@ measurement:
 **Fim do GEO Operating System para curso-factory**
 
 *Próxima revisão: 2026-08-13*
+
+---
+
+## Apêndice — Updates 17-05-2026 (5 waves de pesquisa profunda)
+
+Pesquisa Perplexity sonar-deep-research (5 waves paralelas) ampliou e atualizou o conhecimento de GEO e SEO com papers, vendor landscape, standards e frameworks de medição publicados em 2026. Documentação canônica derivada:
+
+- `docs/SEO_KNOWLEDGE_BASE_2026.md` — SEO 2026 (core updates Google, AI Overviews, E-E-A-T, técnico)
+- `docs/AI_DISCOVERY_STANDARDS_2026.md` — crawlers, llms.txt, IETF AIPREF, C2PA, Schema.org, MCP
+- `docs/GEO_KNOWLEDGE_BASE_2026_V2.md` — papers acadêmicos 2026, vendor landscape pós-funding, framework rigoroso de medição
+
+Os arquivos brutos das 5 waves estão em `docs/research/geo-seo-2026-wave/`.
+
+### Diffs operacionais aplicáveis a este Operating System
+
+#### 1. Camada 4 — Measurement: substituir acrônimos sem fonte primária
+
+A V1 deste OS lista KPIs como "Course Citation Rate" e "Educational Authority Score" sem ancoragem em ferramenta canônica. A Wave 5 demonstrou que **AIGVR, AECR, CTAM, RTAS, Brand Echo Score, LLM Visibility Index e GEO Authority Rank circulam em conteúdo de marketing mas NÃO têm fonte primária verificável**. Substituir por KPIs canônicos com ferramenta que os mede:
+
+| KPI canônico 2026 | Ferramenta primária | Substitui |
+|---|---|---|
+| AI Share of Voice (SoV) | Profound, Ahrefs Brand Radar, Peec | "Authority Score" genérico |
+| AI Brand Score (position-weighted) | Evertune | "RTAS" sem fonte |
+| Citation Rate por prompt portfolio | Profound + DIY | "Course Citation Rate" agora ancorado em portfolio fixo |
+| Recommendation Rate (r=0.72 vs conversão) | FAII | Métrica nova — sinal de intenção |
+| Scrunch Influence Score (Consistency × Unique Prompts) | Scrunch AI | Novo |
+| ACE Score (modelo ML proprietário) | AthenaHQ | Novo |
+
+Detalhamento completo dos 14 KPIs canônicos em `docs/GEO_KNOWLEDGE_BASE_2026_V2.md` §6.
+
+#### 2. Camada 3 — Discovery: ajustes pós-Wave 4
+
+- **Perplexity-User ignora robots.txt** (documentado oficialmente) — não tente bloquear por essa via. Considere bloquear no edge (Cloudflare/Vercel) se necessário.
+- **`Claude-Web` e `anthropic-ai` estão DEPRECADOS** desde 2024 — remover do `robots.txt` template (substituídos por `ClaudeBot`, `Claude-User`, `Claude-SearchBot`).
+- **llms.txt tem ~10,1% de adoção** em 300k domínios (SE Ranking) mas apenas **0,001% das URLs citadas por LLMs** usam o arquivo. Mantenha publicado (custo zero, upside marginal), mas não invista em otimização cirúrgica dele.
+- **IETF AIPREF** (`draft-ietf-aipref-vocab-06`, v06 de 28-abr-2026) é o caminho oficial emergente — preparar `/.well-known/ai-preferences` para Q3 2026.
+- **Schema.org 30.0 (19-mar-2026) NÃO adicionou `Agent`, `AIPolicy`, `GenerativeAI`** — usar workaround via `SoftwareApplication`/`Service`/`CreativeWork` + propriedade `agent`.
+
+#### 3. Camada 2 — Content: pós-March 2026 Core Update
+
+O **March 2026 Core Update** (27-mar-2026, 12d 4h) registrou volatilidade Semrush 8.7/10 (recorde desde ago-2024); 80% do top-3 mudou de posição. O sinal dominante pós-update é **Information Gain** — rubrica de 5 dimensões (dados proprietários, evidência primária, frameworks originais, atribuição expert, hooks de freshness). Cursos com paráfrase de programas universitários perdem; cursos com dados próprios de turmas brasileiras (NPS, conclusão, salário pós-curso) ganham.
+
+Ajuste no template de módulo (§ Camada 2):
+- **Mínimo 1 insight original** por módulo (não apenas síntese da literatura)
+- **Dados primários do cliente** (NPS, completion rate, salário médio dos alunos) em destaque
+- **Atribuição expert** com `Person` schema + `sameAs` LinkedIn/Wikidata/ORCID
+
+#### 4. Camada 5 — Optimization: vendor stack atualizado pós-funding 2026
+
+Updates relevantes do vendor landscape (Wave 3):
+
+- **Profound levantou Série C $96M @ $1B valuation** (24-fev-2026, Lightspeed lead) — confirmou liderança enterprise
+- **Bluefish AI Série B $43M** (14-abr-2026, Threshold+NEA) — foco Fortune 500
+- **Peec.ai Série A $21M** — alternativa SMB consolidada
+- **Ahrefs Brand Radar $398/mo** (select platforms) ou $699/mo (all platforms com 2.500 prompts) — sweet spot para curso-factory em fase 0-3 meses
+- **AthenaHQ seed $2M** (Y Combinator) — interessante watch, founders ex-Google/DeepMind
+
+Stack mínima viável para curso-factory hoje ($70-180/mês):
+1. Otterly AI ($39) ou Peec (consulta) — tracking primário
+2. DIY citation tracking via Python + APIs LLM (ou Profound Lite $499 se enterprise)
+3. HubSpot AEO Grader (gratuito) — sentiment baseline mensal
+4. GA4 regex channel grouping — atribuição LLM referral
+5. Script cron + Sheets integrando `geo-orchestrator` existente — APIs $30-80
+
+#### 5. Camada 1 — Entity Foundation: ajustes para AI Overviews
+
+- AIO presente em **~58,5% das buscas** (zero-click); CTR orgânico cai 25-61% quando AIO aparece — desenhe conversão dentro da página citada, não dependa de clique posterior
+- **Extended thinking reduz alucinação 41%** (factual) e 37% (citation) — ligar `thinking` em modelos que suportam, no agent `claude_review`
+
+### Cadência atualizada
+
+Trimestral (substitui revisão Q anterior):
+- [ ] Re-rodar prompt portfolio canônico (50 prompts, distribuição 30/25/20/15/10 — ver Wave 5 §receita)
+- [ ] Cross-check stack vendor: Profound/Ahrefs Brand Radar mantêm liderança? Novos entrantes Série A/B?
+- [ ] Verificar status IETF AIPREF (datatracker.ietf.org/wg/aipref/about/)
+- [ ] Atualizar lista de AI crawlers (knownagents.com)
+- [ ] Validar Schema.org releases (schema.org/docs/releases.html)
+- [ ] Refresh dos top 10 papers de GEO no arxiv.org (categorias cs.IR + cs.CL)
+
+*Próxima revisão V2: 2026-08-17*

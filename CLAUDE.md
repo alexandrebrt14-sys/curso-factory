@@ -4,16 +4,26 @@
 
 Todo conteúdo gerado pelo orquestrador em PT-BR com acentuação completa. Exceção: código, commits, docstrings, identifiers técnicos.
 
-## REGRA #1 — Contexto enriquecido GEO 2026 (mandatório)
+## REGRA #1 — Contexto enriquecido GEO/SEO 2026 (mandatório)
 
-Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agente (Perplexity research, GPT-4o writer, Gemini analyzer, Groq classifier, Claude reviewer), quality gate, FinOps por LLM, ou design de pipeline para novo segmento: ler primeiro [`docs/GEO_KNOWLEDGE_BASE_2026.md`](docs/GEO_KNOWLEDGE_BASE_2026.md) e [`docs/GEO_OPERATING_SYSTEM.md`](docs/GEO_OPERATING_SYSTEM.md).
+Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agente (Perplexity research, GPT-4o writer, Gemini analyzer, Groq classifier, Claude reviewer), quality gate, FinOps por LLM, ou design de pipeline para novo segmento: ler primeiro os 4 documentos canônicos abaixo, na ordem.
 
-- **KB (~30 KB)** consolida estado da arte 2025-2026 adaptado ao curso-factory: papers fundadores GEO, KPIs aplicáveis a cursos gerados (mention rate da aula, citation share, prompt coverage), framework operacional 5 camadas alinhado ao pipeline de 5 LLMs, integração com a base existente `docs/knowledge/geo-aeo/` (30 instruções, 7 princípios, 25 papers — 2026-04-25). **§11 é a aplicação específica deste repo.**
-- **OS (~27 KB)** é o playbook operacional integrado ao pipeline: cadência por sprint de geração de curso, FinOps detalhado por LLM (Perplexity sonar-pro, GPT-4o, Gemini 2.5, Groq Llama, Claude Opus), KPI dashboard YAML para qualidade pós-deploy, prompt portfolio para validação de cursos GEO-otimizados.
-- **Pesquisa bruta** em [`docs/research/geo-knowledge-2026/`](docs/research/geo-knowledge-2026/) (Perplexity sonar-pro com citações reais).
-- **Complementa** (não substitui) `docs/knowledge/geo-aeo/` — KB 2026 traz vendor stack atualizado, top columnists, prompt portfolio e métricas executáveis que a base de 2026-04-25 não cobria.
+**Camada teoria (KB):**
+- [`docs/GEO_KNOWLEDGE_BASE_2026.md`](docs/GEO_KNOWLEDGE_BASE_2026.md) — V1, 13-05-2026. Estado da arte 2025-2026 adaptado a EAD: papers fundadores (Aggarwal 2023, Chen 2025), KPIs base, framework operacional 5 camadas, vendor stack inicial. **§11 é a aplicação específica deste repo.**
+- [`docs/GEO_KNOWLEDGE_BASE_2026_V2.md`](docs/GEO_KNOWLEDGE_BASE_2026_V2.md) — V2, 17-05-2026 (delta). 10 papers acadêmicos publicados em 2026 verificados via arxiv.org (VMAO arXiv:2603.11445, ReaLM-Retrieve arXiv:2604.26649, AIO measurement arXiv:2605.14021 etc), vendor landscape pós-funding Q1/Q2 2026 (Profound Série C $96M @ $1B, Bluefish $43M, Peec $21M), framework de 14 KPIs canônicos com fonte primária + **alerta crítico: AIGVR/AECR/CTAM/RTAS/Brand Echo NÃO têm fonte primária verificável, não usar**.
+- [`docs/SEO_KNOWLEDGE_BASE_2026.md`](docs/SEO_KNOWLEDGE_BASE_2026.md) — novo, 17-05-2026. Updates do Google 2026 (March 2026 Core Update com volatilidade Semrush 8.7/10, February 2026 Discover Update, March 2026 Spam Update), AI Overviews evolução (expansão para 100 idiomas, ads dentro de AIO, opt-out 19-mar-2026, litígios Penske/Leovy/CE antitrust), E-E-A-T 2026 (Author Entity, Experience como diferenciador, Disconnected Entity Hypothesis), técnico (Core Web Vitals composite, Information Gain, MUVERA, hreflang). 80 fontes validadas.
+- [`docs/AI_DISCOVERY_STANDARDS_2026.md`](docs/AI_DISCOVERY_STANDARDS_2026.md) — novo, 17-05-2026. Catálogo canônico de 45+ AI crawlers (ClaudeBot, Perplexity-User que ignora robots.txt, Google-Extended etc), status real llms.txt em 2026 (10,1% adoção mas 0,001% das citações LLM), IETF AIPREF (`draft-ietf-aipref-vocab-06`), C2PA spec 2.3, Schema.org 30.0 (não adicionou `Agent`/`AIPolicy`/`GenerativeAI`), MCP ecosystem (registry oficial 6.8k stars, 7.700 servers em marketplaces). Templates prontos de robots.txt, llms.txt, llms-full.txt, JSON-LD Course.
 
-Citar `§X.Y` do KB/OS ao tomar decisões. Atualizar trimestralmente.
+**Camada operação (OS):**
+- [`docs/GEO_OPERATING_SYSTEM.md`](docs/GEO_OPERATING_SYSTEM.md) — playbook semanal completo. **Apêndice 17-05-2026** documenta os diffs operacionais derivados das 5 waves (KPIs canônicos substituindo acrônimos sem fonte, vendor stack atualizado, ajustes pós-March 2026 Core Update, removal de `Claude-Web`/`anthropic-ai` deprecados, preparação `/.well-known/ai-preferences` para Q3 2026).
+
+**Pesquisa bruta:**
+- [`docs/research/geo-knowledge-2026/`](docs/research/geo-knowledge-2026/) — Perplexity sonar-pro de 13-05-2026.
+- [`docs/research/geo-seo-2026-wave/`](docs/research/geo-seo-2026-wave/) — 5 waves Perplexity sonar-deep-research de 17-05-2026 (papers 2026, SEO updates, vendor landscape, discovery standards, measurement frameworks), com WebFetch validation em ~50 URLs primárias.
+
+**Complementa** (não substitui) `docs/knowledge/geo-aeo/` — corpus de 30 instruções operacionais + 25 papers da onda 2026-04-25.
+
+Citar `§X.Y` dos KBs ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
 
 ## 2026-04-29 — Refactor profundo em 5 waves (base reusável para outros segmentos)
 

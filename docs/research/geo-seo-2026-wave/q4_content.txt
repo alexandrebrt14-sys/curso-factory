@@ -1,0 +1,65 @@
+# E‑E‑A‑T, Quality Rater Guidelines 2026, and the Rise of Author Entities in Human and Machine Trust
+
+Across both search engines and large language models, 2026 marks a turning point in how online information is evaluated: systems no longer simply parse pages, they assess *people*, *entities*, and *evidence*. Google’s E‑E‑A‑T framework (Experience, Expertise, Authoritativeness, Trustworthiness) has been sharpened through successive updates to the Search Quality Rater Guidelines, culminating in 2025–2026 revisions that emphasize verifiable authorship, first‑hand experience, strict standards for YMYL topics, and explicit treatment of AI‑generated content.[3][3][28] At the same time, Google’s March 2026 core update and related algorithmic changes have reweighted signals toward original information, experiential depth, and strong author and brand identity, often at the expense of generic aggregators and anonymous, surface‑level content.[5][46][50] Underpinning these shifts is a deeper semantic infrastructure: author entities modeled in knowledge graphs, represented in schema.org Person markup with `sameAs` links to external profiles, and reinforced through consistent bylines, topical focus, and third‑party validation.[10][11][14] 
+
+In parallel, AI systems and LLM‑driven search surfaces—from Google’s AI Overviews to independent assistants—are converging on very similar trust signals. They prioritize sources with recognized entities, structured data, original research, transparent methodology, and cross‑source corroboration, while attempting to mitigate hallucinations through retrieval, reliability‑aware RAG frameworks, and multi‑view validation.[19][21][34] Empirical analyses show that AI citation sets are narrower than SERPs, skew toward entity‑rich, extractable content, and increasingly favor brands and authors that appear as stable nodes in the broader web of data rather than those who merely win on traditional keyword or link metrics.[37][47] This report examines, in depth, how E‑E‑A‑T and the Quality Rater Guidelines evolved into 2026, how author entities and Person schema connect content to Google’s Knowledge Graph, and how LLMs implicitly leverage analogous signals when choosing whom to trust, cite, and surface.
+
+---
+
+## 1. From E‑A‑T to E‑E‑A‑T: The Quality Rater Guidelines as a Trust Blueprint
+
+### 1.1 The role of the Quality Rater Guidelines in Google’s evaluation ecosystem
+
+Google’s Search Quality Rater Guidelines (QRG) are the foundational document that instructs human evaluators how to assess the quality and helpfulness of search results, with a heavy focus on E‑E‑A‑T and the special treatment of “Your Money or Your Life” (YMYL) topics.[28][4] First published publicly in 2015 and updated irregularly—typically two to three times per year—the Guidelines do not directly define ranking factors, but they shape the training and calibration of the machine‑learning systems that do.[28] Google’s own documentation and independent analyses emphasize that raters’ judgments are used to train evaluation models, which then influence how ranking systems weigh various quality signals across the web.[3][28] In practice, this means that any systematic shift in the QRG—such as tightening standards for verifiable authorship or redefining YMY
+
+## Citações Q4
+[1] https://www.reporteroutreach.com/blog/eeat-checklist
+[2] https://keywordseverywhere.com/blog/google-e-e-a-t-guidelines-an-overview/
+[3] https://seodefend.com/google-february-2026-quality-rater-guidelines-update-what-changed-and-why-it-matters/
+[4] https://www.semrush.com/blog/eeat/
+[5] https://www.digitalapplied.com/blog/e-e-a-t-march-2026-google-rewards-experience-content-guide
+[6] https://digitac.media/e-e-a-t-explained-why-google-rewards-experience-over-keywords-in-2026/
+[7] https://graphicten.com/blog/google-review-policy-update-2026/
+[8] https://moz.com/learn/seo/google-eat
+[9] https://aiisc.ai/text2kg2026/
+[10] https://schema.org/Person
+[11] https://www.visibilitystack.ai/academy/content-engineering/author-entity
+[12] https://sem-tab-challenge.github.io/2025/papers/paper_3.pdf
+[13] https://promethium.ai/guides/enterprise-knowledge-graph-buyers-guide-2026/
+[14] https://www.digitalapplied.com/blog/schema-markup-after-march-2026-structured-data-strategies
+[15] https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+[16] https://www.ontotext.com/blog/using-entity-linking-to-turn-your-graph-into-a-knowledge-graph/
+[17] https://www.clickrank.ai/google-ai-signals/
+[18] https://www.confident-ai.com/blog/llm-evaluation-metrics-everything-you-need-for-llm-evaluation
+[19] https://ai-marketinglabs.com/lab-experiments/how-does-ai-decide-which-brands-to-trust-in-its-search-results
+[20] https://aclanthology.org/2024.findings-emnlp.180.pdf
+[21] https://contently.com/2025/12/29/the-emerging-signals-llms-use-to-trust-your-brand-top-10-platforms-for-2026/
+[22] https://magazine.sebastianraschka.com/p/llm-evaluation-4-approaches
+[23] https://arxiv.org/html/2410.21360v2
+[24] https://arxiv.org/html/2505.14549v3
+[25] https://www.seroundtable.com/google-search-quality-raters-guidelines-update-40092.html
+[26] https://thriveagency.com/news/how-to-approach-ai-content-according-to-googles-updated-quality-rater-guidelines/
+[27] https://developers.google.com/search/blog/2026/02/discover-core-update
+[28] https://groundingpage.com/facts/google-search-quality-rater-guidelines/
+[29] https://searchengineland.com/google-quality-raters-content-ai-generated-454161
+[30] https://www.broworks.net/blog/googles-2026-search-quality-rater-guidelines-what-you-need-to-know
+[31] https://arxiv.org/html/2508.03860
+[32] https://citely.ai/posts/best-source-credibility-checker-in-2026-how-to-verify-any-academic-source
+[33] https://recomaze.ai/how-google-gemini-selects-sources-for-ai-answers
+[34] https://pmc.ncbi.nlm.nih.gov/articles/PMC12689688/
+[35] https://arxiv.org/html/2508.03860v1
+[36] https://www.yext.com/blog/7-data-backed-facts-on-ai-trust-and-consumer-decision-making-in-2026
+[37] https://ziptie.dev/blog/google-ai-overviews-source-selection/
+[38] https://seomytics.com/author-authority-ranking-signal-how-google-weighs-it-2026/8514/
+[39] https://www.alliai.com/seo-ranking-factors/known-authorship
+[40] https://www.semrush.com/blog/ymyl/
+[41] https://www.dynamisllp.com/knowledge/ai-disclosure-in-2026-recent-developments-and-practical-steps-for-brands-and-influencers
+[42] https://metricspot.com/docs/author-byline/
+[43] https://cxl.com/blog/author-brand-credibility-seo-ai-search/
+[44] https://www.pageoptimizer.pro/blog/what-is-ymyl-in-seo-and-why-does-it-matter
+[45] https://www.youtube.com/watch?v=PMjxcvHX2zA
+[46] https://almcorp.com/blog/google-march-2026-core-update-what-changed/
+[47] https://www.stackmatix.com/blog/entity-based-seo-topical-authority
+[48] https://schema.org/sameAs
+[49] https://www.artifaktdigital.com/how-unlinked-brand-mentions-help-your-ai-visibility-strategy/
+[50] https://www.amsive.com/insights/seo/google-march-2026-core-update-winners-losers-analysis/

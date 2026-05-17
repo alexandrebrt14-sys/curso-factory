@@ -1,0 +1,69 @@
+# The Evolution of Google AI Overviews, 2025–2026: Languages, Click‑Through Dynamics, Citation Patterns, Advertising, Opt‑Out Controls, and Legal Challenges
+
+Across 2025 and 2026, Google’s AI Overviews moved from an experimental search feature to a central interface for how billions of people access information, triggering profound shifts in click‑through rates, publisher economics, advertising models, and regulatory scrutiny.[18][46][49] During this period, Google expanded AI Overviews to more than 200 countries and territories and over 40 languages, then supported nearly 100 languages through AI Mode, extending AI‑mediated search to over a billion additional people in historically underserved linguistic communities.[2][16][2] At the same time, independent studies consistently documented substantial declines in organic click‑through rates—often in the range of 35–60% for queries where AI Overviews appear—alongside a sharp rise in zero‑click behavior and a growing concentration of surviving clicks on the small subset of pages cited directly in AI answers.[3][35][37] New research on citation patterns showed that AI platforms such as Google AI Overviews, ChatGPT, and Perplexity privilege distinct mixes of encyclopedic, professional, and community‑generated sources, with Reddit emerging as a particularly prominent input for both Google and Perplexity and Wikipedia remaining dominant for ChatGPT.[4] In parallel, Google began to monetize this interface more aggressively, placing ads above, below, and in some cases within AI Overviews, extending similar experiments into the conversational AI Mode and piloting “Direct Offers” that surface deal‑driven ads at the point of purchase intent, thereby redefining search advertising around conversational and context‑level signals rather than discrete keywords.[5][5][25] These changes provoked a wave of legal and regulatory actions worldwide, from antitrust and copyright investigations by the European Commission and the UK Competition and Markets Authority (CMA) to lawsuits by publishers such as Penske Media in the United States and press publishers in the EU, all arguing that AI Overviews divert traffic without adequate compensation or meaningful opt‑out.[40][41][37] At the same time, competition scholars and commentators have questioned whether law should recognize any “right to traffic,” emphasizing that while AI Overviews may be economically devastating for some publishers, search rankings and AI summaries are also forms of protected expressive activity and user‑preferred interfaces.[8][6] By early 2026, Google had begun to respond technically and politically with new citation‑rich designs—such as “Further Exploration” link blocks, subscription labels, and hover previews—and with commitments to develop publisher‑level controls for generative features in search, yet the underlying structural tension between an AI‑first interface and the sustainability of the open web remains unresolved.[38][37]
+
+## 1. From SGE to AI Overviews: Context and Baseline
+
+### 1.1 From Search Generative Experience to AI Overviews
+
+Google’s AI Overviews originated in its Search Generative Experience (SGE), a set of experimental features that began rolling out in 2023 and 2024 to provide AI‑generated snapshots at the top of search results.[18][46] These early experiments placed large language model outputs above the familiar “ten blue links,” synthesizing information from multiple web documents into a conversational answer that aimed to reduce the cognitive load of scanning individual pages.[18][19] In May 2024, Google formally launched AI Overviews as a product, positioning them as AI‑generated summaries that respond directly to many queries and present cited web links alongside the synthesized narrative.[46][49] The company framed this as an evolution of long‑standing efforts to use AI in search ranking and features like featured snippets, Knowledge Panels, and People Also Ask modules, but with deeper language understanding and generative capabilities.[18] Conceptually, AI Overviews extended Google’s shift from “find pages that might answer your question” toward “directly answer your question while still letting you click through if you want to go deeper,” with Google emphasizing speed, convenience, and the ability to handle complex, multi‑part queries.[2][2]
+
+Even at this early stage, however, the implications for publisher traffic and search behavior were apparent. By design, AI Overviews move the primary answer surface into an AI‑generated block that can satisfy many informational needs without requiring a click, a pattern that dovetails with the broader rise of zero‑click search that had already been documented in the pre‑generative era.[18][33] For informational publishers whose business models depend on search referrals and on‑page advertising, the prospect of an AI layer providing “good enough” answers above their links quickly raised concerns about cannibalization of clicks and erosion of the open‑web discovery funnel.[12][32] The period from 2024 into early 2025 therefore set the baseline: AI Overviews were rolled out as a product improvement focused on user experience, but without clear mechanisms for publishers to control participation or for regulators to assess the competitive effects within the wider information ecosystem.[6][41]
+
+### 1.2 Transition from experimental feature to default search surface
+
+By early 2025, AI Overviews had moved beyond a limited experiment and begun to appear for a significant share of Google queries, particularly in English and in large markets such as the United States and India.[2][19] Ahrefs and other SEO platforms tracking millions of search results observed that AI Overviews were triggered on roughly 6.5% of queries in January 2025, climbing rapidly to around 25% by mid‑year before moderating somewhat as Google recalibrated rollout thresholds.[15][19] One composite analysis reported that AI Overview presence peaked near a quarter of all queries by July 2025 and then stabilized around 15–16% by November 2025, suggesting an initial over‑expansion followed by tuning based on quality, performance, and user satisfaction signals.[15][19] In parallel, BrightEdge’s tracking across selected industry verticals showed even higher coverage—on the order of 31% of monitored queries by February 2025—underscoring that adoption rates were uneven and particularly aggressive in sectors like healthcare, education, and B2B technology where complex informational queries are common.[46][49]
+
+User‑level adoption metrics reinforced this picture of rapid mainstreaming. At Google I/O 2025, the company disclosed that AI Overviews were already reaching more than 1.5 billion users per month in over 200 countries and more than 40 languages, with usage continuing to grow.[2][15] By mid‑2025, executives reported that this figure had surpassed 2 billion monthly users, meaning that more than half of Google’s global user base was encountering AI‑generated answers within search on a regular basis.[2][15] Internal Google data cited in public blog posts indicated that in large markets like the US and India, AI Overviews were driving more than a 10% increase in search usage for the types of queries where they appear, suggesting that users who experienced the
+
+## Citações Q2
+[1] https://smallbizmarketing.agency/blog/how-ai-overviews-are-changing-google-search
+[2] https://blog.google/products-and-platforms/products/search/ai-overview-expansion-may-2025-update/
+[3] https://www.searchenginejournal.com/ai-overview-ctr-fell-61-but-clicks-didnt-collapse/572993/
+[4] https://www.tryprofound.com/blog/ai-platform-citation-patterns
+[5] https://support.google.com/google-ads/answer/16297775?hl=en
+[6] https://academic.oup.com/jeclap/advance-article/doi/10.1093/jeclap/lpag025/8651151
+[7] https://lawfold.com/google-ai-overviews-lawsuit-news/
+[8] https://techpolicy.press/why-lawsuits-over-ai-summaries-will-fail
+[9] https://www.courthousenews.com/authors-illustrators-push-for-copyright-owner-class-in-case-against-google-ai/
+[10] https://www.theregister.com/off-prem/2026/03/19/google-says-it-will-let-publishers-opt-out-of-ai-overviews/5224006
+[11] https://www.courthousenews.com/news-publisher-rails-against-lack-of-compensation-for-google-ai-overviews-in-eu/
+[12] https://legalblogs.wolterskluwer.com/competition-blog/ai-overviews-are-harming-competition-letting-publishers-opt-out-wont-help/
+[13] https://www.bakerlaw.com/leovy-v-google/
+[14] https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-march-2026/
+[15] https://quickseo.ai/blog/google-ai-overviews-statistics-2026-60-data-points-every-seo-should-know
+[16] https://almcorp.com/blog/google-ai-mode-expands-53-languages-analysis/
+[17] https://hiilite.com/ai-overview-aio-in-2026-what-it-is-how-it-impacts-click-through-rate-and-how-to-rank/
+[18] https://www.enfuse-solutions.com/how-googles-ai-overviews-are-changing-seo-in-2026/
+[19] https://seoprofy.com/blog/google-ai-overviews/
+[20] https://blog.google/products/ads-commerce/ai-strategies-master-marketing-2026/
+[21] https://www.sharpinnovations.com/blog/2026/02/ads-in-google-ai-overviews/
+[22] https://en.wikipedia.org/wiki/Advertising
+[23] https://business.google.com/us/think/search-and-video/ai-marketing-strategy-2026-guide/
+[24] https://searchengineland.com/google-ads-inside-ai-mode-tests-expand-464979
+[25] https://nextmillennium.com/blog/google-ai-mode-direct-offers/
+[26] https://www.upwork.com/resources/what-is-advertising
+[27] https://www.gilbertslaw.ca/insights/2024/12/perplexity-ai-sued-for-copyright-infringement-a-summary-via-perplexity/
+[28] https://www.youtube.com/watch?v=u2nocjLtcE0
+[29] https://www.jurist.org/news/2025/12/new-york-times-sues-perplexity-ai-over-copyright-infringement/
+[30] https://heroicrankings.com/seo/managed/google-ai-overview-statistics-2026/
+[31] https://seoengico.com/blog/ai-overviews-click-through-rate-drop-2026
+[32] https://digitalcontentnext.org/blog/2026/04/09/the-publishers-playbook-for-the-google-zero-era/
+[33] https://digiday.com/media/google-ai-overviews-linked-to-25-drop-in-publisher-referral-traffic-new-data-shows/
+[34] https://velacore.au/traffic-lost-to-google-ai-overviews/
+[35] https://adsroid.com/impact-ai-overviews-google-click-through-rates-2026/
+[36] https://pressgazette.co.uk/media-audience-and-business-data/ai-overviews-publisher-traffic/
+[37] https://thenextweb.com/news/google-ai-overviews-publisher-links-search-traffic
+[38] https://blog.google/company-news/inside-google/around-the-globe/google-europe/cma-response/
+[39] https://digital-markets-act.ec.europa.eu/commission-proposes-measures-google-sharing-search-engine-data-third-parties-under-digital-markets-2026-04-16_en
+[40] https://www.gov.uk/government/news/cma-proposes-package-of-measures-to-improve-google-search-services-in-uk
+[41] https://www.loyensloeff.com/insights/news--events/news/the-european-commission-opens-formal-antitrust-investigation-into-googles-use-of-online-content-for-ai-purposes/
+[42] https://ec.europa.eu/commission/presscorner/detail/en/ip_26_825
+[43] https://www.rstreet.org/commentary/the-digital-services-act-could-kill-ai-overviews-in-the-eu-and-damage-american-companies/
+[44] https://competitionandmarkets.blog.gov.uk/2026/01/28/improving-the-way-google-delivers-search-services-in-the-uk/
+[45] https://ec.europa.eu/commission/presscorner/detail/en/ip_26_203
+[46] https://almcorp.com/blog/google-ai-overviews-surge-9-industries/
+[47] https://www.safaridigital.com.au/blog/ai-overview-aio-statistics/
+[48] https://www.digitalapplied.com/blog/google-ai-mode-75m-users-ads-in-ai-results-2026
+[49] https://sqmagazine.co.uk/ai-overviews-statistics/
+[50] https://www.digitalapplied.com/blog/ai-search-engine-statistics-2026-market-share
