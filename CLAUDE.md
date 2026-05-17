@@ -20,10 +20,15 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 **Pesquisa bruta:**
 - [`docs/research/geo-knowledge-2026/`](docs/research/geo-knowledge-2026/) — Perplexity sonar-pro de 13-05-2026.
 - [`docs/research/geo-seo-2026-wave/`](docs/research/geo-seo-2026-wave/) — 5 waves Perplexity sonar-deep-research de 17-05-2026 (papers 2026, SEO updates, vendor landscape, discovery standards, measurement frameworks), com WebFetch validation em ~50 URLs primárias.
+- [`docs/research/geo-q2-2026/`](docs/research/geo-q2-2026/) — **incremento canônico 17-05-2026 (noite)** com 4 artefatos:
+  - `GEO_KNOWLEDGE_2026_Q2_INCREMENT.md` — doc canônico específico para curso-factory (mudanças metodológicas Q1-Q2 2026, novos módulos de curso a produzir, KPIs canônicos para EAD, 7 artefatos educacionais). Gerado por Claude Opus 4.7 sobre síntese Gemini 2.5 Pro de 5 sonar-pro + 5 sonar-deep + 1 GPT-4o web_search.
+  - `SYNTHESIS_STATE_OF_ART_2026.md` — síntese geral (8 seções, papers AgenticGEO/AdaptOrch/MoA/DAAO, vendor stack, Citation Drift Profound, lançamentos LLM Q1-Q2).
+  - `CITATIONS_POOL.md` — **325 URLs verificáveis** consolidados.
+  - `raw/` — 10 JSONs originais das waves para auditoria.
 
 **Complementa** (não substitui) `docs/knowledge/geo-aeo/` — corpus de 30 instruções operacionais + 25 papers da onda 2026-04-25.
 
-Citar `§X.Y` dos KBs ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
+Citar `§X.Y` dos KBs/INCREMENT ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
 
 ## 2026-04-29 — Refactor profundo em 5 waves (base reusável para outros segmentos)
 
