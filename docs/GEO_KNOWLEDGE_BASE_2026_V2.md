@@ -5,6 +5,8 @@
 > Delta sobre a V1 (13-05-2026): novos papers de 2026 verificados via arXiv, vendor landscape pós-funding Q1/Q2 2026 (US$ 192M em rodadas confirmadas), framework rigoroso de medição com 14 KPIs canônicos e desmonte de acrônimos infundados que circulam em material PT-BR secundário.
 >
 > Leia este documento em complemento, não em substituição, à V1. A V1 cobre a teoria fundacional (Aggarwal 2023, Chen 2025) e a stack interna do curso-factory. A V2 substitui as seções de papers, vendor pricing e KPIs por dados frescos de Q1/Q2 2026.
+>
+> **Snapshot mais recente — 20-mai-2026:** esta V2 foi enriquecida por `docs/research/state-of-art-2026-05/GEO_STATE_OF_ART_2026_05_MASTER.md` (sumário executivo + 6 tracks, ~50.800 palavras). O Master Index substitui (não acumula) o §1 (papers — agora 18 papers Q2 2026), §3 (vendors — agora 17 vendors com pricing mai-2026 WebFetch-validado) e §6 (KPIs — agora 36 total: 14 da V2 + 22 operacionais novos). O restante da V2 permanece canônico. Combine com `SEO_GEO_INCREMENT_20260520.md` (Two-Phase JSON-LD, Princeton playbook pós Google I/O 2026).
 
 ---
 
