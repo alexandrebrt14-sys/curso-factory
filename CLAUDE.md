@@ -20,6 +20,9 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 **Camada operação (OS):**
 - [`docs/GEO_OPERATING_SYSTEM.md`](docs/GEO_OPERATING_SYSTEM.md) — playbook semanal completo. **Apêndice 17-05-2026** documenta os diffs operacionais derivados das 5 waves (KPIs canônicos substituindo acrônimos sem fonte, vendor stack atualizado, ajustes pós-March 2026 Core Update, removal de `Claude-Web`/`anthropic-ai` deprecados, preparação `/.well-known/ai-preferences` para Q3 2026).
 
+**Incremento canônico pós Google I/O 2026:**
+- [`docs/SEO_GEO_INCREMENT_20260520.md`](docs/SEO_GEO_INCREMENT_20260520.md) — novo, 20-05-2026. Síntese executável de 3 documentos canônicos sobre SEO+GEO+AEO+B2A pós Google I/O 2026 (15-mai-2026). Inclui: (a) **Master Prompt 5 Ondas** unificado e executável para auditoria de portal editorial (Fundação técnica → Arquitetura/Entidade → Conteúdo/Information Gain → Citabilidade/Schema → Autoridade/B2A); (b) **Stack técnico de 38 camadas** com 570+ itens mapeados por onda; (c) **Princeton GEO playbook** com lifts mensurados (Cite Sources +115%, Statistics +41%, Quotation +28% — Aggarwal et al. KDD 2024 arXiv:2311.09735); (d) **Two-Phase JSON-LD theory** que resolve o debate Ahrefs (upstream Knowledge Graph lê schema; runtime RAG lê apenas HTML visível); (e) **Entity Boundary Drift** com cosine similarity ≥0,95 entre canais; (f) **8 Query Fan-Out variant types** de Michael King (iPullRank); (g) **Camada ASO** (Agentic Search Optimization) e roadmap B2A com NLWeb/MCP/OpenAPI (Gartner 2026: 90% B2B intermediado por agentes em 2028, $15T); (h) **Catálogo de bots IA atualizado mai/2026** incluindo OAI-AdsBot novo, Pay-Per-Crawl HTTP 402 da Cloudflare, crawl-to-referral ratios benchmarks; (i) **Anti-padrões 2026** (llms.txt como requisito = falso pelo Google AI Optimization Guide; schema como silver bullet = falso pelo estudo Ahrefs; FAQ rich results descontinuados 7-mai-2026). Templates prontos em [`docs/templates/seo-geo-2026/`](docs/templates/seo-geo-2026/): `robots-2026.txt` (20+ user-agents), `news-article-schema.jsonld` (@graph aninhado com Wikidata), `paywall-schema.jsonld` (regras Google 2026), `breadcrumb-schema.jsonld`, `llms.txt.template` (defensivo, não obrigatório). Fontes preservadas em [`docs/research/seogeo-20260520/`](docs/research/seogeo-20260520/). **Quando usar:** auditar portal editorial cliente, criar curso "GEO/SEO 2026", ajustar prompt do `writer.py` com Princeton checklist obrigatória (Cite Sources ≥3, Stats ≥5, Quotes ≥1).
+
 **Pesquisa bruta:**
 - [`docs/research/geo-knowledge-2026/`](docs/research/geo-knowledge-2026/) — Perplexity sonar-pro de 13-05-2026.
 - [`docs/research/geo-seo-2026-wave/`](docs/research/geo-seo-2026-wave/) — 5 waves Perplexity sonar-deep-research de 17-05-2026 (papers 2026, SEO updates, vendor landscape, discovery standards, measurement frameworks), com WebFetch validation em ~50 URLs primárias.
@@ -32,6 +35,18 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 **Complementa** (não substitui) `docs/knowledge/geo-aeo/` — corpus de 30 instruções operacionais + 25 papers da onda 2026-04-25.
 
 Citar `§X.Y` dos KBs/INCREMENT ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
+
+## 2026-05-20 — Incremento canônico pós Google I/O 2026 (SEO+GEO+AEO+B2A)
+
+Adicionado em `docs/SEO_GEO_INCREMENT_20260520.md` o material consolidado de 3 fontes canônicas datadas mai/2026 sobre o estado da arte SEO+GEO+AEO+B2A pós Google I/O 2026 (15-mai-2026). **Não substitui** os 5 docs canônicos existentes (`GEO_KNOWLEDGE_BASE_2026.md`, `_V2`, `SEO_KNOWLEDGE_BASE_2026.md`, `AI_DISCOVERY_STANDARDS_2026.md`, `GEO_50_CONCEITOS_CANONICAL.md`) — **complementa** com camada operacional: Master Prompt 5 Ondas executável, 38 camadas técnicas mapeadas, Princeton GEO playbook (lifts mensurados), Two-Phase JSON-LD theory, Entity Boundary Drift, 8 Query Fan-Out variant types de King, ASO/B2A com NLWeb+MCP, anti-padrões 2026 e templates prontos (robots.txt, JSON-LD, llms.txt).
+
+**Como aplicar no pipeline:**
+- `writer.py` (GPT-4o): incluir Princeton checklist obrigatória em módulos GEO/SEO — Cite Sources ≥3 outbound, Stats ≥5 com fonte+ano, Quotes ≥1 atribuída
+- `analyzer.py` (Gemini): validar Two-Phase JSON-LD theory ao revisar páginas schema-related
+- `classifier.py` (Groq): tags canônicas `geo-2026`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`
+- `reviewer.py` (Claude): aplicar Anti-padrões §13 (llms.txt não é requisito; schema não é silver bullet; GEO ≠ substituto de SEO)
+- `content_checker.py`: validações opcionais Cite Sources count, Statistics count, Quotation count, Compression Fidelity, Schema-content parity (bloqueante)
+- `client.yaml`: campos `geo_2026.princeton_playbook_enabled`, `geo_2026.schema_authority_stack_enabled`, `geo_2026.b2a_pilot.{nlweb_endpoint,mcp_endpoint,openapi_spec_url}`
 
 ## 2026-04-29 — Refactor profundo em 5 waves (base reusável para outros segmentos)
 

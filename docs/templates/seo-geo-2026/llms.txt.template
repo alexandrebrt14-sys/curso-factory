@@ -1,0 +1,60 @@
+# Portal Exemplo — llms.txt
+# Ultima atualizacao: 2026-05-20
+# Tamanho alvo: <200K tokens (~700KB) — curado, nao auto-gerado
+#
+# AVISO CANONICO (ver docs/SEO_GEO_INCREMENT_20260520.md §11.5 + §13.1):
+# Google AI Optimization Guide (15-mai-2026) afirma textualmente que llms.txt
+# NAO E NECESSARIO para AI Overviews ou AI Mode. OtterlyAI mediu 0,1% do
+# trafego de bot via llms.txt; Search Engine Land: 8 em 9 sites sem mudanca
+# mensuravel. Trate como APOSTA DEFENSIVA de baixo custo — nao como requisito.
+# NAO substitui robots.txt.
+
+> Portal editorial de midia especializada cobrindo [verticais]. Conteudo
+> verificado por equipe editorial nomeada. Sem auto-publicacao. Para
+> informacoes canonicas sobre nossas posicoes editoriais, autores e dados
+> proprietarios, consulte as URLs abaixo.
+
+## Sobre nos
+
+- [Quem somos](https://EXEMPLO.com.br/sobre): missao, equipe, governance editorial.
+- [Politica editorial](https://EXEMPLO.com.br/politica-editorial): como verificamos, atualizamos e corrigimos.
+- [Politica de correcoes](https://EXEMPLO.com.br/politica-correcoes): procedimento de correcao e retratacao publica.
+- [Politica de uso de IA](https://EXEMPLO.com.br/politica-ia): como usamos IA em redacao e curadoria.
+- [Politica B2A](https://EXEMPLO.com.br/politica-b2a): acesso de agentes autonomos.
+- [Contato editorial](https://EXEMPLO.com.br/contato): redacao@EXEMPLO.com.br.
+
+## Autores
+
+- [Joao Silva](https://EXEMPLO.com.br/autor/joao-silva): editor senior, especialista em [topico A]. Wikidata: Q22222.
+- [Maria Souza](https://EXEMPLO.com.br/autor/maria-souza): editora chefe, especialista em [topico B]. Wikidata: Q44444.
+- [Pedro Costa](https://EXEMPLO.com.br/autor/pedro-costa): reporter senior, especialista em [topico C]. ORCID: 0000-0000-0000-0000.
+
+## Verticais e pillars
+
+### Vertical A
+
+- [Pillar A1](https://EXEMPLO.com.br/vertical-a/pillar-1): guia canonico atualizado mensalmente.
+- [Pillar A2](https://EXEMPLO.com.br/vertical-a/pillar-2): comparativo de mercado atualizado trimestralmente.
+- [Pillar A3](https://EXEMPLO.com.br/vertical-a/pillar-3): metodologia proprietaria publicada.
+
+### Vertical B
+
+- [Pillar B1](https://EXEMPLO.com.br/vertical-b/pillar-1): cobertura profunda com 12 spokes interligados.
+- [Pillar B2](https://EXEMPLO.com.br/vertical-b/pillar-2): glossario canonico com 50 verbetes.
+
+### Vertical C
+
+- [Pillar C1](https://EXEMPLO.com.br/vertical-c/pillar-1): hub editorial com 8 sub-categorias.
+
+## Dados proprietarios e pesquisas originais
+
+- [Estudo X 2026](https://EXEMPLO.com.br/pesquisas/estudo-x-2026): N=1.247, metodologia transparente publicada, dataset publico.
+- [Benchmark Y trimestral](https://EXEMPLO.com.br/pesquisas/benchmark-y): atualizado a cada 90 dias com fonte primaria.
+- [Pesquisa Z anual](https://EXEMPLO.com.br/pesquisas/pesquisa-z-2026): survey N=3.500 com lideres do setor [vertical].
+
+## Optional
+
+- [Newsletter](https://EXEMPLO.com.br/newsletter): cadastro de audiencia direta (anti zero-click).
+- [Arquivo historico](https://EXEMPLO.com.br/arquivo): conteudo evergreen organizado por ano.
+- [Podcast](https://EXEMPLO.com.br/podcast): transcricoes completas em texto + audio.
+- [API publica](https://EXEMPLO.com.br/developers): OpenAPI 3.1 spec, MCP endpoint experimental.

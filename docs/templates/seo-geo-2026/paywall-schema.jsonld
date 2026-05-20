@@ -1,0 +1,29 @@
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "Headline ate 110 caracteres",
+  "datePublished": "2026-05-20T08:00:00-03:00",
+  "dateModified": "2026-05-20T14:30:00-03:00",
+  "author": {
+    "@type": "Person",
+    "name": "Joao Silva",
+    "url": "https://EXEMPLO.com.br/autor/joao-silva"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Portal Exemplo",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://EXEMPLO.com.br/logo.png"
+    }
+  },
+  "isAccessibleForFree": false,
+  "hasPart": [
+    {
+      "@type": "WebPageElement",
+      "isAccessibleForFree": false,
+      "cssSelector": ".paywall-content"
+    }
+  ],
+  "_comment_regras_google_2026": "Google Search Central 2026: 'JSON-LD and microdata formats are accepted methods for specifying structured data for paywalled content. Don't nest content sections. Only use .class selectors for the cssSelector property.' Cumprir as 3 regras: (1) NUNCA nest content sections, (2) APENAS .class selectors no cssSelector, (3) o cssSelector deve apontar exatamente o trecho oculto, sem cloaking."
+}

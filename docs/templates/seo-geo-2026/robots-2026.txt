@@ -1,0 +1,150 @@
+# ============================================================================
+# robots.txt — Portal Editorial 2026 (canônico curso-factory)
+# Ref: docs/SEO_GEO_INCREMENT_20260520.md §11.1 + §9 (catálogo bots IA)
+# Decisões training (GPTBot, ClaudeBot, CCBot, Google-Extended, Applebot-
+# Extended, Meta-ExternalAgent): definir por política editorial do cliente.
+# Default abaixo: Allow training (opt-in mais amplo possível). Para opt-out,
+# trocar "Allow: /" por "Disallow: /" no bot correspondente.
+# ============================================================================
+
+# Default — allow tudo (ajuste paths sensíveis no fim)
+User-agent: *
+Allow: /
+
+# -------------------- Search clássico --------------------
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# -------------------- OpenAI (training / retrieval / user) --------------------
+# GPTBot: training ChatGPT/GPT-5+ — crawl-to-referral ratio ~1.091:1 (alto custo, pouco retorno)
+User-agent: GPTBot
+Allow: /
+# Para opt-out de training, trocar para: Disallow: /
+
+# OAI-SearchBot: live retrieval ChatGPT Search — ALLOW OBRIGATÓRIO para citação
+User-agent: OAI-SearchBot
+Allow: /
+
+# ChatGPT-User: user-triggered fetch (v1/v2/v3)
+User-agent: ChatGPT-User
+Allow: /
+
+# OAI-AdsBot: validação ChatGPT ads (lançado abr/2026)
+User-agent: OAI-AdsBot
+Allow: /
+
+# -------------------- Anthropic --------------------
+# ClaudeBot: training — ratio 38.000:1 (jul/2025, caiu de 286.000:1 após web search mar/2025)
+User-agent: ClaudeBot
+Allow: /
+
+# Claude-SearchBot: retrieval — ALLOW OBRIGATÓRIO
+User-agent: Claude-SearchBot
+Allow: /
+
+# Claude-User: user-triggered
+User-agent: Claude-User
+Allow: /
+
+# claude-web: legacy identifier
+User-agent: claude-web
+Allow: /
+
+# anthropic-ai: training bulk
+User-agent: anthropic-ai
+Allow: /
+
+# -------------------- Perplexity --------------------
+# PerplexityBot: index próprio (200B+ URLs) — ALLOW OBRIGATÓRIO
+User-agent: PerplexityBot
+Allow: /
+
+# Perplexity-User: user-triggered
+User-agent: Perplexity-User
+Allow: /
+
+# -------------------- Google AI (separado de Googlebot/Search) --------------------
+# Google-Extended: training Gemini/AI Overviews — NÃO afeta Search ranking
+User-agent: Google-Extended
+Allow: /
+# Para opt-out de training Gemini/AIO, trocar para: Disallow: /
+
+# GoogleOther: R&D + outros produtos Google
+User-agent: GoogleOther
+Allow: /
+
+# Produtos específicos Google
+User-agent: Google-NotebookLM
+Allow: /
+
+User-agent: Google-Agent
+Allow: /
+
+User-agent: Google-Read-Aloud
+Allow: /
+
+User-agent: Google-CloudVertexBot
+Allow: /
+
+# -------------------- Apple --------------------
+User-agent: Applebot
+Allow: /
+
+# Applebot-Extended: training Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
+# -------------------- Meta --------------------
+# Meta-ExternalAgent: Meta AI (FB/IG/WhatsApp)
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# -------------------- Amazon --------------------
+# Amazonbot: Alexa + AI features
+User-agent: Amazonbot
+Allow: /
+
+# -------------------- Mistral / DuckDuckGo / Common Crawl / outros --------------------
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+# CCBot: Common Crawl (alimenta open-source LLMs)
+User-agent: CCBot
+Allow: /
+# Para opt-out de training open-source, trocar para: Disallow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# -------------------- Geralmente bloqueado --------------------
+# Bytespider: ByteDance training TikTok/Doubao — agressivo, baixo ROI editorial
+User-agent: Bytespider
+Disallow: /
+
+# -------------------- Paths sensíveis (ajustar conforme arquitetura) --------------------
+User-agent: *
+Disallow: /admin/
+Disallow: /api/internal/
+Disallow: /search?
+Disallow: /*?utm_
+Disallow: /preview/
+Disallow: /draft/
+
+# -------------------- Sitemaps --------------------
+Sitemap: https://EXEMPLO.com.br/sitemap.xml
+Sitemap: https://EXEMPLO.com.br/news-sitemap.xml
