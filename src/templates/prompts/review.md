@@ -192,6 +192,29 @@ Se algum princípio estiver ausente, ADICIONE o conteúdo necessário.
 - Referências citadas são reais e verificáveis?
 - A progressão entre módulos é coerente?
 
+### 7. Disclosure de IA (PL 2338/2023 + EEAT Google)
+
+Para clientes brasileiros com `disclosure.enabled: true` no client.yaml, o rodapé de CADA módulo DEVE conter um bloco padronizado de disclosure. Se ausente, INSIRA usando o template abaixo, parametrizado com os campos do cliente:
+
+```
+> **Sobre a producao deste conteudo**: Co-produzido com pipeline de IA
+> ({{models canônicos da banca}}) e revisado por {{author.name}}
+> ({{author.credential}}). Disclosure conforme {{normas listadas em
+> disclosure.required_by — humanizar: "PL 2338/2023 (Marco Legal da IA,
+> Brasil)", "Posicionamento CFP de 03/07/2025", "Marco Referencial MEC
+> IA na Educacao"}}.
+```
+
+Para clientes em domínios regulados (saúde, psicologia, direito), adicione segunda linha:
+
+```
+>
+> Revisão técnica adicional por {{role específica, ex: psicólogo registrado
+> CRP XX/XXXXX}}.
+```
+
+A barreira programática `disclosure_checker.py` valida presença do bloco, autor canônico e norma citada. Se ausentes E `block_if_missing=true`, módulo é rejeitado.
+
 ## Formato de saída
 
 Retorne o conteúdo revisado e corrigido NA ÍNTEGRA em Markdown, seguido de um bloco separado:

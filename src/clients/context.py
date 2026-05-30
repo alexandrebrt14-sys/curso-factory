@@ -86,12 +86,67 @@ class VoiceGuardForbidden:
 
 
 @dataclass
+class VoiceSample:
+    """Amostra real de escrita do autor canônico para few-shot persona-conditioning.
+
+    A amostra é injetada antes do `{context}` no prompt do redator/revisor para
+    ancorar idiossincrasias linguísticas reais. Sem amostras, o LLM produz
+    "voz HBR genérica" — detectável estatisticamente por uniformidade de
+    estilo. Com 800-1500 palavras de anchor por amostra, a saída herda
+    cadência, vocabulário e construções típicas do autor.
+
+    Referência: Liang et al. Patterns 2023 mostram que reescrita "no estilo X"
+    derruba detecção a ~0%. DIPPER (Krishna NeurIPS 2023) confirma que
+    persona-conditioning supera fine-tuning para volumes pequenos.
+    """
+    path: str
+    length_words: int = 0
+    tags: list[str] = field(default_factory=list)
+
+
+@dataclass
+class VoiceSamplesConfig:
+    """Configuração de amostras de voz para persona-conditioning few-shot."""
+    enabled: bool = False
+    samples: list[VoiceSample] = field(default_factory=list)
+    anchor_strategy: str = "rotate"  # rotate | concat | random
+    anchor_max_words: int = 2000
+
+
+@dataclass
 class VoiceGuardConfig:
     """Configuração do voice guard para um cliente."""
     enabled: bool = True
     min_score: int = 70
     canonical: VoiceGuardCanonical = field(default_factory=VoiceGuardCanonical)
     forbidden: VoiceGuardForbidden = field(default_factory=VoiceGuardForbidden)
+    voice_samples: VoiceSamplesConfig = field(default_factory=VoiceSamplesConfig)
+
+
+@dataclass
+class DisclosureConfig:
+    """Disclosure programático de uso de IA — PL 2338/2023 (Brasil) + EEAT Google.
+
+    Em curso para cliente brasileiro com `required_by` incluindo
+    'PL_2338_2023', o pipeline injeta bloco padronizado no rodapé de cada
+    módulo. Validator `disclosure_checker.py` bloqueia publicação se ausente.
+
+    Para clientes em domínios regulados (saúde, psicologia, direito),
+    `reviewer_extra` lista credenciais humanas obrigatórias
+    (psicólogo CRP, médico CRM, advogado OAB).
+
+    Referências regulatórias:
+    - PL 2338/2023 (Marco Legal IA Brasil) — disclosure mandatório
+    - CFP Posicionamento 03/07/2025 — IA em conteúdo psicológico exige
+      supervisão e disclosure
+    - MEC Marco Referencial 2025-07 — IA na Educação Básica
+    """
+    enabled: bool = False
+    required_by: list[str] = field(default_factory=list)
+    pipeline_models: list[str] = field(default_factory=list)
+    reviewer_human: bool = True
+    reviewer_extra: list[dict] = field(default_factory=list)
+    block_if_missing: bool = True
 
 
 @dataclass
@@ -140,6 +195,18 @@ class AgenticConfig:
 
 
 @dataclass
+class PipelineConfig:
+    """Configuracao opcional de etapas extras do pipeline.
+
+    Hoje cobre o Humanizer (PR-4 humanizacao). No futuro pode cobrir
+    self-test Pangram (PR-3), RADAR-style proxy interno etc.
+    """
+    humanize_enabled: bool = False
+    humanize_target_stylometry_score: int = 75
+    humanize_max_iters: int = 2
+
+
+@dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
     id: str
@@ -149,6 +216,7 @@ class ClientContext:
     branding: Branding = field(default_factory=Branding)
     editorial: Editorial = field(default_factory=Editorial)
     voice_guard: VoiceGuardConfig = field(default_factory=VoiceGuardConfig)
+    disclosure: DisclosureConfig = field(default_factory=DisclosureConfig)
     landing_page_dir: Path | None = None
     educacao_dir: Path | None = None
     output_base_dir: Path = field(default_factory=lambda: Path("output"))
@@ -157,6 +225,7 @@ class ClientContext:
     engagement: EngagementConfig = field(default_factory=EngagementConfig)
     certification: CertificationConfig = field(default_factory=CertificationConfig)
     agentic: AgenticConfig = field(default_factory=AgenticConfig)
+    pipeline: PipelineConfig = field(default_factory=PipelineConfig)
     # Wave 8 — idioma default do cliente (override per curso possível)
     language: str = "pt-br"
 

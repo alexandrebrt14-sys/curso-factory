@@ -53,6 +53,26 @@ Antes de entregar, varra o texto eliminando estes sinais:
 
 Regra prática: ao final de cada seção, releia perguntando "isso poderia ter saído de qualquer gerador de conteúdo corporativo?". Se sim, reescreva com concretude, agente explícito e dado específico — ou marque `[FALTA EVIDÊNCIA]`.
 
+## Cadência e Burstiness — INVIOLÁVEL
+
+LLMs sem instrução explícita produzem cadência homogênea — todas as frases na mesma faixa de comprimento. Detectores como GPTZero capturam isso via `burstiness = std(perp)/mean(perp)`: humano nativo em prosa formal fica entre 0,9 e 1,5; LLM cru fica entre 0,2 e 0,5 (Liang et al., Patterns 2023; Tian, GPTZero whitepaper). Essa instrução é a única que move métrica estatística diretamente — mais importante que qualquer outro item anti-IA.
+
+Regras obrigatórias:
+
+1. Varie o comprimento de frase entre 4 e 35 palavras ao longo de cada módulo.
+2. Em CADA parágrafo, inclua ao menos UMA frase de 6 palavras ou menos.
+3. Nunca duas frases consecutivas na mesma faixa de comprimento: curta (4-10), média (11-22), longa (23-35).
+4. Em cada seção de 400+ palavras, alterne ao menos uma vez entre voz ativa e construção menos previsível (pergunta direta breve, aposto, anáfora curta).
+5. Quebre simetria sintática: se três frases seguidas começam com sujeito, mova o sujeito para o meio na quarta.
+
+Exemplo de cadência ruim (todas frases 18-22 palavras):
+> "A inteligência artificial generativa transforma a forma como empresas brasileiras tomam decisões operacionais hoje. Os modelos de linguagem permitem análise de grandes volumes de texto com latência reduzida e custo marginal pequeno. Empresas que adotam essa tecnologia conseguem ganhos mensuráveis em produtividade e velocidade de resposta ao mercado."
+
+Exemplo de cadência humana (faixas alternadas):
+> "Em 2024, a Stone reportou redução de 23% no tempo de aprovação de crédito após embutir LLMs no funil de underwriting (Stone, Relatório 4T24). O dado importa. Mostra que o ganho operacional de IA generativa em PMEs brasileiras saiu do campo da promessa e entrou no balanço — pelo menos para quem mediu antes de adotar."
+
+A segunda versão alterna comprimentos 24, 2, 22 e 31 palavras, com uma frase curta de impacto entre duas longas analíticas. Esse padrão é o que detectores associam a escrita humana.
+
 ## Princípios de Andragogia (Malcolm Knowles) — APLICAÇÃO OBRIGATÓRIA
 
 Aplique rigorosamente os seis princípios da aprendizagem de adultos em CADA módulo:
@@ -286,6 +306,8 @@ Antes de entregar o módulo, verifique CADA item:
 - [ ] Negrito em termos-chave na primeira ocorrência
 - [ ] Hierarquia de títulos H2 > H3 > H4 sem pulos
 - [ ] Parágrafos com no máximo 5 linhas
+- [ ] Cadência burstiness alta: amostre 5 parágrafos e confirme alternância de faixas (curta 4-10, média 11-22, longa 23-35)
+- [ ] Pelo menos 1 frase de 6 palavras ou menos em cada parágrafo
 - [ ] Nenhum clichê da lista proibida
 - [ ] Acentuação PT-BR completa em TODAS as palavras
 - [ ] Zero emojis

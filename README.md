@@ -186,9 +186,9 @@ O agente revisor faz a passada final com **correção ativa** (não apenas comen
 
 ---
 
-## Quality Gate — 4 Camadas de Validação + FinOps
+## Quality Gate — 6 Camadas de Validação + FinOps
 
-O quality gate é a barreira final antes da publicação. Nenhum conteúdo é aprovado sem passar por todas as 4 camadas bloqueantes (+ FinOps como guarda pré-execução e HTML como camada opcional para conteúdo renderizado):
+O quality gate é a barreira final antes da publicação. Camadas 1-4 são bloqueantes (acentuação, conteúdo, links, voice guard); camadas 5-6 (stylometry, disclosure) são opt-in via `client.yaml` — começam em modo report-only e podem ser ativadas como bloqueantes após calibração com baseline humano (ver `docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md` apêndice A.7). FinOps continua como guarda pré-execução e HTML como camada opcional para conteúdo renderizado.
 
 ### Camada 1: Acentuação PT-BR (com auto-correção)
 
@@ -234,6 +234,25 @@ Barreira programática que bate o texto contra o `voice_guard` do `ClientContext
 | Estilo HBR/MIT Sloan | 15 | Sem disclaimers de IA, sem aberturas retóricas, parágrafos curtos |
 
 Score < `min_score` (padrão 70) **ou** qualquer erro crítico (título inventado, domínio alucinado, nome errado da empresa) → `aprovado = False`. Configurável por cliente em `config/clients/<id>/client.yaml` → `voice_guard:`.
+
+### Camada 5: Stylometry (opt-in, report-only por default)
+
+Mede 4 métricas estatísticas de "humanidade" do texto — as mesmas que detectores como GPTZero e Originality.ai usam para classificar texto como humano vs AI-generated. Não tenta "burlar" detectores: usa as próprias métricas como gate de qualidade. Se nosso conteúdo HBR-grade dispara o detector, há sinal real de uniformidade artificial.
+
+| Métrica | Definição | Threshold humano | Fonte |
+|---------|-----------|------------------|-------|
+| Burstiness | `std(sentence_lengths) / mean(sentence_lengths)` (variante GPTZero) | ≥ 0,60 | Goh-Barabási EPL 2008 + Tian GPTZero whitepaper |
+| Sentence length variance | `var(word_counts_per_sentence)` | ≥ 40 | Liang Patterns 2023 |
+| Type-Token Ratio | `\|unique words\| / \|total words\|` | ≥ 0,45 | clássica |
+| Repetition score | `% de bigramas que se repetem 2+ vezes` | ≤ 0,08 | calibração interna |
+
+Implementação em `src/validators/stylometry_checker.py` (pure-Python, opt-in para perplexity real via `lmppl` com `pierreguillou/gpt2-small-portuguese`). Calibração de thresholds em apêndice A.7 do dossiê.
+
+### Camada 6: Disclosure de IA (opt-in, parametrizado por cliente)
+
+Verifica presença do bloco padronizado de disclosure exigido por **PL 2338/2023** (Marco Legal da IA, Brasil — sanção esperada 2026), **Posicionamento CFP 03/07/2025** (conteúdo psicológico), **Marco Referencial MEC 2025** (Educação Básica) e **Quality Rater Guidelines Google set/2025** (Trust = componente mais importante do EEAT).
+
+Cobertura: autor canônico citado, credencial profissional, norma regulatória mencionada, revisor humano declarado. Helper `build_disclosure_block(client)` gera bloco parametrizado pelos campos do `client.yaml > disclosure`. Modo report-only por default; ativar `block_if_missing=true` após auditoria de 10+ cursos.
 
 ### Camada opcional: HTML (apenas para conteúdo renderizado)
 
@@ -403,9 +422,19 @@ python cli.py status
 # Relatório de custos
 python cli.py cost-report
 
+# Relatório de detecção (stylometry/voice_guard/disclosure ao longo do tempo)
+python cli.py detection-report
+python cli.py detection-report --since 2026-05-01 --client default
+
 # Limpar cache
 python cli.py cache-clear
 ```
+
+### Pipeline opcional: humanizer (multi-pass adversarial)
+
+Quando o `client.yaml > pipeline.humanize_enabled: true` está ativo, o pipeline ganha uma 6ª etapa **depois** do reviewer (Claude): o `Humanizer` (também Claude Opus) roda em loop com signal de stylometry interno. A cada pass, mede burstiness/TTR/repetition, gera diagnóstico cirúrgico ("frases 12-18 têm 20-25 palavras; quebre frase 14 em duas, uma curta de 5 palavras") e reescreve. Itera até `humanize_target_stylometry_score` ou `humanize_max_iters` (defaults: 75 e 2).
+
+Inspirado em DIPPER (Krishna NeurIPS 2023, arXiv:2303.13408) + Adversarial Paraphrasing 2025 (arXiv:2506.07001). Default OFF — pipeline termina no reviewer como sempre.
 
 ---
 

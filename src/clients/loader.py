@@ -15,13 +15,17 @@ from src.clients.context import (
     CertificationConfig,
     ClientContext,
     Company,
+    DisclosureConfig,
     Domain,
     Editorial,
     EngagementConfig,
+    PipelineConfig,
     TutorConfig,
     VoiceGuardCanonical,
     VoiceGuardConfig,
     VoiceGuardForbidden,
+    VoiceSample,
+    VoiceSamplesConfig,
 )
 
 _ROOT = Path(__file__).resolve().parents[2]
@@ -92,6 +96,21 @@ def load_client(client_id: str = "default") -> ClientContext:
     vg_d = data.get("voice_guard", {})
     canonical_d = vg_d.get("canonical", {})
     forbidden_d = vg_d.get("forbidden", {})
+    vs_d = vg_d.get("voice_samples", {})
+    voice_samples = VoiceSamplesConfig(
+        enabled=bool(vs_d.get("enabled", False)),
+        samples=[
+            VoiceSample(
+                path=s.get("path", ""),
+                length_words=int(s.get("length_words", 0)),
+                tags=list(s.get("tags", [])),
+            )
+            for s in vs_d.get("samples", [])
+            if s.get("path")
+        ],
+        anchor_strategy=vs_d.get("anchor_strategy", "rotate"),
+        anchor_max_words=int(vs_d.get("anchor_max_words", 2000)),
+    )
     voice_guard = VoiceGuardConfig(
         enabled=bool(vg_d.get("enabled", True)),
         min_score=int(vg_d.get("min_score", 70)),
@@ -108,6 +127,17 @@ def load_client(client_id: str = "default") -> ClientContext:
             rhetoric_openers=list(forbidden_d.get("rhetoric_openers", [])),
             ai_disclaimers=list(forbidden_d.get("ai_disclaimers", [])),
         ),
+        voice_samples=voice_samples,
+    )
+
+    disc_d = data.get("disclosure", {})
+    disclosure = DisclosureConfig(
+        enabled=bool(disc_d.get("enabled", False)),
+        required_by=list(disc_d.get("required_by", [])),
+        pipeline_models=list(disc_d.get("pipeline_models", [])),
+        reviewer_human=bool(disc_d.get("reviewer_human", True)),
+        reviewer_extra=list(disc_d.get("reviewer_extra", [])),
+        block_if_missing=bool(disc_d.get("block_if_missing", True)),
     )
 
     landing_page_dir = _resolve_path(data.get("landing_page_dir"), _ROOT)
@@ -156,6 +186,15 @@ def load_client(client_id: str = "default") -> ClientContext:
         a2a_endpoints=bool(ag_d.get("a2a_endpoints", False)),
     )
 
+    pipeline_d = data.get("pipeline", {})
+    pipeline_cfg = PipelineConfig(
+        humanize_enabled=bool(pipeline_d.get("humanize_enabled", False)),
+        humanize_target_stylometry_score=int(
+            pipeline_d.get("humanize_target_stylometry_score", 75)
+        ),
+        humanize_max_iters=int(pipeline_d.get("humanize_max_iters", 2)),
+    )
+
     # Wave 8 — idioma default do cliente
     client_language = ed_d.get("language", "pt-br")
 
@@ -167,6 +206,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         branding=branding,
         editorial=editorial,
         voice_guard=voice_guard,
+        disclosure=disclosure,
         landing_page_dir=landing_page_dir,
         educacao_dir=educacao_dir,
         output_base_dir=output_base_dir,
@@ -174,6 +214,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         engagement=engagement,
         certification=certification,
         agentic=agentic,
+        pipeline=pipeline_cfg,
         language=client_language,
     )
 

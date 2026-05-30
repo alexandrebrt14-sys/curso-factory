@@ -32,9 +32,12 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
   - `CITATIONS_POOL.md` — **325 URLs verificáveis** consolidados.
   - `raw/` — 10 JSONs originais das waves para auditoria.
 
+**Wave Maio 2026 Pós-IO (24-05-2026)** — adiciona aos anteriores sem substituir:
+- [`docs/research/geo-wave-maio-posio-2026/WAVE_MAIO_2026_POSIO_CANONICAL.md`](docs/research/geo-wave-maio-posio-2026/WAVE_MAIO_2026_POSIO_CANONICAL.md) — **doc canônico de 511 linhas** cobrindo delta 17-mai → 24-mai-2026 com foco didático: (a) Google I/O 2026 (Gemini 3.5 Flash default em AI Mode 1B MAU, AIO+AI Mode unificados) e Google Marketing Live 2026 (AI Mode Ads, Ask Advisor, AP2/UCP/Universal Cart) — vira 2 aulas do módulo novo "GEO/SEO 2026 Pós-IO"; (b) **AutoGEO ICLR'26** (Wu/Zhong/Kim/Xiong CMU, +50,99% lift) — vira aula obrigatória + bloco no prompt do `writer.py` (Cite Sources ≥3 + AutoGEO 5 regras); (c) Coluna Diogo Cortiz UOL 24-mai (Dilema da Inovação aplicado ao Google) — framing executivo para abertura do curso; (d) 6 novos arXiv IDs (Citation Absorption Rate, 7 failure types, Semantic Entropy Drift, LLM2Vec-Gen, limites teóricos embeddings) — viram conteúdo de aulas avançadas; (e) glossário 2026 (CAR, CSR, Citation Drift, Owned Content Share 4,3%, Failure Type, Semantic Entropy Drift); (f) 3 camadas canônicas de KPI (Visibilidade → Infraestrutura → Negócio) — vira spine de 3 aulas; (g) **Perplexity Comet + ChatGPT Atlas** agentic-browsers — vira módulo novo "Agentic Browsers: nova superfície de descoberta"; (h) anti-padrões reforçados (Cortiz: olhar para tecnologia esquecendo comportamento); (i) `client.yaml` schema expandido com bloco `geo_2026_pos_io.{autogeo_enabled, citation_absorption_tracking, ai_mode_ads_module_included, cortiz_framing_in_intro}`; (j) **24 URLs verificáveis** adicionais. Inclui apêndice §10 com achados complementares do orchestrator 5 LLMs (raw em [`raw/orchestrator_5llm_20260524_213700.json`](docs/research/geo-wave-maio-posio-2026/raw/orchestrator_5llm_20260524_213700.json)). **§6.3 é a aplicação específica deste repo** (4 entregáveis 60 dias, métrica de sucesso: primeiro cliente externo compra módulo "GEO/SEO 2026 Pós-IO" como módulo opcional em portal próprio até 23-jul-2026).
+
 **Complementa** (não substitui) `docs/knowledge/geo-aeo/` — corpus de 30 instruções operacionais + 25 papers da onda 2026-04-25.
 
-Citar `§X.Y` dos KBs/INCREMENT ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
+Citar `§X.Y` dos KBs/INCREMENT/WAVE ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
 
 ## 2026-05-20 — Incremento canônico pós Google I/O 2026 (SEO+GEO+AEO+B2A)
 

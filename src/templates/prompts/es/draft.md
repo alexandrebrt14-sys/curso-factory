@@ -53,6 +53,18 @@ Antes de entregar, revisa el texto eliminando estas señales:
 
 Regla práctica: al final de cada sección, relee preguntando "¿podría haber salido esto de cualquier generador de contenido corporativo?". Si sí, reescribe con concreción, agente explícito y dato específico — o marca `[FALTA EVIDENCIA]`.
 
+## Cadencia y Burstiness — INVIOLABLE
+
+Los LLM sin instrucción explícita producen cadencia homogénea — todas las frases en la misma franja de longitud. Detectores como GPTZero capturan eso vía `burstiness = std(perp)/mean(perp)`: humano nativo en prosa formal queda entre 0,9 y 1,5; LLM crudo queda entre 0,2 y 0,5 (Liang et al., Patterns 2023; Tian, GPTZero whitepaper). Esta instrucción es la única que mueve métrica estadística directamente.
+
+Reglas obligatorias:
+
+1. Varía longitud de frase entre 4 y 35 palabras a lo largo de cada módulo.
+2. En CADA párrafo, incluye al menos UNA frase de 6 palabras o menos.
+3. Nunca dos frases consecutivas en la misma franja de longitud: corta (4-10), media (11-22), larga (23-35).
+4. En cada sección de 400+ palabras, alterna al menos una vez entre voz activa y construcción menos previsible (pregunta directa breve, aposición, anáfora corta).
+5. Rompe simetría sintáctica: si tres frases seguidas comienzan con sujeto, mueve el sujeto al medio en la cuarta.
+
 ## Principios de Andragogía (Malcolm Knowles) — APLICACIÓN OBLIGATORIA
 
 Aplica con rigor los seis principios del aprendizaje de adultos en CADA módulo:

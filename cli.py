@@ -449,6 +449,28 @@ def _add_client_arg(sub: argparse.ArgumentParser) -> None:
     )
 
 
+def cmd_detection_report(args: argparse.Namespace) -> int:
+    """Relatorio do historico de stylometry/disclosure (PR-8)."""
+    from datetime import datetime
+    from src.detection_tracker import DetectionTracker
+
+    since = None
+    if getattr(args, "since", None):
+        try:
+            since = datetime.fromisoformat(args.since)
+        except ValueError:
+            print(
+                f"ERRO: --since invalido '{args.since}'. Use formato YYYY-MM-DD.",
+                file=sys.stderr,
+            )
+            return 1
+
+    client_id = getattr(args, "client", None)
+    tracker = DetectionTracker()
+    print(tracker.report_text(since=since, client_id=client_id))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="curso-factory",
@@ -511,6 +533,20 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("cache-clear", help="Limpa o cache LLM em disco")
     p.set_defaults(func=cmd_cache_clear)
+
+    # Detection report — historico de stylometry/disclosure (PR-8 humanizacao)
+    p = sub.add_parser(
+        "detection-report",
+        help="Relatorio de scores de stylometry e disclosure (humanizacao)",
+    )
+    p.add_argument(
+        "--since",
+        default=None,
+        metavar="YYYY-MM-DD",
+        help="Filtra entradas a partir desta data (ex: 2026-05-01)",
+    )
+    _add_client_arg(p)
+    p.set_defaults(func=cmd_detection_report)
 
     # Wave 10 — emit-llms-txt
     p = sub.add_parser(

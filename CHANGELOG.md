@@ -6,7 +6,22 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
-### Adicionado
+### Adicionado — Wave de Humanização (2026-05-17)
+
+**Pipeline de medição e correção de "cara de IA" baseado em evidência científica 2024-2026** (papers ACL/EMNLP/NAACL/NeurIPS, datasets RAID/MULTITuDE/M4GT, benchmarks com Cohen's d). Dossiê técnico em [`docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md`](docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md) (1.014 linhas, 8.834 palavras, 21 papers, 9 datasets, 5 leaderboards, fórmulas formais + thresholds + corpora PT-BR + design de experimento de calibração).
+
+- **PR-1 (XS)** — Burstiness control nos prompts do redator: nova seção "Cadência e Burstiness — INVIOLÁVEL" em `src/templates/prompts/draft.md` + traduções `pt-br/`, `es/`, `en/`. Instrui o LLM a variar comprimento de frase 4-35 palavras, garantir 1 frase ≤6 palavras por parágrafo, alternar faixas curta/média/longa. Ataca diretamente a métrica do GPTZero (`σ/μ` em comprimento de sentença).
+- **PR-2 (M)** — `src/validators/stylometry_checker.py` (350 linhas, pure-Python). Mede 4 métricas estatísticas de "humanidade" — burstiness (Goh-Barabási 2008 + variante GPTZero), sentence-length variance, type-token ratio, repetition score (bigramas boilerplate). Backend opt-in para perplexity real via `lmppl` com `pierreguillou/gpt2-small-portuguese`. Integrado ao `quality_gate` como **camada 5** (report-only por default — bloquear só após calibração com 30+30+20 docs).
+- **PR-5 (S)** — `voice_samples` no schema `client.yaml` (`VoiceSample`, `VoiceSamplesConfig` em `src/clients/context.py`). Permite anchor de 800-1500 palavras de escrita real do autor canônico para few-shot persona-conditioning. Estratégias `rotate | concat | random`. Default OFF; cliente declara amostras em `docs/voice/<cliente>/`.
+- **PR-6 (S)** — `src/validators/disclosure_checker.py` (220 linhas) + integração `quality_gate` **camada 6**. Verifica presença do bloco padronizado de disclosure de IA exigido por **PL 2338/2023** (Marco Legal da IA, Brasil), **Posicionamento CFP 03/07/2025** (conteúdo psicológico), **Marco Referencial MEC 2025** (Educação Básica). Cobertura: autor canônico, credencial, norma citada, revisor humano. Modo report-only por default; `block_if_missing=true` para enforcement. Helper `build_disclosure_block()` gera o bloco parametrizado. `review.md` instrui Claude a inserir o bloco se ausente.
+- **PR-4 (L)** — `src/agents/humanizer.py` (300 linhas) — agente de pós-processamento multi-pass com detector-in-the-loop. Roda **depois** do reviewer; mede stylometry, se score < target dispara reescrita instruída via Claude Opus 4.7 com diagnóstico cirúrgico (qual métrica está ruim, como corrigir). Itera até `target_score` ou `max_iters`. Opt-in via `client.yaml > pipeline.humanize_enabled`. Prompt em `src/templates/prompts/humanize.md` + tradução `pt-br/`. Inspirado em DIPPER (Krishna NeurIPS 2023) + Adversarial Paraphrasing 2025 (arXiv:2506.07001).
+- **PR-8 (S)** — `src/detection_tracker.py` (210 linhas) — persiste `output/.detection/history.jsonl` análogo ao `cost_history.jsonl`. Cada run do quality_gate registra stylometry/voice_guard/disclosure score + aprovação + versão pipeline + client_id. Novo subcomando `python cli.py detection-report [--since YYYY-MM-DD] [--client ID]` agrega por cliente/curso com medianas e tendências, para auditar drift de qualidade quando algum LLM da banca muda.
+- **PipelineConfig** novo bloco em `client.yaml > pipeline`: `humanize_enabled`, `humanize_target_stylometry_score`, `humanize_max_iters`.
+- `tests/test_humanization_pipeline.py` — **33 testes novos** cobrindo fórmulas isoladas (burstiness Goh + GPTZero, TTR, repetition), `stylometry_check` em texto humano-like vs LLM-uniforme, `disclosure_check` em modos report-only e block, `voice_samples` schema, `detection_tracker` persistência+filtros+atalho de gate, `humanizer` diagnostic builder + short-circuit quando texto já atende target, `humanize_if_enabled` default OFF.
+
+Suite total: **199 testes passing** (era 166 antes desta wave; +33 novos, 0 regressões).
+
+### Adicionado — Templates GitHub e governança
 - Templates GitHub: `.github/ISSUE_TEMPLATE/` (bug, feature, question, config), `pull_request_template.md`, `dependabot.yml`.
 - `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`.
 - 5 issues epic abertas para waves 6-10 (engagement, tutor IA, multi-idioma, certificação, comunidade).

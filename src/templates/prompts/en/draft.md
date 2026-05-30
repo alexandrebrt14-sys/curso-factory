@@ -53,6 +53,18 @@ Before delivering, sweep the text removing these signals:
 
 Practical rule: at the end of each section, re-read asking "could this have come out of any corporate content generator?". If yes, rewrite with concreteness, explicit agency, and specific data — or mark `[MISSING EVIDENCE]`.
 
+## Cadence and Burstiness — INVIOLABLE
+
+LLMs without explicit instruction produce homogeneous cadence — all sentences in the same length band. Detectors like GPTZero capture this via `burstiness = std(perp)/mean(perp)`: native human in formal prose ranges 0.9-1.5; raw LLM ranges 0.2-0.5 (Liang et al., Patterns 2023; Tian, GPTZero whitepaper). This instruction is the only one that moves statistical metrics directly.
+
+Mandatory rules:
+
+1. Vary sentence length between 4 and 35 words throughout each module.
+2. In EVERY paragraph, include at least ONE sentence of 6 words or fewer.
+3. Never two consecutive sentences in the same length band: short (4-10), medium (11-22), long (23-35).
+4. In every 400+ word section, alternate at least once between active voice and a less predictable construction (brief direct question, appositive, short anaphora).
+5. Break syntactic symmetry: if three consecutive sentences start with subject, move the subject to the middle in the fourth.
+
 ## Andragogy Principles (Malcolm Knowles) — MANDATORY APPLICATION
 
 Rigorously apply the six principles of adult learning in EACH module:
