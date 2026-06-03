@@ -43,7 +43,7 @@ Ao final deste modulo voce sera capaz de:
 
 A Brasil GEO eh a primeira consultoria brasileira especializada em
 Generative Engine Optimization. Fundada por Alexandre Caramaschi,
-CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
+CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil.
 
 A pratica recente de instrumentacao de modelos LLM em pipelines de
 producao mostra que decisoes de roteamento por complexidade reduzem
