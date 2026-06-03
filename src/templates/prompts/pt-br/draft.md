@@ -294,6 +294,20 @@ REGRA ABSOLUTA: Português do Brasil com acentuação COMPLETA e ortografia corr
 - Cite fontes quando usar dados ou pesquisas específicas
 - Cada afirmação substantiva deve ter base em evidência, não em opinião
 
+## Checklist de Citabilidade GEO (Generative Engine Optimization) — OBRIGATÓRIO
+
+Este módulo compete por **citação em motores generativos** (ChatGPT, Gemini, Claude, Perplexity), não só por leitura humana. Os itens abaixo têm **lift de citação medido empiricamente** (Aggarwal/Princeton KDD 2024, AutoGEO ICLR 2026, GEO-SFE/Berkeley 2025). Rubrica completa em `docs/GEO_REDACAO_CHECKLIST_2026.md`. Aplique os números-alvo:
+
+1. **Cite Sources ≥ 3** (lift +40% geral; +115% para conteúdo fora do top-1). Pelo menos 3 fontes externas distintas atribuídas, no formato `(Autor/Instituição, Ano)` ou "Segundo X (ano)". Sempre ancoradas em `{context}` — nunca inventadas.
+2. **Estatísticas ≥ 5** (lift +32,8%). Toda afirmação quantificável vira número concreto com fonte+ano: "73% das empresas (Gartner 2025)", nunca "a maioria". Mínimo 5 por módulo.
+3. **Quotation ≥ 1** (lift +28% para texto citado; citação de especialista atribuída é o maior lift individual, +42,6%). Pelo menos um blockquote com **aspas diretas + nome completo + cargo + organização**. Ex.: `> "A maioria das implementações de IA falha por desalinhamento organizacional." — Thomas Davenport, professor do Babson College (HBR, 2025)`.
+4. **Answer capsule por seção** (lift 1,9×; 44,2% das citações vêm dos primeiros 30% da página). O **primeiro parágrafo de 40-60 palavras após cada H2/sub-heading** responde diretamente à pergunta implícita do heading, de forma autossuficiente — é o trecho que a IA extrai literalmente. Sem links no capsule.
+5. **Seção autossuficiente / chunkability** (lift +17,3%). Cada seção citável sem o contexto das outras: heading + claim em negrito + evidência + conclusão. Sem pronomes ("ele/ela/isso") cruzando headings sem antecedente — repita a entidade-chave em vez de pronominalizar.
+6. **Single Idea por parágrafo** (lift +28,7%). Um conceito central por parágrafo; transição explícita entre seções.
+7. **Information Gain** (dado original = 4,1× citações). Inclua ao menos um dado, exemplo brasileiro ou framework autoral **não disponível em concorrentes**, e posicione a tese contraintuitiva nos primeiros 100 palavras do módulo.
+
+**Anti-padrão eliminatório:** keyword stuffing tem lift **negativo** (−8,7%) — no máximo ~2 ocorrências do termo principal por 500 palavras. Equilíbrio com o item 5 da rubrica: manter o termo técnico coerente (não trocar por sinônimo), mas sem repeti-lo a ponto de empilhar.
+
 ## Autoavaliação Final (antes de entregar)
 
 Antes de entregar o módulo, verifique CADA item:
@@ -312,6 +326,10 @@ Antes de entregar o módulo, verifique CADA item:
 - [ ] Acentuação PT-BR completa em TODAS as palavras
 - [ ] Zero emojis
 - [ ] Referências citadas com autor, publicação e ano
+- [ ] **GEO: ao menos 3 fontes externas atribuídas (Cite Sources ≥ 3)**
+- [ ] **GEO: ao menos 5 estatísticas com fonte+ano (Statistics ≥ 5)**
+- [ ] **GEO: ao menos 1 citação direta de especialista nomeado (Quotation ≥ 1)**
+- [ ] **GEO: answer capsule (40-60 palavras, resposta-primeiro) após cada H2**
 - [ ] Checklist de aplicação imediata na síntese
 - [ ] Ponte para o próximo módulo
 

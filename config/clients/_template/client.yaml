@@ -114,3 +114,14 @@ output:
 # `--language en` por curso individual.
 # editorial:
 #   language: "pt-br"                  # | "en" | "es"
+
+# Citabilidade GEO (Generative Engine Optimization). Default OFF: as contagens
+# viram avisos não-bloqueantes. Ligue princeton_playbook_enabled para tornar a
+# rubrica de redação um gate bloqueante. Ver docs/GEO_REDACAO_CHECKLIST_2026.md.
+# geo_2026:
+#   princeton_playbook_enabled: true   # erro bloqueante; false = só aviso
+#   min_cite_sources: 3                # fontes externas atribuídas
+#   min_statistics: 5                  # dados quantitativos com fonte+ano
+#   min_quotations: 1                  # citação direta de especialista nomeado
+#   require_answer_capsule: true       # parágrafo resposta-primeiro após heading
+#   schema_authority_stack_enabled: false

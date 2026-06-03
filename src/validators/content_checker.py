@@ -194,7 +194,82 @@ def _has_emoji(text: str) -> bool:
     return bool(emoji_pattern.search(text))
 
 
-def check_content(text: str, module_name: str = "") -> list[ContentError]:
+def _strip_noise(text: str) -> str:
+    """Remove blocos de código e metadados YAML para contagem GEO."""
+    clean = re.sub(r"```[\s\S]*?```", "", text)
+    clean = re.sub(r"^---[\s\S]*?---", "", clean)
+    return clean
+
+
+def _count_cite_sources(text: str) -> int:
+    """Conta fontes externas atribuídas (Cite Sources do playbook Princeton).
+
+    Sinais: citação parentética com ano "(Gartner, 2025)", marcadores
+    "Segundo X (ano)"/"de acordo com (ano)" e links markdown externos.
+    """
+    clean = _strip_noise(text)
+    signals = 0
+    # Citação parentética contendo um ano (1900-2099)
+    signals += len(re.findall(r"\([^)]*\b(?:19|20)\d{2}\b[^)]*\)", clean))
+    # Marcadores de atribuição seguidos (na mesma frase) de um ano
+    signals += len(
+        re.findall(
+            r"(?:Segundo|segundo|De acordo com|de acordo com|Conforme|conforme)\b"
+            r"[^.\n]{0,80}\b(?:19|20)\d{2}\b",
+            clean,
+        )
+    )
+    # Links markdown para fontes externas (http/https)
+    signals += len(re.findall(r"\[[^\]]+\]\(https?://", clean))
+    return signals
+
+
+def _count_statistics(text: str) -> int:
+    """Conta dados quantitativos com contexto (estatísticas)."""
+    clean = _strip_noise(text)
+    count = 0
+    count += len(re.findall(r"\b\d{1,3}(?:[.,]\d+)?\s?%", clean))          # percentuais
+    count += len(re.findall(r"\b\d+(?:[.,]\d+)?\s?[x×](?![\w.])", clean))  # multiplicadores (3x, 4,1×)
+    count += len(re.findall(r"(?:R\$|US\$|€)\s?\d", clean))                # valores monetários
+    count += len(re.findall(r"\bde\s+\d[\d.,]*\s*%?\s+para\s+\d", clean))  # "de X para Y"
+    return count
+
+
+def _count_quotations(text: str) -> int:
+    """Conta citações diretas atribuídas (aspas + nome do autor)."""
+    clean = _strip_noise(text)
+    # Trecho entre aspas (retas ou tipográficas) seguido de atribuição com travessão/hífen
+    pattern = r'["“][^"”\n]{12,}["”]\s*[—–-]\s*[A-ZÀ-Ú]'
+    return len(re.findall(pattern, clean))
+
+
+def _has_answer_capsule(text: str) -> bool:
+    """Detecta ao menos um 'answer capsule' (parágrafo resposta-primeiro após heading).
+
+    Capsule = parágrafo de prosa curto (≈20-70 palavras), auto-contido,
+    imediatamente após um heading H2/H3, sem ser lista/tabela/citação/código.
+    """
+    clean = _strip_noise(text)
+    lines = clean.split("\n")
+    for i, line in enumerate(lines):
+        if not re.match(r"^#{2,4}\s+\S", line):
+            continue
+        # Achar o próximo bloco não-vazio após o heading
+        j = i + 1
+        while j < len(lines) and not lines[j].strip():
+            j += 1
+        if j >= len(lines):
+            continue
+        para = lines[j].strip()
+        if para.startswith(("-", "*", "|", ">", "#", "1.", "```")):
+            continue
+        words = len(para.split())
+        if 18 <= words <= 75:
+            return True
+    return False
+
+
+def check_content(text: str, module_name: str = "", geo_config=None) -> list[ContentError]:
     """Valida qualidade de conteúdo educacional.
 
     Verifica: tabelas, formatação, exercícios, andragogia,
@@ -401,6 +476,57 @@ def check_content(text: str, module_name: str = "") -> list[ContentError]:
             mensagem="Emojis detectados no conteúdo. Proibido em conteúdo educacional.",
             modulo=mod,
         ))
+
+    # 12. Citabilidade GEO (opt-in via client.yaml geo_2026) — ver
+    #     docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
+    #     habilitado = erro bloqueante; desabilitado = aviso não-bloqueante.
+    if geo_config is not None:
+        playbook = bool(getattr(geo_config, "princeton_playbook_enabled", False))
+        geo_tipo = "error" if playbook else "warning"
+
+        min_cite = int(getattr(geo_config, "min_cite_sources", 3))
+        min_stats = int(getattr(geo_config, "min_statistics", 5))
+        min_quotes = int(getattr(geo_config, "min_quotations", 1))
+        require_capsule = bool(getattr(geo_config, "require_answer_capsule", True))
+
+        n_cite = _count_cite_sources(text)
+        if n_cite < min_cite:
+            erros.append(ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
+                         f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
+                modulo=mod,
+            ))
+
+        n_stats = _count_statistics(text)
+        if n_stats < min_stats:
+            erros.append(ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
+                         f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
+                modulo=mod,
+            ))
+
+        n_quotes = _count_quotations(text)
+        if n_quotes < min_quotes:
+            erros.append(ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
+                         f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
+                modulo=mod,
+            ))
+
+        if require_capsule and not _has_answer_capsule(text):
+            erros.append(ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
+                         "(40-60 palavras) detectado após um heading. Lift de citação 1,9×.",
+                modulo=mod,
+            ))
 
     return erros
 

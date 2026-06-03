@@ -6,6 +6,20 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
+### Adicionado — Citabilidade GEO operacional + KB V3 (2026-06-03)
+
+**Fecha o gap entre a doutrina de GEO e o que o pipeline produz/valida.** O confronto com o conhecimento mais novo dos repos irmãos (`landing-page-geo`) mostrou que as "promessas de pipeline" do log de 2026-05-20 nunca tinham saído do papel. Esta wave implementa e adiciona o estado da arte de 20-mai a 03-jun-2026.
+
+- **Documentação canônica nova (3 docs):**
+  - [`docs/GEO_REDACAO_CHECKLIST_2026.md`](docs/GEO_REDACAO_CHECKLIST_2026.md) — rubrica empírica de 13 técnicas de redação com lift de citação medido (Aggarwal/Princeton, AutoGEO ICLR 2026, GEO-SFE/Berkeley), mapeada para módulos de curso, com números-alvo que viram gate.
+  - [`docs/GEO_KNOWLEDGE_BASE_2026_V3.md`](docs/GEO_KNOWLEDGE_BASE_2026_V3.md) — V3 prevista pela V2: AutoGEO (GEO Score/GEU Score, +50,99%), earned media 84% (Muck Rack), Selection Rate × Absorption Rate (SIGIR 2026), super-geo (severidade + 4 tiers), Karpathy LLM Wiki (ingest/query/lint), Multi-LLM Sampling Wave, conceitos 51-63, papers Q2 2026 (FeatGEO, GhostCite, SIGIR AIO 51,5%), descobertas pós-I/O.
+  - [`docs/GEO_EARNED_MEDIA_2026.md`](docs/GEO_EARNED_MEDIA_2026.md) — earned media = 84% das citações de IA (paid = 0,3%); framework EMGE, técnicas de colocação, KPIs K-EM-001 a 006.
+- **`draft.md`** — nova seção "Checklist de Citabilidade GEO" (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule por H2, chunkability, Single Idea, Information Gain) + 4 itens na autoavaliação.
+- **`content_checker.py`** — contadores `_count_cite_sources` / `_count_statistics` / `_count_quotations` + detector `_has_answer_capsule`; bloco GEO opt-in em `check_content(..., geo_config=...)` — erro bloqueante com playbook ligado, aviso quando desligado, ausente = retrocompatível.
+- **`Geo2026Config`** — novo bloco `geo_2026` em `client.yaml` (`princeton_playbook_enabled`, `min_cite_sources/statistics/quotations`, `require_answer_capsule`, `schema_authority_stack_enabled`), carregado por `context.py` + `loader.py` e consumido pelo `quality_gate.py`. Ligado no cliente `default`, documentado e off no `_template`.
+- **`classify.md`** — tags canônicas de GEO (`geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`).
+- `tests/test_validators_smoke.py` — **7 testes novos** (contadores, comportamento opt-in bloqueante/aviso, retrocompatibilidade sem config). Suíte: **213 passing** (+7; 1 flaky pré-existente de TTL de cache, não relacionado).
+
 ### Adicionado — Wave de Humanização (2026-05-17)
 
 **Pipeline de medição e correção de "cara de IA" baseado em evidência científica 2024-2026** (papers ACL/EMNLP/NAACL/NeurIPS, datasets RAID/MULTITuDE/M4GT, benchmarks com Cohen's d). Dossiê técnico em [`docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md`](docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md) (1.014 linhas, 8.834 palavras, 21 papers, 9 datasets, 5 leaderboards, fórmulas formais + thresholds + corpora PT-BR + design de experimento de calibração).

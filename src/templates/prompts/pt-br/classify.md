@@ -33,6 +33,8 @@ Liste de 5 a 10 tags que descrevam o conteúdo, priorizando:
 - Habilidades e competências desenvolvidas
 - Formato e metodologia pedagógica
 
+**Tags canônicas de GEO** (adicione quando o conteúdo for sobre, ou otimizado para, Generative Engine Optimization): `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`. Use `citation-ready` quando o módulo cumprir a rubrica de citabilidade (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule) — ver `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+
 ### 3. Pré-requisitos
 
 Liste os conhecimentos que o aluno deve ter antes de iniciar este curso. Para cada pré-requisito, indique o nível esperado (básico, intermediário, avançado). Se nenhum, indique explicitamente "Nenhum".

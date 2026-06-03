@@ -23,6 +23,11 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 **Incremento canônico pós Google I/O 2026:**
 - [`docs/SEO_GEO_INCREMENT_20260520.md`](docs/SEO_GEO_INCREMENT_20260520.md) — novo, 20-05-2026. Síntese executável de 3 documentos canônicos sobre SEO+GEO+AEO+B2A pós Google I/O 2026 (15-mai-2026). Inclui: (a) **Master Prompt 5 Ondas** unificado e executável para auditoria de portal editorial (Fundação técnica → Arquitetura/Entidade → Conteúdo/Information Gain → Citabilidade/Schema → Autoridade/B2A); (b) **Stack técnico de 38 camadas** com 570+ itens mapeados por onda; (c) **Princeton GEO playbook** com lifts mensurados (Cite Sources +115%, Statistics +41%, Quotation +28% — Aggarwal et al. KDD 2024 arXiv:2311.09735); (d) **Two-Phase JSON-LD theory** que resolve o debate Ahrefs (upstream Knowledge Graph lê schema; runtime RAG lê apenas HTML visível); (e) **Entity Boundary Drift** com cosine similarity ≥0,95 entre canais; (f) **8 Query Fan-Out variant types** de Michael King (iPullRank); (g) **Camada ASO** (Agentic Search Optimization) e roadmap B2A com NLWeb/MCP/OpenAPI (Gartner 2026: 90% B2B intermediado por agentes em 2028, $15T); (h) **Catálogo de bots IA atualizado mai/2026** incluindo OAI-AdsBot novo, Pay-Per-Crawl HTTP 402 da Cloudflare, crawl-to-referral ratios benchmarks; (i) **Anti-padrões 2026** (llms.txt como requisito = falso pelo Google AI Optimization Guide; schema como silver bullet = falso pelo estudo Ahrefs; FAQ rich results descontinuados 7-mai-2026). Templates prontos em [`docs/templates/seo-geo-2026/`](docs/templates/seo-geo-2026/): `robots-2026.txt` (20+ user-agents), `news-article-schema.jsonld` (@graph aninhado com Wikidata), `paywall-schema.jsonld` (regras Google 2026), `breadcrumb-schema.jsonld`, `llms.txt.template` (defensivo, não obrigatório). Fontes preservadas em [`docs/research/seogeo-20260520/`](docs/research/seogeo-20260520/). **Quando usar:** auditar portal editorial cliente, criar curso "GEO/SEO 2026", ajustar prompt do `writer.py` com Princeton checklist obrigatória (Cite Sources ≥3, Stats ≥5, Quotes ≥1).
 
+**Incremento canônico jun/2026 (operacionaliza a redação para GEO):**
+- [`docs/GEO_REDACAO_CHECKLIST_2026.md`](docs/GEO_REDACAO_CHECKLIST_2026.md) — novo, 03-06-2026. **Rubrica de redação empírica de 13 técnicas com lift de citação medido** (Aggarwal/Princeton, AutoGEO ICLR 2026, GEO-SFE/Berkeley), mapeada para módulos de curso. É a fonte que o prompt `draft.md` carimba e que o `content_checker.py` valida por contagem (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule). **Referência obrigatória para qualquer módulo que deva competir por citação em LLM.**
+- [`docs/GEO_KNOWLEDGE_BASE_2026_V3.md`](docs/GEO_KNOWLEDGE_BASE_2026_V3.md) — novo, 03-06-2026 (V3, delta sobre a V2). Consolida o que a literatura/mercado produziram entre 20-mai e 03-jun: **AutoGEO (GEO Score/GEU Score, +50,99%)**, **earned media 84%** (Muck Rack), **Selection Rate × Absorption Rate** (SIGIR 2026), super-geo (severidade Blocker/High/Med/Low + 4 tiers de agent-readiness), Karpathy LLM Wiki (ingest/query/lint), Multi-LLM Sampling Wave, os **13 conceitos novos (51-63)**, papers Q2 2026 (FeatGEO, GhostCite 14-95% citações fabricadas, SIGIR AIO 51,5%) e descobertas pós-I/O.
+- [`docs/GEO_EARNED_MEDIA_2026.md`](docs/GEO_EARNED_MEDIA_2026.md) — novo, 03-06-2026. Evidência dura de que **earned media = 84% das citações de IA** (paid = 0,3%, GEO-morto); framework EMGE de 5 estágios, técnicas de colocação, KPIs K-EM-001 a 006, gap de PR de ~2%. Deriva o item 13 da rubrica e o Conceito 63.
+
 **Pesquisa bruta:**
 - [`docs/research/geo-knowledge-2026/`](docs/research/geo-knowledge-2026/) — Perplexity sonar-pro de 13-05-2026.
 - [`docs/research/geo-seo-2026-wave/`](docs/research/geo-seo-2026-wave/) — 5 waves Perplexity sonar-deep-research de 17-05-2026 (papers 2026, SEO updates, vendor landscape, discovery standards, measurement frameworks), com WebFetch validation em ~50 URLs primárias.
@@ -38,6 +43,26 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 **Complementa** (não substitui) `docs/knowledge/geo-aeo/` — corpus de 30 instruções operacionais + 25 papers da onda 2026-04-25.
 
 Citar `§X.Y` dos KBs/INCREMENT/WAVE ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
+
+## 2026-06-03 — Citabilidade GEO operacional + KB V3 (rubrica de redação que vira gate)
+
+Incremento que **fecha o gap** entre a doutrina de GEO (que o repo já tinha em profundidade) e o que o pipeline efetivamente produz e valida. Confronto de junho com o conhecimento mais novo dos repos irmãos (`landing-page-geo/docs`: AutoGEO, earned media, conceitos 51-63) confirmou que as promessas do log de 2026-05-20 ("como aplicar no pipeline") **nunca tinham sido implementadas** — só documentadas. Agora foram.
+
+**Documentação nova:**
+- `docs/GEO_REDACAO_CHECKLIST_2026.md` — rubrica de 13 técnicas com lift empírico, mapeada para módulos de curso. É o "como escrever para o maior ganho em GEO".
+- `docs/GEO_KNOWLEDGE_BASE_2026_V3.md` — a V3 prevista pela V2 (§12): AutoGEO/GEO+GEU Score, earned media 84%, Selection×Absorption, super-geo 4 tiers, Karpathy lint, MLSW, conceitos 51-63, papers Q2 2026, descobertas pós-I/O.
+- `docs/GEO_EARNED_MEDIA_2026.md` — earned media como camada dominante (84% vs paid 0,3%), framework EMGE + KPIs K-EM.
+
+**Código (promessas de 2026-05-20 agora CUMPRIDAS):**
+- ✅ `src/templates/prompts/pt-br/draft.md` — nova seção "Checklist de Citabilidade GEO" (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule por H2, chunkability, Single Idea, Information Gain) + 4 itens no checklist de autoavaliação.
+- ✅ `src/validators/content_checker.py` — contadores `_count_cite_sources`, `_count_statistics`, `_count_quotations` e detector `_has_answer_capsule`; bloco GEO opt-in em `check_content(text, module_name, geo_config=...)` (erro bloqueante com playbook ligado, aviso com desligado, ausente = retrocompatível).
+- ✅ `src/clients/context.py` + `loader.py` — `Geo2026Config` (`princeton_playbook_enabled`, `min_cite_sources/statistics/quotations`, `require_answer_capsule`, `schema_authority_stack_enabled`), carregado de `client.yaml` bloco `geo_2026`.
+- ✅ `src/validators/quality_gate.py` — passa `self.client.geo` ao `check_content`.
+- ✅ `src/templates/prompts/pt-br/classify.md` — tags canônicas `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`.
+- ✅ `config/clients/default/client.yaml` — bloco `geo_2026` ligado (Brasil GEO é GEO-first); `_template/client.yaml` documentado e desligado.
+- ✅ `tests/test_validators_smoke.py` — 7 testes novos dos contadores + comportamento opt-in + retrocompatibilidade.
+
+**Aplicação no pipeline (atualizada):** o redator (GPT-4o) recebe a rubrica carimbada; o gate conta os mínimos; o classificador emite as tags GEO; o revisor (Claude) trata `[FALTA EVIDÊNCIA]` para garantir Cite Sources reais (GhostCite mostra 14-95% de citações fabricadas em LLM — fonte verificável virou diferencial de GEO, não só higiene). Para ligar em outro cliente: bloco `geo_2026` no `client.yaml`.
 
 ## 2026-05-20 — Incremento canônico pós Google I/O 2026 (SEO+GEO+AEO+B2A)
 

@@ -506,6 +506,9 @@ curso-factory/
 |-----------|-----------|
 | [docs/MULTI-CLIENT.md](docs/MULTI-CLIENT.md) | Adicionar um novo cliente (empresa, nicho, autor). Inclui playbook passo-a-passo, campos de `client.yaml` e integração com QualityGate. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entender o pipeline interno (orchestrator, agents, validators, generators) e onde encaixar mudanças. |
+| [docs/GEO_REDACAO_CHECKLIST_2026.md](docs/GEO_REDACAO_CHECKLIST_2026.md) | **Como escrever conteúdo para o maior ganho em GEO.** Rubrica empírica de 13 técnicas com lift de citação medido, mapeada para módulos de curso; é o que o `content_checker.py` valida por contagem (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule). |
+| [docs/GEO_KNOWLEDGE_BASE_2026_V3.md](docs/GEO_KNOWLEDGE_BASE_2026_V3.md) | Estado da arte de GEO 20-mai a 03-jun-2026: AutoGEO (GEO/GEU Score), earned media 84%, Selection×Absorption, super-geo 4 tiers, conceitos 51-63, papers Q2 2026. |
+| [docs/GEO_EARNED_MEDIA_2026.md](docs/GEO_EARNED_MEDIA_2026.md) | Por que earned media domina a citação por IA (84% vs paid 0,3%); framework EMGE e KPIs K-EM. |
 | [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
 | [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
 

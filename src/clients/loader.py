@@ -19,6 +19,7 @@ from src.clients.context import (
     Domain,
     Editorial,
     EngagementConfig,
+    Geo2026Config,
     PipelineConfig,
     TutorConfig,
     VoiceGuardCanonical,
@@ -195,6 +196,19 @@ def load_client(client_id: str = "default") -> ClientContext:
         humanize_max_iters=int(pipeline_d.get("humanize_max_iters", 2)),
     )
 
+    # Rubrica de citabilidade GEO (default off; ligar via client.yaml geo_2026)
+    geo_d = data.get("geo_2026", {})
+    geo_cfg = Geo2026Config(
+        princeton_playbook_enabled=bool(geo_d.get("princeton_playbook_enabled", False)),
+        min_cite_sources=int(geo_d.get("min_cite_sources", 3)),
+        min_statistics=int(geo_d.get("min_statistics", 5)),
+        min_quotations=int(geo_d.get("min_quotations", 1)),
+        require_answer_capsule=bool(geo_d.get("require_answer_capsule", True)),
+        schema_authority_stack_enabled=bool(
+            geo_d.get("schema_authority_stack_enabled", False)
+        ),
+    )
+
     # Wave 8 — idioma default do cliente
     client_language = ed_d.get("language", "pt-br")
 
@@ -215,6 +229,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         certification=certification,
         agentic=agentic,
         pipeline=pipeline_cfg,
+        geo=geo_cfg,
         language=client_language,
     )
 

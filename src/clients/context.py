@@ -207,6 +207,26 @@ class PipelineConfig:
 
 
 @dataclass
+class Geo2026Config:
+    """Rubrica de citabilidade GEO (Generative Engine Optimization).
+
+    Liga a validacao por contagem das tecnicas de redacao com lift de
+    citacao medido (Aggarwal/Princeton, AutoGEO ICLR 2026). Ver
+    docs/GEO_REDACAO_CHECKLIST_2026.md e docs/GEO_KNOWLEDGE_BASE_2026_V3.md.
+
+    Default OFF para preservar o comportamento de clientes nao-GEO: quando
+    desabilitado, as contagens viram avisos; quando habilitado, viram erros
+    bloqueantes no quality gate.
+    """
+    princeton_playbook_enabled: bool = False
+    min_cite_sources: int = 3
+    min_statistics: int = 5
+    min_quotations: int = 1
+    require_answer_capsule: bool = True
+    schema_authority_stack_enabled: bool = False
+
+
+@dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
     id: str
@@ -226,6 +246,8 @@ class ClientContext:
     certification: CertificationConfig = field(default_factory=CertificationConfig)
     agentic: AgenticConfig = field(default_factory=AgenticConfig)
     pipeline: PipelineConfig = field(default_factory=PipelineConfig)
+    # Rubrica de citabilidade GEO (default off; ligar via client.yaml geo_2026)
+    geo: Geo2026Config = field(default_factory=Geo2026Config)
     # Wave 8 — idioma default do cliente (override per curso possível)
     language: str = "pt-br"
 

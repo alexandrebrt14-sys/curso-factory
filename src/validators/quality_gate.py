@@ -125,8 +125,11 @@ class QualityGate:
                 )
         result.relatorios.append(accent_report(accent_errors))
 
-        # 2. Verificação de qualidade de conteúdo
-        content_errors = check_content(working_text, module_name)
+        # 2. Verificação de qualidade de conteúdo (inclui citabilidade GEO
+        #    quando o cliente liga geo_2026 no client.yaml — ver
+        #    docs/GEO_REDACAO_CHECKLIST_2026.md)
+        geo_config = getattr(self.client, "geo", None)
+        content_errors = check_content(working_text, module_name, geo_config=geo_config)
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
 

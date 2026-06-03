@@ -154,6 +154,19 @@ pipeline:
   humanize_target_stylometry_score: 75
   humanize_max_iters: 2
 
+# Citabilidade GEO (Generative Engine Optimization) — rubrica de redação com
+# lift de citação medido empiricamente. Ver docs/GEO_REDACAO_CHECKLIST_2026.md
+# e docs/GEO_KNOWLEDGE_BASE_2026_V3.md. Brasil GEO é cliente GEO-first → ligado.
+# Quando princeton_playbook_enabled=true, as contagens abaixo viram ERROS
+# bloqueantes no quality gate; quando false, viram avisos não-bloqueantes.
+geo_2026:
+  princeton_playbook_enabled: true
+  min_cite_sources: 3          # fontes externas atribuídas (lift +40%, até +115% fora do top-1)
+  min_statistics: 5            # dados quantitativos com fonte+ano (lift +32,8%)
+  min_quotations: 1            # citação direta de especialista nomeado (lift +42,6%)
+  require_answer_capsule: true # parágrafo resposta-primeiro após heading (lift 1,9×)
+  schema_authority_stack_enabled: true  # @graph Article→Person→Organization→Wikidata
+
 # Output — onde os artefatos gerados para este cliente são salvos
 output:
   # "output" para o cliente padrão mantém layout legado (output/drafts, approved, deployed).
