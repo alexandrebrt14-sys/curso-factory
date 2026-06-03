@@ -147,7 +147,7 @@ class CourseDefinition(BaseModel):
     # Defaults mantidos apenas para compatibilidade com fixtures antigas;
     # em uso real, SchemaBuilder.build(client=...) sobrescreve.
     autor_nome: str = "Alexandre Caramaschi"
-    autor_credencial: str = "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+    autor_credencial: str = "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
     dominio: str = "https://alexandrecaramaschi.com"
     educacao_path: str = "/educacao"
     # Empresa — schema.org provider e bloco de autoria

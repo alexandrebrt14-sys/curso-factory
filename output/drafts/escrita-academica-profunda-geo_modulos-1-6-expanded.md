@@ -1,6 +1,6 @@
 # Escrita Acadêmica Profunda para Publicação em GEO e LLM Research
 
-**Autor:** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil
+**Autor:** Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil
 
 **Escopo editorial:** curso avançado para pesquisadores aplicados (practitioners) que produzem pesquisa em Generative Engine Optimization, retrieval augmented generation e LLM research e querem publicar em SSRN, ArXiv (cs.IR), Zenodo, Semantic Scholar, workshops SIGIR/WWW e journals Q1 (Information Sciences, JASIST, IP&M).
 

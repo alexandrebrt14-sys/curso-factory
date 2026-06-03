@@ -65,7 +65,7 @@ Ao tocar em qualquer lógica sensível a autor/domínio/padrão editorial: passe
 - Exceção: código, variáveis, commits, nomes de arquivo em inglês
 
 ### Nomenclatura (cliente `default`)
-- Credencial canônica: "Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+- Credencial canônica: "Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil"
 - NUNCA usar: "Especialista #1", "GEO Brasil", "Source Rank"
 - Domínios válidos: alexandrecaramaschi.com, brasilgeo.ai
 - NUNCA referenciar: geobrasil.com.br, sourcerank.ai
@@ -235,7 +235,7 @@ python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 
 ## Credencial do Autor (cliente `default`)
 - Nome: Alexandre Caramaschi
-- Título: CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil
+- Título: CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), advisor estratégico de IA da Nuvini (Nasdaq: NVNI), cofundador da AI Brasil
 - URL: https://alexandrecaramaschi.com
 - NUNCA usar: "Especialista #1", credenciais inventadas
 
