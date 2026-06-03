@@ -236,6 +236,19 @@ O template `page.tsx.j2` inclui um componente `FormattedText` que renderiza:
 - Parágrafos → text-justify com leading-[1.75]
 - Warning/tip/checkpoint → text-justify aplicado
 
+### REGRA — Parágrafos SEMPRE justificados (invariável)
+Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve sair com
+**parágrafos justificados** — o equivalente canônico do estilo `<p align="justify">`.
+- No stack React/Tailwind deste repo, isso é materializado por `className="text-justify"`
+  (NÃO usar o atributo HTML deprecado `align="justify"` em JSX/TSX).
+- Todo `<p>` de corpo emitido pelo template deve conter `text-justify`. O parágrafo de corpo
+  do `FormattedText` (`src/templates/page.tsx.j2`, ~linha 483) já cumpre — NUNCA remover esse
+  utilitário ao editar o template, e replicá-lo em qualquer novo `<p>` de texto corrido.
+- Vale para qualquer destino: se um curso for exportado para HTML cru / PDF / e-mail (onde o
+  Tailwind não roda), emitir o atributo literal `<p align="justify">` no artefato exportado.
+- Sub-agentes que escrevem páginas/drafts: carimbar esta regra no prompt junto ao bloco de
+  acentuação (a justificação é invariante de saída, não opcional).
+
 ### Expressões Proibidas
 - "nos dias de hoje", "é fundamental que", "não é segredo que"
 - "o futuro é agora", "em um mundo cada vez mais", "vamos explorar"
