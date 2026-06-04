@@ -21,7 +21,7 @@ interface Step {
 }
 
 interface Section {
-  type: "text" | "code" | "warning" | "tip" | "checkpoint" | "image-placeholder";
+  type: "text" | "code" | "warning" | "tip" | "checkpoint" | "image-placeholder" | "diagram";
   value: string;
   language?: string;
   label?: string;
@@ -250,7 +250,7 @@ const STEPS: Step[] = [
 {% if section.type == "code" %}
       { type: "code", value: "{{ section.value | js_escape }}", language: "{{ section.language | default('text') }}" },
 {% else %}
-      { type: "{{ section.type }}", value: "{{ section.value | js_escape }}" },
+      { type: "{{ section.type }}", value: "{{ section.value | js_escape }}"{% if section.label %}, label: "{{ section.label | js_escape }}"{% endif %} },
 {% endif %}
 {% endfor %}
     ],
@@ -316,10 +316,13 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
 
 /* ───────── RICH TEXT RENDERER ───────── */
 function renderInline(str: string): React.ReactNode[] {
-  const parts = str.split(/(\*\*.*?\*\*)/g);
+  const parts = str.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return <strong key={i} className="font-semibold text-[var(--text)]">{part.slice(2, -2)}</strong>;
+    }
+    if (part.length > 2 && part.startsWith("`") && part.endsWith("`")) {
+      return <code key={i} className="px-1.5 py-0.5 rounded bg-[var(--bg-muted)] text-[var(--accent)] text-[0.88em] font-mono">{part.slice(1, -1)}</code>;
     }
     return <span key={i}>{part}</span>;
   });
@@ -428,6 +431,23 @@ function FormattedText({ value }: { value: string }) {
     }
     flushTable();
 
+    /* Markdown header (#, ##, ###, ####) \u2014 robusto a markdown padrao */
+    const hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
+    if (hMatch) {
+      flushBullets();
+      flushNums();
+      const lvl = hMatch[1].length;
+      elements.push(
+        <h4
+          key={`mh-${j}`}
+          className={`font-bold text-[var(--text)] mb-2 pb-1.5 border-b border-[var(--border-light)] ${lvl <= 2 ? "text-[17px] mt-7" : "text-[15px] mt-5"}`}
+        >
+          {renderInline(hMatch[2])}
+        </h4>
+      );
+      continue;
+    }
+
     /* Section heading (line ending with :) */
     if (
       trimmed.match(/^[A-Z\u00C0-\u024F\d].{3,100}:\s*$/) &&
@@ -462,10 +482,11 @@ function FormattedText({ value }: { value: string }) {
       continue;
     }
 
-    /* Bullet point */
-    if (trimmed.startsWith("-- ") || trimmed.startsWith("--")) {
+    /* Bullet point — aceita "- ", "* " e o legado "-- " */
+    const bulletMatch = trimmed.match(/^(?:--?|\*)\s+(.+)$/);
+    if (bulletMatch) {
       flushNums();
-      bulletBuffer.push({ key: j, text: trimmed.replace(/^--\s*/, "") });
+      bulletBuffer.push({ key: j, text: bulletMatch[1] });
       continue;
     }
     flushBullets();
@@ -571,14 +592,14 @@ function StepCard({
                   return (
                     <div key={i} className="flex gap-3 p-4 rounded-[var(--radius)] bg-[#fff8e1] border border-[#ffe082]">
                       <span className="flex-shrink-0 mt-0.5">{icons.alertTriangle}</span>
-                      <p className="text-sm text-[#5d4037] leading-relaxed text-justify">{section.value}</p>
+                      <p className="text-sm text-[#5d4037] leading-relaxed text-justify whitespace-pre-line">{renderInline(section.value)}</p>
                     </div>
                   );
                 case "tip":
                   return (
                     <div key={i} className="flex gap-3 p-4 rounded-[var(--radius)] bg-[var(--accent-lighter)] border border-[var(--accent)]/20">
                       <span className="flex-shrink-0 mt-0.5">{icons.lightbulb}</span>
-                      <p className="text-sm text-[var(--accent-dark)] leading-relaxed text-justify">{section.value}</p>
+                      <p className="text-sm text-[var(--accent-dark)] leading-relaxed text-justify whitespace-pre-line">{renderInline(section.value)}</p>
                     </div>
                   );
                 case "checkpoint":
@@ -587,9 +608,30 @@ function StepCard({
                       <span className="flex-shrink-0 mt-0.5">{icons.circleCheck}</span>
                       <div>
                         <span className="text-xs font-bold text-[var(--success)] uppercase tracking-wider block mb-1">Checkpoint</span>
-                        <p className="text-sm text-[var(--success)] leading-relaxed text-justify">{section.value}</p>
+                        <p className="text-sm text-[var(--success)] leading-relaxed text-justify whitespace-pre-line">{renderInline(section.value)}</p>
                       </div>
                     </div>
+                  );
+                case "diagram":
+                  return (
+                    <figure key={i} className="my-5">
+                      <div className="overflow-x-auto rounded-[var(--radius)] border border-[var(--border)] bg-[#0c1e3e] p-4">
+                        <pre className="text-[12px] leading-[1.5] text-indigo-100 font-mono whitespace-pre">{section.value}</pre>
+                      </div>
+                      {section.label && (
+                        <figcaption className="mt-2 text-center text-xs text-[var(--text-light)]">{`Figura - ${section.label}`}</figcaption>
+                      )}
+                    </figure>
+                  );
+                case "image-placeholder":
+                  return (
+                    <figure key={i} className="my-5">
+                      <div className="flex flex-col items-center justify-center gap-2 rounded-[var(--radius)] border-2 border-dashed border-[var(--accent)]/30 bg-[var(--accent)]/5 py-8 px-4 text-center">
+                        <span className="text-[var(--accent)]">{icons.layers}</span>
+                        <p className="text-sm font-semibold text-[var(--text)]">{section.label || "Ilustração"}</p>
+                        <p className="text-xs text-[var(--text-muted)] max-w-md">{section.value}</p>
+                      </div>
+                    </figure>
                   );
                 default:
                   return null;

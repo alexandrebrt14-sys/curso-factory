@@ -114,23 +114,26 @@ Ao tocar em qualquer lógica sensível a autor/domínio/padrão editorial: passe
 ### Formatação Obrigatória por Módulo
 - Ao menos 1 tabela comparativa (formato markdown com pipes)
 - Ao menos 3 exercícios com contexto profissional e progressão Bloom
-- Sub-headings (linha terminando com `:`) a cada 2-3 parágrafos
-- Negrito em termos-chave na primeira ocorrência usando `**termo**`
+- Sub-headings com `## ` (markdown) OU linha terminando com `:` — ambos renderizam — a cada 2-3 parágrafos
+- Negrito em termos-chave na primeira ocorrência usando `**termo**`; código, comandos e variáveis entre crases `` `assim` `` (renderizam como código inline estilizado)
 - Blockquotes (`> `) para insights centrais — ao menos 1-2 por módulo
-- Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen)
+- Bullets com `- ` ou `-- ` (ambos renderizam); listas numeradas com `1. `
 - Nunca mais de 3 parágrafos seguidos sem elemento visual
 - 2.500-4.000 palavras por módulo
 
 ### Padrão de Layout (FormattedText — UX Microsoft Learn + Salesforce Trailhead)
-O template `page.tsx.j2` inclui um componente `FormattedText` que renderiza:
-- `**bold**` → `<strong>` com font-semibold
-- Linha terminando com `:` → `<h4>` sub-heading com border-bottom
-- `-- item` → bullet list com dot azul (accent color)
+O template `page.tsx.j2` inclui um componente `FormattedText` **robusto a markdown padrão** que renderiza:
+- `**bold**` → `<strong>` com font-semibold; `` `codigo` `` (crases) → `<code>` inline estilizado
+- `# `, `## `, `### ` (markdown) **E** linha terminando com `:` → `<h4>` sub-heading com border-bottom
+- `- item`, `* item` e o legado `-- item` → bullet list com dot azul (accent color)
 - `1. item` → ordered list com número azul
 - `| col | col |` → `<table>` com header uppercase e zebra striping
 - `> texto` → blockquote com borda lateral azul
 - Parágrafos → text-justify com leading-[1.75]
-- Warning/tip/checkpoint → text-justify aplicado
+- `warning` / `tip` / `checkpoint` → renderizam **negrito**, `` `codigo` `` e quebras de linha (via `renderInline` + `whitespace-pre-line`)
+- `diagram` (com `label`) → figura ASCII emoldurada com legenda; `image-placeholder` (com `label`) → figura ilustrativa
+
+> **Contrato de renderização (não reintroduzir bugs):** qualquer um desses elementos SEMPRE renderiza corretamente, independente da convenção que o LLM gerar. Os bugs históricos — `##` aparecendo literal, bullets `- ` virando parágrafo, negrito/código cru dentro de callouts, crase literal — foram corrigidos no template em 2026-06. NUNCA voltar a um renderizador que só aceite `-- ` ou só headings com `:`, nem callouts que imprimam `section.value` cru.
 
 ### Expressões Proibidas
 - "nos dias de hoje", "é fundamental que", "não é segredo que"
