@@ -6,9 +6,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Topbar from "@/components/Topbar";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 /* ───────── TYPES ───────── */
 interface Step {
@@ -21,7 +23,7 @@ interface Step {
 }
 
 interface Section {
-  type: "text" | "code" | "warning" | "tip" | "checkpoint" | "image-placeholder" | "diagram";
+  type: "text" | "code" | "warning" | "tip" | "checkpoint" | "image-placeholder" | "diagram" | "stat" | "flow";
   value: string;
   language?: string;
   label?: string;
@@ -514,6 +516,70 @@ function FormattedText({ value }: { value: string }) {
   return <div className="text-[var(--text)] text-[15px]">{elements}</div>;
 }
 
+/* ───────── RICH VISUAL BLOCKS (animados / fluxogramas, data-driven) ─────────
+   stat:  section.value = JSON [{ "value": "90", "suffix": " tok/s", "label": "..." }]
+   flow:  section.value = JSON { "title?": "", "subtitle?": "", "steps": [{ "label": "", "tone?": "accent|success|warning|neutral" }] }
+   Para charts (recharts) use um componente por-curso wired num section "image-placeholder"
+   ou crie src/components/<curso>/Visuals.tsx — ver CLAUDE.md (Elementos visuais ricos). */
+{% raw %}
+function safeJson<T>(s: string, fallback: T): T {
+  try { return JSON.parse(s) as T; } catch { return fallback; }
+}
+
+const FADE_IN = {
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.5, ease: "easeOut" as const },
+};
+
+function StatBlock({ value }: { value: string }) {
+  const items = safeJson<{ value: string; suffix?: string; label: string }[]>(value, []);
+  if (!items.length) return null;
+  return (
+    <motion.div {...FADE_IN} className="grid grid-cols-2 lg:grid-cols-4 gap-3 my-5">
+      {items.map((s, i) => (
+        <div key={i} className="rounded-xl border p-4 text-center" style={{ borderColor: "var(--border-light)", background: "var(--bg-muted)" }}>
+          <div className="text-2xl font-extrabold" style={{ color: "var(--accent)" }}>
+            <AnimatedCounter value={s.value} />{s.suffix || ""}
+          </div>
+          <div className="text-[11px] mt-1 leading-snug" style={{ color: "var(--text-muted)" }}>{s.label}</div>
+        </div>
+      ))}
+    </motion.div>
+  );
+}
+
+const FLOW_TONES: Record<string, { c: string; bg: string }> = {
+  accent: { c: "var(--accent)", bg: "var(--accent-lighter)" },
+  success: { c: "var(--success)", bg: "var(--success-light)" },
+  warning: { c: "#b45309", bg: "#fff8e1" },
+  neutral: { c: "#0f172a", bg: "var(--bg-muted)" },
+};
+
+function FlowBlock({ value }: { value: string }) {
+  const flow = safeJson<{ title?: string; subtitle?: string; steps: { label: string; tone?: string }[] }>(value, { steps: [] });
+  if (!flow.steps?.length) return null;
+  return (
+    <motion.div {...FADE_IN} className="rounded-2xl bg-white border p-5 sm:p-6 my-5" style={{ borderColor: "var(--border)" }}>
+      {flow.title && <h3 className="text-[15px] font-bold mb-1" style={{ color: "var(--text)" }}>{flow.title}</h3>}
+      {flow.subtitle && <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>{flow.subtitle}</p>}
+      <div className="max-w-md mx-auto">
+        {flow.steps.map((st, i) => {
+          const t = FLOW_TONES[st.tone || "accent"] || FLOW_TONES.accent;
+          return (
+            <div key={i}>
+              <div className="rounded-lg px-3 py-2 text-center text-[12px] font-semibold border" style={{ color: t.c, background: t.bg, borderColor: "var(--border-light)" }}>{st.label}</div>
+              {i < flow.steps.length - 1 && <div className="mx-auto my-1.5 h-4 w-px" style={{ background: "#cbd5e1" }} aria-hidden />}
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+{% endraw %}
+
 /* ───────── COMPONENT: StepCard ───────── */
 function StepCard({
   step,
@@ -533,6 +599,7 @@ function StepCard({
   return (
     <div
       id={step.id}
+      style={% raw %}{{ scrollMarginTop: "120px" }}{% endraw %}
       className={`rounded-[var(--radius-lg)] border transition-all duration-300 ${
         isOpen
           ? "border-[var(--accent)] shadow-lg"
@@ -633,6 +700,10 @@ function StepCard({
                       </div>
                     </figure>
                   );
+                case "stat":
+                  return <StatBlock key={i} value={section.value} />;
+                case "flow":
+                  return <FlowBlock key={i} value={section.value} />;
                 default:
                   return null;
               }
@@ -709,8 +780,20 @@ export default function {{ component_name }}() {
     }
   }, [completed]);
 
+  const focusStep = (id: string) => {
+    setOpenStep(id);
+    // espera o accordion expandir/colapsar antes de alinhar o cabecalho no topo
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 90);
+  };
+
   const toggleStep = (id: string) => {
-    setOpenStep(openStep === id ? null : id);
+    if (openStep === id) {
+      setOpenStep(null);
+    } else {
+      focusStep(id);
+    }
   };
 
   const completeStep = (id: string) => {
@@ -722,7 +805,7 @@ export default function {{ component_name }}() {
       // Open next step
       const currentIndex = STEPS.findIndex((s) => s.id === id);
       if (currentIndex < STEPS.length - 1) {
-        setOpenStep(STEPS[currentIndex + 1].id);
+        focusStep(STEPS[currentIndex + 1].id);
       }
     }
     setCompleted(next);
@@ -832,10 +915,7 @@ export default function {{ component_name }}() {
                     {STEPS.map((step, i) => (
                       <button
                         key={step.id}
-                        onClick={() => {
-                          setOpenStep(step.id);
-                          document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-                        }}
+                        onClick={() => focusStep(step.id)}
                         className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius)] text-sm transition-colors ${
                           openStep === step.id
                             ? "bg-[var(--accent-lighter)] text-[var(--accent)] font-semibold"

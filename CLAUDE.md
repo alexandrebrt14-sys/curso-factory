@@ -135,6 +135,28 @@ O template `page.tsx.j2` inclui um componente `FormattedText` **robusto a markdo
 
 > **Contrato de renderização (não reintroduzir bugs):** qualquer um desses elementos SEMPRE renderiza corretamente, independente da convenção que o LLM gerar. Os bugs históricos — `##` aparecendo literal, bullets `- ` virando parágrafo, negrito/código cru dentro de callouts, crase literal — foram corrigidos no template em 2026-06. NUNCA voltar a um renderizador que só aceite `-- ` ou só headings com `:`, nem callouts que imprimam `section.value` cru.
 
+### Elementos visuais ricos (charts, fluxogramas, animações) — OBRIGATÓRIO usar
+
+O template (`page.tsx.j2`) já entrega **fora da caixa** dois elementos visuais animados, data-driven, que TODO curso deve aproveitar (não deixar módulos só com texto):
+
+- **`stat`** — cartões de número animado (`AnimatedCounter` + `framer-motion`). `section.value` é JSON:
+  ```json
+  [{ "value": "90", "suffix": " tok/s", "label": "throughput numa GPU de 8GB" }, { "value": "40", "suffix": "x", "label": "mais barato que a nuvem" }]
+  ```
+- **`flow`** — fluxograma animado (caixas + conectores). `section.value` é JSON:
+  ```json
+  { "title": "Como o roteador decide", "subtitle": "do prompt ao modelo certo", "steps": [{ "label": "Prompt", "tone": "neutral" }, { "label": "Classificador" }, { "label": "Resposta", "tone": "success" }] }
+  ```
+  `tone`: `accent` (padrão), `success`, `warning`, `neutral`.
+
+**Charts (recharts) e fluxos sofisticados específicos do tema:** crie um componente por-curso em `src/components/<slug-do-curso>/Visuals.tsx` (stack já disponível no repo de destino: **recharts**, **framer-motion**, **AnimatedCounter**) com um dispatcher `CourseVisual({ id })`, importe-o na página e acione via um section `image-placeholder`/`visual` apontando o id. Use tipos diversos de gráfico (barras, radar, área) e cores por categoria. Referência viva: `landing-page-geo/src/components/orquestracao-llm/CourseVisuals.tsx`.
+
+**Regra de densidade visual:** nenhum módulo deve ficar só com texto/código. Cada módulo deve ter ao menos **1 elemento visual** (tabela, `stat`, `flow`, `diagram` ASCII ou chart), e os módulos finais (troubleshooting, FAQ, glossário) também — não concentrar tudo no começo.
+
+### Navegação dos módulos (accordion) — comportamento correto
+
+Ao abrir um módulo, o cabeçalho é **alinhado no topo** (abaixo das barras fixas) via `focusStep()` + `scrollMarginTop: 120px` + `scrollIntoView({ block: "start" })`, com um `setTimeout(90ms)` para o layout do accordion assentar antes do scroll. Isso corrige o bug histórico de "abrir no final" / sanfona janky. **NUNCA** voltar a um `toggleStep` que só faz `setOpenStep` sem realinhar o scroll, nem usar `block: "center"`.
+
 ### Expressões Proibidas
 - "nos dias de hoje", "é fundamental que", "não é segredo que"
 - "o futuro é agora", "em um mundo cada vez mais", "vamos explorar"
