@@ -57,7 +57,9 @@ def _student_id_suffix(email: str) -> str:
     estabilidade entre re-emissões com casing diferente.
     """
     normalized = email.strip().lower().encode("utf-8")
-    return hashlib.sha1(normalized).hexdigest()[:12]
+    # usedforsecurity=False: o hash gera apenas um sufixo de ID estável, não é
+    # usado para integridade/autenticação — evita o falso-positivo B324 (SHA-1).
+    return hashlib.sha1(normalized, usedforsecurity=False).hexdigest()[:12]
 
 
 def _compute_hash(cert_id: str, email: str, score: float, issued_at: datetime) -> str:
