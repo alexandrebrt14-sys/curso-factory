@@ -6,14 +6,14 @@ identifica conceitos fracos para alimentar o SRS.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 def _now_utc() -> datetime:
     """Wall-clock UTC; substitui datetime.utcnow() (deprecated em 3.12)."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class QuizQuestion(BaseModel):
@@ -34,7 +34,7 @@ class QuizQuestion(BaseModel):
     explanation: str = Field(default="", description="Justificativa pós-resposta")
 
     @model_validator(mode="after")
-    def _correct_index_valido(self) -> "QuizQuestion":
+    def _correct_index_valido(self) -> QuizQuestion:
         if self.correct_index >= len(self.options):
             raise ValueError(
                 f"correct_index ({self.correct_index}) fora do range "
@@ -69,7 +69,7 @@ class QuizAttempt(BaseModel):
     @classmethod
     def _ensure_tz(cls, v: datetime) -> datetime:
         if v.tzinfo is None:
-            return v.replace(tzinfo=timezone.utc)
+            return v.replace(tzinfo=UTC)
         return v
 
 

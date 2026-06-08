@@ -12,23 +12,29 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from src.models import QualityReport
 from src.validators.accent_checker import (
     check_accents,
     fix_accents,
+)
+from src.validators.accent_checker import (
     format_report as accent_report,
 )
 from src.validators.content_checker import (
     check_content,
+)
+from src.validators.content_checker import (
     format_report as content_report,
 )
 from src.validators.disclosure_checker import disclosure_check
-from src.validators.html_validator import validate_html, format_report as html_report
-from src.validators.link_checker import check_links, format_report as link_report
+from src.validators.html_validator import format_report as html_report
+from src.validators.html_validator import validate_html
+from src.validators.link_checker import check_links
+from src.validators.link_checker import format_report as link_report
 from src.validators.stylometry_checker import stylometry_check
 from src.validators.voice_guard import voice_guard_check
 
@@ -74,9 +80,9 @@ class QualityGate:
 
     def __init__(
         self,
-        base_dir: Optional[Path] = None,
+        base_dir: Path | None = None,
         auto_fix: bool = True,
-        client: "ClientContext | None" = None,
+        client: ClientContext | None = None,
     ) -> None:
         self.base_dir = base_dir
         self.auto_fix = auto_fix
@@ -236,7 +242,7 @@ class QualityGate:
         """Converte GateResult para o modelo QualityReport."""
         return QualityReport(
             curso_id=curso_id,
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             acentuacao_ok=gate_result.acentuacao_ok,
             html_ok=gate_result.html_ok,
             links_ok=gate_result.links_ok,

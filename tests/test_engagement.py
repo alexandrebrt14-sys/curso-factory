@@ -7,10 +7,11 @@ dependem de rede, banco ou disco.
 from __future__ import annotations
 
 import sys
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -31,7 +32,6 @@ from src.engagement.srs import (
 )
 from src.engagement.streak import Streak, record_activity
 
-
 # ─── SRS ────────────────────────────────────────────────────────────────
 
 
@@ -45,7 +45,7 @@ def test_srs_card_novo_tem_defaults_corretos() -> None:
 
 
 def test_srs_review_quality_5_avanca_intervalo() -> None:
-    now = datetime(2026, 4, 29, 12, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 4, 29, 12, 0, tzinfo=UTC)
     card = SRSCard(concept_id="ml-supervisionado", next_review=now)
     revisado = review(card, quality=5, now=now)
 
@@ -57,7 +57,7 @@ def test_srs_review_quality_5_avanca_intervalo() -> None:
 
 
 def test_srs_review_quality_5_segunda_vez_vai_para_6_dias() -> None:
-    now = datetime(2026, 4, 29, 12, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 4, 29, 12, 0, tzinfo=UTC)
     card = SRSCard(concept_id="srs-2", next_review=now)
     primeira = review(card, quality=5, now=now)
     segunda = review(primeira, quality=5, now=now + timedelta(days=1))
@@ -67,7 +67,7 @@ def test_srs_review_quality_5_segunda_vez_vai_para_6_dias() -> None:
 
 
 def test_srs_review_quality_0_zera_repeticoes_e_volta_em_1_dia() -> None:
-    now = datetime(2026, 4, 29, 12, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 4, 29, 12, 0, tzinfo=UTC)
     card = SRSCard(
         concept_id="conceito-dificil",
         repetitions=4,
@@ -91,7 +91,7 @@ def test_srs_review_quality_invalida_lanca_value_error() -> None:
 
 
 def test_srs_due_cards_filtra_e_ordena_por_atraso() -> None:
-    now = datetime(2026, 4, 29, 12, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 4, 29, 12, 0, tzinfo=UTC)
     devido_antigo = SRSCard(concept_id="a", next_review=now - timedelta(days=5))
     devido_recente = SRSCard(concept_id="b", next_review=now - timedelta(hours=1))
     futuro = SRSCard(concept_id="c", next_review=now + timedelta(days=3))
@@ -171,7 +171,7 @@ def test_badge_definition_e_imutavel() -> None:
         criteria=lambda s: True,
     )
     assert b.id == "teste"
-    with pytest.raises(Exception):
+    with pytest.raises(AttributeError):  # frozen dataclass → FrozenInstanceError
         b.id = "outro"  # type: ignore[misc]
 
 
@@ -240,7 +240,7 @@ def test_quiz_question_valida_correct_index_dentro_do_range() -> None:
 
 
 def test_quiz_question_correct_index_fora_do_range_falha() -> None:
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         QuizQuestion(
             id="q1",
             prompt="Pergunta de teste",

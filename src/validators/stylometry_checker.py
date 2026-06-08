@@ -57,12 +57,10 @@ Roadmap (deixado pronto para o PR-2.1):
 from __future__ import annotations
 
 import logging
-import math
 import re
 import statistics
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +85,7 @@ class StylometryReport:
     sentence_len_variance: float = 0.0
     type_token_ratio: float = 0.0
     repetition_score: float = 0.0
-    mean_perplexity: Optional[float] = None  # preenchido se lmppl disponível
+    mean_perplexity: float | None = None  # preenchido se lmppl disponível
 
     sentences_total: int = 0
     words_total: int = 0
@@ -251,13 +249,14 @@ def compute_repetition_score(words: list[str]) -> float:
     """
     if len(words) < 10:
         return 0.0
-    bigrams = list(zip(words, words[1:]))
+    # strict=False intencional: words[1:] tem 1 elemento a menos (janela de bigrama).
+    bigrams = list(zip(words, words[1:], strict=False))
     counts = Counter(bigrams)
     repeated = sum(1 for _b, c in counts.items() if c >= 2)
     return repeated / len(set(bigrams)) if bigrams else 0.0
 
 
-def try_compute_perplexity(text: str, model_id: str = "gpt2") -> Optional[float]:
+def try_compute_perplexity(text: str, model_id: str = "gpt2") -> float | None:
     """Tenta calcular perplexity real com lmppl se a biblioteca estiver instalada.
 
     Opt-in via dependencia separada (`pip install lmppl`). Retorna None se
@@ -330,8 +329,8 @@ DEFAULT_WEIGHTS = {
 def stylometry_check(
     text: str,
     min_score: int = 60,
-    thresholds: Optional[dict] = None,
-    weights: Optional[dict] = None,
+    thresholds: dict | None = None,
+    weights: dict | None = None,
     compute_perplexity_if_available: bool = False,
     perplexity_model_id: str = "gpt2",
 ) -> StylometryReport:

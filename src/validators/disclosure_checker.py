@@ -91,7 +91,7 @@ class DisclosureCheckResult:
 
 
 def disclosure_check(
-    text: str, client: "ClientContext | None" = None
+    text: str, client: ClientContext | None = None
 ) -> DisclosureCheckResult:
     """Verifica se o texto tem o bloco de disclosure exigido pelo cliente.
 
@@ -104,7 +104,7 @@ def disclosure_check(
         from src.clients import load_client
         client = load_client("default")
 
-    disc: "DisclosureConfig" = client.disclosure
+    disc: DisclosureConfig = client.disclosure
     if not disc.enabled:
         # Cliente não exige disclosure — passa direto
         return result
@@ -199,7 +199,7 @@ def format_report(result: DisclosureCheckResult) -> str:
     return result.report()
 
 
-def build_disclosure_block(client: "ClientContext | None" = None) -> str:
+def build_disclosure_block(client: ClientContext | None = None) -> str:
     """Gera o bloco padronizado de disclosure para inserir no rodape do modulo.
 
     O `reviewer.py` (Claude) pode chamar isto para inserir o bloco quando

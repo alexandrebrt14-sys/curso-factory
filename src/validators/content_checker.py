@@ -9,7 +9,7 @@ HSM/HBR/MIT Sloan.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -70,11 +70,11 @@ def _count_words(text: str) -> int:
 
 
 def _find_tables(text: str) -> int:
-    """Conta tabelas Markdown no texto."""
-    # Padrão: linha com | que tem ao menos 2 colunas
-    table_rows = re.findall(r"^\|.+\|.+\|", text, re.MULTILINE)
-    # Agrupar linhas de tabela consecutivas
-    # Uma tabela tem header + separator + rows
+    """Conta tabelas Markdown no texto.
+
+    Uma tabela tem header + separador + linhas; conta-se pelos separadores
+    (`| --- | --- |`), que aparecem exatamente uma vez por tabela.
+    """
     separators = re.findall(r"^\|[\s:|-]+\|", text, re.MULTILINE)
     return len(separators)
 
@@ -148,7 +148,7 @@ def _check_heading_hierarchy(headings: list[tuple[int, str, str]]) -> list[str]:
     """Verifica se a hierarquia de títulos é correta (sem pulos)."""
     errors = []
     prev_level = 1  # Assume H1 como contexto
-    for level, text, raw in headings:
+    for level, text, _raw in headings:
         if level > prev_level + 1:
             errors.append(
                 f"Pulo de hierarquia: H{prev_level} → H{level} "

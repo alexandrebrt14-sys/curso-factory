@@ -7,7 +7,6 @@ o resultado da classificação para montar o modelo final validado.
 from __future__ import annotations
 
 import logging
-import re
 from typing import TYPE_CHECKING, Any
 
 from src.models import (
@@ -35,7 +34,7 @@ class SchemaBuilder:
         yaml_def: dict[str, Any],
         reviewed_content: str,
         classify_result: dict[str, Any],
-        client: "ClientContext | None" = None,
+        client: ClientContext | None = None,
     ) -> CourseDefinition:
         """Constrói e valida um CourseDefinition.
 

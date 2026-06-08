@@ -57,7 +57,7 @@ def load_courses() -> list[dict[str, Any]]:
     courses_path = CONFIG_DIR / "courses.yaml"
     if not courses_path.exists():
         return []
-    with open(courses_path, "r", encoding="utf-8") as f:
+    with open(courses_path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     if data is None:
         return []

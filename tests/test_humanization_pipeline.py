@@ -6,7 +6,6 @@ integracao no quality_gate (camadas 5 e 6).
 
 from __future__ import annotations
 
-import json
 import sys
 import tempfile
 from pathlib import Path
@@ -36,7 +35,6 @@ from src.validators.stylometry_checker import (
     compute_type_token_ratio,
     stylometry_check,
 )
-
 
 # ─── stylometry_checker — fórmulas isoladas ──────────────────────────
 

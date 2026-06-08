@@ -14,16 +14,14 @@ from __future__ import annotations
 
 import hashlib
 import hmac
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import BaseModel, Field
 
 from src.certification.qrcode_helper import qr_to_base64_png
 from src.models import CourseDefinition
-
 
 # Diretório padrão dos templates (compartilhado com o gerador TSX).
 _DEFAULT_TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "templates"
@@ -32,7 +30,7 @@ _DEFAULT_TEMPLATE_NAME = "certificate.html.j2"
 
 def _now_utc() -> datetime:
     """UTC wall-clock determinístico."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class Certificate(BaseModel):
@@ -46,7 +44,7 @@ class Certificate(BaseModel):
     score: float = Field(..., ge=0.0, le=1.0, description="Score normalizado [0.0, 1.0]")
     hash: str = Field(..., description="SHA-256 determinístico")
     signature: str = Field(..., description="HMAC-SHA256 do hash (hex)")
-    blockchain_tx: Optional[str] = Field(
+    blockchain_tx: str | None = Field(
         default=None,
         description="Transação on-chain (placeholder V0 — não implementado)",
     )
@@ -89,7 +87,7 @@ def generate_certificate(
     secret: str,
     *,
     pass_threshold: float = 0.7,
-    issued_at: Optional[datetime] = None,
+    issued_at: datetime | None = None,
 ) -> Certificate:
     """Gera certificado verificável para um aluno aprovado.
 
@@ -172,7 +170,7 @@ def _build_verification_url(certificate: Certificate, course: CourseDefinition) 
 def render_html(
     certificate: Certificate,
     course: CourseDefinition,
-    template_path: Optional[Path] = None,
+    template_path: Path | None = None,
 ) -> str:
     """Renderiza certificado HTML autossuficiente (sem CSS externo).
 

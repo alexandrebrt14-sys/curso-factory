@@ -400,24 +400,25 @@ cp .env.example .env
 ## Uso (CLI)
 
 ```bash
-# Criar um curso completo a partir de definição YAML
-python cli.py create --config config/courses.yaml --course "nome-do-curso"
+# Criar um curso completo via pipeline (nome posicional; use --client para multi-tenant)
+python cli.py create "Nome do Curso"
+python cli.py create "Nome do Curso" --client herreira
 
-# Criar apenas um módulo específico
-python cli.py create-module --config config/courses.yaml --course "nome-do-curso" --module 3
+# Criar múltiplos cursos em lote a partir de um YAML
+python cli.py batch --file config/courses.yaml
 
-# Executar apenas uma etapa do pipeline
-python cli.py run-step --step research --input "tópico do módulo"
-python cli.py run-step --step draft --input output/drafts/modulo-3-research.json
-python cli.py run-step --step analyze --input output/drafts/modulo-3-draft.md
-python cli.py run-step --step classify --input output/drafts/modulo-3-draft.md
-python cli.py run-step --step review --input output/drafts/modulo-3-analyzed.md
+# Listar clientes configurados
+python cli.py clients
 
-# Validar um módulo sem executar o pipeline
-python cli.py validate --input output/drafts/modulo-3.md
+# Validar rascunhos via QualityGate (diretório de drafts)
+python cli.py validate output/drafts/
 
-# Ver status dos providers (limites, custos, circuit breaker)
-python cli.py status
+# Converter rascunhos markdown em páginas TSX
+python cli.py drafts-to-tsx --input-dir output/drafts/ --output-dir output/converted_from_drafts/
+
+# Emitir catálogo de cursos e llms.txt
+python cli.py emit-catalog --output-dir output/
+python cli.py emit-llms-txt
 
 # Relatório de custos
 python cli.py cost-report

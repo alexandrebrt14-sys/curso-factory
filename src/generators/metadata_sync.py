@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class MetadataSync:
         logger.info("Cursos coletados para o catálogo: %d", len(courses))
 
         catalog = {
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "course_count": len(courses),
             "courses": courses,
         }
@@ -141,7 +141,7 @@ class MetadataSync:
             return []
         try:
             import yaml  # import local para não exigir yaml em contextos sem config
-            with open(courses_path, "r", encoding="utf-8") as fh:
+            with open(courses_path, encoding="utf-8") as fh:
                 data = yaml.safe_load(fh)
             if not data:
                 return []

@@ -33,7 +33,6 @@ from __future__ import annotations
 import json
 import logging
 import re
-from datetime import timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -42,10 +41,8 @@ if TYPE_CHECKING:
 
 from src.models import (
     CourseDefinition,
-    CourseSection,
     FAQItem,
     NivelCurso,
-    SectionType,
     StepDefinition,
 )
 from src.parsers import (
@@ -132,7 +129,7 @@ def _extract_review_or_draft_text(etapas: dict) -> str:
 
 def convert_draft_to_course(
     draft_path: Path,
-    client: "ClientContext | None" = None,  # noqa: F821
+    client: ClientContext | None = None,  # noqa: F821
 ) -> CourseDefinition | None:
     """Converte um draft JSON para CourseDefinition. Best-effort.
 
@@ -257,7 +254,7 @@ def convert_draft_to_course(
 def convert_drafts_directory(
     input_dir: Path,
     output_dir: Path,
-    client: "ClientContext | None" = None,
+    client: ClientContext | None = None,
 ) -> dict[str, Any]:
     """Converte todos os *.json de input_dir para TSX em output_dir.
 

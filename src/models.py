@@ -6,16 +6,16 @@ CostEntry e QualityReport.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
 
 def _now_utc() -> datetime:
     """Wall-clock UTC; substitui datetime.utcnow() (deprecated em 3.12)."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class NivelCurso(str, Enum):
@@ -32,9 +32,9 @@ class Step(BaseModel):
     tipo: str = Field(default="texto", description="Tipo: texto, vídeo, quiz, exercício")
     duracao_minutos: int = Field(default=5, ge=1, le=120, description="Duração estimada em minutos")
     # Wave 6 (engagement): chave estável para SRS quando o step ensina conceito
-    concept_id: Optional[str] = Field(default=None, description="ID do conceito para SRS")
+    concept_id: str | None = Field(default=None, description="ID do conceito para SRS")
     # Wave 6 (engagement): payload de quiz quando tipo=='quiz'
-    quiz_payload: Optional[dict] = Field(default=None, description="Quiz inline opcional")
+    quiz_payload: dict | None = Field(default=None, description="Quiz inline opcional")
 
     @field_validator("titulo")
     @classmethod
@@ -69,7 +69,7 @@ class Course(BaseModel):
     nivel: NivelCurso = Field(default=NivelCurso.INICIANTE, description="Nível de dificuldade")
     tags: list[str] = Field(default_factory=list, description="Tags de classificação")
     pre_requisitos: list[str] = Field(default_factory=list, description="Pré-requisitos do curso")
-    duracao_horas: Optional[float] = Field(default=None, ge=0.5, description="Duração total estimada")
+    duracao_horas: float | None = Field(default=None, ge=0.5, description="Duração total estimada")
     modulos: list[Module] = Field(default_factory=list, description="Módulos do curso")
     # Wave 8 (i18n): idioma do curso. Fallback "pt-br" mantém compat.
     language: str = Field(default="pt-br", description="Idioma do curso (pt-br | en | es | ...)")
@@ -102,8 +102,8 @@ class CourseSection(BaseModel):
     """Uma seção de conteúdo dentro de um step/módulo."""
     type: SectionType
     value: str = Field(..., min_length=1, description="Conteúdo PT-BR com acentuação")
-    language: Optional[str] = Field(default=None, description="Linguagem para blocos de código")
-    label: Optional[str] = Field(default=None, description="Label opcional")
+    language: str | None = Field(default=None, description="Linguagem para blocos de código")
+    label: str | None = Field(default=None, description="Label opcional")
 
 
 class StepDefinition(BaseModel):

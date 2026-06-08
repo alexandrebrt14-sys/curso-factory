@@ -16,7 +16,6 @@ from src.converters.draft_to_course import (
     convert_drafts_directory,
 )
 
-
 _DRAFT_REVIEWED = """
 ## Módulo 1: Fundamentos
 

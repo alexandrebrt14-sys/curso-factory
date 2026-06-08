@@ -11,8 +11,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-
 # Garante que o diretório raiz do projeto está no sys.path.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -51,7 +49,6 @@ from src.models import (  # noqa: E402
     StepDefinition,
 )
 
-
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 
 
@@ -60,7 +57,7 @@ FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 
 def _load_sample_course() -> CourseDefinition:
     sample_path = FIXTURES_DIR / "sample_course.json"
-    with open(sample_path, "r", encoding="utf-8") as fh:
+    with open(sample_path, encoding="utf-8") as fh:
         data = json.load(fh)
     return CourseDefinition(**data)
 

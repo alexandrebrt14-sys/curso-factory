@@ -131,7 +131,7 @@ def learning_resource_jsonld(step: StepDefinition) -> dict[str, Any]:
     }
 
 
-def organization_jsonld(client_context: "ClientContext") -> dict[str, Any]:
+def organization_jsonld(client_context: ClientContext) -> dict[str, Any]:
     """Schema.org `Organization` para o cliente/tenant.
 
     Útil para emitir um bloco JSON-LD único na home da landing page de

@@ -6,7 +6,6 @@ e acessibilidade básica.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from html.parser import HTMLParser
 
@@ -100,7 +99,7 @@ def validate_html(html: str) -> list[HTMLError]:
 
     # Acessibilidade: imagens sem alt
     for line in checker.img_without_alt:
-        errors.append(HTMLError("accessibility", f"Imagem sem atributo 'alt'", line))
+        errors.append(HTMLError("accessibility", "Imagem sem atributo 'alt'", line))
 
     return errors
 

@@ -31,7 +31,6 @@ from src.generators.schema_builder import SchemaBuilder
 from src.generators.tsx_generator import TsxGenerator
 from src.validators.quality_gate import QualityGate
 
-
 # ─── Utilidades ───────────────────────────────────────────────────────────
 
 
@@ -322,7 +321,7 @@ print()
 print(f"  Voice Guard score:     {result.voice_guard_score}/100 (min {client.voice_guard.min_score})")
 print(f"  Acentos corrigidos:    {result.acentos_corrigidos}")
 print()
-print(f"  Artefatos publicados:")
+print("  Artefatos publicados:")
 print(f"    {deployed_page}")
 print(f"    {deployed_layout}")
 print()

@@ -31,7 +31,6 @@ from src.i18n import (  # noqa: E402
     is_supported,
 )
 
-
 REQUIRED_PROMPTS: tuple[str, ...] = (
     "research.md",
     "draft.md",

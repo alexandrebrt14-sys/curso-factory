@@ -23,7 +23,6 @@ sys.path.insert(0, str(ROOT))
 from src.agents.tutor import Tutor, TutorMode  # noqa: E402
 from src.agents.tutor_memory import TutorMemory, TutorTurn  # noqa: E402
 
-
 # ─── Tutor: inicialização ─────────────────────────────────────────────────
 
 

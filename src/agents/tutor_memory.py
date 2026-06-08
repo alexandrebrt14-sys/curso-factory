@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -58,7 +57,7 @@ class TutorMemory:
         self,
         student_id: str,
         course_slug: str,
-        max_turns: Optional[int] = None,
+        max_turns: int | None = None,
     ) -> None:
         if not student_id:
             raise ValueError("student_id obrigatório.")

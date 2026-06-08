@@ -33,7 +33,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from src.agents.base import Agent, _safe_substitute
 from src.validators.stylometry_checker import StylometryReport, stylometry_check
@@ -193,10 +193,10 @@ class Humanizer(Agent):
             diagnostic = self._build_diagnostic(current_report)
             prompt = self.build_prompt(current_text, diagnostic=diagnostic)
             try:
-                rewritten = self.client.completion(
-                    provider=self.provider,
+                rewritten = self.client.call(
+                    self.provider,
+                    prompt,
                     model=self.model,
-                    prompt=prompt,
                 )
             except Exception as exc:  # noqa: BLE001
                 logger.warning("Humanizer pass %d falhou: %s", i + 1, exc)
@@ -247,9 +247,9 @@ class Humanizer(Agent):
 
 def humanize_if_enabled(
     text: str,
-    client: "ClientContext",
-    llm_client: "LLMClient",
-) -> tuple[str, Optional[HumanizerResult]]:
+    client: ClientContext,
+    llm_client: LLMClient,
+) -> tuple[str, HumanizerResult | None]:
     """Roda o humanizer se o cliente tiver opt-in. Retorna (texto, resultado_ou_None).
 
     Atalho para uso em src.agents.pipeline (etapa 6 opcional).

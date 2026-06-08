@@ -32,9 +32,9 @@ import logging
 import statistics
 from collections import defaultdict
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +53,10 @@ class DetectionEntry:
     sentence_len_variance: float
     type_token_ratio: float
     repetition_score: float
-    mean_perplexity: Optional[float]
+    mean_perplexity: float | None
     voice_guard_score: int
     disclosure_ok: bool
-    pangram_score: Optional[float]  # ai_likelihood 0-1; None se nao rodou
+    pangram_score: float | None  # ai_likelihood 0-1; None se nao rodou
     aprovado_gate: bool
     pipeline_version: str
     extra: dict[str, Any] = field(default_factory=dict)
@@ -65,7 +65,7 @@ class DetectionEntry:
 class DetectionTracker:
     """Persiste e consulta historico de stylometry/disclosure."""
 
-    def __init__(self, path: Optional[Path] = None) -> None:
+    def __init__(self, path: Path | None = None) -> None:
         self.path = path or _DEFAULT_HISTORY_PATH
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -81,12 +81,12 @@ class DetectionTracker:
         module_name: str,
         client_id: str,
         pipeline_version: str = "unknown",
-        pangram_score: Optional[float] = None,
+        pangram_score: float | None = None,
     ) -> None:
         """Atalho: extrai campos de um GateResult e persiste."""
         # Re-import tardio para evitar ciclo (gate importa tracker via cli)
         entry = DetectionEntry(
-            ts=datetime.now(timezone.utc).isoformat(),
+            ts=datetime.now(UTC).isoformat(),
             course_id=course_id,
             module_name=module_name,
             client_id=client_id,
@@ -105,7 +105,7 @@ class DetectionTracker:
         self.record(entry)
 
     def load_entries(
-        self, since: Optional[datetime] = None, client_id: Optional[str] = None
+        self, since: datetime | None = None, client_id: str | None = None
     ) -> list[dict]:
         """Carrega todas as entradas (filtro opcional por data e cliente)."""
         if not self.path.exists():
@@ -134,7 +134,7 @@ class DetectionTracker:
         return out
 
     def report_text(
-        self, since: Optional[datetime] = None, client_id: Optional[str] = None
+        self, since: datetime | None = None, client_id: str | None = None
     ) -> str:
         """Agregado por curso/cliente com medianas e tendencias."""
         entries = self.load_entries(since=since, client_id=client_id)

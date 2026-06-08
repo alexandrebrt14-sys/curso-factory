@@ -11,10 +11,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-import src.config as config
-import src.cost_tracker as cost_tracker
 import src.cache as cache_mod
-
+import src.cost_tracker as cost_tracker
 
 # ─── CostTracker ─────────────────────────────────────────────────────
 

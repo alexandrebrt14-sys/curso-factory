@@ -19,7 +19,6 @@ from src.parsers import (
     slugify,
 )
 
-
 # ─── slugify ─────────────────────────────────────────────────────────
 
 def test_slugify_remove_acentos() -> None:

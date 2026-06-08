@@ -36,7 +36,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from src.agents.base import Agent, _safe_substitute
 
@@ -126,10 +126,10 @@ class Tutor(Agent):
 
     def __init__(
         self,
-        client: Optional[LLMClient] = None,
+        client: LLMClient | None = None,
         persona: str = "curiosa-paciente",
         dry_run: bool = False,
-        model: Optional[str] = None,
+        model: str | None = None,
     ) -> None:
         """Inicializa o tutor.
 
@@ -148,7 +148,7 @@ class Tutor(Agent):
         # Quando dry_run, não inicializa o pipeline da Agent base (que exige
         # client). Mantemos os atributos compatíveis com Agent.
         self.client = client  # type: ignore[assignment]
-        self._prompt_template: Optional[str] = None
+        self._prompt_template: str | None = None
         self.persona = persona
         self.dry_run = dry_run
         if model:
@@ -160,7 +160,7 @@ class Tutor(Agent):
         question: str = "",
         course_context: str = "",
         student_history: str = "",
-        persona: Optional[str] = None,
+        persona: str | None = None,
         **template_vars: str,
     ) -> str:
         """Constrói o prompt final substituindo placeholders no tutor.md.
@@ -203,7 +203,7 @@ class Tutor(Agent):
         question: str,
         mode: TutorMode,
         course_context: str,
-        student_history: Optional[list[dict[str, str]]] = None,
+        student_history: list[dict[str, str]] | None = None,
     ) -> str:
         """Responde à pergunta do aluno no modo escolhido.
 

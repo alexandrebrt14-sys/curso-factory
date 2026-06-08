@@ -86,8 +86,8 @@ def validate_skills(skills: list[Skill]) -> list[str]:
 
 def find_courses_by_skill(
     skill_id: str,
-    courses: list["CourseDefinition"],
-) -> list["CourseDefinition"]:
+    courses: list[CourseDefinition],
+) -> list[CourseDefinition]:
     """Filtra cursos cujas tags incluem o ``skill_id`` (V0 in-memory).
 
     A V0 usa ``CourseDefinition.tags`` como proxy do mapeamento

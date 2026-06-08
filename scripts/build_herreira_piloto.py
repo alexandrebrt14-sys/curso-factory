@@ -167,9 +167,9 @@ print(f"  layout.tsx: {len(layout_tsx)} chars, sem vazamento do default")
 assert "Patrícia Caramaschi" in page_tsx
 assert "Herreira Joias" in page_tsx
 assert "herreirasemijoias.com.br" in page_tsx
-print(f"  Autor Patrícia presente: OK")
-print(f"  Company Herreira presente: OK")
-print(f"  Domínio Herreira presente: OK")
+print("  Autor Patrícia presente: OK")
+print("  Company Herreira presente: OK")
+print("  Domínio Herreira presente: OK")
 
 banner("7. Escrita em output/clients/herreira/approved/")
 out_dir = ROOT / "output" / "clients" / "herreira" / "approved"

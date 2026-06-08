@@ -12,19 +12,19 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from src.agents.analyzer import Analyzer
+from src.agents.classifier import Classifier
+from src.agents.researcher import Researcher
+from src.agents.reviewer import Reviewer
+from src.agents.writer import Writer
 from src.config import OUTPUT_DIR
 from src.cost_tracker import CostTracker
 from src.llm_client import LLMClient
 from src.models import Course
-from src.agents.researcher import Researcher
-from src.agents.writer import Writer
-from src.agents.analyzer import Analyzer
-from src.agents.classifier import Classifier
-from src.agents.reviewer import Reviewer
 
 if TYPE_CHECKING:
     from src.clients.context import ClientContext
@@ -46,7 +46,7 @@ class PipelineResult:
     def to_dict(self) -> dict[str, Any]:
         return {
             "course_id": self.course_id,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "etapas": self.etapas,
             "erros": self.erros,
             "sucesso": self.sucesso,
@@ -59,7 +59,7 @@ class Orchestrator:
     def __init__(
         self,
         cost_tracker: CostTracker | None = None,
-        client_context: "ClientContext | None" = None,
+        client_context: ClientContext | None = None,
     ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
         if client_context is None:
@@ -90,7 +90,7 @@ class Orchestrator:
         path = self._checkpoint_path(course_id)
         if not path.exists():
             return None
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = json.load(f)
         result = PipelineResult(course_id)
         result.etapas = data.get("etapas", {})
@@ -318,7 +318,7 @@ class Orchestrator:
 
     def _save_result(self, course_id: str, result: PipelineResult) -> None:
         """Salva o resultado do pipeline em JSON."""
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         filename = f"{course_id}_{timestamp}.json"
         path = DRAFTS_DIR / filename
         with open(path, "w", encoding="utf-8") as f:

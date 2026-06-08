@@ -33,7 +33,6 @@ E testar:
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 # Imports do FastAPI são lazy — o stub não deve quebrar `pytest tests/`
 # em ambientes onde fastapi não está instalado.
@@ -82,7 +81,7 @@ class TutorRequest(BaseModel):
     question: str
     mode: str  # "explain_like_5" | "practical_example" | "quiz_me"
     student_id: str
-    course_context: Optional[str] = None  # opcional; em prod, vem de busca vetorial
+    course_context: str | None = None  # opcional; em prod, vem de busca vetorial
 
 
 class TutorResponse(BaseModel):

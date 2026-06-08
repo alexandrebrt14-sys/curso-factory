@@ -17,9 +17,9 @@ Catálogo padrão (`DEFAULT_BADGES`):
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Iterable
-
+from typing import Any
 
 # Tipo do critério: recebe o estado e devolve True se a badge foi conquistada.
 BadgeCriterion = Callable[[dict[str, Any]], bool]

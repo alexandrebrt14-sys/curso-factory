@@ -16,15 +16,15 @@ etc.). Sem rede, sem efeitos colaterais.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
-from typing import Iterable
+from collections.abc import Iterable
+from datetime import UTC, datetime, timedelta
 
 from pydantic import BaseModel, Field, field_validator
 
 
 def _now_utc() -> datetime:
     """Wall-clock UTC; substitui datetime.utcnow() (deprecated em 3.12)."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 # Constantes do SM-2 clássico.
@@ -55,7 +55,7 @@ class SRSCard(BaseModel):
     def _ensure_tz(cls, v: datetime) -> datetime:
         """Garante que `next_review` sempre tenha timezone."""
         if v.tzinfo is None:
-            return v.replace(tzinfo=timezone.utc)
+            return v.replace(tzinfo=UTC)
         return v
 
 
@@ -85,7 +85,7 @@ def review(card: SRSCard, quality: int, now: datetime | None = None) -> SRSCard:
 
     reference = now or _now_utc()
     if reference.tzinfo is None:
-        reference = reference.replace(tzinfo=timezone.utc)
+        reference = reference.replace(tzinfo=UTC)
 
     # Recalcula ease_factor pela fórmula SM-2.
     new_ef = card.ease_factor + (
@@ -133,7 +133,7 @@ def due_cards(cards: Iterable[SRSCard], now: datetime | None = None) -> list[SRS
     """
     reference = now or _now_utc()
     if reference.tzinfo is None:
-        reference = reference.replace(tzinfo=timezone.utc)
+        reference = reference.replace(tzinfo=UTC)
 
     devidos = [c for c in cards if c.next_review <= reference]
     devidos.sort(key=lambda c: c.next_review)

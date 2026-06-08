@@ -16,7 +16,7 @@ Regras de transição (com `today` representando a data da nova atividade):
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date
 
 from pydantic import BaseModel, Field
 

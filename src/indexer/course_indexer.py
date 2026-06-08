@@ -9,18 +9,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import sys
 import time
 from pathlib import Path
 from typing import Any
 
-import os
-
 import httpx
 from dotenv import load_dotenv
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 
 # ───────────────────── Configuração ─────────────────────
 
@@ -98,6 +97,33 @@ class Chunk:
 
 # ───────────────────── Parser do TypeScript ─────────────────────
 
+def _extract_str(obj_text: str, field: str) -> str:
+    """Extrai um campo string de um objeto-literal TS (`field: "valor"`)."""
+    m = re.search(rf'{field}:\s*["\'](.+?)["\']', obj_text)
+    if m:
+        return m.group(1)
+    # Tenta string multilinha com template literal ou concatenação
+    m = re.search(rf"{field}:\s*\n?\s*\"(.+?)\"", obj_text, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    return ""
+
+
+def _extract_int(obj_text: str, field: str) -> int:
+    """Extrai um campo inteiro de um objeto-literal TS (`field: 12`)."""
+    m = re.search(rf"{field}:\s*(\d+)", obj_text)
+    return int(m.group(1)) if m else 0
+
+
+def _extract_tags(obj_text: str, field: str) -> list[str]:
+    """Extrai um campo array-de-strings de um objeto-literal TS (`field: [...]`)."""
+    m = re.search(rf"{field}:\s*\[([^\]]*)\]", obj_text)
+    if not m:
+        return []
+    raw = m.group(1)
+    return [t.strip().strip("\"'") for t in raw.split(",") if t.strip().strip("\"'")]
+
+
 def parse_courses_from_tsx(file_path: Path) -> list[CourseData]:
     """Extrai dados de cursos do page.tsx usando regex.
 
@@ -134,29 +160,7 @@ def parse_courses_from_tsx(file_path: Path) -> list[CourseData]:
     for obj_match in obj_pattern.finditer(array_body):
         obj_text = obj_match.group()
 
-        # Extrai campos individuais
-        def extract_str(field: str) -> str:
-            m = re.search(rf'{field}:\s*["\'](.+?)["\']', obj_text)
-            if m:
-                return m.group(1)
-            # Tenta string multilinha com template literal ou concatenação
-            m = re.search(rf"{field}:\s*\n?\s*\"(.+?)\"", obj_text, re.DOTALL)
-            if m:
-                return m.group(1).strip()
-            return ""
-
-        def extract_int(field: str) -> int:
-            m = re.search(rf"{field}:\s*(\d+)", obj_text)
-            return int(m.group(1)) if m else 0
-
-        def extract_tags(field: str) -> list[str]:
-            m = re.search(rf"{field}:\s*\[([^\]]*)\]", obj_text)
-            if not m:
-                return []
-            raw = m.group(1)
-            return [t.strip().strip("\"'") for t in raw.split(",") if t.strip().strip("\"'")]
-
-        course_id = extract_str("id")
+        course_id = _extract_str(obj_text, "id")
         if not course_id:
             continue
 
@@ -173,13 +177,13 @@ def parse_courses_from_tsx(file_path: Path) -> list[CourseData]:
         courses.append(
             CourseData(
                 id=course_id,
-                title=extract_str("title"),
+                title=_extract_str(obj_text, "title"),
                 description=description,
-                href=extract_str("href"),
-                modules=extract_int("modules"),
-                duration=extract_str("duration"),
-                level=extract_str("level"),
-                tags=extract_tags("tags"),
+                href=_extract_str(obj_text, "href"),
+                modules=_extract_int(obj_text, "modules"),
+                duration=_extract_str(obj_text, "duration"),
+                level=_extract_str(obj_text, "level"),
+                tags=_extract_tags(obj_text, "tags"),
             )
         )
 
@@ -565,7 +569,7 @@ def validate_config() -> bool:
 
     if missing:
         console.print(f"[red]Variáveis de ambiente ausentes: {', '.join(missing)}[/red]")
-        console.print(f"[dim]Verifique o arquivo: {_ENV_PATH}[/dim]")
+        console.print(f"[dim]Verifique o arquivo: {_PROJECT_ROOT / '.env'}[/dim]")
         return False
 
     if not COURSES_FILE.exists():

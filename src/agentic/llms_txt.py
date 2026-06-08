@@ -18,8 +18,9 @@ multi-tenant do curso-factory.
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING
 
 from src.models import CourseDefinition
 
@@ -39,7 +40,7 @@ def _short_description(course: CourseDefinition) -> str:
     return desc
 
 
-def _domain_display(client_context: "ClientContext") -> str:
+def _domain_display(client_context: ClientContext) -> str:
     """Domínio formatado sem trailing slash."""
     return (client_context.domain.canonical_url or "").rstrip("/")
 
@@ -62,7 +63,7 @@ def _iter_skills(course: CourseDefinition) -> list[str]:
 
 def generate_llms_txt(
     course: CourseDefinition,
-    client_context: "ClientContext",
+    client_context: ClientContext,
 ) -> str:
     """Gera o conteúdo markdown de `llms.txt` para um curso.
 
@@ -137,7 +138,7 @@ def generate_llms_txt(
 
 def write_llms_txt(
     course: CourseDefinition,
-    client_context: "ClientContext",
+    client_context: ClientContext,
     output_dir: Path,
 ) -> Path:
     """Escreve `llms.txt` em `output_dir/<course.slug>/llms.txt`.

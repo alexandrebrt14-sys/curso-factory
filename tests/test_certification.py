@@ -7,12 +7,11 @@ threshold, QR code com lib ausente).
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 from src.certification.certificate import (
-    Certificate,
     generate_certificate,
     render_html,
     verify_certificate,
@@ -23,7 +22,6 @@ from src.certification.skill_graph import (
     validate_skills,
 )
 from src.models import CourseDefinition
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -44,7 +42,7 @@ def _make_course(slug: str = "geo-fundamentos") -> CourseDefinition:
     )
 
 
-_FIXED_TS = datetime(2026, 4, 29, 12, 0, 0, tzinfo=timezone.utc)
+_FIXED_TS = datetime(2026, 4, 29, 12, 0, 0, tzinfo=UTC)
 
 
 # ---------------------------------------------------------------------------

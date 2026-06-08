@@ -206,6 +206,7 @@ def cmd_batch(args: argparse.Namespace) -> int:
     """Cria múltiplos cursos a partir de um YAML de lote."""
     _setup_logging()
     import yaml
+
     from src.agents.pipeline import CourseFactory
 
     try:
@@ -386,6 +387,7 @@ def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
 def cmd_certify(args: argparse.Namespace) -> int:
     """Gera certificado HTML verificável para um aluno."""
     import os
+
     from src.certification.certificate import generate_certificate, render_html
     from src.converters.draft_to_course import convert_draft_to_course
 
@@ -452,6 +454,7 @@ def _add_client_arg(sub: argparse.ArgumentParser) -> None:
 def cmd_detection_report(args: argparse.Namespace) -> int:
     """Relatorio do historico de stylometry/disclosure (PR-8)."""
     from datetime import datetime
+
     from src.detection_tracker import DetectionTracker
 
     since = None

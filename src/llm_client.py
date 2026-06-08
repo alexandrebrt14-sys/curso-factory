@@ -9,13 +9,14 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 
 from src.cache import Cache
-from src.config import get_api_key, MAX_TOKENS_PER_CALL
+from src.config import MAX_TOKENS_PER_CALL, get_api_key
 from src.cost_tracker import CostTracker
+
 # Pricing, endpoints, modelos padrão e fallback vêm de config/providers.yaml
 # via src.providers. Os dicts abaixo são re-exportados para compatibilidade
 # com eventuais imports externos.
@@ -79,8 +80,8 @@ class LLMClient:
 
     def __init__(
         self,
-        cost_tracker: Optional[CostTracker] = None,
-        cache: Optional[Cache] = None,
+        cost_tracker: CostTracker | None = None,
+        cache: Cache | None = None,
         use_cache: bool = True,
     ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
@@ -104,6 +105,29 @@ class LLMClient:
         budget guard granular.
         """
         self.current_course_id = course_id or ""
+
+    def close(self) -> None:
+        """Fecha o cliente HTTP subjacente, liberando conexões TCP/SSL.
+
+        Sem isto, rodar muitos cursos no mesmo processo acumula sockets
+        abertos (httpx.Client não fecha sozinho). Idempotente.
+        """
+        http = getattr(self, "_http", None)
+        if http is not None:
+            http.close()
+
+    def __enter__(self) -> LLMClient:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
+    def __del__(self) -> None:
+        # Cleanup defensivo no GC — nunca propaga exceção no finalizador.
+        try:
+            self.close()
+        except Exception:  # noqa: BLE001
+            pass
 
     def _get_circuit(self, provider: str) -> CircuitState:
         if provider not in self._circuits:

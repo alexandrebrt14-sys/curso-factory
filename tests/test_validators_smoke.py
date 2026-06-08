@@ -22,7 +22,6 @@ from src.validators.content_checker import (
 from src.validators.quality_gate import QualityGate
 from src.validators.voice_guard import voice_guard_check
 
-
 # ─── accent_checker ──────────────────────────────────────────────────
 
 def test_check_accents_detecta_palavras_sem_acento() -> None:

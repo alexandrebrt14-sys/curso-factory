@@ -6,6 +6,24 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
+### Corrigido / Qualidade — Onda de hardening + tooling de lint (2026-06-08)
+
+Revisão transversal do código de produção (auditoria multiagente: arquitetura, robustez, testes, docs, segurança/FinOps) seguida de correções cirúrgicas de alto valor e baixo risco. Suíte: **232 → 245 passing** (+13), zero regressões.
+
+- **Bugs reais corrigidos:**
+  - `src/agents/humanizer.py` — chamava `self.client.completion(...)`, método inexistente em `LLMClient`; o `except Exception` engolia o `AttributeError` e o humanizer **falhava silenciosamente em toda execução** com cliente real (retornava sempre o texto original). Agora usa `self.client.call(self.provider, prompt, model=...)`.
+  - `src/indexer/course_indexer.py` — `validate_config()` referenciava `_ENV_PATH` (nome nunca definido) → `NameError` no caminho de erro de config ausente. Corrigido para `_PROJECT_ROOT / ".env"`.
+  - `src/cache.py` — comparação de TTL `>` tornava `test_cache_expira_apos_ttl` **flaky** (com `ttl=0`, `0.0 > 0` é falso quando set/get caem no mesmo tick). Trocado por `>=` (semântica correta: `ttl=0` expira imediatamente); determinístico em 5/5 execuções.
+- **Robustez (aditivo, sem mudança de comportamento existente):**
+  - `LLMClient` ganhou `close()` + protocolo de context manager (`__enter__`/`__exit__`) + `__del__` defensivo — fecha o `httpx.Client` e evita vazamento de conexões TCP ao processar muitos cursos no mesmo processo.
+- **Refatoração de baixo risco:**
+  - `course_indexer.py` — extratores de campo (`_extract_str`/`_extract_int`/`_extract_tags`) movidos de closures-dentro-do-loop (padrão frágil, B023) para funções de módulo testáveis.
+  - `tests/test_voice_guard.py` — movido de `src/validators/` para `tests/` (teste não deve viver no pacote de produção).
+- **Tooling de qualidade formalizado:**
+  - `pyproject.toml` — config `[tool.ruff]` (regras E/W/F/I/UP/B, `per-file-ignores` para E402 legítimo de `sys.path`/`load_dotenv`, exclusão de `scripts/legacy`) + `[tool.pytest.ini_options]`. **Código de produção 100% limpo no ruff** (153 → 0 issues em `src/tests/cli`): imports ordenados (isort), anotações modernizadas (`Optional[X]`→`X | None`, `timezone.utc`→`UTC`), f-strings/vars/imports mortos removidos, `zip(strict=)` explícito, exceções específicas nos testes (`AttributeError`/`ValidationError` no lugar de `Exception` cego).
+- **Testes novos (+13):** `tests/test_indexer.py` (9 — parser de TSX antes sem cobertura) e `tests/test_agents_robustez.py` (4 — regressão dos fixes do humanizer e do ciclo de vida do `LLMClient`).
+- **Docs:** README — bloco "Uso (CLI)" reescrito com os subcomandos reais (`batch`, `clients`, `drafts-to-tsx`, `emit-catalog`, `emit-llms-txt`); removidos comandos fantasma (`create-module`, `run-step`, `status`) e a sintaxe obsoleta `create --config --course`.
+
 ### Adicionado — Citabilidade GEO operacional + KB V3 (2026-06-03)
 
 **Fecha o gap entre a doutrina de GEO e o que o pipeline produz/valida.** O confronto com o conhecimento mais novo dos repos irmãos (`landing-page-geo`) mostrou que as "promessas de pipeline" do log de 2026-05-20 nunca tinham saído do papel. Esta wave implementa e adiciona o estado da arte de 20-mai a 03-jun-2026.

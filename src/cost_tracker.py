@@ -8,13 +8,14 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import date, datetime, timezone
-from pathlib import Path
-from typing import Optional
+from datetime import UTC, date, datetime
 
 from src.config import (
-    OUTPUT_DIR, DAILY_BUDGET_PER_PROVIDER, SESSION_BUDGET_TOTAL,
-    CLAUDE_BUDGET_PER_COURSE, TOTAL_BUDGET_PER_COURSE,
+    CLAUDE_BUDGET_PER_COURSE,
+    DAILY_BUDGET_PER_PROVIDER,
+    OUTPUT_DIR,
+    SESSION_BUDGET_TOTAL,
+    TOTAL_BUDGET_PER_COURSE,
 )
 
 logger = logging.getLogger(__name__)
@@ -25,8 +26,8 @@ COSTS_FILE = OUTPUT_DIR / "costs.json"
 class CostTracker:
     """Rastreia custos de chamadas LLM com persistência em JSON."""
 
-    def __init__(self, session_id: Optional[str] = None) -> None:
-        self.session_id = session_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    def __init__(self, session_id: str | None = None) -> None:
+        self.session_id = session_id or datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         self._entries: list[dict] = []
         self._load()
 
@@ -34,7 +35,7 @@ class CostTracker:
         """Carrega entradas existentes do arquivo JSON."""
         if COSTS_FILE.exists():
             try:
-                with open(COSTS_FILE, "r", encoding="utf-8") as f:
+                with open(COSTS_FILE, encoding="utf-8") as f:
                     self._entries = json.load(f)
             except (json.JSONDecodeError, OSError):
                 self._entries = []
@@ -51,7 +52,7 @@ class CostTracker:
     ) -> None:
         """Registra uma chamada LLM com seu custo."""
         entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "provider": provider,
             "model": model,
             "tokens_in": tokens_in,
