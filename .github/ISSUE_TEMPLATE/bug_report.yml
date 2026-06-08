@@ -1,0 +1,86 @@
+name: Bug report
+description: Reportar um defeito no curso-factory
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar. Para acelerar a triagem, preencha os campos abaixo. Não cole chaves de API — use placeholders como `sk-***`.
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que aconteceu
+      description: Comportamento observado, com mensagem de erro completa se houver.
+      placeholder: |
+        Ao rodar `python cli.py validate output/drafts/`, recebi:
+        ImportError: cannot import name 'QualityValidator' from 'src.validators.quality'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducao
+    attributes:
+      label: Passos para reproduzir
+      description: Idealmente um comando ou script mínimo.
+      placeholder: |
+        1. git checkout main
+        2. pip install -e .
+        3. python cli.py validate output/drafts/
+        4. observa erro X
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que deveria acontecer
+    validations:
+      required: true
+
+  - type: input
+    id: cliente
+    attributes:
+      label: Cliente em uso
+      description: ID do cliente em config/clients/. Se default, escreva "default".
+      placeholder: default
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Versão do Python
+      placeholder: 3.12.10
+
+  - type: input
+    id: so
+    attributes:
+      label: Sistema operacional
+      placeholder: Windows 11 / Ubuntu 24.04 / macOS 14.5
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Output relevante (logs, traceback)
+      description: Cole aqui o stack trace completo. Se for muito longo, anexe como gist.
+      render: shell
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Já verifiquei a wiki, especialmente [[Roadmap-and-Gaps]] e [[CLI-Reference]]
+          required: true
+        - label: Removi qualquer chave de API ou credencial dos logs/comandos colados
+          required: true
+        - label: Os 74 testes pytest locais (`python -m pytest tests/`) passam? (informe sim/não no campo abaixo)
+          required: false
+
+  - type: input
+    id: pytest_status
+    attributes:
+      label: Status dos testes locais
+      placeholder: "Sim — 74 passou / Não — 70 passou, 4 falharam (descrever)"

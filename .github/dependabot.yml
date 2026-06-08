@@ -1,0 +1,47 @@
+# Atualizações automáticas de dependências.
+# Documentação: https://docs.github.com/code-security/dependabot
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "area/ci"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      python-runtime:
+        patterns:
+          - "pydantic*"
+          - "httpx"
+          - "jinja2"
+          - "pyyaml"
+          - "python-dotenv"
+          - "click"
+          - "jsonschema"
+          - "rich"
+      python-test:
+        patterns:
+          - "pytest*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "area/ci"
+    commit-message:
+      prefix: "ci"

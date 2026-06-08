@@ -7,7 +7,6 @@ o resultado da classificação para montar o modelo final validado.
 from __future__ import annotations
 
 import logging
-import re
 from typing import TYPE_CHECKING, Any
 
 from src.models import (
@@ -35,7 +34,7 @@ class SchemaBuilder:
         yaml_def: dict[str, Any],
         reviewed_content: str,
         classify_result: dict[str, Any],
-        client: "ClientContext | None" = None,
+        client: ClientContext | None = None,
     ) -> CourseDefinition:
         """Constrói e valida um CourseDefinition.
 
@@ -79,6 +78,8 @@ class SchemaBuilder:
         duracao_total = sum(
             int(s.duration.replace(" min", "")) for s in steps
         ) if steps else 180
+        # Schema exige >= 30 min; clamp para o piso legal sem inflar artificialmente.
+        duracao_total = max(30, duracao_total)
 
         if client is None:
             from src.clients import load_client

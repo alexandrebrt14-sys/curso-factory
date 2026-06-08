@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Certificado — {{ course.titulo }} — {{ certificate.student_name }}</title>
+<meta name="description" content="Certificado de conclusão verificável do curso {{ course.titulo }} emitido para {{ certificate.student_name }}." />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f4f6fb;
+    color: #1f2933;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  .certificate {
+    max-width: 920px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+  }
+  .hero {
+    background: linear-gradient(135deg, {{ course.hero_gradient_from }} 0%, {{ course.hero_gradient_to }} 100%);
+    color: #ffffff;
+    padding: 56px 56px 40px 56px;
+    text-align: center;
+  }
+  .hero .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 12px;
+    opacity: 0.9;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .hero .company {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+  .body {
+    padding: 48px 56px;
+    text-align: center;
+  }
+  .label {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 8px;
+  }
+  .student-name {
+    font-size: 38px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 32px;
+    border-bottom: 2px solid #cbd5e1;
+    padding-bottom: 16px;
+    display: inline-block;
+    min-width: 60%;
+  }
+  .course-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+  }
+  .course-desc {
+    font-size: 15px;
+    color: #475569;
+    max-width: 640px;
+    margin: 0 auto 32px auto;
+    line-height: 1.6;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .meta-item {
+    text-align: center;
+  }
+  .meta-item .meta-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10px;
+    color: #64748b;
+    margin-bottom: 4px;
+  }
+  .meta-item .meta-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  .qr-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 24px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-top: 8px;
+  }
+  .qr-section img {
+    width: 140px;
+    height: 140px;
+    display: block;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 6px;
+  }
+  .qr-section .qr-text {
+    text-align: left;
+    max-width: 320px;
+  }
+  .qr-section .qr-text strong {
+    display: block;
+    font-size: 14px;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .qr-section .qr-text span {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .footer {
+    background: #0f172a;
+    color: #cbd5e1;
+    padding: 24px 56px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer .author strong {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 13px;
+  }
+  .footer .hash {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10px;
+    color: #94a3b8;
+    word-break: break-all;
+    text-align: right;
+    max-width: 50%;
+  }
+</style>
+</head>
+<body>
+  <main class="certificate" data-certificate-id="{{ certificate.id }}">
+    <header class="hero">
+      <div class="eyebrow">Certificado de Conclusão</div>
+      <h1>{{ course.titulo }}</h1>
+      {% if course.company_name %}
+      <div class="company">Emitido por {{ course.company_name }}</div>
+      {% endif %}
+    </header>
+
+    <section class="body">
+      <div class="label">Conferido a</div>
+      <div class="student-name">{{ certificate.student_name }}</div>
+
+      <div class="course-title">{{ course.titulo }}</div>
+      {% if course.descricao_curta %}
+      <div class="course-desc">{{ course.descricao_curta }}</div>
+      {% endif %}
+
+      <div class="meta-row">
+        <div class="meta-item">
+          <div class="meta-label">Data de Emissão</div>
+          <div class="meta-value">{{ issued_at_display }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Aproveitamento</div>
+          <div class="meta-value">{{ score_pct }}%</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curso</div>
+          <div class="meta-value">{{ course.slug }}</div>
+        </div>
+      </div>
+
+      <div class="qr-section">
+        {% if qr_base64 %}
+        <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR code para verificação do certificado" />
+        {% endif %}
+        <div class="qr-text">
+          <strong>Verificação pública</strong>
+          <span>{{ verification_url }}</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="author">
+        {% if course.autor_nome %}<strong>{{ course.autor_nome }}</strong>{% endif %}
+        {% if course.autor_credencial %}<span>{{ course.autor_credencial }}</span>{% endif %}
+      </div>
+      <div class="hash">
+        Hash {{ certificate.hash }}
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

@@ -11,7 +11,6 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Optional
 
 from src.config import CACHE_DIR, CACHE_TTL_SECONDS
 
@@ -21,7 +20,7 @@ logger = logging.getLogger(__name__)
 class Cache:
     """Cache em disco baseado em hash SHA256 do prompt."""
 
-    def __init__(self, ttl: Optional[int] = None) -> None:
+    def __init__(self, ttl: int | None = None) -> None:
         self.ttl = ttl if ttl is not None else CACHE_TTL_SECONDS
         self._dir = CACHE_DIR
         self._dir.mkdir(parents=True, exist_ok=True)
@@ -35,20 +34,22 @@ class Cache:
     def _path(self, key: str) -> Path:
         return self._dir / f"{key}.json"
 
-    def get(self, prompt: str, provider: str, model: str) -> Optional[str]:
+    def get(self, prompt: str, provider: str, model: str) -> str | None:
         """Recupera resultado do cache se existir e não estiver expirado."""
         key = self._make_key(prompt, provider, model)
         path = self._path(key)
         if not path.exists():
             return None
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
         except (json.JSONDecodeError, OSError):
             return None
 
         created = data.get("created", 0)
-        if time.time() - created > self.ttl:
+        # `>=` (não `>`): com ttl=0 o cache deve expirar imediatamente, mesmo
+        # quando set/get caem no mesmo tick de relógio (evita flakiness).
+        if time.time() - created >= self.ttl:
             logger.debug("Cache expirado para chave %s", key[:12])
             path.unlink(missing_ok=True)
             return None
@@ -86,7 +87,7 @@ class Cache:
         now = time.time()
         for path in self._dir.glob("*.json"):
             try:
-                with open(path, "r", encoding="utf-8") as f:
+                with open(path, encoding="utf-8") as f:
                     data = json.load(f)
                 if now - data.get("created", 0) > self.ttl:
                     path.unlink()

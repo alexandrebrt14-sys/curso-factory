@@ -11,7 +11,6 @@ import re
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
@@ -50,7 +49,7 @@ def _extract_urls(text: str) -> list[tuple[str, int]]:
 
 def check_links(
     text: str,
-    base_dir: Optional[Path] = None,
+    base_dir: Path | None = None,
 ) -> list[LinkError]:
     """Valida todos os links encontrados no texto.
 

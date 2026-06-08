@@ -40,8 +40,6 @@ import os
 import re
 import subprocess
 import sys
-from typing import Iterable
-
 
 # ---------------------------------------------------------------------------
 # Padroes de deteccao
@@ -257,7 +255,7 @@ def main(argv: list[str] | None = None) -> int:
             if blocked:
                 issues.append(f"ARQUIVO BLOQUEADO: {f}\n  motivo: {reason}")
             try:
-                with open(f, "r", encoding="utf-8", errors="replace") as fh:
+                with open(f, encoding="utf-8", errors="replace") as fh:
                     content = fh.read()
             except OSError as exc:
                 print(f"[secret_guard] erro ao ler {f}: {exc}", file=sys.stderr)

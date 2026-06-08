@@ -28,7 +28,7 @@ class CourseFactory:
         result = factory.run("Meu Curso", {"nivel": "intermediario"})
     """
 
-    def __init__(self, client: "ClientContext | None" = None) -> None:
+    def __init__(self, client: ClientContext | None = None) -> None:
         if client is None:
             from src.clients import load_client
             client = load_client("default")

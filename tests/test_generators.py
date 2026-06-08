@@ -14,9 +14,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.models import CourseDefinition
 from src.generators import TsxGenerator
-
+from src.models import CourseDefinition
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 
@@ -24,7 +23,7 @@ FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 def _load_sample_course() -> CourseDefinition:
     """Carrega o sample_course.json e retorna um CourseDefinition validado."""
     sample_path = FIXTURES_DIR / "sample_course.json"
-    with open(sample_path, "r", encoding="utf-8") as f:
+    with open(sample_path, encoding="utf-8") as f:
         data = json.load(f)
     return CourseDefinition(**data)
 

@@ -19,13 +19,25 @@ dependencies = [
     "rich>=13.7",
 ]
 
+[project.optional-dependencies]
+# Wave 9 — geração de QR code em certificados HTML
+certification = ["qrcode[pil]>=7.4"]
+# Wave 7 — endpoint de exemplo do Tutor IA (examples/tutor_api.py)
+tutor-api = ["fastapi>=0.110", "uvicorn>=0.27"]
+# Atalho para todas as features opcionais
+all = ["qrcode[pil]>=7.4", "fastapi>=0.110", "uvicorn>=0.27"]
+# Dev dependencies (testes, coverage)
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "pytest-cov>=5.0"]
+
 [project.scripts]
 curso-factory = "cli:main"
 
 [project.urls]
 Homepage = "https://github.com/alexandrebrt14-sys/curso-factory"
 Repository = "https://github.com/alexandrebrt14-sys/curso-factory"
-Documentation = "https://github.com/alexandrebrt14-sys/curso-factory/tree/main/docs"
+Documentation = "https://github.com/alexandrebrt14-sys/curso-factory/wiki"
+Changelog = "https://github.com/alexandrebrt14-sys/curso-factory/blob/main/CHANGELOG.md"
+Issues = "https://github.com/alexandrebrt14-sys/curso-factory/issues"
 
 [build-system]
 requires = ["setuptools>=68.0"]
@@ -33,3 +45,28 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["src*"]
+
+# ─────────────────────────── Qualidade de código ───────────────────────────
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+# Scripts legados (scripts/legacy/) são congelados — não fazem parte do produto.
+extend-exclude = ["scripts/legacy", "output", "wiki"]
+
+[tool.ruff.lint]
+# E/W: pycodestyle · F: pyflakes · I: isort · UP: pyupgrade · B: flake8-bugbear
+select = ["E", "W", "F", "I", "UP", "B"]
+# E501 (comprimento) fica a cargo do formatador; B008 colide com defaults Pydantic/CLI.
+# UP042: migrar (str, Enum) → StrEnum muda a semântica de __str__ (serialização/
+# templates dependem de str(Enum.X) == "valor"); conversão deliberadamente evitada.
+ignore = ["E501", "B008", "UP042"]
+
+[tool.ruff.lint.per-file-ignores]
+# Testes inserem o root no sys.path antes de importar src → E402 é intencional.
+"tests/*" = ["E402"]
+# course_indexer carrega .env (load_dotenv) antes de derivar constantes de módulo.
+"src/indexer/course_indexer.py" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

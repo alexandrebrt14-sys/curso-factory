@@ -8,21 +8,17 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
-
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from src.validators.voice_guard import (  # noqa: E402
-    VoiceGuardResult,
-    voice_guard_check,
+    WEIGHTS,
     _score_anti_cliche,
     _score_bloom_andragogia,
-    _score_naming,
     _score_hbr_style,
-    WEIGHTS,
+    _score_naming,
+    voice_guard_check,
 )
-
 
 # ─── Conteudos canonicos para testes ──────────────────────────────────────
 

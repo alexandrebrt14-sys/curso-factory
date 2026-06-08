@@ -101,6 +101,72 @@ voice_guard:
       - "nao tenho a capacidade"
       - "nao posso fornecer"
 
+  # Voice samples — few-shot persona-conditioning com escrita real do autor.
+  # Quando enabled=true, BaseAgent.load_prompt() injeta um anchor (rotacionado
+  # entre as amostras) antes de {context} nos prompts draft/review/humanize.
+  # Sem amostras, a saída tem "voz HBR genérica" — detectável por uniformidade
+  # estatística (Liang Patterns 2023; DIPPER Krishna NeurIPS 2023).
+  # CRIE os arquivos em docs/voice/alexandre_caramaschi/ antes de ligar
+  # enabled=true. Ver docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md PR-5.
+  voice_samples:
+    enabled: false
+    anchor_strategy: rotate   # rotate | concat | random
+    anchor_max_words: 2000
+    samples: []
+    # Exemplo (descomentar e criar os arquivos):
+    # samples:
+    #   - path: docs/voice/alexandre_caramaschi/hbr_post_GEO_brasil.md
+    #     length_words: 1200
+    #     tags: [HBR, GEO, contraintuitive]
+    #   - path: docs/voice/alexandre_caramaschi/linkedin_post_stone.md
+    #     length_words: 850
+    #     tags: [LinkedIn, fintech]
+    #   - path: docs/voice/alexandre_caramaschi/medium_article_AI_brazil.md
+    #     length_words: 1400
+    #     tags: [Medium, AI, Brasil]
+
+# Disclosure de IA — conformidade PL 2338/2023 (Brasil) + EEAT Google
+# Quando enabled=true, validator `disclosure_checker.py` bloqueia publicação
+# se o módulo não trouxer o bloco padronizado de rodapé.
+disclosure:
+  enabled: true
+  required_by:
+    - PL_2338_2023
+    - MEC_Marco_Referencial_2025
+  pipeline_models:
+    - perplexity-sonar-pro
+    - gpt-4o
+    - gemini-2.5-pro
+    - groq-llama-3.3-70b
+    - claude-opus-4-7
+  reviewer_human: true
+  block_if_missing: false  # primeiro auditar 10+ cursos, depois ligar bloqueio
+  reviewer_extra: []  # ex: psicólogo CRP para cliente psicologia, médico CRM para saúde
+
+# Pipeline — etapas extras opt-in (PR-4 humanizacao)
+# Quando humanize_enabled=true, apos o reviewer (Claude) o pipeline roda
+# o Humanizer (src/agents/humanizer.py): multi-pass com signal de stylometry
+# interno como reward. Itera ate target_score OU max_iters.
+# Default OFF — pipeline termina no reviewer como sempre.
+# Ver docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md PR-4.
+pipeline:
+  humanize_enabled: false
+  humanize_target_stylometry_score: 75
+  humanize_max_iters: 2
+
+# Citabilidade GEO (Generative Engine Optimization) — rubrica de redação com
+# lift de citação medido empiricamente. Ver docs/GEO_REDACAO_CHECKLIST_2026.md
+# e docs/GEO_KNOWLEDGE_BASE_2026_V3.md. Brasil GEO é cliente GEO-first → ligado.
+# Quando princeton_playbook_enabled=true, as contagens abaixo viram ERROS
+# bloqueantes no quality gate; quando false, viram avisos não-bloqueantes.
+geo_2026:
+  princeton_playbook_enabled: true
+  min_cite_sources: 3          # fontes externas atribuídas (lift +40%, até +115% fora do top-1)
+  min_statistics: 5            # dados quantitativos com fonte+ano (lift +32,8%)
+  min_quotations: 1            # citação direta de especialista nomeado (lift +42,6%)
+  require_answer_capsule: true # parágrafo resposta-primeiro após heading (lift 1,9×)
+  schema_authority_stack_enabled: true  # @graph Article→Person→Organization→Wikidata
+
 # Output — onde os artefatos gerados para este cliente são salvos
 output:
   # "output" para o cliente padrão mantém layout legado (output/drafts, approved, deployed).

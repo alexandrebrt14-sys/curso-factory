@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from src.models import CourseDefinition
 
@@ -47,6 +47,10 @@ class TsxGenerator:
     def __init__(self) -> None:
         self.env = Environment(
             loader=FileSystemLoader(str(TEMPLATES_DIR)),
+            # Templates são código (.tsx.j2) — select_autoescape mantém escape
+            # OFF para eles e ON caso um dia se renderize .html/.xml. Valores
+            # dinâmicos em contexto JS já passam pelo filtro `js_escape`.
+            autoescape=select_autoescape(["html", "xml"]),
             keep_trailing_newline=True,
             trim_blocks=True,
             lstrip_blocks=True,

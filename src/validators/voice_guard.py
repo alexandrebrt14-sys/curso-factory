@@ -143,7 +143,7 @@ def _score_bloom_andragogia(text: str) -> tuple[int, list[str], list[str]]:
 
 
 def _score_naming(
-    text: str, client: "ClientContext | None" = None
+    text: str, client: ClientContext | None = None
 ) -> tuple[int, list[str], list[str], list[str]]:
     """Score de naming canônico parametrizado por cliente.
 
@@ -216,7 +216,7 @@ def _score_naming(
 
 
 def _score_hbr_style(
-    text: str, client: "ClientContext | None" = None
+    text: str, client: ClientContext | None = None
 ) -> tuple[int, list[str], list[str]]:
     """Score de estilo HBR/MIT Sloan parametrizado por cliente."""
     if client is None:
@@ -256,7 +256,7 @@ def _score_hbr_style(
 
 
 def voice_guard_check(
-    text: str, client: "ClientContext | None" = None
+    text: str, client: ClientContext | None = None
 ) -> VoiceGuardResult:
     """Roda todas as 4 dimensões parametrizadas pelo cliente.
 

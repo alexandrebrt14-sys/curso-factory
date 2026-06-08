@@ -184,7 +184,7 @@ class BuildValidator:
         if not errors and output.strip():
             # Se não encontrou padrões específicos, retorna as últimas linhas
             last_lines = [
-                l.strip() for l in output.strip().split("\n")[-5:] if l.strip()
+                ln.strip() for ln in output.strip().split("\n")[-5:] if ln.strip()
             ]
             errors = last_lines
 

@@ -9,12 +9,14 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 
-from src.config import get_api_key, MAX_TOKENS_PER_CALL
+from src.cache import Cache
+from src.config import MAX_TOKENS_PER_CALL, get_api_key
 from src.cost_tracker import CostTracker
+
 # Pricing, endpoints, modelos padrão e fallback vêm de config/providers.yaml
 # via src.providers. Os dicts abaixo são re-exportados para compatibilidade
 # com eventuais imports externos.
@@ -76,8 +78,14 @@ class TokenBucket:
 class LLMClient:
     """Cliente unificado para múltiplos providers LLM."""
 
-    def __init__(self, cost_tracker: Optional[CostTracker] = None) -> None:
+    def __init__(
+        self,
+        cost_tracker: CostTracker | None = None,
+        cache: Cache | None = None,
+        use_cache: bool = True,
+    ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
+        self.cache = cache if cache is not None else (Cache() if use_cache else None)
         self._circuits: dict[str, CircuitState] = {}
         self._buckets: dict[str, TokenBucket] = {}
         self._http = httpx.Client(timeout=60.0)
@@ -98,6 +106,29 @@ class LLMClient:
         """
         self.current_course_id = course_id or ""
 
+    def close(self) -> None:
+        """Fecha o cliente HTTP subjacente, liberando conexões TCP/SSL.
+
+        Sem isto, rodar muitos cursos no mesmo processo acumula sockets
+        abertos (httpx.Client não fecha sozinho). Idempotente.
+        """
+        http = getattr(self, "_http", None)
+        if http is not None:
+            http.close()
+
+    def __enter__(self) -> LLMClient:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
+    def __del__(self) -> None:
+        # Cleanup defensivo no GC — nunca propaga exceção no finalizador.
+        try:
+            self.close()
+        except Exception:  # noqa: BLE001
+            pass
+
     def _get_circuit(self, provider: str) -> CircuitState:
         if provider not in self._circuits:
             self._circuits[provider] = CircuitState()
@@ -109,8 +140,18 @@ class LLMClient:
         return self._buckets[provider]
 
     def call(self, provider: str, prompt: str, **kwargs: Any) -> str:
-        """Chamada genérica com circuit breaker, retry e fallback."""
+        """Chamada genérica com cache, circuit breaker, retry e fallback."""
         fallback_depth = kwargs.pop("_fallback_depth", 0)
+
+        # Cache hit antes de qualquer trabalho (inclui rate limit / circuit / retry).
+        # Só cacheia chamadas idempotentes (sem max_retries customizado etc.) para
+        # evitar reaproveitar uma resposta vinda de um cenário anômalo.
+        model_for_cache = kwargs.get("model") or DEFAULT_MODELS.get(provider, "")
+        if self.cache is not None and fallback_depth == 0:
+            cached = self.cache.get(prompt, provider, model_for_cache)
+            if cached is not None:
+                return cached
+
         circuit = self._get_circuit(provider)
         if circuit.is_open:
             logger.warning("Circuito aberto para %s, tentando fallback", provider)
@@ -126,6 +167,8 @@ class LLMClient:
             try:
                 result = self._do_call(provider, prompt, **kwargs)
                 circuit.record_success()
+                if self.cache is not None and fallback_depth == 0:
+                    self.cache.set(prompt, provider, model_for_cache, result)
                 return result
             except Exception as exc:
                 circuit.record_failure()

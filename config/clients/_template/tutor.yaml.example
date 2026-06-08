@@ -1,0 +1,43 @@
+# Configuração do Tutor IA conversacional runtime (Wave 7)
+#
+# Este bloco é OPCIONAL — se ausente, o tutor fica desabilitado.
+# Quando habilitado, o endpoint /api/tutor/<course_slug> exposto pelo
+# cliente passa a aceitar perguntas de alunos durante o curso.
+#
+# Para ativar para um cliente concreto, copie este arquivo para
+# config/clients/<seu-cliente>/tutor.yaml e ajuste os valores.
+
+tutor:
+  # Liga / desliga o tutor para este cliente. Se false, o endpoint
+  # responde 404. Default: false (manter enabled=false até a UX estar pronta).
+  enabled: true
+
+  # Persona usada como tom de voz do tutor. Aparece no prompt {persona}.
+  # Sugestões: "curiosa-paciente", "analitico-objetivo", "mentor-experiente".
+  persona: "curiosa-paciente"
+
+  # Nome de exibição do tutor na interface do aluno. Não afeta o prompt.
+  name: "Caramella"
+
+  # Modelo LLM usado em produção. Recomendado: Haiku 4.5 — equilíbrio
+  # custo / latência. Para clientes premium: claude-sonnet-4-6.
+  model: "claude-haiku-4-5-20251001"
+
+  # Budget guard por aluno. Quando atingido, o tutor responde com mensagem
+  # padrão pedindo ao aluno aguardar até o reset mensal. USD.
+  budget_per_user_per_month: 2.00
+
+  # Budget guard total do cliente / dia. Protege contra abuso e bug em volume.
+  # USD.
+  daily_budget: 10.00
+
+  # Modos habilitados. Remova um modo para escondê-lo da UI do aluno.
+  # Valores válidos: explain_like_5, practical_example, quiz_me.
+  modes:
+    - explain_like_5
+    - practical_example
+    - quiz_me
+
+  # Janela de histórico de conversa carregada em cada chamada.
+  # Mais turnos = melhor continuidade, porém mais custo em tokens.
+  history_window: 10

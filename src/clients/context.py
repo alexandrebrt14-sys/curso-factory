@@ -86,12 +86,144 @@ class VoiceGuardForbidden:
 
 
 @dataclass
+class VoiceSample:
+    """Amostra real de escrita do autor canônico para few-shot persona-conditioning.
+
+    A amostra é injetada antes do `{context}` no prompt do redator/revisor para
+    ancorar idiossincrasias linguísticas reais. Sem amostras, o LLM produz
+    "voz HBR genérica" — detectável estatisticamente por uniformidade de
+    estilo. Com 800-1500 palavras de anchor por amostra, a saída herda
+    cadência, vocabulário e construções típicas do autor.
+
+    Referência: Liang et al. Patterns 2023 mostram que reescrita "no estilo X"
+    derruba detecção a ~0%. DIPPER (Krishna NeurIPS 2023) confirma que
+    persona-conditioning supera fine-tuning para volumes pequenos.
+    """
+    path: str
+    length_words: int = 0
+    tags: list[str] = field(default_factory=list)
+
+
+@dataclass
+class VoiceSamplesConfig:
+    """Configuração de amostras de voz para persona-conditioning few-shot."""
+    enabled: bool = False
+    samples: list[VoiceSample] = field(default_factory=list)
+    anchor_strategy: str = "rotate"  # rotate | concat | random
+    anchor_max_words: int = 2000
+
+
+@dataclass
 class VoiceGuardConfig:
     """Configuração do voice guard para um cliente."""
     enabled: bool = True
     min_score: int = 70
     canonical: VoiceGuardCanonical = field(default_factory=VoiceGuardCanonical)
     forbidden: VoiceGuardForbidden = field(default_factory=VoiceGuardForbidden)
+    voice_samples: VoiceSamplesConfig = field(default_factory=VoiceSamplesConfig)
+
+
+@dataclass
+class DisclosureConfig:
+    """Disclosure programático de uso de IA — PL 2338/2023 (Brasil) + EEAT Google.
+
+    Em curso para cliente brasileiro com `required_by` incluindo
+    'PL_2338_2023', o pipeline injeta bloco padronizado no rodapé de cada
+    módulo. Validator `disclosure_checker.py` bloqueia publicação se ausente.
+
+    Para clientes em domínios regulados (saúde, psicologia, direito),
+    `reviewer_extra` lista credenciais humanas obrigatórias
+    (psicólogo CRP, médico CRM, advogado OAB).
+
+    Referências regulatórias:
+    - PL 2338/2023 (Marco Legal IA Brasil) — disclosure mandatório
+    - CFP Posicionamento 03/07/2025 — IA em conteúdo psicológico exige
+      supervisão e disclosure
+    - MEC Marco Referencial 2025-07 — IA na Educação Básica
+    """
+    enabled: bool = False
+    required_by: list[str] = field(default_factory=list)
+    pipeline_models: list[str] = field(default_factory=list)
+    reviewer_human: bool = True
+    reviewer_extra: list[dict] = field(default_factory=list)
+    block_if_missing: bool = True
+
+
+@dataclass
+class TutorConfig:
+    """Wave 7 — configuração do Tutor IA conversacional (runtime).
+
+    Tutor é o 6º agente que vive no servidor, fora do pipeline de geração.
+    Aluno conversa com tutor que sabe tudo sobre o curso atual.
+    """
+    enabled: bool = False
+    persona: str = "curiosa-paciente"
+    name: str = ""
+    model: str = "claude-haiku-4-5-20251001"
+    budget_per_user_per_month: float = 2.0
+    daily_budget: float = 10.0
+
+
+@dataclass
+class EngagementConfig:
+    """Wave 6 — configuração da camada de engajamento."""
+    gamification_enabled: bool = False
+    streak_enabled: bool = True
+    badges_enabled: bool = True
+    leagues_enabled: bool = False
+    srs_enabled: bool = True
+    srs_interval_initial_days: int = 1
+    quiz_pass_threshold: float = 0.7
+
+
+@dataclass
+class CertificationConfig:
+    """Wave 9 — configuração de certificação."""
+    enabled: bool = False
+    pass_threshold: float = 0.7
+    blockchain_opt_in: bool = False
+    linkedin_integration: bool = False
+
+
+@dataclass
+class AgenticConfig:
+    """Wave 10 — configuração de agent legibility (llms.txt + MCP/A2A)."""
+    enabled: bool = False
+    emit_llms_txt: bool = True
+    mcp_server: bool = False
+    a2a_endpoints: bool = False
+
+
+@dataclass
+class PipelineConfig:
+    """Configuracao opcional de etapas extras do pipeline.
+
+    Hoje cobre o Humanizer (PR-4 humanizacao). No futuro pode cobrir
+    self-test Pangram (PR-3), RADAR-style proxy interno etc.
+    """
+    humanize_enabled: bool = False
+    humanize_target_stylometry_score: int = 75
+    humanize_max_iters: int = 2
+
+
+@dataclass
+class Geo2026Config:
+    """Rubrica de citabilidade GEO (Generative Engine Optimization).
+
+    Liga a validacao por contagem das tecnicas de redacao com lift de
+    citacao medido (Aggarwal/Princeton, AutoGEO ICLR 2026). Ver
+    docs/GEO_REDACAO_CHECKLIST_2026.md e docs/GEO_KNOWLEDGE_BASE_2026_V3.md.
+
+    Default OFF para preservar o comportamento de clientes nao-GEO: quando
+    desabilitado, as contagens viram avisos; quando habilitado, viram erros
+    bloqueantes no quality gate.
+    """
+    princeton_playbook_enabled: bool = False
+    min_cite_sources: int = 3
+    min_statistics: int = 5
+    min_quotations: int = 1
+    require_answer_capsule: bool = True
+    schema_authority_stack_enabled: bool = False
 
 
 @dataclass
@@ -104,9 +236,20 @@ class ClientContext:
     branding: Branding = field(default_factory=Branding)
     editorial: Editorial = field(default_factory=Editorial)
     voice_guard: VoiceGuardConfig = field(default_factory=VoiceGuardConfig)
+    disclosure: DisclosureConfig = field(default_factory=DisclosureConfig)
     landing_page_dir: Path | None = None
     educacao_dir: Path | None = None
     output_base_dir: Path = field(default_factory=lambda: Path("output"))
+    # Wave 6-10 — features opcionais (default off; ligar via client.yaml)
+    tutor: TutorConfig = field(default_factory=TutorConfig)
+    engagement: EngagementConfig = field(default_factory=EngagementConfig)
+    certification: CertificationConfig = field(default_factory=CertificationConfig)
+    agentic: AgenticConfig = field(default_factory=AgenticConfig)
+    pipeline: PipelineConfig = field(default_factory=PipelineConfig)
+    # Rubrica de citabilidade GEO (default off; ligar via client.yaml geo_2026)
+    geo: Geo2026Config = field(default_factory=Geo2026Config)
+    # Wave 8 — idioma default do cliente (override per curso possível)
+    language: str = "pt-br"
 
     @property
     def output_dir(self) -> Path:

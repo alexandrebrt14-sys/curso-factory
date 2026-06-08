@@ -1,0 +1,87 @@
+name: Feature request
+description: Propor uma melhoria, novo subcomando, novo agente, ou suporte a outro segmento
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir, confirme em [[Roadmap-and-Gaps]](https://github.com/alexandrebrt14-sys/curso-factory/wiki/Roadmap-and-Gaps) se a ideia já está mapeada.
+
+  - type: textarea
+    id: caso_de_uso
+    attributes:
+      label: Caso de uso
+      description: Que problema concreto isso resolve? Quem é o beneficiário?
+      placeholder: |
+        Sou autor de cursos de gastronomia e quero usar o curso-factory para gerar receitas.
+        Hoje os prompts forçam tom HBR/MIT Sloan, que não cabe.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta concreta
+      description: Como ficaria a API ou comportamento? Esboço de comando, função ou config YAML é ideal.
+      placeholder: |
+        Permitir que cada cliente tenha sua própria pasta de prompts:
+        config/clients/<id>/prompts/draft.md
+        Se existir, sobrescreve src/templates/prompts/draft.md.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+      description: O que mais você pensou? Por que esta proposta é melhor?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afetada
+      multiple: true
+      options:
+        - cli
+        - agents/pipeline
+        - validators/quality-gate
+        - voice-guard
+        - multi-tenant
+        - finops/cost-tracker
+        - cache
+        - converters
+        - generators (TSX/Jinja2)
+        - parsers (markdown)
+        - indexer (vetorial)
+        - templates (prompts)
+        - docs/wiki
+        - testes
+        - ci/workflows
+        - outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: prioridade_sugerida
+    attributes:
+      label: Prioridade sugerida
+      options:
+        - low — quando der tempo
+        - medium — útil mas não urgente
+        - high — bloqueia uso real
+        - critical — quebra produção
+    validations:
+      required: true
+
+  - type: input
+    id: esforco
+    attributes:
+      label: Esforço estimado (em horas)
+      placeholder: "4-6h"
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto adicional
+      description: Links para docs, papers, threads, exemplos em outros projetos.

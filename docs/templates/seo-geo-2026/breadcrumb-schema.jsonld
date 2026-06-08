@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://EXEMPLO.com.br/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Vertical",
+      "item": "https://EXEMPLO.com.br/vertical/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Cluster",
+      "item": "https://EXEMPLO.com.br/vertical/cluster/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Artigo",
+      "item": "https://EXEMPLO.com.br/vertical/cluster/artigo-x"
+    }
+  ]
+}

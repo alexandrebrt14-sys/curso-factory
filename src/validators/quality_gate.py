@@ -12,22 +12,30 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from src.models import QualityReport
 from src.validators.accent_checker import (
     check_accents,
     fix_accents,
+)
+from src.validators.accent_checker import (
     format_report as accent_report,
 )
 from src.validators.content_checker import (
     check_content,
+)
+from src.validators.content_checker import (
     format_report as content_report,
 )
-from src.validators.html_validator import validate_html, format_report as html_report
-from src.validators.link_checker import check_links, format_report as link_report
+from src.validators.disclosure_checker import disclosure_check
+from src.validators.html_validator import format_report as html_report
+from src.validators.html_validator import validate_html
+from src.validators.link_checker import check_links
+from src.validators.link_checker import format_report as link_report
+from src.validators.stylometry_checker import stylometry_check
 from src.validators.voice_guard import voice_guard_check
 
 if TYPE_CHECKING:
@@ -45,12 +53,16 @@ class GateResult:
     links_ok: bool = True
     conteudo_ok: bool = True
     voice_guard_ok: bool = True
+    stylometry_ok: bool = True
+    disclosure_ok: bool = True
     erros: list[str] = field(default_factory=list)
     avisos: list[str] = field(default_factory=list)
     relatorios: list[str] = field(default_factory=list)
     texto_corrigido: str = ""
     acentos_corrigidos: int = 0
     voice_guard_score: int = 0
+    stylometry_score: int = 0
+    stylometry_burstiness: float = 0.0
 
 
 class QualityGate:
@@ -68,9 +80,9 @@ class QualityGate:
 
     def __init__(
         self,
-        base_dir: Optional[Path] = None,
+        base_dir: Path | None = None,
         auto_fix: bool = True,
-        client: "ClientContext | None" = None,
+        client: ClientContext | None = None,
     ) -> None:
         self.base_dir = base_dir
         self.auto_fix = auto_fix
@@ -119,8 +131,11 @@ class QualityGate:
                 )
         result.relatorios.append(accent_report(accent_errors))
 
-        # 2. Verificação de qualidade de conteúdo
-        content_errors = check_content(working_text, module_name)
+        # 2. Verificação de qualidade de conteúdo (inclui citabilidade GEO
+        #    quando o cliente liga geo_2026 no client.yaml — ver
+        #    docs/GEO_REDACAO_CHECKLIST_2026.md)
+        geo_config = getattr(self.client, "geo", None)
+        content_errors = check_content(working_text, module_name, geo_config=geo_config)
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
 
@@ -162,10 +177,42 @@ class QualityGate:
             result.avisos.append(f"Voice Guard: {a}")
         result.relatorios.append(vg.report())
 
-        logger.info("Quality gate (texto) para '%s': %s (vg_score=%d)",
-                     curso_id,
-                     "APROVADO" if result.aprovado else "REPROVADO",
-                     vg.score)
+        # 5. Stylometry (medição estatística de "humanidade" — opt-in)
+        # Default: report-only. Para bloquear, ajustar quality_rules.yaml.
+        sty = stylometry_check(working_text, min_score=60)
+        result.stylometry_score = sty.score
+        result.stylometry_burstiness = sty.burstiness
+        if not sty.aprovado:
+            result.stylometry_ok = False
+            # Não bloqueia o gate por default — apenas reporta como aviso até
+            # calibração com baseline humano (ver PR-2.1 corpus_calibration).
+            for e in sty.erros:
+                result.avisos.append(f"Stylometry: {e}")
+        for a in sty.avisos:
+            result.avisos.append(f"Stylometry: {a}")
+        result.relatorios.append(sty.report())
+
+        # 6. Disclosure (PL 2338/CFP/MEC + EEAT Google) — controlado por cliente
+        disc = disclosure_check(working_text, client=self.client)
+        if not disc.aprovado:
+            result.disclosure_ok = False
+            result.aprovado = False
+            for e in disc.erros:
+                result.erros.append(f"Disclosure: {e}")
+        for a in disc.avisos:
+            result.avisos.append(f"Disclosure: {a}")
+        result.relatorios.append(disc.report())
+
+        logger.info(
+            "Quality gate (texto) para '%s': %s (vg_score=%d, "
+            "stylometry_score=%d, burstiness=%.2f, disclosure_ok=%s)",
+            curso_id,
+            "APROVADO" if result.aprovado else "REPROVADO",
+            vg.score,
+            sty.score,
+            sty.burstiness,
+            result.disclosure_ok,
+        )
         return result
 
     def check_html(
@@ -195,7 +242,7 @@ class QualityGate:
         """Converte GateResult para o modelo QualityReport."""
         return QualityReport(
             curso_id=curso_id,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(UTC),
             acentuacao_ok=gate_result.acentuacao_ok,
             html_ok=gate_result.html_ok,
             links_ok=gate_result.links_ok,
