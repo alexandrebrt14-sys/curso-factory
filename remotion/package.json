@@ -1,0 +1,23 @@
+{
+  "name": "curso-factory-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Subprojeto Node de video programatico (Remotion) para abertura de cursos. Acionado pelo render-video do curso-factory (Python) via npx.",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts CourseIntro",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.474",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.474"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "^4.0.474",
+    "@remotion/renderer": "^4.0.474",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.4.0"
+  }
+}

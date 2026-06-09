@@ -474,6 +474,51 @@ def cmd_detection_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_render_video(args: argparse.Namespace) -> int:
+    """Renderiza o MP4 de abertura (Remotion) de um curso.
+
+    Duas fontes de props: um JSON de CourseDefinition (--course) ou flags
+    diretas (--titulo/--nivel/--modulos/--duracao/--cor).
+    """
+    import json as _json
+    from pathlib import Path as _Path
+
+    from src.generators.video_generator import (
+        VideoRenderError,
+        render_course_intro,
+        render_intro,
+    )
+
+    try:
+        if args.course:
+            from src.models import CourseDefinition
+
+            with open(args.course, "r", encoding="utf-8") as f:
+                course = CourseDefinition(**_json.load(f))
+            out = args.out or f"output/video/{course.slug}.mp4"
+            path = render_course_intro(course, out)
+        else:
+            if not args.titulo:
+                print("ERRO: informe --course <json> ou --titulo \"...\"", file=sys.stderr)
+                return 2
+            props = {
+                "titulo": args.titulo,
+                "nivel": args.nivel,
+                "modulos": args.modulos,
+                "duracao": args.duracao,
+                "corDestaque": args.cor,
+            }
+            slug = args.titulo.lower().replace(" ", "-")[:48]
+            out = args.out or f"output/video/{slug}.mp4"
+            path = render_intro(props, out, slug=slug)
+    except VideoRenderError as exc:
+        print(f"ERRO de render: {exc}", file=sys.stderr)
+        return 1
+
+    print(f"OK: video gerado em {_Path(path)}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="curso-factory",
@@ -576,6 +621,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--output-dir", dest="output_dir", default=None, metavar="DIR", help="Saída (default: <output_dir>/certificates)")
     _add_client_arg(p)
     p.set_defaults(func=cmd_certify)
+
+    # Remotion — render-video (abertura animada de curso)
+    p = sub.add_parser(
+        "render-video",
+        help="Renderiza MP4 de abertura (Remotion) de um curso",
+    )
+    p.add_argument("--course", default=None, metavar="JSON", help="Path para JSON de CourseDefinition")
+    p.add_argument("--titulo", default=None, help="Titulo do curso (alternativa a --course)")
+    p.add_argument("--nivel", default="intermediário", help="Nivel exibido")
+    p.add_argument("--modulos", type=int, default=12, help="Numero de modulos")
+    p.add_argument("--duracao", default="~180 min", help="Duracao exibida")
+    p.add_argument("--cor", default="#0176d3", help="Cor de destaque (hex)")
+    p.add_argument("--out", default=None, metavar="MP4", help="Saida (default: output/video/<slug>.mp4)")
+    p.set_defaults(func=cmd_render_video)
 
     return parser
 

@@ -160,6 +160,15 @@ class CourseDefinition(BaseModel):
     hero_gradient_from: str = Field(default="#032d60")
     hero_gradient_to: str = Field(default="#0176d3")
 
+    # Vídeo de abertura (Remotion) — opt-in. Quando True, a página gerada
+    # embute <CourseVideoPlayer> (auto-demo em React, técnica do remotion.dev)
+    # e `python cli.py render-video` exporta um MP4 de divulgação. Default
+    # False preserva 100% o output das fixtures e cursos existentes.
+    intro_video: bool = Field(
+        default=False,
+        description="Embute abertura animada Remotion na página e habilita export MP4",
+    )
+
     # Author / Schema.org — injetados pelo ClientContext via SchemaBuilder.
     # Sem defaults com identidade — quem instancia CourseDefinition precisa
     # passar os campos do cliente. Isso garante que nenhuma identidade vaza
