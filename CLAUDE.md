@@ -166,6 +166,9 @@ Ao tocar em qualquer lógica sensível a autor/domínio/padrão editorial: passe
 
 ## Regras Fundamentais
 
+### Frontend — layout, UX, animação, contraste (LEIA ANTES de mexer em template visual)
+Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GERADOR, corrija sempre no TEMPLATE para que todo curso gerado herde a prática. Cobre: layout/UX/navegabilidade de conteúdo longo, régua de stacks premium 2026, **REGRA inviolável de contraste WCAG AA nos dois temas** (dark/light; spans inline; `pre` com fundo escuro fixo), **parágrafos justificados** (`text-justify`), **animação à prova de falha** (nunca esconder dependendo de JS; CSS `fill:both`; `prefers-reduced-motion`), **auditoria da SAÍDA renderizada** (dois temas, transições mortas, cache-bust, iterar até zerar) e catálogo de **erros frequentes** (inclui acentuação em geração longa). Defeito no template multiplica por todos os cursos — pegue cedo.
+
 ### Idioma
 - TODO texto de curso DEVE ser em Português do Brasil com acentuação completa
 - NUNCA: "nao", "voce", "producao" — SEMPRE: "não", "você", "produção"
