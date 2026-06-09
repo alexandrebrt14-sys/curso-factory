@@ -77,13 +77,16 @@ def render_intro(
     props: dict,
     out_path: Path | str,
     slug: str = "intro",
+    composition_id: str = COMPOSITION_ID,
 ) -> Path:
-    """Renderiza a composicao CourseIntro com props arbitrarias.
+    """Renderiza uma composicao do subprojeto com props arbitrarias.
 
     Args:
-        props: campos da composicao (titulo, nivel, modulos, duracao, corDestaque).
+        props: campos da composicao (titulo, nivel, modulos, duracao, corDestaque;
+            CourseIntroVertical aceita tambem `cta`).
         out_path: caminho do .mp4 de saida.
         slug: rotulo apenas para log.
+        composition_id: "CourseIntro" (16:9) ou "CourseIntroVertical" (9:16).
 
     Raises:
         VideoRenderError: se Node faltar, deps falharem ou o render quebrar.
@@ -110,7 +113,7 @@ def render_intro(
             "remotion",
             "render",
             "src/index.ts",
-            COMPOSITION_ID,
+            composition_id,
             str(out_path),
             f"--props={props_file}",
         ]

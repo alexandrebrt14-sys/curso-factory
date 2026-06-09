@@ -478,16 +478,18 @@ def cmd_render_video(args: argparse.Namespace) -> int:
     """Renderiza o MP4 de abertura (Remotion) de um curso.
 
     Duas fontes de props: um JSON de CourseDefinition (--course) ou flags
-    diretas (--titulo/--nivel/--modulos/--duracao/--cor).
+    diretas (--titulo/--nivel/--modulos/--duracao/--cor). O --format escolhe
+    16:9 (CourseIntro) ou 9:16 (CourseIntroVertical, para ads), e --cta define
+    a chamada do criativo vertical.
     """
     import json as _json
     from pathlib import Path as _Path
 
-    from src.generators.video_generator import (
-        VideoRenderError,
-        render_course_intro,
-        render_intro,
-    )
+    from src.generators.video_generator import VideoRenderError, render_intro
+
+    vertical = args.format == "vertical"
+    composition_id = "CourseIntroVertical" if vertical else "CourseIntro"
+    suffix = "-9x16" if vertical else ""
 
     try:
         if args.course:
@@ -495,12 +497,19 @@ def cmd_render_video(args: argparse.Namespace) -> int:
 
             with open(args.course, "r", encoding="utf-8") as f:
                 course = CourseDefinition(**_json.load(f))
-            out = args.out or f"output/video/{course.slug}.mp4"
-            path = render_course_intro(course, out)
+            slug = course.slug
+            props = {
+                "titulo": course.titulo,
+                "nivel": course.nivel_display,
+                "modulos": len(course.steps) or 0,
+                "duracao": course.duracao_display,
+                "corDestaque": course.hero_gradient_to,
+            }
         else:
             if not args.titulo:
                 print("ERRO: informe --course <json> ou --titulo \"...\"", file=sys.stderr)
                 return 2
+            slug = args.titulo.lower().replace(" ", "-")[:48]
             props = {
                 "titulo": args.titulo,
                 "nivel": args.nivel,
@@ -508,9 +517,12 @@ def cmd_render_video(args: argparse.Namespace) -> int:
                 "duracao": args.duracao,
                 "corDestaque": args.cor,
             }
-            slug = args.titulo.lower().replace(" ", "-")[:48]
-            out = args.out or f"output/video/{slug}.mp4"
-            path = render_intro(props, out, slug=slug)
+
+        if vertical:
+            props["cta"] = args.cta
+
+        out = args.out or f"output/video/{slug}{suffix}.mp4"
+        path = render_intro(props, out, slug=slug, composition_id=composition_id)
     except VideoRenderError as exc:
         print(f"ERRO de render: {exc}", file=sys.stderr)
         return 1
@@ -633,7 +645,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--modulos", type=int, default=12, help="Numero de modulos")
     p.add_argument("--duracao", default="~180 min", help="Duracao exibida")
     p.add_argument("--cor", default="#0176d3", help="Cor de destaque (hex)")
-    p.add_argument("--out", default=None, metavar="MP4", help="Saida (default: output/video/<slug>.mp4)")
+    p.add_argument("--format", choices=["landscape", "vertical"], default="landscape", help="16:9 (landscape) ou 9:16 (vertical, p/ ads)")
+    p.add_argument("--cta", default="Comece gratis em brasilgeo.ai", help="CTA do criativo vertical")
+    p.add_argument("--out", default=None, metavar="MP4", help="Saida (default: output/video/<slug>[-9x16].mp4)")
     p.set_defaults(func=cmd_render_video)
 
     return parser
