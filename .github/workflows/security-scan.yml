@@ -15,11 +15,11 @@ on:
   schedule:
     - cron: "0 4 * * 1"  # toda segunda 04:00 UTC
   pull_request:
-    paths:
-      - "**.py"
-      - "pyproject.toml"
-      - "requirements*.txt"
-      - ".github/workflows/security-scan.yml"
+    branches: [main]
+    # Sem filtro de 'paths': estes checks sao REQUIRED na protecao de branch.
+    # Um required check que nao dispara (PR so de docs) trava o PR para sempre.
+    # Rodar em todo PR para main e barato (bandit/pip-audit/gitleaks sao rapidos)
+    # e garante que a regra de merge seja sempre satisfeita.
   workflow_dispatch:
 
 permissions:
