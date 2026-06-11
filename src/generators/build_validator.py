@@ -7,6 +7,7 @@ TSX antes de submeter ao build completo.
 from __future__ import annotations
 
 import logging
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -47,14 +48,15 @@ class BuildValidator:
             self.timeout,
         )
 
+        npx = shutil.which("npx") or "npx"
+
         try:
             proc = subprocess.run(
-                ["npx", "next", "build"],
+                [npx, "next", "build"],
                 cwd=str(self.landing_page_dir),
                 capture_output=True,
                 text=True,
                 timeout=self.timeout,
-                shell=True,
             )
 
             result["exit_code"] = proc.returncode
