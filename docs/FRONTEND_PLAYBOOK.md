@@ -37,6 +37,20 @@ Fonte: `C:/Sandyboxclaude/Frontend/MelhoresFrontends.pdf` + experiência. Monte 
 - **JointJS Flowchart:** referência para fluxos interativos em que o usuário move nós, alterna tema, acompanha conectores e entende sequência de ações. Use como padrão mental para diagramas vivos, não como dependência obrigatória.
 - **Dribbble Flow Diagram:** referência de composição visual: nós claros, contraste forte, conectores legíveis, cor de destaque com parcimônia e espaço suficiente para leitura. Não copiar layout/paleta 1:1.
 
+### Relatório executivo operável (padrão Brasil GEO)
+
+Para páginas densas, relatórios estratégicos, guias executivos e módulos C-level, trate o frontend como **ferramenta de decisão**, não como texto longo decorado. O leitor deve conseguir buscar, navegar por função/persona, abrir mapa, imprimir, saltar por objetivo e escolher uma trilha de leitura conforme a decisão que precisa tomar.
+
+- **Entrada executiva:** comece por veredicto, tese e contexto; em seguida, mostre painéis de decisão, KPIs, riscos, oportunidades, critérios de aceite e próximas ações.
+- **Navegação por intenção:** use grupos laterais com contadores, acordeões, expandir/recolher, estado ativo claro e versão mobile com barra superior mínima. Quando fizer sentido, acrescente navegação por persona/função: CEO, CFO, CIO, Operações, Marketing, Produto ou Board.
+- **Fluxos SVG interativos:** para sistemas complexos, use controles de pausar/percorrer, nós clicáveis, laços de reforço/equilíbrio, gargalos, legenda, painel de detalhe e callout de "construa com". O gráfico deve ensinar a decisão.
+- **Tabs decisórias:** use abas por dimensão, persona, cenário ou etapa. Cada aba precisa responder a uma pergunta executiva; se a aba só esconder texto, ela está mascarando excesso de conteúdo.
+- **Dados acessíveis:** todo gráfico, funil, matriz ou fluxo importante deve ter tabela acessível em `<details>`, com fonte/método quando aplicável. Artefatos largos entram em `table-wrap` com `overflow-x:auto`.
+- **Ritmo andragógico:** alterne parágrafo curto, callout, KPI, matriz, funil, timeline, mapa, checklist e tabela. O adulto experiente aprende melhor quando cada seção conecta dor real, evidência, escolha difícil e próxima ação.
+- **Cards de execução:** para plano de ação, cada card deve trazer horizonte temporal, responsável, ferramenta/prompt, métrica, status de prontidão e critério de aceite.
+- **Stack recomendada:** HTML/CSS/JS autocontido para saída estática; SVG manual para fluxos críticos; ECharts ou Chart.js self-hosted/same-origin quando houver CSP; scripts pequenos e idempotentes por seção; busca client-side com sinônimos e navegação por persona.
+- **Mobile primeiro:** esconda a lateral, reempilhe cards, mantenha contraste e permita rolagem interna só em tabelas/artefatos realmente largos. Confirmar `scrollWidth <= viewport`.
+
 ## 3. Contraste e tipografia — REGRA INVIOLÁVEL
 
 O **erro mais recorrente**. Trate com paranoia — e como é gerador, um erro no template multiplica por todos os cursos.
