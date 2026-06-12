@@ -65,7 +65,7 @@ class HumanizerResult:
             f"Iters:           {self.iters_realizadas}",
             f"Score:           {self.score_inicial} -> {self.score_final}",
             f"Burstiness:      {self.burstiness_inicial:.3f} -> {self.burstiness_final:.3f}",
-            f"Convergiu:       {'SIM' if self.convergiu else 'NAO'}",
+            f"Convergiu:       {'SIM' if self.convergiu else 'NÃO'}",
             f"Historico:       {self.historico_scores}",
             f"Motivo parada:   {self.motivo_parada}",
         ]
@@ -75,7 +75,7 @@ class HumanizerResult:
 class Humanizer(Agent):
     """Agente Claude que reescreve texto orientado por signal de stylometry.
 
-    Diferente dos outros agentes do pipeline, NAO executa contra fixture
+    Diferente dos outros agentes do pipeline, NÃO executa contra fixture
     estatica — recebe um texto + relatorio de stylometry e devolve uma
     versao reescrita com instrucoes cirurgicas baseadas no diagnostico.
     """
@@ -85,26 +85,27 @@ class Humanizer(Agent):
     model = "claude-opus-4-7"
     prompt_file = "humanize.md"
 
-    # Fallback inline (mantem o agente operavel se humanize.md nao existir)
+    # Fallback inline (mantém o agente operável se humanize.md não existir)
     TEMPLATE = (
-        "Voce e um editor de prosa humana de alto padrao. Recebe um texto que\n"
-        "ja passou por revisao editorial mas tem cadencia uniforme demais —\n"
-        "padrao tipico de LLM. Sua tarefa: reescrever para aumentar burstiness\n"
-        "(variancia de comprimento de sentenca) SEM mudar conteudo factual.\n\n"
-        "DIAGNOSTICO STYLOMETRIA:\n{diagnostic}\n\n"
-        "REGRAS INVIOLAVEIS:\n"
-        "1. NAO mude numeros, datas, citacoes, nomes proprios, blocos de\n"
-        "   codigo, tabelas, marcadores [FALTA EVIDENCIA: ...].\n"
-        "2. NAO mude o sentido logico de nenhum paragrafo.\n"
-        "3. NAO insira hedges ('talvez', 'pode ser') onde o texto original\n"
-        "   afirma com convicao.\n"
-        "4. SIM, varie comprimento de sentenca entre 4 e 35 palavras.\n"
-        "5. SIM, em CADA paragrafo, garanta ao menos UMA frase de 6 palavras\n"
+        "Você é um editor de prosa humana de alto padrão. Recebe um texto que\n"
+        "já passou por revisão editorial mas tem cadência uniforme demais —\n"
+        "padrão típico de LLM. Sua tarefa: reescrever para aumentar burstiness\n"
+        "(variância de comprimento de sentença) SEM mudar conteúdo factual.\n\n"
+        "DIAGNÓSTICO STYLOMETRIA:\n{diagnostic}\n\n"
+        "REGRAS INVIOLÁVEIS:\n"
+        "1. NÃO mude números, datas, citações, nomes próprios, blocos de\n"
+        "   código, tabelas, marcadores [FALTA EVIDÊNCIA: ...].\n"
+        "2. NÃO mude o sentido lógico de nenhum parágrafo.\n"
+        "3. NÃO remova atributos como <p align=\"justify\"> quando existirem.\n"
+        "4. NÃO insira hedges ('talvez', 'pode ser') onde o texto original\n"
+        "   afirma com convicção.\n"
+        "5. SIM, varie comprimento de sentença entre 4 e 35 palavras.\n"
+        "6. SIM, em CADA parágrafo, garanta ao menos UMA frase de 6 palavras\n"
         "   ou menos.\n"
-        "6. SIM, quebre simetria sintatica (se 3 frases seguidas comecam com\n"
+        "7. SIM, quebre simetria sintática (se 3 frases seguidas começam com\n"
         "   sujeito, mova sujeito para o meio na quarta).\n\n"
-        "Devolva o texto reescrito NA INTEGRA. Sem preambulo, sem epilogo,\n"
-        "sem 'aqui esta o texto reescrito:'. Apenas o texto.\n\n"
+        "Devolva o texto reescrito NA ÍNTEGRA. Sem preâmbulo, sem epílogo,\n"
+        "sem 'aqui está o texto reescrito:'. Apenas o texto.\n\n"
         "--- TEXTO ORIGINAL ---\n{context}"
     )
 
@@ -167,7 +168,7 @@ class Humanizer(Agent):
         """Multi-pass: reescreve ate target_score OU max_iters atingido.
 
         Retorna HumanizerResult com texto final, historico de scores e
-        diagnostico de convergencia. NAO levanta excecao em falha de LLM —
+        diagnóstico de convergência. NÃO levanta exceção em falha de LLM —
         retorna o melhor texto obtido ate o ponto.
         """
         initial = stylometry_check(text)

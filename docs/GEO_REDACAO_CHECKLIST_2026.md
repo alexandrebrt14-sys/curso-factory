@@ -55,6 +55,24 @@ Abaixo do mínimo: **erro bloqueante** quando o playbook está habilitado; **avi
 
 ---
 
+## 2.1. Camada editorial humana: PT-BR, didática e decisão executiva
+
+A rubrica GEO aumenta extração e citação por motores generativos, mas não substitui a qualidade do parágrafo para o leitor humano. Todo módulo deve manter a camada editorial abaixo:
+
+| Critério | Regra de escrita | Por que importa |
+|---|---|---|
+| **PT-BR acentuado** | Todo texto de leitura humana em Português do Brasil com acentuação completa; preservar ASCII só em código, slugs, URLs, imports e variáveis. | Erro ortográfico quebra confiança e reprova no `accent_checker.py`. |
+| **Utilidade por parágrafo** | Cada parágrafo entrega uma distinção, mecanismo, decisão, exemplo, risco ou próximo passo. | Parágrafos úteis viram melhores chunks para humanos e LLMs. |
+| **WIIFM executivo** | O primeiro parágrafo explicita ROI do tempo de leitura: decisão, risco, ganho ou trade-off. | Decisor sênior abandona texto que não mostra valor rapidamente. |
+| **Storytelling funcional** | Use microcaso, tensão de decisão ou cena profissional quando isso melhora compreensão. | História cria contexto sem substituir evidência. |
+| **Metáfora inteligente** | Analogia deve reduzir carga cognitiva e voltar ao conceito técnico. | Metáfora decorativa aumenta ruído e reduz precisão. |
+| **Autorreflexão executiva** | 2-3 perguntas por módulo, ligadas a governança, ROI, maturidade, risco ou alocação. | Ativa andragogia de Knowles sem tom professoral. |
+| **Justificação** | React/Tailwind: `text-justify`; HTML/PDF/e-mail sem Tailwind: `<p align="justify">`. | Preserva a leitura longa e a regra visual do repo. |
+
+Referências editoriais complementares ao padrão HSM/HBR/MIT Sloan: **IT Forum** para traduzir tecnologia em impacto operacional, ROI e governança; **Revista Exame** para decisão estratégica sob estresse corporativo; **MIT Sloan Management Review** para fluidez sintática, tom profissional quente e escolhas difíceis de liderança.
+
+---
+
 ## 3. Anti-padrão eliminatório
 
 - **Keyword stuffing → −8,7%** (Aggarwal — a única técnica com lift **negativo** comprovado). Variar o vocabulário semanticamente; no máximo ~2 ocorrências do termo principal por 500 palavras. O `content_checker.py` já penaliza a "variação elegante demais" (padrão 15 de cara de IA) — aqui o limite é o oposto: nem repetir demais (stuffing), nem trocar por sinônimo a ponto de quebrar a coerência terminológica (item 5).

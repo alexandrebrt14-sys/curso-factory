@@ -17,7 +17,8 @@ related:
 
 Voz canônica do cliente `default` (Brasil GEO, Alexandre Caramaschi).
 Espelha publicações como **Harvard Business Review**, **MIT Sloan
-Management Review** e **HSM Management**. Outros clientes podem
+Management Review**, **HSM Management**, **IT Forum** e **Revista Exame**.
+Outros clientes podem
 herdar ou customizar em `config/clients/<id>/client.yaml`.
 
 ## Regras de estilo
@@ -29,6 +30,43 @@ herdar ou customizar em `config/clients/<id>/client.yaml`.
 - Evitar superlativos sem evidência ("o melhor", "revolucionário",
   "definitivo").
 - Tese contraintuitiva explícita no lead.
+- **Português do Brasil com acentuação completa** em todo conteúdo de
+  leitura humana. Slugs, URLs, imports, nomes de arquivo e variáveis seguem
+  ASCII quando necessário.
+- **Didática aplicada**: cada parágrafo deve entregar uma distinção, decisão,
+  exemplo, alerta ou passo de ação útil para um adulto em contexto
+  profissional.
+- **Storytelling funcional**: use cenas curtas, tensão de decisão, caso real
+  ou micro-história apenas quando isso ajuda o aluno a entender o mecanismo.
+- **Metáforas inteligentes**: analogias devem aproximar o conceito de uma
+  experiência profissional conhecida e retornar ao conceito técnico; metáfora
+  decorativa ou "bonita" sem função é proibida.
+- **Tom profissional quente**: firme, humano e próximo, sem informalidade
+  solta e sem frieza burocrática.
+- **Clareza jornalística**: introduções sem floreios; o primeiro parágrafo
+  entrega a tese e o valor prático da leitura.
+- **Tradução executiva**: temas tecnológicos viram impacto operacional, ROI,
+  governança, risco e trade-off de alocação.
+- **Decisão sob estresse**: priorizar escolhas difíceis de liderança, não
+  listas confortáveis de boas intenções.
+
+## Perfil do leitor executivo
+
+O leitor default é um tomador de decisão experiente: CEO, CIO, CMO, fundador,
+conselheiro ou líder funcional sênior. A escrita presume repertório executivo.
+Não defina jargões básicos de mercado; use o espaço para revelar mecanismos,
+trade-offs e critérios de decisão.
+
+Aplicação andragógica específica:
+
+- **WIIFM no primeiro parágrafo**: explicitar o retorno prático sobre o tempo
+  de leitura.
+- **Experiência prévia**: conectar ideias a dores organizacionais reais que o
+  leitor provavelmente já viveu.
+- **Autonomia**: fornecer frameworks e perguntas, não ordens professorais.
+- **Autorreflexão**: distribuir 2-3 perguntas executivas ao longo do módulo,
+  ligadas a maturidade institucional, governança, ROI, risco ou alocação de
+  recursos.
 
 ## Estrutura HBR aplicada a módulo de curso
 
@@ -51,6 +89,9 @@ herdar ou customizar em `config/clients/<id>/client.yaml`.
 - Blockquotes (`> `) para insights centrais — 1-2 por módulo.
 - Bullets com `-- ` (dois hífens), nunca `- `.
 - 2.500-4.000 palavras por módulo.
+- Todo parágrafo de corpo deve ser justificado. No React/Tailwind do repo,
+  isso é `className="text-justify"`; em export HTML/PDF/e-mail sem Tailwind,
+  o artefato deve emitir `<p align="justify">`.
 
 ## Expressões proibidas (18 clichês)
 

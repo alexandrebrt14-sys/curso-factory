@@ -50,7 +50,16 @@ validation:
       - "Harvard Business Review"
       - "MIT Sloan Management Review"
       - "HSM Management"
+      - "IT Forum"
+      - "Revista Exame"
     tone: "analitico_propositivo"
+    language: "pt-BR-accented"
+    paragraph_alignment_html_export: '<p align="justify">'
+    require_executive_wiifm_opening: true
+    require_storytelling_functional: true
+    require_smart_metaphors: true
+    require_executive_reflection_questions_min: 2
+    require_executive_reflection_questions_max: 3
     require_tables_per_module: 1
     require_bloom_verbs_in_objectives: true
     bloom_accepted_levels: [3, 4, 5, 6]  # Aplicar, Analisar, Avaliar, Criar

@@ -39,6 +39,8 @@ editorial:
     - "Harvard Business Review"
     - "MIT Sloan Management Review"
     - "HSM Management"
+    - "IT Forum"
+    - "Revista Exame"
   # Bloom nível mínimo em objetivos (3=aplicar, 4=analisar, 5=avaliar, 6=criar)
   bloom_min_level: 3
   # Princípios Knowles obrigatórios (mínimo de 6)

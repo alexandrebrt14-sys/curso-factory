@@ -169,6 +169,8 @@ Ao tocar em qualquer lógica sensível a autor/domínio/padrão editorial: passe
 ### Frontend — layout, UX, animação, contraste (LEIA ANTES de mexer em template visual)
 Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GERADOR, corrija sempre no TEMPLATE para que todo curso gerado herde a prática. Cobre: layout/UX/navegabilidade de conteúdo longo, régua de stacks premium 2026, **REGRA inviolável de contraste WCAG AA nos dois temas** (dark/light; spans inline; `pre` com fundo escuro fixo), **parágrafos justificados** (`text-justify`), **animação à prova de falha** (nunca esconder dependendo de JS; CSS `fill:both`; `prefers-reduced-motion`), **auditoria da SAÍDA renderizada** (dois temas, transições mortas, cache-bust, iterar até zerar) e catálogo de **erros frequentes** (inclui acentuação em geração longa). Defeito no template multiplica por todos os cursos — pegue cedo.
 
+Referências visuais 2026: dashboards densos estilo InsightDash para KPIs executivos; fluxos interativos estilo JointJS quando houver edição/drag/conectores; composições limpas de flow diagram para ilustrações de processo. Não copiar asset/layout de terceiros; recriar como componentes próprios, com contraste, dark/light, mobile e valor decisório.
+
 ### Idioma
 - TODO texto de curso DEVE ser em Português do Brasil com acentuação completa
 - NUNCA: "nao", "voce", "producao" — SEMPRE: "não", "você", "produção"
@@ -208,6 +210,14 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 - Frases curtas. Parágrafos de 2-3 frases (máximo 5 linhas). Sem floreios
 - Dados e estatísticas para sustentar argumentos — nunca afirmar sem evidência
 - Evitar superlativos sem evidência ("o melhor", "revolucionário")
+- Português do Brasil com acentuação completa em todo texto de leitura humana
+- Boa didática: cada parágrafo precisa ensinar algo aplicável, não apenas soar bem
+- Storytelling com função: abrir conceitos com situação real, tensão profissional ou decisão concreta
+- Metáforas inteligentes e úteis: analogias devem reduzir carga cognitiva e voltar ao conceito técnico; metáfora decorativa é ruído
+- Tom profissional quente: firme, humano e próximo, sem informalidade solta nem frieza burocrática
+- Clareza jornalística + profundidade estratégica: introduções sem floreios, linguagem enxuta e tese executiva no primeiro parágrafo
+- IT Forum / Exame como referências complementares: traduzir tecnologia em impacto operacional, ROI, governança e decisão sob estresse corporativo
+- Leitor default: decisor experiente (CEO, CIO, Conselho). Nunca gastar espaço definindo jargão básico; entregar frameworks e perguntas de decisão
 
 ### Andragogia (6 Princípios de Knowles) — OBRIGATÓRIO
 1. Necessidade de saber — POR QUE antes do COMO
@@ -217,6 +227,8 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 5. Orientação a problemas — problemas reais, não taxonomias
 6. Motivação intrínseca — crescimento profissional e domínio
 
+Aplicação executiva: o primeiro parágrafo deve responder "qual é o ROI do meu tempo de leitura?". Distribuir 2-3 perguntas de autorreflexão executiva ao longo do módulo, sempre ligadas a maturidade institucional, trade-off, governança, risco ou alocação de recursos.
+
 ### Taxonomia de Bloom nos Objetivos
 - ACEITOS (nível 3-6): analisar, comparar, diagnosticar, avaliar, justificar, criar, projetar, aplicar, implementar
 - PROIBIDOS (nível 1-2): entender, conhecer, saber, compreender, lembrar, memorizar, listar, descrever, identificar
@@ -225,6 +237,7 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 - Ao menos 1 tabela comparativa (formato markdown com pipes)
 - Ao menos 3 exercícios com contexto profissional e progressão Bloom
 - Sub-headings (linha terminando com `:`) a cada 2-3 parágrafos
+- Parágrafos didáticos em PT-BR acentuado, úteis de forma isolada e renderizáveis como `<p align="justify">` quando o destino for HTML cru
 - Negrito em termos-chave na primeira ocorrência usando `**termo**`
 - Blockquotes (`> `) para insights centrais — ao menos 1-2 por módulo
 - Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen)

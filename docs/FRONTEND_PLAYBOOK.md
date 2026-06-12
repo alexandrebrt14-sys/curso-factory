@@ -21,15 +21,21 @@ Fonte: `C:/Sandyboxclaude/Frontend/MelhoresFrontends.pdf` + experiência. Monte 
 
 **Renderização:** SVG = KPIs, fluxogramas leves, overlays, SEO/a11y (1ª escolha para poucos elementos ricos). Canvas 2D = muitos redraws. WebGL (PixiJS/Three) = 3D/milhares de elementos.
 
-**Charts:** **ECharts** = melhor all-rounder (comece por ele). D3 = custom/gauges. Chart.js = rápido/leve. Plotly = finance/científico. Recharts = React idiomático simples.
+**Dashboards e charts estilo InsightDash:** para telas com densidade executiva, use cards de KPI, sparklines, comparação antes/depois, heatmaps leves e gráficos pequenos combinados com uma leitura executiva. **ECharts** = melhor all-rounder (comece por ele). D3 = custom/gauges. Chart.js = rápido/leve. Plotly = finance/científico. Recharts = React idiomático simples. Design handoff pode nascer em Figma/Sketch/Adobe XD, mas o template final precisa virar tokens e componentes versionados.
 
 **Animação:** **GSAP** = orquestração premium/timeline. Framer Motion = animação declarativa em React. Anime.js = leve. Lottie = marca (não para dados). Regra de ouro na seção 4.
 
-**Fluxograma/diagrama:** **Mermaid = documentação viva, NUNCA editor visual** — fonte pequena/contraste fraco; para fluxograma EXIBIDO num curso, prefira **HTML/CSS** (cartões claros + texto escuro) ou SVG controlado. JointJS/GoJS = editor. Cytoscape = grafos.
+**Fluxograma/diagrama:** **Mermaid = documentação viva, NUNCA editor visual** — fonte pequena/contraste fraco; para fluxograma EXIBIDO num curso, prefira **HTML/CSS** (cartões claros + texto escuro) ou SVG controlado. **JointJS** entra quando o curso precisa de diagrama editável/interativo, conectores reposicionáveis, highlighters, routers/anchors, responsividade e alternância claro/escuro no próprio canvas. React Flow = alternativa open-source quando o caso é editor de nós em React e a licença/peso do JointJS não se justificam. GoJS = editor enterprise pago. Cytoscape = grafos.
 
 **Estado/Build:** Zustand (default leve)/RTK (auditoria). Vite default; Next/Turbopack no ecossistema Next. Lib pesada só com build e justificativa.
 
 **Regra-ouro:** não use a mesma stack para dashboard e editor de fluxograma; em saída estática sem build, prefira CSS a libs pesadas.
+
+### Referências visuais externas (inspiração, não cópia)
+
+- **InsightDash Chart Pack / Envato:** usar como direção para cards de dados, chart packs, hierarquia de métricas e densidade de dashboard. Não copiar asset licenciado para dentro do repo sem licença explícita; recriar como componentes próprios.
+- **JointJS Flowchart:** referência para fluxos interativos em que o usuário move nós, alterna tema, acompanha conectores e entende sequência de ações. Use como padrão mental para diagramas vivos, não como dependência obrigatória.
+- **Dribbble Flow Diagram:** referência de composição visual: nós claros, contraste forte, conectores legíveis, cor de destaque com parcimônia e espaço suficiente para leitura. Não copiar layout/paleta 1:1.
 
 ## 3. Contraste e tipografia — REGRA INVIOLÁVEL
 
@@ -54,6 +60,16 @@ O **erro mais recorrente**. Trate com paranoia — e como é gerador, um erro no
 ## 5. Fluxogramas exibidos: sistema de cartões HTML/CSS
 
 Para fluxograma que o aluno VÊ, prefira HTML/CSS a Mermaid: cartões de fundo claro fixo + texto escuro (ou sólido + branco), setas em `<i>`/SVG, ramos em flex/grid, animação CSS `fill:both`, tipos de nó coloridos sempre com contraste garantido nos dois temas. Mais controle, alto contraste, responsivo, acessível.
+
+Quando o fluxo precisar de **edição, drag, reconfiguração de conectores, seleção, highlighter ou simulação de decisão**, considere JointJS/React Flow em componente isolado e com lazy-load. O aluno deve conseguir ver: estado atual, próximo passo, gargalo, custo, risco e decisão recomendada. Fluxograma bonito que não muda a decisão é decoração.
+
+Padrão visual recomendado:
+
+- Nós com título curto, métrica ou critério de decisão e uma linha de consequência.
+- Conectores com rótulo de condição ("se ROI < 12 meses", "se risco regulatório alto").
+- Uma legenda compacta para estado, risco, custo e prioridade.
+- Dark/light testado: texto, rótulos de conectores e ícones precisam passar contraste nos dois temas.
+- Mobile: reempilhar em trilha vertical ou permitir pan/zoom controlado, nunca overflow horizontal invisível.
 
 ## 6. Processo de AUDITORIA VISUAL ROBUSTA (o que mais falha)
 
@@ -95,7 +111,7 @@ Performance budget desde o início; lazy-load abaixo da dobra; imagens otimizada
 
 Este repo **gera** cursos (templates Jinja → React/Tailwind/Next). Corrija sempre no **template**, para que toda saída herde a prática.
 
-- **Parágrafos justificados (regra do repo):** corpo de texto sai justificado. React/Tailwind → `className="text-justify"` (NÃO `align="justify"` em JSX). Export HTML/PDF/e-mail → literal `<p align="justify">`. O `FormattedText`/`page.tsx.j2` já deve cumprir; ao criar template novo, replicar.
+- **Parágrafos justificados (regra do repo):** corpo de texto sai justificado. React/Tailwind → `className="text-justify"` (NÃO `align="justify"` em JSX). Export HTML/PDF/e-mail → literal `<p align="justify">`. O `FormattedText`/`page.tsx.j2` já deve cumprir; ao criar template novo, replicar. Esta regra vale junto com a camada editorial: PT-BR acentuado, didática para adultos, storytelling funcional e metáforas úteis.
 - **Contraste no template de tema:** defina tokens de cor que adaptam (`--ink-*`, `--bg`) com override `[data-theme="light"]`/`[data-theme="dark"]`; garanta que cartões, callouts, tabelas e blocos de código respeitem a seção 3 nos DOIS temas. Bloco de código (`pre`) com fundo escuro FIXO.
 - **Animação no template:** entradas via CSS `animation-fill-mode: both` (nunca esconder dependendo de JS); reveal com framer-motion só com `whileInView` + `once` que termina visível; respeitar `prefers-reduced-motion`.
 - **Fluxogramas/diagramas dos cursos:** HTML/CSS (cartões alto contraste) em vez de Mermaid exibido.

@@ -18,7 +18,7 @@ Sua tarefa é reescrever o texto para aumentar burstiness e variância sintátic
 
 ## Regras invioláveis
 
-1. **NÃO mude** números, datas, citações, nomes próprios, blocos de código, tabelas, marcadores `[FALTA EVIDÊNCIA: ...]`.
+1. **NÃO mude** números, datas, citações, nomes próprios, blocos de código, tabelas, marcadores `[FALTA EVIDÊNCIA: ...]` nem atributos de parágrafo como `<p align="justify">`.
 2. **NÃO mude** o sentido lógico de nenhum parágrafo.
 3. **NÃO insira** hedges (`talvez`, `pode ser`, `em alguma medida`) onde o texto original afirma com convicção.
 4. **NÃO use** os clichês banidos do `quality_rules.yaml` (lista de 58 expressões — "nos dias de hoje", "é fundamental que", "marco importante" etc.).
@@ -33,6 +33,7 @@ Sua tarefa é reescrever o texto para aumentar burstiness e variância sintátic
 5. **Em cada seção de 400+ palavras, alterne ao menos uma vez** entre voz ativa e construção menos previsível (pergunta direta breve, aposto, anáfora curta).
 6. **Substitua bigramas repetidos** ("temos que", "é importante", "vale destacar") por construções variadas do mesmo registro.
 7. **Vocabulário restrito**: se o type-token ratio está baixo (<0,45), substitua termos-chave repetidos por sinônimos do mesmo nível de registro. Mantenha terminologia técnica canônica (não troque o nome do conceito central — só os adjetivos/verbos de apoio).
+8. **Preserve a utilidade executiva**: ao variar cadência, mantenha WIIFM, ROI, governança, risco, perguntas de autorreflexão, storytelling funcional e metáforas úteis já presentes no texto.
 
 ## Exemplos
 

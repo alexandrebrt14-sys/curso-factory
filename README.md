@@ -279,6 +279,8 @@ O conteúdo produzido segue o padrão de publicações de referência:
 | **Harvard Business Review** | Profundidade analítica, insights baseados em evidências, tom propositivo |
 | **MIT Sloan Management Review** | Rigor acadêmico aplicado, frameworks de decisão, dados quantitativos |
 | **HSM Management** | Contextualização para o mercado brasileiro, cases locais e internacionais |
+| **IT Forum** | Tradução de tendências tecnológicas em impacto operacional, ROI e governança |
+| **Revista Exame** | Decisão estratégica sob estresse corporativo e competências essenciais de gestão |
 
 ### Andragogia (Malcolm Knowles)
 
@@ -290,6 +292,8 @@ Todo conteúdo aplica os 6 princípios da aprendizagem de adultos:
 4. **Prontidão** — demonstração de aplicabilidade imediata no contexto de trabalho: "aplique hoje", "na próxima reunião"
 5. **Orientação a problemas** — conteúdo organizado em torno de problemas reais, não taxonomias abstratas. Comece com o problema, depois a solução.
 6. **Motivação intrínseca** — aprendizado conectado com crescimento profissional e domínio
+
+Para o cliente `default`, o leitor presumido é um decisor sênior (CEO, CIO, Conselho, fundador ou líder funcional). O primeiro parágrafo deve responder ao WIIFM executivo: qual é o retorno prático do tempo de leitura. Cada módulo deve incluir 2-3 perguntas de autorreflexão executiva ligadas a maturidade institucional, governança, ROI, risco ou alocação de recursos.
 
 ### Taxonomia de Bloom nos Objetivos
 
@@ -314,6 +318,7 @@ Cada módulo inclui obrigatoriamente:
 - **Negrito** para termos-chave na primeira ocorrência
 - **Blocos de citação (>)** para insights centrais e conceitos memoráveis
 - **Exercícios** com progressão de complexidade (Taxonomia de Bloom), contexto profissional real e critérios de avaliação
+- **Parágrafos justificados**: `text-justify` no React/Tailwind; `<p align="justify">` em export HTML/PDF/e-mail sem Tailwind
 
 ### Expressões Proibidas
 

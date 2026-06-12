@@ -92,6 +92,12 @@ Verifique e CORRIJA:
 - **Tom e registro**: analítico e propositivo, nunca condescendente ou genérico? Elimine "vamos aprender", "agora você vai entender"
 - **Coerência terminológica**: o mesmo conceito usa o mesmo termo ao longo de todo o curso?
 - **Frases de transição**: as seções fluem naturalmente ou parecem blocos desconectados? Adicione transições onde faltar
+- **Didática e utilidade**: cada parágrafo ensina uma distinção, mecanismo, decisão, exemplo, risco ou próximo passo? Se for apenas preenchimento, reescreva ou elimine
+- **Storytelling funcional**: conceitos centrais têm microcasos, cenas profissionais ou tensão de decisão quando isso melhora a compreensão?
+- **Metáforas inteligentes**: analogias ajudam o adulto a entender o conceito e retornam ao ponto técnico? Elimine metáfora decorativa, grandiosa ou vaga
+- **WIIFM executivo**: o primeiro parágrafo explicita o ROI do tempo de leitura, a decisão em jogo, o risco ou o ganho prático?
+- **Tradução executiva**: tecnologia e tendências foram convertidas em impacto operacional, ROI, governança e trade-offs?
+- **Leitor sênior**: o texto respeita um público CEO/CIO/Conselho, sem definir jargão básico nem assumir postura professoral?
 
 **Clichês a ELIMINAR** (substitua por frases com conteúdo real):
 - "nos dias de hoje" → use o ano específico ou período
@@ -117,7 +123,7 @@ O conteúdo é renderizado por um componente `FormattedText` que interpreta marc
 - `1. texto` → lista numerada com número azul
 - `| col | col |` → tabela estilizada com header uppercase e zebra striping
 - `> texto` → blockquote com borda lateral azul e fundo destacado
-- Texto simples → parágrafo com text-justify
+- Texto simples → parágrafo com text-justify. Em HTML/PDF/e-mail sem Tailwind, cada parágrafo de corpo deve sair como `<p align="justify">...</p>`
 
 **Verificações obrigatórias:**
 - **Tabelas comparativas**: ao menos UMA por módulo. Formato: linhas com pipes separadas por `\n`. Se faltar, ADICIONE.
@@ -127,6 +133,7 @@ O conteúdo é renderizado por um componente `FormattedText` que interpreta marc
 - **Alternância de formatos**: nunca mais de 3 parágrafos seguidos sem algum elemento visual (tabela, lista, blockquote ou sub-heading). Se encontrar blocos monótonos, QUEBRE com elementos visuais.
 - **Listas com `-- `**: verificar que usam `-- ` (dois hífens), NUNCA `- ` (um hífen).
 - **Parágrafos**: máximo 5 linhas cada, uma ideia central por parágrafo. Quebre parágrafos longos.
+- **Justificação**: se houver HTML cru no conteúdo revisado, corrija todo `<p>` de corpo sem alinhamento para `<p align="justify">`. Em Markdown, garanta que o parágrafo continue como texto simples para o `FormattedText` renderizar com `text-justify`.
 - **PROIBIDO**: emojis em qualquer parte do conteúdo
 
 ### 3.5. Auditoria anti-"cara de IA" (Humanizador 2.6.2) — NOVA CAMADA
@@ -174,6 +181,7 @@ Verifique se CADA módulo contém:
 - **Prontidão**: há exemplos de aplicabilidade imediata no trabalho?
 - **Orientação a problemas**: o conteúdo parte de problemas reais, não de definições abstratas?
 - **Motivação intrínseca**: o aprendizado se conecta com crescimento profissional?
+- **Autorreflexão executiva**: há 2-3 perguntas estratégicas distribuídas entre seções, ligadas a maturidade institucional, governança, ROI, risco ou alocação de recursos?
 
 Se algum princípio estiver ausente, ADICIONE o conteúdo necessário.
 
@@ -226,6 +234,7 @@ Modificações: [número total de correções]
 Correções de acentuação: [número]
 Correções editoriais: [número]
 Correções de formatação: [número]
+Correções de didática/storytelling/metáforas: [número]
 Tabelas adicionadas: [número]
 Exercícios corrigidos/adicionados: [número]
 Clichês removidos: [número]

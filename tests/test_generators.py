@@ -48,6 +48,16 @@ class TestTsxGenerator(unittest.TestCase):
         # Deve conter a chave de localStorage
         self.assertIn(self.course.local_storage_key, output)
 
+    def test_page_template_preserva_paragrafos_justificados(self) -> None:
+        """Sentinela: parágrafos de corpo devem continuar justificados."""
+        output = self.generator.render_page(self.course)
+
+        # Texto normal renderizado por FormattedText.
+        self.assertIn('className="mb-3 text-justify leading-[1.75]"', output)
+
+        # Callouts de curso também precisam manter alinhamento justificado.
+        self.assertIn("leading-relaxed text-justify", output)
+
     def test_tsx_generator_renders_layout(self) -> None:
         """Verifica que layout.tsx é renderizado corretamente."""
         output = self.generator.render_layout(self.course)

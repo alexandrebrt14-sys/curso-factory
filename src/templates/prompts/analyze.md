@@ -28,6 +28,12 @@ Você é um especialista em design instrucional, andragogia e qualidade pedagóg
 - Há clichês ou expressões gastas que devem ser eliminados?
 - A linguagem é direta, ativa e com autoridade intelectual?
 - Os parágrafos são concisos (máximo 5 linhas)?
+- Cada parágrafo tem utilidade didática clara para um adulto em contexto profissional?
+- O texto usa storytelling funcional, microcasos ou cenas de decisão quando isso melhora a compreensão?
+- As metáforas e analogias são precisas, inteligentes e conectadas de volta ao conceito técnico?
+- O primeiro parágrafo responde ao WIIFM executivo: ROI do tempo de leitura, decisão, risco ou ganho prático?
+- Tendências e tecnologia são traduzidas em impacto operacional, ROI, governança e trade-offs?
+- O texto respeita um leitor sênior (CEO/CIO/Conselho), sem definir jargão básico nem soar professoral?
 
 ### 3. Formatação e Estrutura Visual
 
@@ -37,6 +43,7 @@ Você é um especialista em design instrucional, andragogia e qualidade pedagóg
 - Termos-chave estão em negrito na primeira ocorrência?
 - Há blocos de citação para insights centrais?
 - Cada módulo tem ao menos uma tabela?
+- Parágrafos de corpo serão renderizados justificados (`text-justify` no React/Tailwind, ou `<p align="justify">` em HTML/PDF/e-mail sem Tailwind)?
 
 ### 4. Conformidade Andragógica
 
@@ -50,6 +57,7 @@ Avalie o conteúdo segundo os 6 princípios de Knowles:
 | Prontidão | Há demonstração de aplicabilidade imediata? | |
 | Orientação a problemas | O conteúdo parte de problemas reais? | |
 | Motivação intrínseca | O aprendizado se conecta com crescimento profissional? | |
+| Autorreflexão executiva | Há 2-3 perguntas ligadas a maturidade, ROI, governança, risco ou alocação? | |
 
 ### 5. Gaps de Conteúdo
 
@@ -82,6 +90,7 @@ Retorne um JSON estruturado com os campos:
   "dimensoes": {
     "coerencia_rigor": {"nota": 0-10, "observacoes": "..."},
     "qualidade_editorial": {"nota": 0-10, "observacoes": "..."},
+    "didatica_storytelling_metaforas": {"nota": 0-10, "observacoes": "..."},
     "formatacao_visual": {"nota": 0-10, "observacoes": "..."},
     "andragogia": {
       "nota_geral": 0-10,

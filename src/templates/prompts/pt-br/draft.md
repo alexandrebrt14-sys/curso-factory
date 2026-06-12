@@ -84,12 +84,31 @@ Aplique rigorosamente os seis princípios da aprendizagem de adultos em CADA mó
 5. **Orientação para problemas**: organize o conteúdo em torno de problemas reais, não de taxonomias abstratas. Comece com o problema, depois apresente a solução. Nunca comece um tópico com "A definição de X é...".
 6. **Motivação intrínseca**: conecte o aprendizado com crescimento profissional, autonomia e domínio. Mostre como o conhecimento diferencia o profissional no mercado.
 
+## Idioma, Didática, Storytelling e Metáforas — INVIOLÁVEL
+
+Todo parágrafo deve ser escrito em **Português do Brasil com acentuação ortográfica completa**. Não aceite aproximações sem acento ("voce", "nao", "conteudo", "modulo") em texto de leitura humana. Preserve ASCII apenas em URLs, slugs, imports, variáveis, atributos JSX/HTML, nomes de arquivo e blocos de código.
+
+Cada parágrafo precisa passar no teste de utilidade: ele deve ensinar uma distinção, explicar um mecanismo, orientar uma decisão, trazer um exemplo profissional, alertar para um risco ou mostrar um próximo passo. Se o parágrafo apenas "preenche espaço", reescreva ou elimine.
+
+Use **storytelling funcional** em cada módulo: abra conceitos importantes com uma cena curta, tensão de decisão, caso real ou micro-história profissional. A história não substitui evidência; ela prepara o terreno para o dado, a tabela, o framework ou a aplicação.
+
+Use **metáforas inteligentes** com parcimônia: analogias devem reduzir carga cognitiva e conectar o conceito a uma experiência que o adulto já conhece. Sempre feche a metáfora voltando ao conceito técnico. Metáfora decorativa, grandiosa ou vaga é proibida.
+
+Leitor default: escreva para decisores experientes (CEO, CIO, CMO, Conselho, fundador ou líder funcional sênior). Presuma repertório de gestão. Nunca desperdice espaço definindo jargão básico de mercado; traduza tecnologia e tendências complexas em impacto operacional, ROI, governança, risco, trade-offs e escolhas difíceis de liderança.
+
+O primeiro parágrafo deve responder ao WIIFM executivo: "qual é o retorno prático do meu tempo de leitura?". Ele precisa explicitar a decisão, risco ou ganho que o leitor poderá avaliar ao terminar a seção. Introduções sem floreios: tese, tensão e valor prático antes de contextualização.
+
+Distribua **2-3 perguntas de autorreflexão executiva** ao longo do módulo. Elas devem provocar autoavaliação institucional, não servir como pergunta retórica vazia. Bons temas: maturidade operacional, governança, ROI, exposição a risco, alocação de capital, capacidade de execução e custo de não decidir.
+
+Alinhamento justificado é obrigatório. Neste pipeline, texto normal em Markdown é renderizado pelo `FormattedText` como parágrafo justificado (`text-justify`). Se a saída solicitada for HTML cru, PDF ou e-mail sem Tailwind, cada parágrafo de corpo deve ser emitido literalmente como `<p align="justify">...</p>`.
+
 ## Estrutura obrigatória do módulo
 
 ### 1. Abertura com Impacto (250-350 palavras)
 
-- Comece com um dado surpreendente, um estudo de caso real ou uma pergunta provocativa (estilo HBR)
+- Comece com um dado surpreendente, um estudo de caso real ou uma pergunta executiva de alta qualidade (estilo HBR/MIT Sloan), já explicitando o ROI do tempo de leitura
 - Apresente o problema central que o módulo resolve, com dados concretos
+- Traduza o problema em impacto operacional, ROI, governança, risco ou decisão sob estresse corporativo
 - Conecte com o módulo anterior mostrando a progressão lógica (exceto módulo 1)
 - Encerre com os **Objetivos de Aprendizagem** em formato de lista numerada, usando EXCLUSIVAMENTE verbos de ação da Taxonomia de Bloom:
 
@@ -196,8 +215,13 @@ Exemplo:
 
 - Tom analítico e propositivo — nunca superficial, genérico ou "de blog"
 - Linguagem direta, ativa, com autoridade intelectual
+- Tom profissional quente: humano, firme e próximo, sem informalidade solta
+- Clareza jornalística: linguagem enxuta, introduções sem floreios e embasamento factual incontestável
 - Parágrafos concisos (máximo 5 linhas) com uma ideia central por parágrafo
 - Frases de transição entre seções para manter o fluxo narrativo
+- Didática adulta: todo parágrafo deve ser útil, aplicável e conectado a problema real
+- Storytelling de negócios e metáforas corporativas reais só entram quando ajudam a explicar mecanismo, decisão ou risco
+- Opinião editorial é permitida quando está ancorada em evidência, trade-off claro e consequência prática
 - PROIBIDO: clichês e frases vazias
 
 **Expressões PROIBIDAS** (elimine TODAS):
@@ -233,7 +257,7 @@ O conteúdo será renderizado por um componente `FormattedText` que interpreta a
   IMPORTANTE: tabelas devem ser formatadas como UMA ÚNICA LINHA com `\n` separando as rows, pois estão dentro de strings JavaScript.
 - **Blockquotes**: linhas que começam com `> ` são renderizadas como citação com borda lateral azul e fundo destacado. Use para insights centrais e conceitos memoráveis.
 - **Blocos de código**: use type "code" com language para exemplos técnicos.
-- **Parágrafos**: texto normal é renderizado com `text-justify` e `leading-[1.75]` para leitura confortável.
+- **Parágrafos**: texto normal é renderizado com `text-justify` e `leading-[1.75]` para leitura confortável. Em export HTML/PDF/e-mail sem Tailwind, usar `<p align="justify">` em todos os parágrafos de corpo.
 - **Sem emojis**: proibido em qualquer parte do conteúdo.
 
 ### Layout e Legibilidade (Padrão Microsoft Learn + Salesforce Trailhead)
@@ -320,6 +344,14 @@ Antes de entregar o módulo, verifique CADA item:
 - [ ] Negrito em termos-chave na primeira ocorrência
 - [ ] Hierarquia de títulos H2 > H3 > H4 sem pulos
 - [ ] Parágrafos com no máximo 5 linhas
+- [ ] Todo parágrafo está em Português do Brasil com acentuação completa
+- [ ] Todo parágrafo ensina algo útil, aplicável ou decisório para o aluno adulto
+- [ ] O módulo usa storytelling funcional ou microcaso quando isso melhora a compreensão
+- [ ] Metáforas/analogias são inteligentes, precisas e conectadas de volta ao conceito técnico
+- [ ] Primeiro parágrafo responde ao WIIFM executivo: ROI, risco, decisão ou ganho prático da leitura
+- [ ] Há 2-3 perguntas de autorreflexão executiva distribuídas entre seções
+- [ ] Tendências/tecnologia foram traduzidas em impacto operacional, ROI e governança
+- [ ] Parágrafos de corpo serão renderizados justificados; em HTML cru/export, usar `<p align="justify">`
 - [ ] Cadência burstiness alta: amostre 5 parágrafos e confirme alternância de faixas (curta 4-10, média 11-22, longa 23-35)
 - [ ] Pelo menos 1 frase de 6 palavras ou menos em cada parágrafo
 - [ ] Nenhum clichê da lista proibida
