@@ -33,3 +33,9 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Memoria de decisoes — rascunhos locais de captura (candidate-gate), nao autoritativos
+wiki/decisions/candidates/
+# Claude Code — estado local (settings.json e versionado de proposito)
+.claude/worktrees/
+.claude/settings.local.json
