@@ -99,9 +99,29 @@ Em **5-jun-2026** (versões localizadas 9–10/jun), o Search Central publicou o
 
 ---
 
-## 4. Mecânica de citação e arquitetura (capítulo-base AWR)
+## 4. Mecânica de citação e arquitetura (série canônica AWR — Fiorelli)
 
-- **"LLM Architecture and Mechanics"** — Gianluca Fiorelli, AWR, 21-jan-2026 (1º capítulo do "Comprehensive Guide to Generative AI"; base de referência indicada pelo cliente). LLM = máquina probabilística que minimiza perplexidade da previsão do próximo token (não banco de dados). Tokenização (~100 tokens ≈ 75 palavras), embeddings densos (1.536/3.072 dim), atenção **O(n²)** como gargalo, speculative decoding (latência 2–3×), context caching (KV). **Implicação GEO:** fluência do texto e densidade de entidades (tokens semanticamente próximos) facilitam a recuperação no espaço vetorial.
+> **Referência indicada (2×) pelo cliente.** O "Comprehensive Guide to Generative AI" de Gianluca Fiorelli (Advanced Web Ranking, base publicada 21-jan-2026, índice em `advancedwebranking.com/seo/generative-ai-guide`) é o tratado de referência sobre a mecânica que sustenta GEO. **7 capítulos** — fundamento técnico atemporal que ancora os achados datados deste período:
+
+| # | Capítulo | URL (`/seo/...`) | Núcleo para GEO |
+|---|---|---|---|
+| 1 | **The Model: LLM Architecture and Mechanics** | `llm-architecture-and-mechanics` | LLM = máquina probabilística que minimiza perplexidade (não banco de dados); tokenização (~100 tokens ≈ 75 palavras), embeddings densos (1.536/3.072 dim), atenção **O(n²)** como gargalo, positional encoding, monosemanticidade/interpretabilidade, speculative decoding (latência 2–3×), context caching (KV). |
+| 2 | **The Agent: Reasoning, Planning, and Action** | `ai-agent-reasoning-and-action` | Agente = perfil + memória (curta/longa) + planejamento + ferramentas; **tool/function calling** (JSON estruturado, com risco de prompt injection); frameworks de raciocínio **CoT / Tree-of-Thoughts / ReAct** (Thought→Action→Observation). |
+| 3 | **The Library: Neural Search and Retrieval Architectures** | `neural-search-and-retrieval-architectures` | **RAG** (open-book), Agentic RAG (multi-passo, autocorreção), **GraphRAG**; algoritmos: Dense Retrieval (semântica), **BM25** (sparse/técnico — "nunca descartar"), **Hybrid (fusão RRF)**, HyDE, query expansion. "O algoritmo escolhido determina o que é encontrado e o que é perdido." |
+| 4 | **The Strategy: SEO for AI Search** | `build-strategy-for-ai-search` | **Framework de 4 pilares** (abaixo) + **estratégia em 4 camadas**; otimizar para **inclusão na janela de contexto**, não só posição no SERP. |
+| 5 | **The Technical Foundation** | `technical-seo-for-ai-search` | Acessibilidade total a crawlers/retrievers/agentes (camada 1). |
+| 6 | **Content and AI Search** | `content-ai-search` | Design semântico: entidades, hubs, **chunks coerentes** (camada 2). |
+| 7 | **Amplification** | `amplification-ai-search-seo` | Distribuição: evidência off-site, salience de marca (camada 3). |
+
+**Os 4 pilares (Cap. 4) — vocabulário canônico de auditoria GEO:**
+1. **Retrieval** — "o sistema consegue te *encontrar*?" (neural search + RAG).
+2. **Reasoning** — "consegue *usar* seu conteúdo para pensar?" (clareza/estrutura para CoT).
+3. **Agency** — "consegue *agir* através de você?" (APIs, tool calling, prontidão B2A).
+4. **Authority & Memory** — "*confia* em você?" (knowledge graphs, entidades, salience de marca).
+
+**As 4 camadas de execução:** (1) fundação técnica → (2) conteúdo & arquitetura semântica → (3) amplificação/sinais off-site → (4) medição & iteração (dados clássicos + análise de respostas de IA).
+
+**Convergência com o resto desta wave:** os 4 pilares casam 1:1 com (a) o pipeline de 4 estágios da Wave 15B §2 (retrieval = recall híbrido BM25+vetor; reasoning/authority = reranking + atribuição com viés a domínios confiáveis), (b) os preditores de citação de `2605.25517` (relevância tópica + posição alimentam Retrieval; recência/preço explícito alimentam Reasoning), e (c) a tese EcoGEO `2605.12887` (Agency/Authority = ecossistema de evidência e trajetória do agente, não página isolada). **Aplicação:** usar os 4 pilares como eixos do relatório de auditoria de cliente (uma nota por pilar) e a sequência de 4 camadas como ordem de execução do projeto.
 - **AWR / Aimee Jurenka** (11-mai-2026, "engineering SEO ecosystem for AI search era"): respostas de IA variam entre execuções → **single-shot prompt tracking não basta**; medir AI visibility exige múltiplas execuções e média de mention rate. Caso citado: 4–5 posts por categoria, 87 links/visitas via PR, marca recuperada em 2–3 semanas.
 - **Consenso de pipeline (corrobora 15B):** indexação híbrida (lexical BM25 + vetorial + grafo de entidades) → recall híbrido + query fan-out → reranking neural (cross-encoder) + seleção de chunks citáveis → geração + atribuição com viés a domínios confiáveis.
 
