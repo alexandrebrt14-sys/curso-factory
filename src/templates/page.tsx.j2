@@ -840,7 +840,7 @@ export default function {{ component_name }}() {
                 {/* Intro card */}
                 <div className="p-6 rounded-[var(--radius-lg)] bg-[var(--card-dark)] text-white mb-6">
                   <h2 className="text-xl font-bold mb-3">O que você vai aprender</h2>
-                  <p className="text-sm text-[#a6adc8] leading-relaxed mb-4">
+                  <p className="text-sm text-[#a6adc8] leading-relaxed mb-4 text-justify">
                     {{ descricao | js_escape }}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -920,7 +920,7 @@ export default function {{ component_name }}() {
                     <p className="text-xs text-[var(--accent)] font-semibold mb-2">
                       {{ autor_credencial | js_escape }}
                     </p>
-                    <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                    <p className="text-sm text-[var(--text-muted)] leading-relaxed text-justify">
                       {{ company_description | js_escape }}
                     </p>
                   </div>
