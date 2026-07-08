@@ -65,6 +65,39 @@ jobs:
               print(f'{cid}: OK ({c.author.name})')
           "
 
+      - name: CLI smoke (sem rede)
+        env:
+          OPENAI_API_KEY: "test-key-for-import-only"
+          ANTHROPIC_API_KEY: "test-key-for-import-only"
+          GOOGLE_API_KEY: "test-key-for-import-only"
+          GROQ_API_KEY: "test-key-for-import-only"
+          PERPLEXITY_API_KEY: "test-key-for-import-only"
+        run: |
+          python cli.py --help
+          python cli.py clients
+          python cli.py cost-report
+          python cli.py cache-clear
+          python cli.py emit-catalog --output-dir /tmp/catalog
+
       - name: Run pytest
         run: |
           pytest --tb=short -v
+
+      - name: Sentinela de bateria (>= 74 testes)
+        run: |
+          python - <<'EOF'
+          import re
+          import subprocess
+
+          out = subprocess.run(
+              ["pytest", "--collect-only", "-q"],
+              capture_output=True,
+              text=True,
+              check=False,
+          ).stdout
+          match = re.search(r"(\d+) tests? collected", out)
+          assert match, f"nao consegui ler a contagem de testes:\n{out[-500:]}"
+          total = int(match.group(1))
+          assert total >= 74, f"FAIL: bateria encolheu para {total} testes (minimo 74)"
+          print(f"OK: {total} testes coletados (minimo 74)")
+          EOF

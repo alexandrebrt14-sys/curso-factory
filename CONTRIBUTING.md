@@ -20,6 +20,23 @@ cp .env.example .env         # preencha as 5 chaves de API
 python -m pytest tests/ -v   # 74 testes verde
 ```
 
+### Ativando hooks locais (obrigatório)
+
+O repositório traz um hook de pre-commit (`.githooks/pre-commit`) que roda o
+`secret_guard` (`.tools/secret_guard.py`) e bloqueia commits contendo chaves de
+API, arquivos `.env` ou outros segredos. Ative uma única vez após o clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Para conferir que está ativo, tente commitar um arquivo com uma chave falsa no
+formato real (por exemplo `sk-proj-` seguida de 40+ caracteres): o commit deve
+ser bloqueado com a mensagem `COMMIT BLOQUEADO`. O mesmo tipo de varredura roda
+server-side no CI via gitleaks (`security-scan.yml`), mas o hook local evita
+que o segredo chegue ao histórico remoto. Cobertura de regressão em
+`tests/test_secret_guard.py`.
+
 ## Princípios não negociáveis
 
 ### 1. Idioma
