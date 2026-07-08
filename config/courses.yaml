@@ -414,3 +414,26 @@ courses:
         descricao: "Zircônia Swarovski, Preciosa, nacional. Como identificar qualidade. Por que zircônia de qualidade eleva a percepção de valor da peça e justifica o preço."
       - titulo: "Coleções Herreira: filosofia, naming e storytelling"
         descricao: "Essência, Leveza, África, Celebrare, Valor do Tempo, Paty 4.4, Vitesse, Cápsula do Amor. Conceito por trás de cada coleção. Como usar o naming nas vendas sem soar decorado."
+
+  - slug: agentic-operating-model
+    nome: "O Novo Mundo de Fazer Software: do Agile ao Agentic Operating Model"
+    nivel: avançado
+    modulos: 18
+    descricao: "Como redesenhar o delivery para delegar, orquestrar, validar e governar trabalho feito por agentes de IA: Validation Engineering, Definition of Verified, TDD como controle de agente, evals, governança L0-L5 e métricas de board (Trust Velocity)."
+    tags: [agentic-coding, validation-engineering, tdd, governança-de-ia, model-routing, evals, sdd, métricas-board]
+    prerequisitos: [setup-claude-code]
+    duracao_estimada: "~360 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "A Virada Agentic: da Assistência à Orquestração"
+        descricao: "A unidade de produção deixa de ser dev/hora e vira mudança verificada; Validation Engineering emerge como disciplina; vendors convergem para o humano operando um control plane de agentes."
+      - titulo: "Agentic Delivery: o Novo SDLC e a Orquestração por Camadas"
+        descricao: "O novo fluxo parte de intenção e critérios de sucesso, passa por um orquestrador que planeja e valida, e distribui execução por camadas de modelos — model routing como disciplina econômica."
+      - titulo: "Validation Engineering na Prática: Evidência em Vez de Afirmação"
+        descricao: "Quality Evidence Stack em dez camadas, Definition of Verified 2.0 com checklist executivo de 15 itens e Evidence Manifest."
+      - titulo: "Controle de Agentes: TDD, Revisão de Testes e Evals em Produção"
+        descricao: "TDD como mecanismo de controle de agente; testes gerados por IA exigem revisão (TDAD); evals, políticas e telemetria; Nightly Agentic Verification."
+      - titulo: "Humanos, Governança e Specs: o Sistema Nervoso do Operating Model"
+        descricao: "O humano muda de função; autonomia proporcional ao risco em seis níveis L0-L5 com guardrails; SDD e Spec Acceptance Pack."
+      - titulo: "O Operating Model Completo: Forecast, Métricas de Board, Tiny Teams e Cadência"
+        descricao: "Forecast probabilístico, painel AI-native com Trust Velocity, tiny teams com seis novos papéis, operating model em cinco camadas e cadência do daily ao quarterly."
