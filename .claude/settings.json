@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/capture_candidate.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

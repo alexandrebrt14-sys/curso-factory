@@ -1,8 +1,27 @@
 # curso-factory — Instruções Claude Code
 
+## Memória de decisões do projeto
+
+Decisões de arquitetura, erros-a-evitar e insights vivem em `wiki/decisions/` como
+arquivos `.md` versionados — a fonte da verdade, com índice navegável em
+[`wiki/decisions/INDEX.md`](wiki/decisions/INDEX.md) (inclui os ADRs existentes).
+Formato: **Verdade Compilada** (topo, reescrito quando o entendimento muda) + **Linha
+do Tempo** (append-only). Guia e template em `wiki/decisions/README.md`.
+
+Três disciplinas ao registrar conhecimento:
+1. **Dedup antes de gravar** — se a decisão já existe, atualize-a; não duplique.
+2. **Cross-link na escrita** — toda decisão nova linka 2-3 relacionadas via `[[nome]]`.
+3. **Candidate-gate** — o hook de fim de sessão rascunha em `candidates/` (não
+   versionado, não autoritativo); promova destilando numa decisão real.
+
+Orçamento de contexto: cada linha do `INDEX.md` < ~200 caracteres; o detalhe mora no
+arquivo da decisão, nunca no índice. O histórico datado de abril/2026 foi movido para
+`wiki/decisions/CLAUDE-CHANGELOG.md`.
+
 ## REGRA #0 — IDIOMA
 
 Todo conteúdo gerado pelo orquestrador em PT-BR com acentuação completa. Exceção: código, commits, docstrings, identifiers técnicos.
+
 
 ## REGRA #1 — Contexto enriquecido GEO/SEO 2026 (mandatório)
 
@@ -45,7 +64,14 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 **Wave Junho 2026 (07-06-2026)** — adiciona aos anteriores sem substituir:
 - [`docs/research/geo-wave-junho-2026/GEO_WAVE_JUNHO_2026_CANONICAL.md`](docs/research/geo-wave-junho-2026/GEO_WAVE_JUNHO_2026_CANONICAL.md) — **doc canônico (300 linhas)**, delta 03-jun → 07-jun, gerado pelo orchestrator 5 LLMs (4 deep-research Perplexity + 1 board). Vira material didático direto: (a) **framework de 5 camadas de medição de GEO** = espinha de uma trilha "Como medir GEO" (1 aula por camada) + aula "Regra dos 9 KPIs e a língua do RevOps"; (b) **módulo novo "Ecossistema de ferramentas de AI Visibility 2026"** (Profound/Peec/Ahrefs/Semrush/Scrunch-Sitecore US$225M/Conductor/Clarity — o que cada uma habilita em qual camada; caso Digiday: "medição é triangulação, não número único"); (c) **fundamento técnico da rubrica de redação** (`GEO_REDACAO_CHECKLIST_2026.md`) agora verificável via ~25 papers da camada semântica/vetorial — chunkability (`2603.06976`), citation **absorption** vs selection (`2604.25707`, dataset `geo-citation-lab`), self-containment, alinhamento semântico; (d) fatores-gatekeeper de `2605.25517` (recência, número específico, match estrito de tópico) como checklist para `writer.py`/`reviewer.py`; (e) aula avançada "O motor é um agente, não um rankeador" (EcoGEO `2605.12887` + agentes sintéticos de teste com RAG local). Tags `classify.md` ganham `citation-absorption` e `entity-embedding`. **§7.3 é a aplicação específica deste repo** (4 módulos novos + base técnica da rubrica + prompts). Raw em [`raw/`](docs/research/geo-wave-junho-2026/raw/).
 
-Citar `§X.Y` dos KBs/INCREMENT/WAVE ao tomar decisões. Atualizar trimestralmente (próxima: agosto/2026).
+**Wave Junho 15B 2026 (15-06-2026, 2ª passada)** — adiciona aos anteriores; vira material didático direto:
+- [`docs/research/geo-wave-junho-15b-2026/GEO_WAVE_JUNHO_15B_2026_CANONICAL.md`](docs/research/geo-wave-junho-15b-2026/GEO_WAVE_JUNHO_15B_2026_CANONICAL.md) — **doc canônico**, pesquisa viva cruzada (Perplexity `sonar-pro` com citações reais — raws `P1..P7.json` — + WebSearch/WebFetch do Claude com fonte primária). Aulas/módulos novos: (a) **aula "Como o motor escolhe a fonte" (pipeline de 4 estágios, §2)** — indexação BM25+vetor+grafo → recall híbrido + **query fan-out** → reranking cross-encoder + chunks citáveis → geração+atribuição; exercícios de answer capsule (40–80 palavras), chunking semântico e cobertura de fan-out; (b) **módulo de medição corrigido (§3)** — taxonomia SoV / **Answer Inclusion Rate** / Citation Rate ("Share of Answer" NÃO é termo técnico) + leitura crítica de benchmarks (RCT ISB-CMU −38% vs estudo observacional vs vendor claim — sempre nomear metodologia); (c) **atualização do módulo de ferramentas (§4)** — Profound US$1bi, **Scrunch→Sitecore (3-jun)**, Semrush×Perplexity MCP nativo, **Microsoft Clarity AI Citations grátis** como porta de entrada; ressalva "cada SoV não é comparável entre fornecedores"; (d) **aula de guardrail (Lily Ray, §6)** — táticas populares de GEO tratadas como spam (prompt injection/scaled content) → entra no prompt do `writer.py`/`reviewer.py` como proibição; (e) fundamento da rubrica reforçado por `2605.25517` (relevância tópica + recência + especificidade > formatação) e `2603.06976` (chunking semântico vence fixo-por-caractere). **§7.3 = aplicação deste repo** (3 módulos + base técnica + guardrails). **CORREÇÕES (§8):** "Share of Answer" não normalizado; AIPREF = header `Content-Usage` + robots.txt (NÃO `/.well-known/ai-preferences`); citar GEO-16/`2509.08919` como **set/2025**. Lembrete do repo: parágrafos justificados + acentuação PT-BR completa (carimbar `COPY_PROMPT_PREFIX.md` em sub-agents de geração longa). Raws em [`raw/`](docs/research/geo-wave-junho-15b-2026/raw/).
+
+**Wave Junho 19 2026 (19-06-2026)** — adiciona aos anteriores; pesquisa profunda em 3 LLMs de ponta com web ao vivo (OpenAI `gpt-5.5` Responses+`web_search`, Gemini 3.1 Pro grounding, Perplexity `sonar-deep-research`) + doublecheck do Claude:
+- [`docs/research/geo-wave-junho-19-2026/GEO_WAVE_JUNHO_19_2026_CANONICAL.md`](docs/research/geo-wave-junho-19-2026/GEO_WAVE_JUNHO_19_2026_CANONICAL.md) — **doc canônico delta**, foco no que a 15B não tinha: (a) **Google oficializa "GEO para Search é SEO"** (guia AI optimization do Search Central, 15-mai/15-jun) revelando RAG + **query fan-out** e listando 5 táticas "não precisa fazer" (llms.txt, markup-p/-IA, chunking, reescrita-p/-IA, overfoco em structured data) → aula "O que o Google realmente disse sobre GEO"; (b) **estudos causais Ahrefs que derrubam mitos (§2/§7)** — schema NÃO move citação (1.885 páginas diff-in-diff: AIO −4,6%) e 97% dos llms.txt nunca recebem requisição (137k domínios) → módulo "Anti-clichês de GEO: o que a evidência causal diz"; (c) **infra de medição (§5)** — GA4 canal "AI Assistant", GSC AI reports (impressão, sem CTR) + opt-out UK; (d) papers novos `2605.12887` EcoGEO (ecossistema de evidência) e `2605.21948` SCI-Defense; (e) comentários (Michael King "naive and self-serving", Roger Lynch "planejar como se o tráfego fosse zero"). **§7 = tabela de desmistificações** (carimbar no `reviewer.py` como proibições de copy). **§8 = aplicação direta nos ativos.** Raws em [`raw/`](docs/research/geo-wave-junho-19-2026/raw/).
+
+Citar `§X.Y` dos KBs/INCREMENT/WAVE ao tomar decisões. **Em conflito, a Wave Junho 19 2026 (§7) prevalece sobre a 15B nos itens corrigidos (schema, llms.txt, "GEO = camada técnica separada"); fora desses, a Wave 15B (§8) segue valendo.** Atualizar trimestralmente (próxima: agosto/2026).
+
 
 ## 2026-06-03 — Citabilidade GEO operacional + KB V3 (rubrica de redação que vira gate)
 
@@ -67,6 +93,7 @@ Incremento que **fecha o gap** entre a doutrina de GEO (que o repo já tinha em 
 
 **Aplicação no pipeline (atualizada):** o redator (GPT-4o) recebe a rubrica carimbada; o gate conta os mínimos; o classificador emite as tags GEO; o revisor (Claude) trata `[FALTA EVIDÊNCIA]` para garantir Cite Sources reais (GhostCite mostra 14-95% de citações fabricadas em LLM — fonte verificável virou diferencial de GEO, não só higiene). Para ligar em outro cliente: bloco `geo_2026` no `client.yaml`.
 
+
 ## 2026-05-20 — Incremento canônico pós Google I/O 2026 (SEO+GEO+AEO+B2A)
 
 Adicionado em `docs/SEO_GEO_INCREMENT_20260520.md` o material consolidado de 3 fontes canônicas datadas mai/2026 sobre o estado da arte SEO+GEO+AEO+B2A pós Google I/O 2026 (15-mai-2026). **Não substitui** os 5 docs canônicos existentes (`GEO_KNOWLEDGE_BASE_2026.md`, `_V2`, `SEO_KNOWLEDGE_BASE_2026.md`, `AI_DISCOVERY_STANDARDS_2026.md`, `GEO_50_CONCEITOS_CANONICAL.md`) — **complementa** com camada operacional: Master Prompt 5 Ondas executável, 38 camadas técnicas mapeadas, Princeton GEO playbook (lifts mensurados), Two-Phase JSON-LD theory, Entity Boundary Drift, 8 Query Fan-Out variant types de King, ASO/B2A com NLWeb+MCP, anti-padrões 2026 e templates prontos (robots.txt, JSON-LD, llms.txt).
@@ -79,90 +106,10 @@ Adicionado em `docs/SEO_GEO_INCREMENT_20260520.md` o material consolidado de 3 f
 - `content_checker.py`: validações opcionais Cite Sources count, Statistics count, Quotation count, Compression Fidelity, Schema-content parity (bloqueante)
 - `client.yaml`: campos `geo_2026.princeton_playbook_enabled`, `geo_2026.schema_authority_stack_enabled`, `geo_2026.b2a_pilot.{nlweb_endpoint,mcp_endpoint,openapi_spec_url}`
 
-## 2026-04-29 — Refactor profundo em 5 waves (base reusável para outros segmentos)
 
-Pivô para tornar o curso-factory base de arquitetura para portais educacionais em **outros segmentos**, sem fork. As waves:
+## Histórico (changelog)
 
-1. **Auditoria** — mapa de bugs (4 subcomandos do CLI quebrados por imports inexistentes), código morto (`unified_finops.py`, `_build_writer_context`), duplicações de prompt e divergências entre CLAUDE.md e código real.
-2. **Fundação** — CLI reescrito (`validate`, `cost-report`, `batch`, `cache-clear` agora funcionam; `cmd_cost_report` lê o log real do `CostTracker` em vez da API fictícia que existia antes). `writer.py` e `reviewer.py` adotam `**template_vars` para paridade com os outros 3 agents.
-3. **Consolidação** — `unified_finops.py` removido (zero referências). `Cache` plugado no `LLMClient` (cache hit antes de circuit/retry). Defaults "Alexandre Caramaschi" / "Brasil GEO" removidos de `models.py:CourseDefinition` (`""` em vez de hardcode — quem instancia injeta via `ClientContext`). `SchemaBuilder` ganha clamp `max(30, duracao)`. Scripts ad-hoc movidos para `scripts/legacy/`.
-4. **Testes** — bateria expandida de **24 → 74 testes**: `test_cli` (11), `test_parsers` (14), `test_converters` (7), `test_cost_cache` (8), `test_validators_smoke` (10). Cobre todos os 8 subcomandos, parser canônico, conversor de drafts, FinOps, accent_checker, quality_gate e voice_guard. Toda chamada `datetime.utcnow()` migrada para `datetime.now(timezone.utc)`.
-5. **Docs** — `docs/ARCHITECTURE.md` reescrito como guia portal-agnóstico (camadas, o que é reusável, o que é segmento-específico, gaps conhecidos). Para novo portal: copiar `config/clients/_template/`, preencher YAML, eventualmente ajustar prompts.
-
-**Estado final:** 74/74 pytest verde, 8/8 subcomandos do CLI funcionais, zero código morto detectado, zero default de identidade no model.
-
-## 2026-04-25 — Base de conhecimento GEO/AEO/Agentic Commerce
-
-Foi adicionada uma camada doutrinária permanente em [docs/knowledge/geo-aeo/](docs/knowledge/geo-aeo/) que sintetiza 25+ papers acadêmicos (2025–2026) em 30 instruções operacionais, 7 princípios mestres, 4 checklists e tabela de thresholds quantitativos.
-
-**Quando usar.** Cursos sobre GEO, AEO, marketing por IA, comércio agêntico, MCP/A2A, RAG, knowledge graphs ou qualquer tema correlato devem usar este corpus como fonte primária. Cada agente do pipeline tem responsabilidades específicas:
-
-- **Pesquisa (Perplexity)** → fontes-âncora aceitas em `50-fontes-e-links.md`. Toda afirmação factual deve casar com pelo menos um paper deste catálogo.
-- **Redação (GPT-4o)** → princípios de `00-principios-mestres.md`, estrutura TL;DR/BLUF de `31-checklist-reescrita.md`, densidade de entidades 1/100 palavras (Instrução 17).
-- **Análise (Gemini)** → verificar os 16 pilares de `30-checklist-auditoria-geo16.md` em cada módulo.
-- **Classificação (Groq)** → tags com termos canônicos do `02-glossario.md`.
-- **Revisão (Claude)** → varredura final contra `01-anti-patterns.md`.
-
-**Princípio operacional.** Em conflito entre uma diretiva tática e um princípio mestre, **prevalece o princípio mestre**. A tese central: *GEO técnico é necessário, não suficiente. Estrutura validável vence prosa eloquente. Mídia conquistada explica a maior parte da variância de citação. Agent legibility é a nova SEO.*
-
-**Manutenção.** Revisão trimestral. Novos papers entram simultaneamente em `2X-papers-bloco-*.md`, `40-thresholds-quantitativos.md` e `50-fontes-e-links.md`.
-
-## 2026-04-19 — Refactor multi-tenant (Ondas 1-5)
-
-### Mudança estrutural: ClientContext
-- **Antes:** credencial Alexandre, domínio `alexandrecaramaschi.com`, padrão HSM/HBR/MIT Sloan e regras do voice guard estavam **hardcoded** em `models.py`, `voice_guard.py`, `pyproject.toml`, etc. Rodar a fábrica para outro cliente exigia fork.
-- **Depois:** tudo que varia por cliente vem de `config/clients/<id>/client.yaml`. O framework carrega o YAML em um `ClientContext` (`src/clients/context.py`) e injeta em CourseFactory, Orchestrator, SchemaBuilder, QualityGate e voice_guard_check.
-- **Cliente `default`** preserva 100% do comportamento pré-refactor (Brasil GEO). Qualquer `<id>` diferente escreve em `output/clients/<id>/`.
-- **CLI:** `python cli.py create "Curso" --client minhaempresa` ou `export CURSO_FACTORY_CLIENT=<id>`.
-- **Como listar:** `python cli.py clients`.
-- **Playbook completo:** [docs/MULTI-CLIENT.md](docs/MULTI-CLIENT.md).
-
-### Consolidação técnica
-- **Parser compartilhado** `src/parsers/markdown_parser.py`: fonte única de `slugify`, `extract_module_blocks`, `parse_module_to_sections`. Antes, `schema_builder.py` e `draft_to_course.py` tinham implementações paralelas divergentes.
-- **Providers em YAML** `config/providers.yaml` + `src/providers.py`: pricing, endpoints, default_model e fallback. `llm_client.py` só orquestra — mudança de preço/modelo é edição YAML.
-- **Voice Guard no QualityGate**: agora é a 4ª camada bloqueante. Score < `client.voice_guard.min_score` (padrão 70) ou erro crítico → `aprovado=False`.
-
-### Limpeza
-- `.gitignore` exclui `output/`, `*.egg-info/`, `.pytest_cache/`, `.mypy_cache/`.
-- `tests/fixtures/sample_course.json`: `nivel` corrigido de `intermediario` → `intermediário` (5/5 testes voltaram a verde).
-- `src/indexer/course_indexer.py`: removido hardcode `C:/Sandyboxclaude/...`; lê `LANDING_PAGE_DIR` do env ou derive de path relativo.
-
-### Commits da refatoração
-- `d3c1077` — refactor: multi-tenancy via ClientContext + limpeza de fundação
-- `203f126` — refactor: consolidação técnica (markdown_parser, providers.yaml, voice_guard em QualityGate)
-
-### Regra para trabalhos futuros
-Ao tocar em qualquer lógica sensível a autor/domínio/padrão editorial: passe pelo `ClientContext`, **não** hardcode. Se precisar de uma constante que varia por cliente, é campo de YAML.
-
-## 2026-04-09 — Mudanças da auditoria de ecossistema (Wave D)
-
-### NOVO: course_id propagado em cost_tracker (F32)
-- **Commit:** `72ee757` — `feat(cost-tracker): propaga course_id em todas chamadas LLM`
-- **Antes:** `cost_tracker.track()` sempre recebia `course_id=""`, tornando IMPOSSÍVEL responder "qual curso custou X" no `cost-report` ou aplicar budget guard granular por curso.
-- **Depois:** `LLMClient.set_course_context(course_id)` é chamado pelo `Orchestrator.run()` no início. Todas as chamadas LLM subsequentes propagam automaticamente.
-- **Como usar:** `python cli.py cost-report` agora pode agrupar por `course_id`. `cost_tracker.get_course_total('llm-finops')` retorna dados precisos por curso.
-- **Compat backward:** se `set_course_context` não for chamado, comportamento idêntico ao anterior.
-
-## 2026-04-09 — Mudanças da auditoria de ecossistema (Wave A-C)
-
-### 1. CLI `drafts-to-tsx` (F12)
-- **Commit:** `bc2f36e` — `feat(cli): drafts-to-tsx`
-- **Arquivos:** `cli.py` (+novo subcomando), `src/converters/__init__.py`, `src/converters/draft_to_course.py`
-- **Uso:** `python cli.py drafts-to-tsx [--input output/drafts] [--output output/converted_from_drafts]`
-- **Resultado da execução desta sessão:** **12/12 drafts órfãos convertidos** para TSX deployable. Output em `output/converted_from_drafts/` com `page.tsx` + `layout.tsx` válidos por curso.
-- **Próximo passo do owner:** revisar manualmente cada `output/converted_from_drafts/{slug}/page.tsx`, decidir quais publicar, mover aprovados para `output/deployed/`, commit final.
-- **Cursos liberados:** automacao-com-n8n (×2), deploy-moderno, geo-para-educacao-financeira-40 e -sub-18, llm-finops (×2), mcp-avancado (×2), prompt-engineering-avancado, seo-e-geo-para-advogados, seo-e-geo-para-revendedoras-de-joias.
-- **Conversor é best-effort:** parseia markdown da etapa `review` (preferida) ou `draft` (fallback), splita por headings, gera CourseSections (TEXT, CODE, TIP, CHECKPOINT). Cursos com 1 step só (sem headings claros) são clamped para 30 min mínimo.
-
-### 2. Pre-commit secret_guard (F44)
-- **Commit:** `8638b3f` — `sec(precommit): instala secret_guard`
-- **Arquivos:** `.tools/secret_guard.py`, `.githooks/pre-commit`
-- **Já ativado** localmente
-
-### Achados pendentes neste repo
-
-- **F13 (CRÍTICO):** ~~`voice_guard.py` programático ainda não existe.~~ **RESOLVIDO** na onda 2026-04-09 (B-012) e depois parametrizado por ClientContext em 2026-04-19.
-- **F38 → BAIXO:** `curso-factory` chama LLMs direto em vez de usar `geo-orchestrator`. Crosscheck Gemini concordou que esse achado estava superdimensionado. Migração para SDK fica para uma onda futura.
+Mudanças aplicadas datadas de abril/2026 — refactors (multi-tenant, 5 waves), base de conhecimento GEO/AEO e auditorias (Waves A-D) — foram movidas para [`wiki/decisions/CLAUDE-CHANGELOG.md`](wiki/decisions/CLAUDE-CHANGELOG.md), mantendo este arquivo enxuto no contexto. As **regras vivas** seguem abaixo.
 
 ## Regras Fundamentais
 
@@ -185,6 +132,7 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 ### Sem Emojis
 - Proibido emojis em qualquer conteúdo de curso ou documentação
 
+
 ## Arquitetura do Pipeline
 
 5 LLMs com papéis fixos — NÃO interpretar como sub-agentes do Claude Code:
@@ -200,6 +148,7 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 - Para alterar o comportamento de um agente, edite o arquivo .md correspondente
 - Se o arquivo .md não existir, o agente usa o TEMPLATE inline como fallback
 - NUNCA duplicar instruções entre o prompt externo e o template inline
+
 
 ## Padrão Editorial — Regras de Qualidade
 
@@ -261,6 +210,7 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 - "como sabemos", "é importante ressaltar", "vale a pena destacar"
 - "grosso modo", "vamos aprender", "agora você vai entender"
 
+
 ## Quality Gate — 5 Camadas de Validação
 
 ### Camada 1: Acentuação (accent_checker.py)
@@ -297,6 +247,7 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 - O texto corrigido é retornado em `GateResult.texto_corrigido`
 - Correções residuais são detectadas e reportadas
 
+
 ## Regras Anti-Retrabalho
 
 ### NUNCA usar heredocs para conteúdo grande
@@ -319,6 +270,7 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 - Verificar custo antes de executar pipeline completo
 - API keys: fonte de verdade em geo-orchestrator/.env
 
+
 ## Estrutura de Arquivos
 
 - config/courses.yaml — definição dos cursos
@@ -334,6 +286,7 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 - output/deployed/ — em produção
 - tests/ — testes unitários dos geradores
 
+
 ## Comandos CLI
 
 ```bash
@@ -346,6 +299,7 @@ python cli.py batch config/courses.yaml              # Criação em lote
 python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 ```
 
+
 ## Workflow de Criação de Curso
 
 1. Definir curso em courses.yaml (nome, nível, módulos, descrição)
@@ -355,6 +309,7 @@ python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 5. Auto-correção de acentos aplicada
 6. Se aprovado → output/approved/
 7. Deploy manual ou via script
+
 
 ## Credencial do Autor (cliente `default`)
 - Nome: Alexandre Caramaschi
