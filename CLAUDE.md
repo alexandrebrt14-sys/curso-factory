@@ -318,3 +318,25 @@ python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 - NUNCA usar: "Especialista #1", credenciais inventadas
 
 **Para outro cliente:** consulte `config/clients/<id>/client.yaml` → seção `author:` e `voice_guard.canonical:`. O voice guard bloqueia textos que violem o naming canônico do cliente ativo.
+
+## 2026-06-09 — Vídeo programático (Remotion) na abertura de curso
+
+Técnica auditada no remotion.dev (vídeo feito em React, embutido na página e
+exportável como MP4). Incorporada de forma **opt-in** para não mudar o output
+dos cursos existentes.
+
+- **Campo do modelo:** `CourseDefinition.intro_video: bool = False`. Quando `True`,
+  o template `page.tsx.j2` embute `<CourseVideoPlayer>` (componente que vive no
+  landing-page-geo, alvo de deploy) logo abaixo do hero. Default `False` mantém
+  as fixtures e todos os cursos atuais byte-a-byte iguais (testes golden verdes).
+- **Subprojeto Node:** `remotion/` (isolado do Python). Composição `CourseIntro`
+  parametrizada pelos campos do curso (título/nível/módulos/duração/cor).
+- **Render MP4:** `python cli.py render-video --course <json>` ou por flags
+  (`--titulo/--nivel/--modulos/--duracao/--cor/--out`). Implementação em
+  `src/generators/video_generator.py` (chama `npx remotion render`; instala as
+  deps do subprojeto na 1ª execução). Saída default em `output/video/<slug>.mp4`.
+- **Onde editar a animação:** `remotion/src/CourseIntro.tsx`. Mantenha em paridade
+  com `landing-page-geo/src/remotion/compositions/CourseIntro.tsx`.
+- **Gotchas:** props de composição são `type` (não `interface`); literais JSX em
+  ASCII; prop acentuada na página gerada usa `prop={"..."}` (regra Turbopack do
+  landing). `@remotion/renderer` é Node-only e baixa Chromium no 1º render.

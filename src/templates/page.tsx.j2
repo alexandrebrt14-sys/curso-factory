@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
+{% if intro_video %}import CourseVideoPlayer from "@/components/CourseVideoPlayer";
+{% endif %}
 
 /* ───────── TYPES ───────── */
 interface Step {
@@ -740,7 +742,20 @@ export default function {{ component_name }}() {
             </div>
           </div>
         </section>
-
+{% if intro_video %}
+        {/* Abertura animada (Remotion) — auto-demo em React, tecnica do remotion.dev */}
+        <section className="py-12 px-6 bg-[var(--bg-muted)] border-b border-[var(--border)]">
+          <div className="max-w-3xl mx-auto">
+            <CourseVideoPlayer
+              titulo={"{{ titulo | js_escape }}"}
+              nivel={"{{ nivel_display | js_escape }}"}
+              modulos={STEPS.length}
+              duracao={"{{ duracao_display | js_escape }}"}
+              corDestaque={"{{ hero_gradient_to | js_escape }}"}
+            />
+          </div>
+        </section>
+{% endif %}
         {/* Progress bar */}
         <div className="sticky top-[57px] z-[5] bg-white/95 backdrop-blur-sm border-b border-[var(--border)]">
           <div className="max-w-[var(--max)] mx-auto px-6 py-3">

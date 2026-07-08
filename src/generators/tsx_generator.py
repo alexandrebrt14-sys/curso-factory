@@ -104,6 +104,7 @@ class TsxGenerator:
             ],
             "hero_gradient_from": course.hero_gradient_from,
             "hero_gradient_to": course.hero_gradient_to,
+            "intro_video": course.intro_video,
             "autor_nome": course.autor_nome,
             "autor_credencial": course.autor_credencial,
             "dominio": course.dominio,
