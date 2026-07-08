@@ -1,0 +1,24 @@
+# Normalização de EOL (issue #19) — repo desenvolvido em Windows + CI Linux.
+# Auto-detect: texto vs binário
+* text=auto eol=lf
+
+# Force LF para tudo que parser/tooling lê linha-a-linha
+*.py     text eol=lf
+*.yaml   text eol=lf
+*.yml    text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.j2     text eol=lf
+*.toml   text eol=lf
+*.txt    text eol=lf
+
+# Shell scripts: LF obrigatório (rodam em container Linux do CI)
+*.sh     text eol=lf
+.githooks/* text eol=lf
+
+# Binários
+*.png    binary
+*.jpg    binary
+*.pdf    binary
+*.mp3    binary
+*.mp4    binary
