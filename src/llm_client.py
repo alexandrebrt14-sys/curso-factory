@@ -317,3 +317,25 @@ class LLMClient:
 
     def call_anthropic(self, prompt: str, **kwargs: Any) -> str:
         return self.call("anthropic", prompt, **kwargs)
+
+
+# ---------------------------------------------------------------------------
+# Factory de backend (B-019/D8 — strangler pattern, 2026-07-09)
+# ---------------------------------------------------------------------------
+
+def make_llm_client(
+    cost_tracker: CostTracker | None = None,
+    cache: Cache | None = None,
+    use_cache: bool = True,
+):
+    """Retorna o cliente LLM do backend ativo.
+
+    CURSO_FACTORY_LLM_BACKEND=sdk -> SDKLLMClient (geo_orchestrator_sdk):
+    herda banda de timeout por task_type, fallback chain canonica, circuit
+    breaker e FinOps unificado do orquestrador. Qualquer outro valor (ou
+    ausente) -> LLMClient legado (zero mudanca de comportamento).
+    """
+    if os.getenv("CURSO_FACTORY_LLM_BACKEND", "").strip().lower() == "sdk":
+        from src.llm_client_sdk import SDKLLMClient
+        return SDKLLMClient(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)
+    return LLMClient(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)

@@ -66,7 +66,11 @@ class Orchestrator:
             from src.clients import load_client
             client_context = load_client("default")
         self.client_context = client_context
-        self.client = LLMClient(self.cost_tracker)
+        # B-019/D8: factory decide o backend — legado (default) ou
+        # geo_orchestrator_sdk via CURSO_FACTORY_LLM_BACKEND=sdk (herda
+        # timeout por task_type, fallback chain e FinOps do orquestrador).
+        from src.llm_client import make_llm_client
+        self.client = make_llm_client(self.cost_tracker)
         self.researcher = Researcher(self.client)
         self.writer = Writer(self.client)
         self.analyzer = Analyzer(self.client)
