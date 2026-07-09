@@ -7,6 +7,7 @@ fallback entre providers e rate limiting por token bucket.
 from __future__ import annotations
 
 import logging
+import os
 import time
 from dataclasses import dataclass, field
 from typing import Any
@@ -88,7 +89,15 @@ class LLMClient:
         self.cache = cache if cache is not None else (Cache() if use_cache else None)
         self._circuits: dict[str, CircuitState] = {}
         self._buckets: dict[str, TokenBucket] = {}
-        self._http = httpx.Client(timeout=60.0)
+        # Timeout de leitura configuravel via env (HTTP_TIMEOUT). 60s era curto
+        # demais para geracao long-form (modulos de ~3.500 palavras estouram os
+        # 60s e caem em fallback desnecessario). 2026-07-09: default elevado
+        # 300 -> 600s com folga generosa — o prompt de research (~17k chars) em
+        # sonar-pro/deep-research estourava ate os 60s originais; teto largo
+        # protege buscas longas e geracao densa sem cortar no meio. Enquanto o
+        # curso-factory nao migra para o geo_orchestrator_sdk (B-019), este
+        # cliente proprio herda a mesma diretriz de folga do orquestrador.
+        self._http = httpx.Client(timeout=float(os.getenv("HTTP_TIMEOUT", "600")))
         # course_id ativo — setado pelo Orchestrator antes de iniciar o
         # pipeline. Achado F32 da auditoria 2026-04-08: antes deste campo,
         # cost_tracker.track sempre recebia course_id="" e era impossivel
@@ -260,7 +269,9 @@ class LLMClient:
             "contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"maxOutputTokens": effective_max},
         }
-        resp = self._http.post(url, json=payload, timeout=120.0)
+        resp = self._http.post(
+            url, json=payload, timeout=float(os.getenv("HTTP_TIMEOUT", "600"))
+        )
         resp.raise_for_status()
         data = resp.json()
         # Extrair texto ignorando thinking parts (thought=True)
