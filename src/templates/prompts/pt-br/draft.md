@@ -305,6 +305,7 @@ Este módulo compete por **citação em motores generativos** (ChatGPT, Gemini, 
 5. **Seção autossuficiente / chunkability** (lift +17,3%). Cada seção citável sem o contexto das outras: heading + claim em negrito + evidência + conclusão. Sem pronomes ("ele/ela/isso") cruzando headings sem antecedente — repita a entidade-chave em vez de pronominalizar.
 6. **Single Idea por parágrafo** (lift +28,7%). Um conceito central por parágrafo; transição explícita entre seções.
 7. **Information Gain** (dado original = 4,1× citações). Inclua ao menos um dado, exemplo brasileiro ou framework autoral **não disponível em concorrentes**, e posicione a tese contraintuitiva nos primeiros 100 palavras do módulo.
+8. **Evidência extraível + data** (wave julho-22: páginas de alta absorção são ricas em definições citáveis, números com fonte, comparações e passos — `arXiv:2604.25707`; timestamp recente ajuda consistentemente a ser citado — `arXiv:2605.25517`, 252 mil trials). Cada módulo carrega: **1 definição citável em uma frase** (formato "X é..."), **1 comparação estruturada** (tabela ou "X vs Y") e **data de referência visível** quando o dado for temporal ("em 2026...", nunca "atualmente"). A data só muda quando o conteúdo muda de verdade: trocar data sem atualização substantiva é alegação temporal manipulativa, filtrável pelos motores.
 
 **Anti-padrão eliminatório:** keyword stuffing tem lift **negativo** (−8,7%) — no máximo ~2 ocorrências do termo principal por 500 palavras. Equilíbrio com o item 5 da rubrica: manter o termo técnico coerente (não trocar por sinônimo), mas sem repeti-lo a ponto de empilhar.
 
@@ -330,6 +331,7 @@ Antes de entregar o módulo, verifique CADA item:
 - [ ] **GEO: ao menos 5 estatísticas com fonte+ano (Statistics ≥ 5)**
 - [ ] **GEO: ao menos 1 citação direta de especialista nomeado (Quotation ≥ 1)**
 - [ ] **GEO: answer capsule (40-60 palavras, resposta-primeiro) após cada H2**
+- [ ] **GEO: 1 definição citável em uma frase + 1 comparação estruturada + datas visíveis em dados temporais (item 8)**
 - [ ] Checklist de aplicação imediata na síntese
 - [ ] Ponte para o próximo módulo
 
