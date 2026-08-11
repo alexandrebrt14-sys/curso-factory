@@ -46,6 +46,16 @@ Avalie e pontue:
 - **Fechamento**: a síntese mostra o que mudou no caso ou na tensão inicial, ou apenas repete o que já foi dito?
 - **Critério de decisão**: quando o módulo apresenta alternativas, ele compara com critérios explícitos e recomenda com justificativa, ou lista opções sem ajudar a escolher?
 
+Avalie também, na mesma dimensão:
+
+- **Promessa e tensão**: a promessa aparece na abertura, em no máximo 12 palavras, e a tensão vem depois dela sem adiar a resposta? Ou a resposta está enterrada sob cena longa?
+- **Proporção entre afirmação e prova**: o número de blocos que afirmam resultado é menor ou igual ao de provas datadas? Aponte as afirmações excedentes.
+- **Rótulo do caso**: cada caso está identificado como real (com fonte) ou hipotético (com rótulo, repetido junto a cada número)? Caso apresentado como real sem fonte é defeito grave e derruba a nota desta dimensão para 2 ou menos.
+- **Porcentagens**: cada uma tem origem, data, método e denominador na mesma frase? Liste as que falham.
+- **Marcadores abertos**: conte `[FALTA EVIDÊNCIA:` e `[PREENCHER-HUMANO:`. Acima de cinco, `aprovado` é false.
+- **Pedido antes da prova**: algum pedido de dado, inscrição ou dinheiro aparece antes da primeira prova verificável?
+- **Sujeito das frases de falha**: o lugar de sujeito é ocupado por artefato ou processo, e não pelo aluno?
+
 Referência normativa das duas dimensões acima: `DIRETRIZ_EDITORIAL.md`, seções 2, 3, 4 e 6.
 
 ### 3. Formatação e Estrutura Visual

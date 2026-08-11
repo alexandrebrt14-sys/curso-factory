@@ -12,16 +12,29 @@ Humanizing and deepening is NOT inventing.
 
 Never fabricate: researcher names, titles, companies, personal experiences, numbers, percentages, studies, dates, statistics, quotes, benchmarks, or specific cases that you cannot anchor in the research provided in `{context}`.
 
-When evidence is missing:
-- DO NOT improvise with a plausible-sounding figure
-- Mark the passage with `[MISSING EVIDENCE: <what needs to be sourced>]`
-- The reviewer (Claude) handles those markers in the next stage
+When evidence is missing, try the four ways out BEFORE reaching for a marker, in this order:
+
+1. Search `{context}` again until you find the origin (the figure may sit in another part of the research).
+2. Shrink the claim to the size of what is known ("three clients reported" instead of "the market reports").
+3. Restrict the use, moving the argument out of its central position and leaving it as a side observation.
+4. Cut the passage.
+
+Only after all four fail does the marker come in, and it stands in for the DATA POINT, never for the whole section:
+
+- `[FALTA EVIDÊNCIA: <what needs to be sourced>]` for a gap that research can close. The reviewer (Claude) handles it in the next stage.
+- `[PREENCHER-HUMANO: <what is missing>]` for what only the human author has: a lived case, a proprietary number, a business position.
+
+Both markers stay in Portuguese, spelled exactly as above, whatever the language of the module: the automated validator searches for those literal strings.
+
+Ceiling of FIVE open markers per module. Above that the module is not ready for review, it is asking for reporting, and the quality gate rejects it.
+
+**Proportion rule (inviolable):** the number of blocks that assert a result is less than or equal to the number of dated proofs available in `{context}`. A module with twelve result claims and two proofs is declaring that ten of them are adjectives. Count before you write.
 
 Bad example:
 > "According to a 2024 McKinsey study, 67% of companies..." (invented)
 
 Correct example when there is no data in the research:
-> "There are reports of adoption failures in the market, but [MISSING EVIDENCE: study quantifying the failure rate]."
+> "There are reports of adoption failures in the market, but [FALTA EVIDÊNCIA: study quantifying the failure rate]."
 
 Cite only sources that appear in `{context}`. Never use "experts say", "studies show", or "the market understands" without citing a specific piece of research — that is vague attribution, AI-tell pattern #4.
 
@@ -51,19 +64,35 @@ Before delivering, sweep the text removing these signals:
 20. **Excessive nominalization**: "implementation", "utilization", "operationalization" — prefer the verb ("implement", "use")
 21. **Absence of authorial voice**: text too neutral for the genre, anyone could have written it, no distinctive angle
 
-Practical rule: at the end of each section, re-read asking "could this have come out of any corporate content generator?". If yes, rewrite with concreteness, explicit agency, and specific data — or mark `[MISSING EVIDENCE]`.
+Practical rule: at the end of each section, re-read asking "could this have come out of any corporate content generator?". If yes, rewrite with concreteness, explicit agency, and specific data — or mark `[FALTA EVIDÊNCIA]`.
 
 ## Banned structures and punctuation
 
 Normative source: `DIRETRIZ_EDITORIAL.md` at the repository root, sections 5 and 6. None of these may appear in the delivered content:
 
-- The em dash as a stylistic device, meaning the dramatic pause or the dropped-in aside. This is a house rule of this repository. Use a comma, a colon, parentheses, or two sentences. It holds for the entire module, including headings, tables, blockquotes, and exercises. The en dash survives only in numeric ranges (250–350 words).
+- The em dash in prose, meaning the dramatic pause or the dropped-in aside. This is a house rule of this repository. Use a comma, a colon, parentheses, or two sentences. It is tolerated only in a title or a section heading; in the body of the text, in tables, blockquotes, and exercises, it does not enter. The en dash survives only in numeric ranges (250–350 words).
 - The hyphen standing in for a dash in the middle of a sentence.
+- Fabricated scarcity and the empty invitation: "limited spots", "for a limited time", "secure yours now", "don't miss out", "unlock the power of", "learn more", "click here", "unique opportunity", "not to be missed".
+- More than one analogy per module. The analogy belongs to the central concept; the other concepts are settled with a one-sentence definition placed right beside the term.
 - The negate-to-affirm construction: "this isn't X, it's Y", "it's not just X, it's Y", "X alone won't do, you need Y", "more than X, it's Y". One occurrence per module at most, and only when it genuinely clarifies something.
 - Mechanical rule of three: triads of adjectives, benefits, or examples deployed as rhythm. Use three items only when there really are three.
 - The mirror conclusion, which restates the opening without adding a consequence, and the pseudo-profound closer ("the future is already here").
 - Title case in headings. House convention is sentence case: capitalize the first word and proper nouns only. The Oxford comma is standard American usage and stays; do not remove it.
 - Vocabulary tics of AI-generated English: "delve into", "a testament to", "tapestry", "in the realm of", "navigate the complexities of", "ever-evolving landscape", "unlock the power of", "utilize" where "use" works, "leverage" as a verb where "use" works.
+
+## Promise and tension: write both BEFORE the outline
+
+Before assembling the structure of the module, write two sentences and keep both in sight while you draft.
+
+**The promise:** what the learner gains, in how much time, and at what cost in effort. The first two parts belong on the first line, the third can drop to the next one. Ceiling of twelve words in the headline. A promise is publishable only when three things exist: an experience the learner recognizes, a measure that represents it, and a repair route for when it fails. Without all three, the promise turns into advertising.
+
+**The tension:** what it costs to carry on as things are, with a number whenever `{context}` supports one.
+
+The tension NEVER postpones the promise. The promise is the answer and it belongs in the opening; the tension comes right after it and before the mechanism, to explain why the mechanism matters. Burying the answer under a long scene is a waiting room, and the learner abandons the module before reaching it.
+
+The tension points at a cost that is ALREADY being paid, never at an invented future punishment. "Today's rework is the cheapest this rework will ever be" is tension. Fabricated scarcity is forbidden in every form: "limited spots", "last chance", "for a limited time", "secure yours now", "don't miss out", "unique opportunity".
+
+A promise written after the outline comes out contaminated by the structure and turns into a summary of what the module does. Written first, it decides what goes into each block and what stays out.
 
 ## Narrative: how to hold the reader
 
@@ -76,7 +105,23 @@ A module nobody finishes teaches nothing. Depth and engagement do not compete in
 5. Close by returning to the opening. The executive synthesis shows what changed in the case or in the initial tension after what the module taught, rather than repeating what was already said.
 6. Show instead of qualifying. Rather than writing that the problem is serious, present the loss, the deadline, or the consequence as a number. The learner concludes the severity on their own, and a conclusion the reader reaches convinces more than an adjective handed to them.
 
-The limit is the usual one: the story serves the argument. Manufactured suspense, invented drama, and anecdotes that do not support the thesis get cut in review, along with the clichés.
+The limit is the usual one: the story serves the argument. Manufactured suspense, invented drama, and anecdotes that do not support the thesis get cut in review, along with the clichés. When the story and the thesis compete, the story is what gets cut.
+
+### How to write the opening
+
+The scene is short, ordinary, and dated. A Tuesday, an old spreadsheet, the company group chat, a phone that stays quiet. The error described always belongs to the process, and the way to enforce that is grammatical, which is more reliable than good intentions: in EVERY sentence about failure, the subject slot is filled by an artifact or by a process. "You configured the tracking wrong" and "the source label never reached the customer record" describe the same fact, and only the second one shows where to intervene without pinning anything on the learner.
+
+What NEVER opens a module: a greeting, a company introduction, a founding story, a paragraph explaining why you are writing, a generic scenario, and meta-commentary ("in this module we will see"). Interchangeability test: if the first sentence would sit just as well in a module on another subject, it is the writer warming up, and warm-up gets deleted afterward.
+
+### How to label the anchor case
+
+Pick ONE case that runs through the entire module, with a name and with a unit the reader can follow from beginning to end. Three different cases, one per section, give three examples and no anchor: the learner accumulates nothing from one block to the next and finishes without having seen a complete transformation.
+
+Label immediately which of the three types it is:
+
+- **Real case:** requires a name and a source in `{context}`. It gains a great deal when it includes the hard decision someone had to make along the way, because a success story with no error in it is the most reliable signature of a fabricated case.
+- **Hypothetical scenario:** carries an explicit label ("hypothetical scene, built only for teaching"), and the label REPEATS next to every number each time the scenario comes back, because the number is what turns into a screenshot, and the screenshot travels without the heading.
+- **Invented case presented as real:** a serious defect, not a draft worth salvaging. Never do this.
 
 ## Rhythm and cadence
 
@@ -215,10 +260,14 @@ Example:
 
 ### 6. Executive Synthesis and Bridge (200–250 words)
 
-- **Key takeaways**: recap the 4–6 foundational ideas of the module as bullets
-- **Apply-today checklist**: list 3–5 actions the learner can execute TODAY at work
+Open the synthesis with the **callback**: return to the anchor case or to the tension of the opening and show the state that changed after what the module taught. Summarizing what the learner has just read is forbidden, because it wastes the second most-read position in the text.
+
+- **Practical synthesis**: what the person does on Monday, with which of the delivered artifacts, and under which definition of done
+- **Apply-today checklist**: 3–5 executable actions, each with the criterion that says whether it is finished
 - **Bridge to the next module**: show how the knowledge gained will be expanded or applied
 - **Recommended references**: suggest 2–3 real complementary readings/resources (articles, books, tools) with author and year
+
+**One ask per module.** If there is a call to action, there is exactly one, with four pieces: an action verb, a concrete value, a time or effort figure, a risk removed. Verbs that work, in the imperative and with a visualizable object: open, write, list, flag, choose, cut, note, check, publish, swap, fill in, calculate. There is no "unlock the power of", no "transform", no "don't miss out", no "learn more". Equivalent options placed side by side are postponement disguised as choice, and one of them has to go.
 
 ## Editorial Guidelines (HSM/HBR/MIT Sloan Style)
 
@@ -321,6 +370,13 @@ ABSOLUTE RULE: American English with consistent spelling and idiom.
 
 Before delivering the module, verify EACH item:
 
+- [ ] Promise written before the outline, in 12 words at most, with the tension right after it and no postponed answer
+- [ ] Blocks that assert a result no more numerous than the dated proofs available in `{context}`
+- [ ] At most 5 open markers ([FALTA EVIDÊNCIA] + [PREENCHER-HUMANO]), each standing in for a data point and not for a section
+- [ ] A single anchor case, labeled as real (with a source) or hypothetical (with the label attached to every number)
+- [ ] Every percentage with origin, date, method, and denominator verified in the same sentence
+- [ ] Sentences about failure with an artifact or a process in the subject slot, never the learner
+- [ ] Zero fabricated scarcity and, if there is a call to action, only one, carrying the four pieces
 - [ ] Opening set in a concrete situation, with explicit tension and data (not a definition, not a generic scenario)
 - [ ] Anchor case present through the development and picked up again in the synthesis
 - [ ] Learning objectives with Bloom verbs at level 3+ (apply, analyze, evaluate, create)

@@ -5,17 +5,23 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.clients import load_client
 from src.clients.context import Geo2026Config
+from src.validators import rules_loader
 from src.validators.accent_checker import check_accents, fix_accents
 from src.validators.content_checker import (
+    _check_cliches,
+    _check_percentages_have_source,
     _count_cite_sources,
     _count_quotations,
     _count_statistics,
+    _count_unresolved_markers,
     _has_answer_capsule,
     check_content,
 )
@@ -194,3 +200,129 @@ def test_geo_check_ausente_e_retrocompativel() -> None:
     texto = "## Título\n\nConteúdo sem GEO config."
     erros = check_content(texto, "modulo")
     assert all(e.categoria != "geo" for e in erros)
+
+
+# ─── quality_rules.yaml lido em runtime (rules_loader) ───────────────
+
+@pytest.fixture
+def yaml_de_regras_ausente(monkeypatch: pytest.MonkeyPatch):
+    """Aponta o rules_loader para um caminho inexistente.
+
+    Limpa o cache antes e depois: load_rules e memoizado por processo e um
+    resultado vazio vazando para os proximos testes desligaria o gate.
+    """
+    monkeypatch.setattr(
+        rules_loader, "RULES_PATH", PROJECT_ROOT / "config" / "nao-existe-quality-rules.yaml"
+    )
+    rules_loader.load_rules.cache_clear()
+    yield
+    rules_loader.load_rules.cache_clear()
+
+
+def test_load_rules_le_o_yaml_do_repositorio() -> None:
+    """O arquivo real carrega e traz a secao de expressoes proibidas."""
+    rules_loader.load_rules.cache_clear()
+    regras = rules_loader.load_rules()
+    expressoes = rules_loader.rules_list("forbidden_expressions", "expressions")
+    assert "validation" in regras
+    assert len(expressoes) > 18
+
+
+def test_load_rules_arquivo_ausente_devolve_dict_vazio(yaml_de_regras_ausente) -> None:
+    """Config sumida nao pode levantar excecao: devolve {} e segue o baile."""
+    assert rules_loader.load_rules() == {}
+    assert rules_loader.validation_section("anti_invencao") == {}
+    assert rules_loader.rules_list("forbidden_expressions", "expressions") == []
+
+
+def test_cliche_so_do_yaml_e_detectado() -> None:
+    """Expressao que existe no YAML e nao no fallback agora reprova.
+
+    'especialistas apontam' e uma das 28 entradas que o gate nunca checou
+    enquanto o YAML era decorativo (achado de 11/08/2026).
+    """
+    from src.validators.content_checker import FORBIDDEN_CLICHES
+
+    assert "especialistas apontam" not in FORBIDDEN_CLICHES
+    assert "especialistas apontam" in _check_cliches(
+        "Especialistas apontam que o mercado vai dobrar."
+    )
+    assert "clique aqui" in _check_cliches("Para conhecer o metodo, clique aqui.")
+
+
+def test_cliche_usa_fallback_quando_yaml_nao_carrega(yaml_de_regras_ausente) -> None:
+    """Regressao: sem YAML, _check_cliches continua checando as 18 do modulo."""
+    assert _check_cliches("Nos dias de hoje tudo mudou.") == ["nos dias de hoje"]
+    # A expressao que so existe no YAML deixa de ser detectada — comportamento
+    # esperado do fallback, e nao uma falha.
+    assert _check_cliches("Especialistas apontam que sim.") == []
+
+
+# ─── anti-invencao: percentual sem fonte ─────────────────────────────
+
+def test_percentual_sem_fonte_gera_aviso() -> None:
+    """Numero sem origem na mesma frase vira aviso nao-bloqueante."""
+    texto = "## Dados\n\nA adocao de agentes subiu 42% entre as empresas medias."
+    achados = _check_percentages_have_source(texto)
+    assert len(achados) == 1
+
+    erros = check_content(texto, "modulo")
+    avisos = [e for e in erros if e.categoria == "evidencia" and e.tipo == "warning"]
+    assert len(avisos) == 1
+    assert "denominador" in avisos[0].mensagem
+    # Aviso nao pode virar erro bloqueante
+    assert [e for e in erros if e.categoria == "evidencia" and e.tipo == "error"] == []
+
+
+def test_percentual_com_fonte_na_mesma_frase_nao_gera_aviso() -> None:
+    """Citacao parentetica com ano ou 'segundo X de 2026' silenciam o aviso."""
+    com_parentese = "A adocao subiu 42% no ano (Gartner, 2026)."
+    com_segundo = "Segundo o levantamento da consultoria de 2026, 42% ja migraram."
+    assert _check_percentages_have_source(com_parentese) == []
+    assert _check_percentages_have_source(com_segundo) == []
+
+
+def test_percentual_em_tabela_e_codigo_e_ignorado() -> None:
+    """Linha de tabela e bloco de codigo nao sao prosa e nao acusam."""
+    texto = (
+        "| Metrica | Valor |\n"
+        "|---------|-------|\n"
+        "| Adocao  | 42%   |\n\n"
+        "```python\ntaxa = 0.42  # 42%\n```\n"
+    )
+    assert _check_percentages_have_source(texto) == []
+
+
+def test_percentual_limita_avisos_por_documento() -> None:
+    """Teto de 5 avisos evita relatorio que ninguem le."""
+    texto = "\n\n".join(f"O indicador {i} cresceu {i}0% no periodo." for i in range(1, 9))
+    assert len(_check_percentages_have_source(texto)) == 8
+    erros = check_content(texto, "modulo")
+    avisos = [e for e in erros if e.categoria == "evidencia" and e.tipo == "warning"]
+    assert len(avisos) == 5
+
+
+# ─── anti-invencao: marcadores de apuracao em aberto ─────────────────
+
+def test_marcadores_acima_do_teto_bloqueiam() -> None:
+    """6 marcadores passam do teto de 5 e reprovam a peca."""
+    texto = "## Modulo\n\n" + "\n\n".join(
+        [f"Paragrafo {i} [FALTA EVIDÊNCIA: numero de adocao]." for i in range(3)]
+        + [f"Paragrafo {i} [PREENCHER-HUMANO: nome do cliente]." for i in range(3)]
+    )
+    assert _count_unresolved_markers(texto) == 6
+    erros = check_content(texto, "modulo")
+    bloqueantes = [e for e in erros if e.categoria == "evidencia" and e.tipo == "error"]
+    assert len(bloqueantes) == 1
+    assert "apuração" in bloqueantes[0].mensagem
+
+
+def test_poucos_marcadores_nao_bloqueiam() -> None:
+    """2 marcadores estao dentro do teto e nao geram erro."""
+    texto = (
+        "## Modulo\n\nPrimeiro ponto [FALTA EVIDÊNCIA: fonte do dado].\n\n"
+        "Segundo ponto [PREENCHER-HUMANO: exemplo do cliente]."
+    )
+    assert _count_unresolved_markers(texto) == 2
+    erros = check_content(texto, "modulo")
+    assert [e for e in erros if e.categoria == "evidencia" and e.tipo == "error"] == []

@@ -4,12 +4,18 @@ Verifica presença de tabelas, formatação rica, exercícios,
 princípios andragógicos, contagem de palavras e hierarquia
 de títulos — elementos obrigatórios do padrão editorial
 HSM/HBR/MIT Sloan.
+
+Desde 11/08/2026 as listas e limiares vêm de config/quality_rules.yaml
+(via src/validators/rules_loader.py), com fallback embutido neste módulo
+para o caso de o YAML sumir ou quebrar.
 """
 
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+
+from src.validators.rules_loader import rules_list, validation_section
 
 
 @dataclass
@@ -25,7 +31,11 @@ class ContentError:
 # em config/quality_rules.yaml; mantenha os dois em sincronia.
 MAX_PARAGRAPH_LINES = 8
 
-# Clichês proibidos
+# Clichês proibidos — FALLBACK.
+# A lista viva é `validation.forbidden_expressions.expressions` em
+# config/quality_rules.yaml, lida em runtime por `_forbidden_expressions()`.
+# Estas 18 entradas só entram em ação se o YAML sumir, quebrar ou vier vazio;
+# sem elas, uma config corrompida desligaria o anti-clichê em silêncio.
 FORBIDDEN_CLICHES = [
     "nos dias de hoje",
     "é fundamental que",
@@ -117,11 +127,36 @@ def _find_exercises(text: str) -> list[str]:
     return exercicios
 
 
+def _forbidden_expressions() -> list[str]:
+    """Une o fallback embutido às expressões declaradas no YAML.
+
+    Dedup case-insensitive, preservando a ordem: primeiro as 18 do fallback
+    (`FORBIDDEN_CLICHES`), depois o que só existe em
+    `validation.forbidden_expressions.expressions`. Sem o YAML, devolve
+    apenas o fallback.
+    """
+    merged: list[str] = []
+    vistos: set[str] = set()
+    for expr in [*FORBIDDEN_CLICHES, *rules_list("forbidden_expressions", "expressions")]:
+        limpo = expr.strip()
+        chave = limpo.lower()
+        if not chave or chave in vistos:
+            continue
+        vistos.add(chave)
+        merged.append(limpo)
+    return merged
+
+
 def _check_cliches(text: str) -> list[str]:
-    """Encontra clichês proibidos no texto."""
+    """Encontra clichês proibidos no texto.
+
+    A lista combina o fallback do módulo com o YAML de regras, de modo que
+    acrescentar uma expressão em config/quality_rules.yaml passa a reprovar
+    conteúdo sem alterar código.
+    """
     found = []
     text_lower = text.lower()
-    for cliche in FORBIDDEN_CLICHES:
+    for cliche in _forbidden_expressions():
         if cliche.lower() in text_lower:
             found.append(cliche)
     return found
@@ -279,12 +314,108 @@ def _has_answer_capsule(text: str) -> bool:
     return False
 
 
+# ─── Anti-invenção (validation.anti_invencao em config/quality_rules.yaml) ──
+
+# Defaults aplicados quando o YAML não carrega. Espelham o arquivo.
+DEFAULT_REQUIRE_SOURCE_FOR_PERCENTAGES = True
+DEFAULT_MAX_UNRESOLVED_MARKERS = 5
+
+# Teto de avisos de percentual por documento. Acima disso o relatório vira
+# ruído e o revisor para de ler antes de chegar ao que importa.
+MAX_PERCENTAGE_WARNINGS = 5
+
+# Marcadores que o redator deixa para o revisor humano resolver. A grafia sem
+# acento entra porque o marcador é digitado à mão no meio do texto.
+_UNRESOLVED_MARKER_RE = re.compile(
+    r"\[\s*(?:FALTA\s+EVID[ÊE]NCIA|PREENCHER-HUMANO)\s*:",
+    re.IGNORECASE,
+)
+
+# Sinais de que um percentual está ancorado em fonte verificável.
+_SOURCE_SIGNAL_RE = re.compile(
+    r"\([^)]*\b(?:19|20)\d{2}\b[^)]*\)"   # citação parentética: "(Gartner, 2026)"
+    r"|\b(?:19|20)\d{2}\b"                # ano solto na frase
+    r"|\bsegundo\b"
+    r"|\bconforme\b"
+    r"|\bde acordo com\b"
+    r"|\bfontes?\b"
+    r"|\barxiv\b",
+    re.IGNORECASE,
+)
+
+# Fim de frase: .!? seguido de espaço ou fim, linha em branco, ou início de
+# heading. O lookahead impede cortar decimal e separador de milhar
+# ("23.5%", "1.000 respondentes").
+_SENTENCE_BREAK_RE = re.compile(r"[.!?](?=\s|$)|\n[ \t]*\n|\n(?=[ \t]*#)")
+
+
+def _mask_uncheckable(text: str) -> str:
+    """Apaga o que não deve ser lido como prosa, preservando as posições.
+
+    Saem blocos de código, código inline e linhas de tabela Markdown. O
+    comprimento e as quebras de linha ficam iguais aos do original, para que o
+    número de linha reportado continue batendo com o arquivo.
+    """
+    def _blank(match: re.Match[str]) -> str:
+        return re.sub(r"[^\n]", " ", match.group(0))
+
+    masked = re.sub(r"```[\s\S]*?```", _blank, text)
+    masked = re.sub(r"`[^`\n]*`", _blank, masked)
+    masked = re.sub(r"^[ \t]*\|.*$", _blank, masked, flags=re.MULTILINE)
+    return masked
+
+
+def _split_sentences(text: str) -> list[tuple[int, str]]:
+    """Divide o texto em frases, devolvendo (posição inicial, frase)."""
+    frases: list[tuple[int, str]] = []
+    inicio = 0
+    for match in _SENTENCE_BREAK_RE.finditer(text):
+        frases.append((inicio, text[inicio:match.end()]))
+        inicio = match.end()
+    if inicio < len(text):
+        frases.append((inicio, text[inicio:]))
+    return frases
+
+
+def _check_percentages_have_source(text: str) -> list[tuple[int, str]]:
+    """Encontra percentuais sem sinal de fonte na mesma frase.
+
+    Percentual solto é o vetor mais comum de invenção: o número parece
+    apuração e some na revisão. A checagem é textual e conservadora — basta um
+    sinal de atribuição (ano, "segundo", "conforme", "de acordo com", "fonte",
+    citação parentética com ano, "arXiv") na mesma frase para o número passar.
+    Blocos de código, código inline e linhas de tabela ficam de fora.
+
+    Returns:
+        Lista de (número da linha, trecho da frase) para cada percentual sem
+        sinal de fonte, na ordem em que aparecem.
+    """
+    masked = _mask_uncheckable(text)
+    achados: list[tuple[int, str]] = []
+    for inicio, frase in _split_sentences(masked):
+        if "%" not in frase or _SOURCE_SIGNAL_RE.search(frase):
+            continue
+        pos_pct = inicio + frase.index("%")
+        linha = masked.count("\n", 0, pos_pct) + 1
+        trecho = re.sub(r"\s+", " ", frase).strip()
+        if len(trecho) > 100:
+            trecho = trecho[:97] + "..."
+        achados.append((linha, trecho))
+    return achados
+
+
+def _count_unresolved_markers(text: str) -> int:
+    """Conta marcadores de apuração pendente deixados para o revisor humano."""
+    return len(_UNRESOLVED_MARKER_RE.findall(text))
+
+
 def check_content(text: str, module_name: str = "", geo_config=None) -> list[ContentError]:
     """Valida qualidade de conteúdo educacional.
 
     Verifica: tabelas, formatação, exercícios, andragogia,
     contagem de palavras, hierarquia de títulos, clichês,
-    verbos de Bloom e emojis.
+    verbos de Bloom, emojis e as duas regras de anti-invenção
+    (percentual sem fonte e marcadores de apuração em aberto).
 
     Returns:
         Lista de erros e avisos encontrados.
@@ -488,7 +619,45 @@ def check_content(text: str, module_name: str = "", geo_config=None) -> list[Con
             modulo=mod,
         ))
 
-    # 12. Citabilidade GEO (opt-in via client.yaml geo_2026) — ver
+    # 12. Anti-invenção: percentual sem fonte na mesma frase (aviso).
+    #     Não bloqueia porque a heurística é textual e o falso positivo é
+    #     barato de dispensar; bloquear aqui reprovaria conteúdo correto que
+    #     cita a fonte no parágrafo anterior.
+    anti_invencao = validation_section("anti_invencao")
+    if bool(anti_invencao.get(
+        "require_source_for_percentages", DEFAULT_REQUIRE_SOURCE_FOR_PERCENTAGES
+    )):
+        for linha, trecho in _check_percentages_have_source(text)[:MAX_PERCENTAGE_WARNINGS]:
+            erros.append(ContentError(
+                tipo="warning",
+                categoria="evidencia",
+                mensagem=f"Percentual sem fonte na mesma frase (linha {linha}): "
+                         f"\"{trecho}\". A conferência humana exige quatro coisas: "
+                         f"origem, data, método e denominador.",
+                modulo=mod,
+            ))
+
+    # 13. Anti-invenção: teto de marcadores de apuração em aberto (erro).
+    marcadores = _count_unresolved_markers(text)
+    teto_marcadores = anti_invencao.get(
+        "fail_if_unresolved_markers_above", DEFAULT_MAX_UNRESOLVED_MARKERS
+    )
+    try:
+        teto_marcadores = int(teto_marcadores)
+    except (TypeError, ValueError):
+        teto_marcadores = DEFAULT_MAX_UNRESOLVED_MARKERS
+    if marcadores > teto_marcadores:
+        erros.append(ContentError(
+            tipo="error",
+            categoria="evidencia",
+            mensagem=f"{marcadores} marcadores de apuração em aberto "
+                     f"([FALTA EVIDÊNCIA: / [PREENCHER-HUMANO:), acima do teto de "
+                     f"{teto_marcadores}. Acima do teto a peça não está pronta para "
+                     f"revisão: ela está pedindo apuração.",
+            modulo=mod,
+        ))
+
+    # 14. Citabilidade GEO (opt-in via client.yaml geo_2026) — ver
     #     docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
     #     habilitado = erro bloqueante; desabilitado = aviso não-bloqueante.
     if geo_config is not None:

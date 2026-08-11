@@ -58,7 +58,20 @@ mecânicas e se contradiziam entre camadas. Quatro defeitos, todos corrigidos na
    desambiguação por classe gramatical. Regex cuida do inequívoco; contexto é
    trabalho do revisor LLM.
 
-Três regras práticas ao mexer em doutrina editorial neste repo:
+5. **Configuração decorativa: o gate que ninguém executava.** Ao propagar a v4,
+   a verificação mostrou que `config/quality_rules.yaml` NÃO era lido por nenhum
+   código do repositório. As "46 expressões banidas com gate de CI" que a
+   auditoria responsabilizou pela doutrina de reprovação eram, na prática, as 18
+   hardcoded em `content_checker.FORBIDDEN_CLICHES`. As 28 restantes nunca foram
+   checadas, incluindo "especialistas apontam" e "estudos indicam", que a
+   doutrina trata como marcador grave de atribuição vaga. `require_source_for_percentages`
+   e `fail_if_unresolved_markers_above` também eram texto sem efeito. Corrigido
+   com `src/validators/rules_loader.py`, que carrega o YAML em runtime com
+   fallback seguro, e com a implementação dos dois checks (percentual sem fonte
+   como aviso, marcador acima do teto como erro bloqueante). Lista ativa passou
+   de 18 para 56 expressões.
+
+Quatro regras práticas ao mexer em doutrina editorial neste repo:
 
 1. Toda instrução de estilo precisa poder ser cumprida por um bom escritor humano
    sem contar palavras. Se vira aritmética durante a escrita, vira cacoete no
@@ -71,12 +84,26 @@ Três regras práticas ao mexer em doutrina editorial neste repo:
    correto antes de entrar em produção. Falso positivo em validador que só
    reporta custa atenção; em validador que corrige, custa a qualidade que ele
    deveria proteger.
+4. Antes de creditar proteção a um gate, confirme que o código lê o arquivo de
+   regras. `grep` pelo nome do arquivo de config nos fontes leva dez segundos e
+   evita meses de falsa segurança. Config que ninguém carrega não é governança,
+   é documentação com aparência de governança.
 
 Relacionadas: [[padrao-editorial-hsm-hbr]], [[ADR-001-adopcao-llm-wiki]].
 
 ---
 
 ## Linha do tempo (append-only, ordem reversa)
+
+- **2026-08-11** — [evolução] v4 da diretriz, no mesmo dia da v3, fechando o que
+  faltava: prova antes da escrita com a regra de proporção afirmação/prova e as
+  quatro saídas antes do marcador (§2.2), promessa e tensão redigidas antes do
+  esqueleto com o portão das três condições (§3.1), esqueleto por gênero (§3.2),
+  abertura com sujeito de falha em artefato ou processo (§3.3), rótulo de tipo do
+  caso condutor (§3.4), veto a escassez fabricada (§3.5), um pedido por peça com
+  a fórmula de quatro peças (§3.6), travessão vetado em prosa mas tolerado em
+  título, e travas verificáveis de revisão (§13). Nesta rodada apareceu o defeito
+  5, a configuração decorativa.
 
 - **2026-08-11** — [correção] v3 da diretriz: storytelling obrigatório (§3), veto a
   cota mecânica de ritmo (§4.8), estrutura visual reposicionada a serviço da decisão

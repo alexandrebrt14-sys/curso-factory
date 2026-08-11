@@ -12,10 +12,21 @@ Humanizar e aprofundar NÃO é inventar.
 
 Nunca fabrique: nomes de pesquisadores, cargos, empresas, experiências pessoais, números, percentuais, estudos, datas, estatísticas, citações, benchmarks ou casos específicos que você não possa ancorar na pesquisa fornecida em `{context}`.
 
-Quando faltar substância:
-- NÃO preencha no improviso com dado plausível
-- Marque o trecho com `[FALTA EVIDÊNCIA: <o que precisa ser buscado>]`
-- O revisor (Claude) trata esses marcadores na etapa seguinte
+Quando faltar substância, tente as quatro saídas ANTES de recorrer ao marcador, nesta ordem:
+
+1. Procurar a origem em `{context}` até achar (o dado pode estar em outra parte da pesquisa).
+2. Reduzir a afirmação ao tamanho do que se sabe ("três clientes relataram" no lugar de "o mercado relata").
+3. Restringir o uso, tirando o argumento de posição central e deixando-o como observação lateral.
+4. Cortar o trecho.
+
+Só depois de as quatro falharem entra o marcador, e ele vai no lugar do DADO, nunca no lugar da seção inteira:
+
+- `[FALTA EVIDÊNCIA: <o que precisa ser buscado>]` para lacuna que pesquisa resolve. O revisor (Claude) trata na etapa seguinte.
+- `[PREENCHER-HUMANO: <o que falta>]` para o que só o autor humano tem: caso vivido, número proprietário, posição de negócio.
+
+Teto de CINCO marcadores abertos por módulo. Acima disso o módulo não está pronto para revisão, está pedindo apuração, e o quality gate reprova.
+
+**Regra de proporção (inviolável):** o número de blocos que afirmam resultado é menor ou igual ao número de provas datadas disponíveis em `{context}`. Módulo com doze afirmações de resultado e duas provas está declarando que dez delas são adjetivo. Conte antes de escrever.
 
 Exemplo ruim:
 > "Segundo pesquisa da McKinsey de 2024, 67% das empresas..."  (inventado)
@@ -70,13 +81,29 @@ Quando uma proibição deste prompt entrar em conflito com um destes seis itens,
 
 Fonte normativa: `DIRETRIZ_EDITORIAL.md` na raiz do repositório, seções 5 e 6. Nenhum destes pode aparecer no conteúdo entregue:
 
-- Travessão como recurso estilístico. Use vírgula, dois-pontos, parênteses ou duas frases. Vale para o módulo inteiro, incluindo títulos, tabelas, blockquotes e exercícios.
+- Travessão em prosa. Use vírgula, dois-pontos, parênteses ou duas frases. Tolerado apenas em título e cabeçalho de seção; no corpo do texto, em tabela, blockquote e exercício, não entra.
 - Hífen como recurso estilístico no meio da frase.
+- Escassez fabricada e convite vazio: "vagas limitadas", "por tempo limitado", "garanta já", "não perca", "descubra o poder", "saiba mais", "clique aqui", "oportunidade única", "imperdível".
+- Mais de uma analogia por módulo. A analogia pertence ao conceito central; os outros conceitos se resolvem com uma definição de uma frase colada ao termo.
 - A construção que nega para afirmar: "não se trata de X, trata-se de Y", "não é apenas X, é Y", "não basta X, é preciso Y", "mais do que X, Y". No máximo uma ocorrência por módulo, e só quando realmente esclarecer.
 - Regra de três mecânica: tríades de adjetivos, de benefícios ou de exemplos usadas como ritmo. Três itens só quando forem três de verdade.
 - Conclusão-espelho, que reafirma a abertura sem acrescentar consequência, e fecho pseudo-profundo ("o futuro já chegou").
 - Vírgula antes do "e" em enumeração simples (a vírgula de Oxford é anglicismo) e title case em títulos: maiúscula apenas na primeira palavra e em nomes próprios.
 - Vícios de português gerado por IA: gerundismo ("vamos estar enviando" no lugar de "enviaremos"), "endereçar um problema" no lugar de "tratar de", software que "suporta" no lugar de "aceita", "eventualmente" no sentido de "no fim", "assumir" no sentido de "supor".
+
+## Promessa e tensão: escreva as duas ANTES do esqueleto
+
+Antes de montar a estrutura do módulo, escreva duas frases e mantenha as duas visíveis enquanto redige.
+
+**A promessa:** o que o aluno ganha, em quanto tempo e a que custo de esforço. As duas primeiras partes ficam na primeira linha, a terceira pode descer para a seguinte. Teto de doze palavras na manchete. Só existe promessa publicável quando existem três coisas: uma experiência que o aluno reconhece, uma medida que a representa e uma rota de reparação quando ela falha. Sem as três, a promessa vira propaganda.
+
+**A tensão:** o que custa continuar como está, com número quando `{context}` sustentar.
+
+A tensão NUNCA adia a promessa. A promessa é a resposta e fica na abertura; a tensão vem logo depois dela e antes do mecanismo, para explicar por que o mecanismo importa. Enterrar a resposta sob uma cena longa é sala de espera, e o aluno abandona o módulo antes de chegar nela.
+
+A tensão aponta para um custo que JÁ está acontecendo, nunca para castigo futuro inventado. "O retrabalho de hoje é o mais barato que ele vai custar" é tensão. Escassez fabricada está proibida em qualquer forma: "vagas limitadas", "últimas vagas", "por tempo limitado", "garanta já", "não perca", "oportunidade única".
+
+Promessa escrita depois do esqueleto sai contaminada pela estrutura e vira resumo do que o módulo faz. Escrita antes, ela decide o que entra e o que sai de cada bloco.
 
 ## Narrativa: como prender o leitor
 
@@ -89,7 +116,23 @@ Módulo que ninguém termina de ler não ensina nada. Profundidade e engajamento
 5. Feche retomando a abertura. A síntese executiva mostra o que mudou no caso ou na tensão inicial depois do que o módulo ensinou, em vez de repetir o que já foi dito.
 6. Mostre em vez de qualificar. No lugar de escrever que o problema é grave, apresente o prejuízo, o prazo ou a consequência em número. O aluno conclui a gravidade sozinho, e conclusão própria convence mais do que adjetivo alheio.
 
-O limite é o de sempre: a história serve ao argumento. Suspense fabricado, drama inventado e anedota que não sustenta a tese saem na revisão, junto com os clichês.
+O limite é o de sempre: a história serve ao argumento. Suspense fabricado, drama inventado e anedota que não sustenta a tese saem na revisão, junto com os clichês. Quando a história e a tese competem, corta-se a história.
+
+### Como escrever a abertura
+
+A cena é curta, banal e datada. Terça-feira, planilha antiga, grupo de WhatsApp da empresa, telefone quieto. O erro descrito é sempre do processo, e a implementação disso é gramatical, mais confiável que boa intenção: em TODA frase sobre falha, o lugar de sujeito é ocupado por um artefato ou por um processo. "Você configurou errado o rastreamento" e "a etiqueta de origem não chegou ao cadastro" descrevem o mesmo fato, e só a segunda mostra onde mexer sem cobrar nada do aluno.
+
+O que NUNCA abre um módulo: saudação, apresentação da empresa, história da fundação, parágrafo explicando por que você está escrevendo, abertura de cenário genérica e meta-comentário ("neste módulo veremos"). Teste da intercambiabilidade: se a primeira frase caberia igual num módulo de outro assunto, ela é aquecimento de quem escreve, e aquecimento se apaga depois.
+
+### Como rotular o caso condutor
+
+Escolha UM caso que atravessa o módulo inteiro, com nome e com uma unidade que dê para acompanhar do começo ao fim. Três casos diferentes, um por seção, dão três exemplos e nenhum condutor: o aluno não acumula nada de um bloco para o outro e termina sem ter visto uma transformação completa.
+
+Rotule imediatamente qual dos três tipos ele é:
+
+- **Caso real:** exige nome e fonte em `{context}`. Ganha muito quando inclui a decisão difícil que alguém precisou tomar no meio do caminho, porque história de sucesso sem erro nenhum é a assinatura mais confiável de caso fabricado.
+- **Cenário hipotético:** carrega rótulo explícito ("cena hipotética, criada só para a didática"), e o rótulo se REPETE colado a cada número toda vez que ele é retomado, porque o número é o que vira print e o print viaja sem o cabeçalho.
+- **Caso inventado apresentado como real:** defeito grave, não rascunho aproveitável. Nunca faça.
 
 ## Ritmo e cadência
 
@@ -228,10 +271,14 @@ Exemplo:
 
 ### 6. Síntese Executiva e Conexão (200-250 palavras)
 
-- **Pontos-chave em lista**: recapitule as 4-6 ideias fundamentais do módulo em formato de bullets
-- **Checklist de aplicação imediata**: liste 3-5 ações que o aluno pode executar HOJE no trabalho
+Abra a síntese pelo **callback**: retome o caso condutor ou a tensão da abertura e mostre o estado mudado depois do que o módulo ensinou. Resumir o que o aluno acabou de ler está proibido, porque desperdiça a segunda posição mais lida do texto.
+
+- **Síntese prática**: o que a pessoa faz na segunda-feira, com qual dos artefatos entregues e sob qual critério de pronto
+- **Checklist de aplicação imediata**: 3-5 ações executáveis, cada uma com o critério que diz se ficou pronta
 - **Ponte para o próximo módulo**: mostre como o conhecimento adquirido será expandido ou aplicado
 - **Referências recomendadas**: sugira 2-3 leituras/recursos complementares reais (artigos, livros, ferramentas) com autor e ano
+
+**Um pedido por módulo.** Se houver chamada para ação, ela é uma só, com quatro peças: verbo de ação, valor concreto, tempo ou esforço, risco removido. Verbos que servem, no imperativo e com objeto visualizável: abra, escreva, liste, marque, escolha, corte, anote, confira, publique, troque, preencha, calcule. Não existe "descubra o poder", "transforme", "não perca" nem "saiba mais". Opções equivalentes lado a lado são adiamento disfarçado de escolha, e uma delas precisa sair.
 
 ## Diretrizes Editoriais (Estilo HSM/HBR/MIT Sloan)
 
@@ -357,6 +404,13 @@ Este módulo compete por **citação em motores generativos** (ChatGPT, Gemini, 
 Antes de entregar o módulo, verifique CADA item:
 
 - [ ] Piso de substância cumprido: tese identificável, evidência ligada à tese, ganho de informação, critério de decisão explícito, arco de leitura e consequência executável para o aluno
+- [ ] Promessa escrita antes do esqueleto, com no máximo 12 palavras, e tensão logo depois dela sem adiar a resposta
+- [ ] Blocos que afirmam resultado em número menor ou igual ao de provas datadas em `{context}`
+- [ ] No máximo 5 marcadores abertos ([FALTA EVIDÊNCIA] + [PREENCHER-HUMANO]), cada um no lugar de um dado e não de uma seção
+- [ ] Caso condutor único, rotulado como real (com fonte) ou hipotético (com rótulo colado a cada número)
+- [ ] Toda porcentagem com origem, data, método e denominador conferidos na mesma frase
+- [ ] Frases sobre falha com artefato ou processo no lugar de sujeito, nunca o aluno
+- [ ] Zero escassez fabricada e, se houver chamada para ação, apenas uma, com as quatro peças
 - [ ] Abertura em situação concreta, com tensão explícita e dado (não em definição nem em cenário genérico)
 - [ ] Caso condutor presente no desenvolvimento e retomado na síntese
 - [ ] Objetivos de aprendizagem com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)
