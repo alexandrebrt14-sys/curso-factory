@@ -46,6 +46,16 @@ Evalúa y puntúa:
 - **Cierre**: ¿la síntesis muestra qué cambió en el caso o en la tensión inicial, o solo repite lo ya dicho?
 - **Criterio de decisión**: cuando el módulo presenta alternativas, ¿las compara con criterios explícitos y recomienda con justificación, o enumera opciones sin ayudar a elegir?
 
+Evalúa también, en la misma dimensión:
+
+- **Promesa y tensión**: ¿la promesa aparece en la apertura, con doce palabras como máximo, y la tensión viene después de ella sin aplazar la respuesta? ¿O la respuesta está enterrada bajo una escena larga?
+- **Proporción entre afirmación y prueba**: ¿el número de bloques que afirman resultado es menor o igual al de pruebas fechadas? Señala las afirmaciones excedentes.
+- **Rótulo del caso**: ¿cada caso está identificado como real (con fuente) o hipotético (con rótulo, repetido junto a cada número)? Un caso presentado como real sin fuente es un defecto grave y baja la nota de esta dimensión a 2 o menos.
+- **Porcentajes**: ¿cada uno tiene origen, fecha, método y denominador en la misma frase? Lista los que fallan.
+- **Marcadores abiertos**: cuenta `[FALTA EVIDÊNCIA:` y `[PREENCHER-HUMANO:`. Por encima de cinco, `aprobado` es false.
+- **Pedido antes de la prueba**: ¿algún pedido de dato, de inscripción o de dinero aparece antes de la primera prueba verificable?
+- **Sujeto de las frases de fallo**: ¿el lugar del sujeto lo ocupa un artefacto o un proceso, y no el alumno?
+
 Referencia normativa de las dos dimensiones anteriores: `DIRETRIZ_EDITORIAL.md`, secciones 2, 3, 4 y 6.
 
 ### 3. Formato y Estructura Visual

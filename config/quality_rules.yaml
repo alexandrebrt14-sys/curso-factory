@@ -1,5 +1,17 @@
-# curso-factory �� Regras de Qualidade
+# curso-factory — Regras de Qualidade
 # Validação automática de 5 camadas antes do deploy
+#
+# LIDO EM RUNTIME desde 11/08/2026 por src/validators/rules_loader.py.
+# Até essa data o arquivo era decorativo: nenhum código o abria, e as listas
+# aqui divergiam em silêncio das constantes hardcoded nos validadores.
+# Agora mudar uma lista aqui MUDA O COMPORTAMENTO DO GATE — acrescentar uma
+# expressão em forbidden_expressions passa a reprovar conteúdo no próximo run.
+# Chaves consumidas hoje:
+#   validation.forbidden_expressions.expressions  -> _check_cliches
+#   validation.anti_invencao.require_source_for_percentages
+#   validation.anti_invencao.fail_if_unresolved_markers_above
+# As demais seções seguem descritivas; o valor espelhado em código está
+# anotado por comentário na chave correspondente.
 
 validation:
   # Camada 1: Acentuação PT-BR
@@ -105,6 +117,8 @@ validation:
     fail_if_missing: 3  # Bloqueia se 3+ ausentes
 
   # Clichês e expressões proibidas
+  # LIDO EM RUNTIME — content_checker.py::_check_cliches usa a união desta
+  # lista com o fallback FORBIDDEN_CLICHES (18 entradas) do módulo.
   forbidden_expressions:
     enabled: true
     fail_on_found: true
@@ -156,13 +170,31 @@ validation:
       - "atua como"
       - "se posiciona como"
       - "cumpre o papel de"
+      # CTA genérico e escassez fabricada (padrão editorial 11/08/2026).
+      # Conteúdo educacional não vende urgência: prazo real tem data, e
+      # limite real tem número. Sem os dois, a frase é enfeite de anúncio
+      # e não sobrevive à revisão.
+      - "vagas limitadas"
+      - "últimas vagas"
+      - "por tempo limitado"
+      - "garanta já"
+      - "não perca"
+      - "descubra o poder"
+      - "saiba mais"
+      - "clique aqui"
+      - "imperdível"
+      - "oportunidade única"
 
   # Anti-invenção (Humanizador 2.6.2) — humanizar não é inventar
   anti_invencao:
     enabled: true
     allow_marker: "[FALTA EVIDÊNCIA:"  # Redator pode marcar lacunas para o revisor
+    # LIDO EM RUNTIME — content_checker.py::check_content (erro bloqueante).
+    # Também conta "[PREENCHER-HUMANO:". Default no código: 5.
     fail_if_unresolved_markers_above: 5  # Mais que 5 marcadores sobrando = reprovar
     ban_vague_attribution: true  # "especialistas apontam" sem citação = erro
+    # LIDO EM RUNTIME — content_checker.py::_check_percentages_have_source
+    # (aviso não-bloqueante, teto de 5 por documento). Default no código: true.
     require_source_for_percentages: true  # Todo "%" deve ter fonte próxima
 
   # Camada 3: Links

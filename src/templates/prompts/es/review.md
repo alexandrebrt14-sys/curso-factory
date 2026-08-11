@@ -148,7 +148,9 @@ Repasa el texto y CORRIGE cada aparición de los 21 patrones de escritura artifi
 Fuente normativa: `DIRETRIZ_EDITORIAL.md` en la raíz del repositorio, secciones 3, 4, 5 y 6. Corrige activamente:
 
 **Estructuras y puntuación vetadas:**
-- La raya (—) como recurso estilístico, en cualquier parte del módulo, incluidos títulos, tablas y ejercicios. Es regla de la casa en este repositorio. Reescribe con coma, dos puntos, paréntesis o dos frases.
+- La raya (—) en prosa, en cualquier parte del cuerpo del texto, incluidos tablas, bloques de cita y ejercicios. Es regla de la casa en este repositorio. Reescribe con coma, dos puntos, paréntesis o dos frases. En el título y en el encabezado de sección se tolera.
+- Escasez fabricada ("cupos limitados", "por tiempo limitado", "asegura ya el tuyo", "no te lo pierdas", "oportunidad única") e invitación vacía ("conoce más", "haz clic aquí", "descubre el poder", "transforma"). Sustituye por un verbo de acción con objeto visualizable, o corta.
+- Más de una analogía por módulo. Conserva la del concepto central y convierte las demás en una definición de una frase pegada al término.
 - La construcción que niega para afirmar ("no se trata de X, se trata de Y", "no es solo X, es Y", "no basta con X, hace falta Y", "más que X, Y"). Tolera una aparición por módulo como máximo y reescribe las demás como afirmación directa.
 - Regla de tres mecánica: tríadas de adjetivos, beneficios o ejemplos usadas como ritmo. Recorta a dos o amplía al número real de ítems.
 - Conclusión espejo que reafirma la apertura sin agregar consecuencia, y cierre pseudoprofundo. Sustituye por la consecuencia concreta o por el siguiente paso.
@@ -157,14 +159,33 @@ Fuente normativa: `DIRETRIZ_EDITORIAL.md` en la raíz del repositorio, secciones
 
 **Ritmo:** toma bloques de diez frases y compara la más larga con la más corta. Una diferencia por debajo de 15 palabras indica uniformidad de máquina y pide reescribir ese pasaje, dejando que el contenido gobierne la longitud. El defecto opuesto también se corrige: una secuencia de frases cortas de relleno, una por párrafo, es staccato de titular y debe fundirse en períodos que sostengan el razonamiento. Nunca apliques cuota de frase corta ni alternancia programada.
 
-**Narrativa:** verifica si el módulo abre en situación concreta con tensión explícita (y no en una definición o un escenario genérico), si la promesa de la apertura se cumple en el desarrollo, si existe un caso conduciendo el argumento y si la síntesis retoma ese caso mostrando qué cambió. Si la apertura es genérica, REESCRÍBELA con el dato o el caso más fuerte que ya esté en el módulo; si la síntesis solo repite lo dicho, REESCRÍBELA como consecuencia y siguiente paso. No inventes el caso: si no hay material, marca `[FALTA EVIDENCIA: caso real para abrir el módulo]`.
+**Narrativa:** verifica si el módulo abre en situación concreta con tensión explícita (y no en una definición o un escenario genérico), si la promesa de la apertura se cumple en el desarrollo, si existe un caso conduciendo el argumento y si la síntesis retoma ese caso mostrando qué cambió. Si la apertura es genérica, REESCRÍBELA con el dato o el caso más fuerte que ya esté en el módulo; si la síntesis solo repite lo dicho, REESCRÍBELA como consecuencia y siguiente paso. No inventes el caso: si no hay material, marca `[FALTA EVIDÊNCIA: caso real para abrir el módulo]`.
+
+### 3.56. Trabas de evidencia y de arco (verificables una a una)
+
+Estas trabas son verificación, no impresión. Recórrelas todas y reporta el resultado.
+
+**Evidencia:**
+- Cada símbolo de porcentaje activa cuatro verificaciones dentro de la misma frase: origen, fecha, método y denominador. Si falta cualquiera de ellas, marca `[FALTA EVIDÊNCIA: ...]` en el lugar del dato o reduce la afirmación a lo que se sabe. La base pequeña se cuenta en unidades, porque sin denominador "creció 300%" puede significar tres clientes.
+- Cada ejemplo inventado lleva rótulo, incluida cada salida de cálculo o de simulación.
+- Cada caso presentado como real tiene nombre y fuente en `{context}`. Sin fuente, o pasa a ser escenario rotulado como hipotético, o sale.
+- Los marcadores abiertos ([FALTA EVIDÊNCIA] y [PREENCHER-HUMANO] sumados) no pasan de cinco en el módulo. Por encima de eso, REPRUEBA: la pieza está pidiendo investigación, no revisión.
+- Bloques que afirman resultado en número menor o igual al de pruebas fechadas disponibles. Cuando haya más afirmación que prueba, reduce las afirmaciones excedentes al tamaño de lo que la investigación sostiene.
+- Identificadores verificados antes de citar: número de sección, código de documento, nombre de archivo, ID de paper. Un identificador equivocado se propaga solo hacia los derivados y hacia la página pública.
+
+**Arco:**
+- La apertura instala situación y tensión SIN aplazar la promesa. Si la respuesta está enterrada bajo una escena larga, sube la promesa.
+- El caso conductor es uno solo: aparece en la apertura, vuelve en el desarrollo y cierra al final. Tres casos sueltos, uno por sección, se convierten en uno en la revisión.
+- El cierre retoma ese caso en lugar de resumir.
+- Ningún pedido de dato, de inscripción o de dinero aparece antes de la primera prueba. Un pedido anterior a la prueba suena a cobro, y el arreglo es mover el bloque.
+- Prueba del párrafo suelto en las frases de prueba, de límite y de precio: lee la frase aislada, sin el contexto, y pregunta si se sostiene. Público, condición y excepción tienen que viajar dentro de la misma frase, porque un "no sirve para X" recortado sin el "solo" le llega al lector como "sirve".
 
 ### 3.6. Señalización de falta de sustancia (Humanizador 2.6.2)
 
 Regla inviolable: **humanizar no es inventar**.
 
-- Si el texto trae una afirmación sin evidencia (dato, fuente, caso) y la investigación en `{context}` no la respalda, NO inventes un dato verosímil. Marca con `[FALTA EVIDENCIA: <descripción>]` y repórtalo en el bloque final
-- Si encuentras marcadores `[FALTA EVIDENCIA: ...]` provenientes del redactor, repórtalos en el bloque final en "Evidencias pendientes" en lugar de borrarlos en silencio
+- Si el texto trae una afirmación sin evidencia (dato, fuente, caso) y la investigación en `{context}` no la respalda, NO inventes un dato verosímil. Marca con `[FALTA EVIDÊNCIA: <descripción>]` y repórtalo en el bloque final
+- Si encuentras marcadores `[FALTA EVIDÊNCIA: ...]` o `[PREENCHER-HUMANO: ...]` provenientes del redactor, repórtalos en el bloque final en "Evidencias pendientes" en lugar de borrarlos en silencio
 - Nunca conviertas "el mercado entiende" en "el 67% de las empresas, según McKinsey" si la cifra no existe en `{context}`
 - Reprueba el módulo si hay 3+ afirmaciones sustantivas sin evidencia que no puedas corregir
 
@@ -211,7 +232,9 @@ Tablas añadidas: [número]
 Ejercicios corregidos/añadidos: [número]
 Clichés eliminados: [número]
 Patrones anti-IA corregidos (1-21): [número por categoría]
-Evidencias pendientes: [lista de marcadores [FALTA EVIDENCIA: ...] no resueltos]
+Trabas de evidencia: [porcentajes sin las 4 verificaciones, casos sin rótulo, marcadores abiertos (total), identificadores no verificados]
+Trabas de arco: [promesa aplazada, caso conductor múltiple, cierre que resume, pedido antes de la prueba, frases que no pasan la prueba del párrafo suelto]
+Evidencias pendientes: [lista de marcadores [FALTA EVIDÊNCIA: ...] no resueltos]
 Principales ajustes: [lista de los 5 ajustes más relevantes]
 Aprobado para publicación: sí/no
 Motivo (si no aprobado): ...

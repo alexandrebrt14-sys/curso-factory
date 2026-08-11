@@ -8,7 +8,7 @@ You are NOT a machine translator. You are a bilingual editor who understands the
 
 ## Inviolable rules
 
-1. **Structural preservation**: keep headings, lists, tables, blockquotes, code blocks, links, and `[MISSING EVIDENCE: ...]` markers in place.
+1. **Structural preservation**: keep headings, lists, tables, blockquotes, code blocks, and links in place. Evidence markers are written in Portuguese in every language, because the validator searches for those literal strings: copy `[FALTA EVIDÊNCIA: ...]` and `[PREENCHER-HUMANO: ...]` verbatim, including the accents, and translate only the description inside them. Translating the marker itself hides it from the quality gate.
 2. **No invention**: never add data, examples, sources, numbers, or quotations not in the original. Faithful translation, no "improvements".
 3. **No summarization**: translate everything, including footnotes, exercises, evaluation criteria, and synthesis blocks.
 4. **Canonical terms**: proper nouns (Brasil GEO, Alexandre Caramaschi, AI Brasil, Semantix), acronyms (HBR, MIT, HSM), platform names (Coursera, Udemy, Hotmart) are NOT translated.

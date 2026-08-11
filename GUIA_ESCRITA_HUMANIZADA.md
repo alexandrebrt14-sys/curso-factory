@@ -1,6 +1,6 @@
 # Guia de escrita humanizada
 
-Anexo prático da `DIRETRIZ_EDITORIAL.md` (versão 3, 11 de agosto de 2026). A diretriz define as regras; este guia mostra como aplicá-las, com exemplos antes e depois em português do Brasil, heurísticas mensuráveis e as fontes da pesquisa de junho e julho de 2026 que sustentam cada prática. Os exemplos são ilustrativos, criados para este guia.
+Anexo prático da `DIRETRIZ_EDITORIAL.md` (versão 4, 11 de agosto de 2026). A diretriz define as regras; este guia mostra como aplicá-las, com exemplos antes e depois em português do Brasil, heurísticas mensuráveis e as fontes da pesquisa de junho e julho de 2026 que sustentam cada prática. Os exemplos são ilustrativos, criados para este guia.
 
 A versão 3 acrescentou a seção 3, sobre narrativa, e endureceu o veto a cotas mecânicas de ritmo (seções 2 e 8), depois que a geração anterior dos prompts deste repositório produziu o defeito oposto ao que pretendia corrigir.
 
@@ -90,11 +90,15 @@ O orçamento limita o excesso, não o uso. Tabela comparativa, matriz de decisã
 
 ## 7. Fluxo de revisão em três passadas
 
+Antes de tudo, uma conta que se faz na fase de apuração e não na revisão: quantos blocos da peça afirmam resultado e quantas provas datadas existem para sustentá-los. Se as afirmações passarem das provas, o conserto acontece antes da redação, reduzindo afirmação ou buscando origem, porque revisar uma peça superdimensionada é reescrevê-la inteira. As quatro saídas na falta de prova, na ordem: pesquisar a origem, reduzir a afirmação ao tamanho do que se sabe, restringir o uso, segurar a publicação. Só depois entra o marcador, sempre no lugar do dado e nunca no lugar da seção, com teto de cinco por documento.
+
 Antes das três passadas, uma verificação que nenhum gate automático faz: os seis itens do piso de substância (diretriz, seção 2.1). Tese identificável, evidência ligada à tese, ganho de informação, critério de decisão, arco de leitura e consequência para o leitor. Os validadores do repositório medem forma, e forma limpa em texto vazio continua sendo texto vazio.
 
 1. Substância: os seis itens acima; fatos, datas, números e fontes conferidos; a pergunta central do texto respondida; nenhum dado inventado; slots `[PREENCHER-HUMANO]` resolvidos com o autor (caso vivido, número proprietário, posição de negócio) ou o trecho cortado.
 2. Estrutura: seções 3 e 5 deste guia aplicadas; arco narrativo verificado (a abertura prende, a promessa é paga, o fechamento retoma); cápsula de resposta presente na abertura de cada seção interna; headings que são perguntas reais do público; nenhuma seção que não se sustente sozinha.
 3. Linguagem: heurística do bloco de dez frases; aberturas de parágrafo todas distintas; conectivos cortados; tabela da seção 4 varrida; orçamento de formatação da seção 6 conferido; leitura em voz alta do texto inteiro.
+
+Duas travas merecem atenção separada, porque são as que mais escapam. Todo símbolo de porcentagem dispara quatro conferências dentro da mesma frase: origem, data, método e denominador. Base pequena se conta em unidades, já que sem denominador "cresceu 300%" pode significar três clientes. E o teste do parágrafo solto vale para toda frase de prova, de limite e de preço: leia a frase isolada, sem o contexto em volta, e pergunte se ela se sustenta. Público, condição e exceção precisam viajar dentro da mesma sentença, porque um "não serve para X" recortado sem o "somente" chega ao leitor como "serve", e é assim que o trecho viaja quando alguém tira um print.
 
 O conserto de trecho reprovado é reescrita de estrutura. Troca de sinônimo mantém o ritmo de máquina e ainda cria o cacoete novo do vocabulário artificialmente variado.
 

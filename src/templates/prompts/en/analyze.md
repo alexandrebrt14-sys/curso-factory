@@ -46,6 +46,16 @@ Assess and score:
 - **Closing**: does the synthesis show what changed in the case or in the initial tension, or does it repeat what was already said?
 - **Decision criterion**: when the module presents alternatives, does it compare them against explicit criteria and recommend with a justification, or does it list options without helping the learner choose?
 
+Assess as well, within the same dimension:
+
+- **Promise and tension**: does the promise appear in the opening, in twelve words at most, with the tension coming after it and not postponing the answer? Or is the answer buried under a long scene?
+- **Proportion between claim and proof**: is the number of blocks that assert a result less than or equal to the number of dated proofs? Point out the surplus claims.
+- **Case label**: is each case identified as real (with a source) or hypothetical (with the label repeated next to every number)? A case presented as real without a source is a serious defect and drops the score for this dimension to 2 or below.
+- **Percentages**: does each one carry origin, date, method, and denominator in the same sentence? List the ones that fail.
+- **Open markers**: count `[FALTA EVIDÊNCIA:` and `[PREENCHER-HUMANO:`. Above five, `approved` is false.
+- **Ask before proof**: does any ask for data, for a sign-up, or for money appear before the first verifiable proof?
+- **Subject of the failure sentences**: is the subject slot filled by an artifact or a process, rather than by the learner?
+
 Normative reference for the two dimensions above: `DIRETRIZ_EDITORIAL.md`, sections 2, 3, 4, and 6.
 
 ### 3. Formatting and Visual Structure

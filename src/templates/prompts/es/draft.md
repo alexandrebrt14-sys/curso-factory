@@ -12,16 +12,29 @@ Humanizar y profundizar NO es inventar.
 
 Nunca fabriques: nombres de investigadores, cargos, empresas, experiencias personales, números, porcentajes, estudios, fechas, estadísticas, citas, benchmarks o casos específicos que no puedas anclar en la investigación proporcionada en `{context}`.
 
-Cuando falte sustancia:
-- NO completes con un dato verosímil de improviso
-- Marca el pasaje con `[FALTA EVIDENCIA: <lo que necesita ser buscado>]`
-- El revisor (Claude) trata esos marcadores en la etapa siguiente
+Cuando falte sustancia, intenta las cuatro salidas ANTES de recurrir al marcador, en este orden:
+
+1. Buscar el origen en `{context}` hasta encontrarlo (el dato puede estar en otra parte de la investigación).
+2. Reducir la afirmación al tamaño de lo que se sabe ("tres clientes reportaron" en lugar de "el mercado reporta").
+3. Restringir el uso, sacando el argumento de la posición central y dejándolo como observación lateral.
+4. Cortar el pasaje.
+
+Solo después de que las cuatro fallen entra el marcador, y va en el lugar del DATO, nunca en el lugar de la sección entera:
+
+- `[FALTA EVIDÊNCIA: <lo que necesita ser buscado>]` para el vacío que la investigación resuelve. El revisor (Claude) lo trata en la etapa siguiente.
+- `[PREENCHER-HUMANO: <lo que falta>]` para lo que solo tiene el autor humano: caso vivido, número propietario, posición de negocio.
+
+Los dos marcadores se escriben en portugués, exactamente así, sea cual sea el idioma del módulo: el validador automático busca esas cadenas literales.
+
+Techo de CINCO marcadores abiertos por módulo. Por encima de eso el módulo no está listo para revisión, está pidiendo investigación, y el quality gate lo reprueba.
+
+**Regla de proporción (inviolable):** el número de bloques que afirman resultado es menor o igual al número de pruebas fechadas disponibles en `{context}`. Un módulo con doce afirmaciones de resultado y dos pruebas está declarando que diez de ellas son adjetivo. Cuenta antes de escribir.
 
 Ejemplo malo:
 > "Según una investigación de McKinsey de 2024, el 67% de las empresas..." (inventado)
 
 Ejemplo correcto cuando no hay dato en la investigación:
-> "Hay reportes de fallos de adopción en el mercado, pero [FALTA EVIDENCIA: estudio que cuantifique la tasa de fracaso]."
+> "Hay reportes de fallos de adopción en el mercado, pero [FALTA EVIDÊNCIA: estudio que cuantifique la tasa de fracaso]."
 
 Cita solo fuentes que aparezcan en `{context}`. Nunca uses "los expertos señalan", "los estudios indican", "el mercado entiende" sin citar una investigación específica — eso es atribución vaga, patrón #4 de "cara de IA".
 
@@ -51,19 +64,35 @@ Antes de entregar, revisa el texto eliminando estas señales:
 20. **Nominalización en exceso**: "implementación", "utilización", "viabilización", "operacionalización" — prefiere el verbo ("implementar", "usar")
 21. **Ausencia de voz autoral**: texto demasiado neutro para el género, cualquiera podría haberlo escrito, ningún ángulo propio
 
-Regla práctica: al final de cada sección, relee preguntando "¿podría haber salido esto de cualquier generador de contenido corporativo?". Si sí, reescribe con concreción, agente explícito y dato específico — o marca `[FALTA EVIDENCIA]`.
+Regla práctica: al final de cada sección, relee preguntando "¿podría haber salido esto de cualquier generador de contenido corporativo?". Si sí, reescribe con concreción, agente explícito y dato específico — o marca `[FALTA EVIDÊNCIA]`.
 
 ## Estructuras y puntuación vetadas
 
 Fuente normativa: `DIRETRIZ_EDITORIAL.md` en la raíz del repositorio, secciones 5 y 6. Ninguna de estas puede aparecer en el contenido entregado:
 
-- La raya (—) como recurso estilístico, sea la pausa dramática o el inciso soltado en medio de la frase. Es regla de la casa en este repositorio. Usa coma, dos puntos, paréntesis o dos frases. Vale para el módulo entero, incluidos títulos, tablas, bloques de cita y ejercicios.
+- La raya (—) en prosa, sea la pausa dramática o el inciso soltado en medio de la frase. Es regla de la casa en este repositorio. Usa coma, dos puntos, paréntesis o dos frases. Se tolera solo en el título y en el encabezado de sección; en el cuerpo del texto, en tablas, bloques de cita y ejercicios, no entra.
 - El guion usado como pausa en medio de la frase, en sustitución de la raya.
+- Escasez fabricada e invitación vacía: "cupos limitados", "por tiempo limitado", "asegura ya el tuyo", "no te lo pierdas", "descubre el poder", "conoce más", "haz clic aquí", "oportunidad única", "imperdible".
+- Más de una analogía por módulo. La analogía pertenece al concepto central; los demás conceptos se resuelven con una definición de una frase pegada al término.
 - La construcción que niega para afirmar: "no se trata de X, se trata de Y", "no es solo X, es Y", "no basta con X, hace falta Y", "más que X, Y". Una aparición por módulo como máximo, y solo cuando aclare algo de verdad.
 - Regla de tres mecánica: tríadas de adjetivos, de beneficios o de ejemplos usadas como ritmo. Tres ítems solo cuando sean tres de verdad.
 - Conclusión espejo, que reafirma la apertura sin agregar consecuencia, y cierre pseudoprofundo ("el futuro ya llegó").
 - Los dos anglicismos de puntuación y titulación: coma antes de la "y" en enumeración simple (la coma de Oxford no existe en español) y title case en los títulos, donde corresponde mayúscula solo en la primera palabra y en los nombres propios.
 - Vicios del español generado por IA: gerundio de posterioridad ("se aprobó el plan, implementándose al día siguiente" en lugar de "se aprobó el plan y al día siguiente se implementó"), "adresar" o "direccionar" un problema en lugar de "abordarlo" o "resolverlo", software que "soporta" en lugar de "admite" o "es compatible con", "eventualmente" en el sentido de "finalmente", "asumir" en el sentido de "suponer".
+
+## Promesa y tensión: escribe las dos ANTES del esqueleto
+
+Antes de montar la estructura del módulo, escribe dos frases y mantén las dos a la vista mientras redactas.
+
+**La promesa:** lo que el alumno gana, en cuánto tiempo y a qué costo de esfuerzo. Las dos primeras partes van en la primera línea, la tercera puede bajar a la siguiente. Techo de doce palabras en el titular. Solo existe promesa publicable cuando existen tres cosas: una experiencia que el alumno reconoce, una medida que la representa y una ruta de reparación cuando falla. Sin las tres, la promesa se vuelve publicidad.
+
+**La tensión:** lo que cuesta seguir como se está, con número siempre que `{context}` lo sostenga.
+
+La tensión NUNCA aplaza la promesa. La promesa es la respuesta y va en la apertura; la tensión viene enseguida, antes del mecanismo, para explicar por qué el mecanismo importa. Enterrar la respuesta bajo una escena larga es sala de espera, y el alumno abandona el módulo antes de llegar a ella.
+
+La tensión apunta a un costo que YA está ocurriendo, nunca a un castigo futuro inventado. "El retrabajo de hoy es lo más barato que va a costar" es tensión. La escasez fabricada queda prohibida en cualquier forma: "cupos limitados", "últimos cupos", "por tiempo limitado", "asegura ya el tuyo", "no te lo pierdas", "oportunidad única".
+
+Una promesa escrita después del esqueleto sale contaminada por la estructura y se convierte en resumen de lo que el módulo hace. Escrita antes, decide qué entra y qué sale de cada bloque.
 
 ## Narrativa: cómo sostener al lector
 
@@ -76,7 +105,23 @@ Un módulo que nadie termina de leer no enseña nada. Profundidad y enganche no 
 5. Cierra retomando la apertura. La síntesis ejecutiva muestra qué cambió en el caso o en la tensión inicial después de lo que el módulo enseñó, en lugar de repetir lo ya dicho.
 6. Muestra en vez de calificar. En lugar de escribir que el problema es grave, presenta la pérdida, el plazo o la consecuencia en número. El alumno concluye la gravedad por su cuenta, y la conclusión propia convence más que el adjetivo ajeno.
 
-El límite es el de siempre: la historia sirve al argumento. El suspenso fabricado, el drama inventado y la anécdota que no sostiene la tesis se caen en la revisión, junto con los clichés.
+El límite es el de siempre: la historia sirve al argumento. El suspenso fabricado, el drama inventado y la anécdota que no sostiene la tesis se caen en la revisión, junto con los clichés. Cuando la historia y la tesis compiten, se corta la historia.
+
+### Cómo escribir la apertura
+
+La escena es corta, banal y fechada. Martes, planilla vieja, grupo de WhatsApp de la empresa, teléfono callado. El error descrito siempre es del proceso, y la implementación de esa regla es gramatical, más confiable que la buena intención: en TODA frase sobre fallo, el lugar del sujeto lo ocupa un artefacto o un proceso. "Configuraste mal el rastreo" y "la etiqueta de origen no llegó al registro" describen el mismo hecho, y solo la segunda muestra dónde intervenir sin cobrarle nada al alumno.
+
+Lo que NUNCA abre un módulo: saludo, presentación de la empresa, historia de la fundación, párrafo que explica por qué estás escribiendo, apertura de escenario genérica y metacomentario ("en este módulo veremos"). Prueba de intercambiabilidad: si la primera frase cabría igual en un módulo de otro asunto, es el calentamiento de quien escribe, y el calentamiento se borra después.
+
+### Cómo rotular el caso conductor
+
+Elige UN caso que atraviese el módulo entero, con nombre y con una unidad que se pueda seguir de principio a fin. Tres casos distintos, uno por sección, dan tres ejemplos y ningún conductor: el alumno no acumula nada de un bloque al siguiente y termina sin haber visto una transformación completa.
+
+Rotula de inmediato cuál de los tres tipos es:
+
+- **Caso real:** exige nombre y fuente en `{context}`. Gana mucho cuando incluye la decisión difícil que alguien tuvo que tomar a mitad de camino, porque una historia de éxito sin ningún error es la firma más confiable de un caso fabricado.
+- **Escenario hipotético:** lleva rótulo explícito ("escena hipotética, creada solo para la didáctica"), y el rótulo se REPITE pegado a cada número cada vez que el escenario se retoma, porque el número es lo que se vuelve captura de pantalla, y la captura viaja sin el encabezado.
+- **Caso inventado presentado como real:** defecto grave, no borrador aprovechable. Nunca lo hagas.
 
 ## Ritmo y cadencia
 
@@ -215,10 +260,14 @@ Ejemplo:
 
 ### 6. Síntesis Ejecutiva y Conexión (200-250 palabras)
 
-- **Puntos clave en lista**: recapitula las 4-6 ideas fundamentales del módulo en formato de viñetas
-- **Checklist de aplicación inmediata**: enumera 3-5 acciones que el alumno puede ejecutar HOY en el trabajo
+Abre la síntesis por el **callback**: retoma el caso conductor o la tensión de la apertura y muestra el estado que cambió después de lo que el módulo enseñó. Resumir lo que el alumno acaba de leer queda prohibido, porque desperdicia la segunda posición más leída del texto.
+
+- **Síntesis práctica**: lo que la persona hace el lunes, con cuál de los artefactos entregados y bajo qué criterio de terminado
+- **Checklist de aplicación inmediata**: 3-5 acciones ejecutables, cada una con el criterio que dice si quedó lista
 - **Puente al siguiente módulo**: muestra cómo el conocimiento adquirido se ampliará o aplicará
 - **Referencias recomendadas**: sugiere 2-3 lecturas/recursos complementarios reales (artículos, libros, herramientas) con autor y año
+
+**Un pedido por módulo.** Si hay llamada a la acción, es una sola, con cuatro piezas: verbo de acción, valor concreto, tiempo o esfuerzo, riesgo eliminado. Verbos que sirven, en imperativo y con objeto visualizable: abre, escribe, enumera, marca, elige, corta, anota, verifica, publica, cambia, completa, calcula. No existe "descubre el poder", ni "transforma", ni "no te lo pierdas", ni "conoce más". Las opciones equivalentes puestas lado a lado son aplazamiento disfrazado de elección, y una de ellas tiene que salir.
 
 ## Directrices Editoriales (Estilo HSM/HBR/MIT Sloan)
 
@@ -324,6 +373,13 @@ REGLA ABSOLUTA: español neutro profesional con acentuación COMPLETA y ortograf
 
 Antes de entregar el módulo, verifica CADA ítem:
 
+- [ ] Promesa escrita antes del esqueleto, con 12 palabras como máximo, y tensión enseguida, sin aplazar la respuesta
+- [ ] Bloques que afirman resultado en número menor o igual al de pruebas fechadas en `{context}`
+- [ ] Como máximo 5 marcadores abiertos ([FALTA EVIDÊNCIA] + [PREENCHER-HUMANO]), cada uno en el lugar de un dato y no de una sección
+- [ ] Caso conductor único, rotulado como real (con fuente) o hipotético (con rótulo pegado a cada número)
+- [ ] Cada porcentaje con origen, fecha, método y denominador verificados en la misma frase
+- [ ] Frases sobre fallo con artefacto o proceso en el lugar del sujeto, nunca el alumno
+- [ ] Cero escasez fabricada y, si hay llamada a la acción, una sola, con las cuatro piezas
 - [ ] Apertura en situación concreta, con tensión explícita y dato (no en definición ni en escenario genérico)
 - [ ] Caso conductor presente en el desarrollo y retomado en la síntesis
 - [ ] Objetivos de aprendizaje con verbos de Bloom nivel 3+ (aplicar, analizar, evaluar, crear)

@@ -168,7 +168,7 @@ Varra o texto e CORRIJA cada ocorrência dos 21 padrões de escrita artificial:
 20. Nominalização excessiva ("implementação", "utilização", "operacionalização") → use o verbo
 21. Ausência de voz autoral no gênero que pede opinião → adicione ângulo analítico claro
 
-### 3.4. Piso de substância (verificar ANTES de qualquer corte)
+### 3.6. Piso de substância (verificar ANTES de qualquer corte)
 
 Os validadores automáticos deste repositório medem forma e não medem substância: módulo raso e uniforme passa em todos eles. Antes de aplicar qualquer proibição das seções seguintes, verifique os seis itens de `DIRETRIZ_EDITORIAL.md` seção 2.1:
 
@@ -181,12 +181,14 @@ Os validadores automáticos deste repositório medem forma e não medem substân
 
 Faltando qualquer um deles, o conserto é acrescentar, reescrever ou marcar `[FALTA EVIDÊNCIA: ...]`, nunca cortar. Se um item colidir com uma proibição das seções seguintes, o item vence e você reformula o trecho até cumprir os dois. Reporte no bloco final quais itens estavam ausentes no rascunho recebido.
 
-### 3.55. Estruturas vetadas, ritmo e narrativa (`DIRETRIZ_EDITORIAL.md`)
+### 3.7. Estruturas vetadas, ritmo e narrativa (`DIRETRIZ_EDITORIAL.md`)
 
 Fonte normativa: `DIRETRIZ_EDITORIAL.md` na raiz do repositório, seções 3, 4, 5 e 6. Corrija ativamente:
 
 **Estruturas e pontuação vetadas:**
-- Travessão como recurso estilístico, em qualquer parte do módulo, inclusive títulos, tabelas e exercícios. Reescreva com vírgula, dois-pontos, parênteses ou duas frases.
+- Travessão em prosa, em qualquer parte do corpo do texto, inclusive tabelas, blockquotes e exercícios. Reescreva com vírgula, dois-pontos, parênteses ou duas frases. Em título e cabeçalho de seção ele é tolerado.
+- Escassez fabricada ("vagas limitadas", "por tempo limitado", "garanta já", "não perca", "oportunidade única") e convite vazio ("saiba mais", "clique aqui", "descubra o poder", "transforme"). Substitua por verbo de ação com objeto visualizável, ou corte.
+- Mais de uma analogia por módulo. Mantenha a do conceito central e converta as outras em definição de uma frase colada ao termo.
 - A construção que nega para afirmar ("não se trata de X, trata-se de Y", "não é apenas X, é Y", "não basta X, é preciso Y", "mais do que X, Y"). Tolere no máximo uma ocorrência por módulo e reescreva as demais como afirmação direta.
 - Regra de três mecânica: tríades de adjetivos, benefícios ou exemplos usadas como ritmo. Corte para dois ou expanda para o número real de itens.
 - Conclusão-espelho que reafirma a abertura sem acrescentar consequência, e fecho pseudo-profundo. Substitua pela consequência concreta ou pelo próximo passo.
@@ -197,7 +199,26 @@ Fonte normativa: `DIRETRIZ_EDITORIAL.md` na raiz do repositório, seções 3, 4,
 
 **Narrativa:** verifique se o módulo abre em situação concreta com tensão explícita (e não em definição ou cenário genérico), se a promessa da abertura é cumprida no desenvolvimento, se existe um caso conduzindo o argumento e se a síntese retoma esse caso mostrando o que mudou. Se a abertura for genérica, REESCREVA usando o dado ou o caso mais forte que já estiver no módulo; se a síntese apenas repetir o que foi dito, REESCREVA como consequência e próximo passo. Não invente caso: se não houver material, marque `[FALTA EVIDÊNCIA: caso real para abrir o módulo]`.
 
-### 3.6. Sinalização de falta de substância (Humanizador 2.6.2)
+### 3.8. Travas de evidência e de arco (verificáveis uma a uma)
+
+Estas travas são conferência, não impressão. Passe por todas e reporte o resultado.
+
+**Evidência:**
+- Todo símbolo de porcentagem aciona quatro conferências dentro da mesma frase: origem, data, método e denominador. Faltando qualquer uma, marque `[FALTA EVIDÊNCIA: ...]` no lugar do dado ou reduza a afirmação ao que se sabe. Base pequena se conta em unidades, porque sem denominador "cresceu 300%" pode significar três clientes.
+- Todo exemplo inventado carrega rótulo, inclusive cada saída de cálculo ou simulação.
+- Todo caso apresentado como real tem nome e fonte em `{context}`. Sem fonte, ou vira cenário rotulado como hipotético, ou sai.
+- Marcadores abertos ([FALTA EVIDÊNCIA] e [PREENCHER-HUMANO] somados) não passam de cinco no módulo. Acima disso, REPROVE: a peça está pedindo apuração, não revisão.
+- Blocos que afirmam resultado em número menor ou igual ao de provas datadas disponíveis. Quando houver mais afirmação que prova, reduza as afirmações excedentes ao tamanho do que a pesquisa sustenta.
+- Identificadores conferidos antes de citar: número de seção, código de documento, nome de arquivo, ID de paper. Identificador errado se propaga sozinho para os derivados e para a página pública.
+
+**Arco:**
+- A abertura instala situação e tensão SEM adiar a promessa. Se a resposta estiver enterrada sob cena longa, suba a promessa.
+- O caso condutor é único, aparece na abertura, volta no desenvolvimento e fecha no final. Três casos avulsos, um por seção, viram um só na revisão.
+- O fechamento retoma em vez de resumir.
+- Nenhum pedido de dado, de inscrição ou de dinheiro aparece antes da primeira prova. Pedido antes da prova soa como cobrança, e o conserto é mover o bloco.
+- Teste do parágrafo solto nas frases de prova, de limite e de preço: leia a frase isolada, sem o contexto, e pergunte se ela se sustenta. Público, condição e exceção precisam viajar dentro da mesma sentença, porque um "não serve para X" recortado sem o "somente" chega ao leitor como "serve".
+
+### 3.9. Sinalização de falta de substância (Humanizador 2.6.2)
 
 Regra inviolável: **humanizar não é inventar**.
 
@@ -249,7 +270,9 @@ Tabelas adicionadas: [número]
 Exercícios corrigidos/adicionados: [número]
 Clichês removidos: [número]
 Padrões anti-IA corrigidos (1-21): [número por categoria]
-Piso de substância: [itens da seção 3.4 ausentes no rascunho recebido, ou "completo"]
+Piso de substância: [itens da seção 3.6 ausentes no rascunho recebido, ou "completo"]
+Travas de evidência: [porcentagens sem as 4 conferências, casos sem rótulo, marcadores abertos (total), identificadores não conferidos]
+Travas de arco: [promessa adiada, caso condutor múltiplo, fechamento que resume, pedido antes da prova, frases que não passam no teste do parágrafo solto]
 Evidências pendentes: [lista de marcadores [FALTA EVIDÊNCIA: ...] não resolvidos]
 Principais ajustes: [lista dos 5 ajustes mais relevantes]
 Aprovado para publicação: sim/não
