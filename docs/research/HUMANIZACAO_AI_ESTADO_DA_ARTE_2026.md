@@ -199,9 +199,20 @@ A atualização introduziu **três spam policies** novas:
 
 ## 5. Técnicas Aplicáveis
 
-### 5.1 Burstiness control via prompt (custo zero, ganho mensurável)
+### 5.1 Burstiness control via prompt (REVOGADO em 11/08/2026)
 
-Instrução canônica para o redator (GPT-4o no curso-factory):
+> **REVOGADO.** A instrução abaixo entrou nos prompts em maio de 2026 e foi
+> removida em 11/08/2026 pela `DIRETRIZ_EDITORIAL.md` v3 (§4.7). Ela melhora a
+> métrica e piora o texto: a cota de frase curta por parágrafo produz staccato
+> de manchete, que os catálogos de detecção de 2026 listam como marcador tanto
+> quanto a uniformidade que ela pretendia corrigir, e texto ajustado para a
+> métrica continua distinguível por leitores humanos (Tabach,
+> [arXiv:2604.23471](https://arxiv.org/abs/2604.23471), abril de 2026). O
+> registro fica aqui como histórico da pesquisa; o que vale hoje é o
+> diagnóstico do bloco de dez frases, aplicado ao texto pronto. Ver
+> [`wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`](../../wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md).
+
+Instrução que era usada com o redator (GPT-4o no curso-factory):
 
 ```
 Varie comprimento de frase entre 4 e 35 palavras. Em CADA parágrafo,
@@ -210,7 +221,7 @@ nunca duas frases consecutivas com comprimento na mesma faixa (curta 4-10,
 média 11-22, longa 23-35).
 ```
 
-Ataca diretamente a métrica do GPTZero. Fonte prática: Jordan Gibbs — *This Prompt Fools Every AI Detector* ([Medium](https://medium.com/@jordan_gibbs/this-prompt-fools-every-ai-detector-b9ad8c97c07d)).
+Ataca diretamente a métrica do GPTZero, e esse era exatamente o problema: otimizava o detector em vez do leitor. Fonte prática original: Jordan Gibbs, *This Prompt Fools Every AI Detector* ([Medium](https://medium.com/@jordan_gibbs/this-prompt-fools-every-ai-detector-b9ad8c97c07d)).
 
 ### 5.2 Persona conditioning com few-shot real
 
@@ -316,8 +327,12 @@ Pangram + multi-pass não são para "burlar detector". São para **medir se entr
 
 Ordenados por (impacto × tração) / esforço. XS = <2h, S = 2-6h, M = 1-2d, L = 3-5d.
 
-### PR-1 — Burstiness control no prompt do redator
+### PR-1 — Burstiness control no prompt do redator (REVOGADO em 11/08/2026, ver §5.1)
 **Esforço**: XS · **Impacto**: ALTO · **Risco**: baixo (revertível em commit)
+
+> **REVOGADO.** Implementado em maio de 2026 e removido dos prompts em
+> 11/08/2026 pela `DIRETRIZ_EDITORIAL.md` v3 (§4.7). Foi a principal causa da
+> queda de qualidade dos textos gerados. Detalhe em §5.1 deste documento.
 
 Adicionar 1 seção em `src/templates/prompts/draft.md` (entre seção 21 anti-padrões e Andragogia) e idêntica em `src/templates/prompts/pt-br/draft.md`:
 

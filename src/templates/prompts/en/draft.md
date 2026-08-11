@@ -53,17 +53,55 @@ Before delivering, sweep the text removing these signals:
 
 Practical rule: at the end of each section, re-read asking "could this have come out of any corporate content generator?". If yes, rewrite with concreteness, explicit agency, and specific data — or mark `[MISSING EVIDENCE]`.
 
-## Cadence and Burstiness — INVIOLABLE
+## Banned structures and punctuation
 
-LLMs without explicit instruction produce homogeneous cadence — all sentences in the same length band. Detectors like GPTZero capture this via `burstiness = std(perp)/mean(perp)`: native human in formal prose ranges 0.9-1.5; raw LLM ranges 0.2-0.5 (Liang et al., Patterns 2023; Tian, GPTZero whitepaper). This instruction is the only one that moves statistical metrics directly.
+Normative source: `DIRETRIZ_EDITORIAL.md` at the repository root, sections 5 and 6. None of these may appear in the delivered content:
 
-Mandatory rules:
+- The em dash as a stylistic device, meaning the dramatic pause or the dropped-in aside. This is a house rule of this repository. Use a comma, a colon, parentheses, or two sentences. It holds for the entire module, including headings, tables, blockquotes, and exercises. The en dash survives only in numeric ranges (250–350 words).
+- The hyphen standing in for a dash in the middle of a sentence.
+- The negate-to-affirm construction: "this isn't X, it's Y", "it's not just X, it's Y", "X alone won't do, you need Y", "more than X, it's Y". One occurrence per module at most, and only when it genuinely clarifies something.
+- Mechanical rule of three: triads of adjectives, benefits, or examples deployed as rhythm. Use three items only when there really are three.
+- The mirror conclusion, which restates the opening without adding a consequence, and the pseudo-profound closer ("the future is already here").
+- Title case in headings. House convention is sentence case: capitalize the first word and proper nouns only. The Oxford comma is standard American usage and stays; do not remove it.
+- Vocabulary tics of AI-generated English: "delve into", "a testament to", "tapestry", "in the realm of", "navigate the complexities of", "ever-evolving landscape", "unlock the power of", "utilize" where "use" works, "leverage" as a verb where "use" works.
 
-1. Vary sentence length between 4 and 35 words throughout each module.
-2. In EVERY paragraph, include at least ONE sentence of 6 words or fewer.
-3. Never two consecutive sentences in the same length band: short (4-10), medium (11-22), long (23-35).
-4. In every 400+ word section, alternate at least once between active voice and a less predictable construction (brief direct question, appositive, short anaphora).
-5. Break syntactic symmetry: if three consecutive sentences start with subject, move the subject to the middle in the fourth.
+## Narrative: how to hold the reader
+
+A module nobody finishes teaches nothing. Depth and engagement do not compete in high-end business publishing: what separates a text that gets read from one that gets abandoned is the narrative craft holding the argument together. Apply the six techniques below in every module.
+
+1. Open on a situation, not on a definition. Start with a concrete scene, a hard decision, a number that contradicts expectation, or a case the learner recognizes from their own week. The formal definition arrives later, once they know why they need it.
+2. Set the tension before the solution. State what is at stake: the cost of getting it wrong, the deadline closing in, what is lost by ignoring the topic, with data whenever the research in `{context}` supports it. Content without tension becomes a catalog of concepts.
+3. Run the module on a case. Pick one named case from the research and carry it across the module, bringing it back in the conceptual foundation, in the comparative table, and in the exercises. A case with no source in `{context}` enters only as a scenario declared hypothetical ("suppose an operation with 120 stores and…").
+4. Pay off the promise of the opening. Whatever the first paragraph promises has to be delivered in the body, visibly, for the reader. A curiosity hook the text never pays is bait, and bait destroys trust.
+5. Close by returning to the opening. The executive synthesis shows what changed in the case or in the initial tension after what the module taught, rather than repeating what was already said.
+6. Show instead of qualifying. Rather than writing that the problem is serious, present the loss, the deadline, or the consequence as a number. The learner concludes the severity on their own, and a conclusion the reader reaches convinces more than an adjective handed to them.
+
+The limit is the usual one: the story serves the argument. Manufactured suspense, invented drama, and anecdotes that do not support the thesis get cut in review, along with the clichés.
+
+## Rhythm and cadence
+
+Rhythm comes from meaning, never from a quota. Expert prose alternates long periods, which develop a line of reasoning with its conditions and caveats, with short sentences, which close an idea or mark a turn. A careless language model produces the opposite: nearly every sentence running to roughly the same length, which the stylometry published in 2026 measures as a dispersion around 5, against roughly 16 in human text (Przystalski et al., Digital Scholarship in the Humanities, Oxford, 2026).
+
+How to write with real rhythm:
+
+1. Let the content set the length. An argument with cause, condition, and caveat calls for a long period. An observation that closes a block calls for a short sentence.
+2. The short sentence is a device of emphasis, and emphasis loses force once it becomes routine. Use it when there is something to emphasize; do not ration one out per paragraph.
+3. Vary how sentences and paragraphs begin. The subject does not always come first: a subordinate clause, a time adjunct, an appositive, and the occasional direct question break syntactic predictability without turning into a tic.
+4. Diagnose after writing, not while writing. Take a block of ten sentences and compare the longest with the shortest. A gap under 15 words points to machine uniformity in that passage and calls for a rewrite.
+
+FORBIDDEN: programmed alternation (short, long, short, long), a short-sentence quota per paragraph, and any rule that fixes length before meaning. That headline staccato reads as machine text just as plainly as the uniformity it claims to fix, and it was the dominant defect of this pipeline's previous generation.
+
+Example of bad cadence through uniformity (every sentence between 18 and 22 words):
+
+> "Generative artificial intelligence is changing the way that Brazilian companies make their operational decisions across the entire business today. Language models allow the analysis of large volumes of text with reduced latency and a very small marginal cost per document. Companies that adopt this technology report measurable gains in productivity and in the speed of their response to the market."
+
+Example of bad cadence through staccato (one short sentence forced into every paragraph, emphasis worn out):
+
+> "Generative AI changed the game. Brazilian companies now decide faster with models that read thousands of documents an hour. The gain is real. Whoever measured before adopting proved the return in the following quarter's results. That matters."
+
+Example of good cadence (the variation follows the argument):
+
+> "In 2024, Stone reported a 23% reduction in credit approval time after embedding language models in its underwriting funnel (Stone, Q4 2024 report). The number matters less for its size than for its origin: it came from an operation that measured cycle time before adoption, which makes it possible to attribute the gain to the change rather than to the luck of the quarter. Without that prior measurement, it would be nothing more than a well-told coincidence."
 
 ## Andragogy Principles (Malcolm Knowles) — MANDATORY APPLICATION
 
@@ -122,7 +160,7 @@ Expected depth example:
 "Artificial intelligence is transforming the market. Companies that adopt AI achieve better results."
 
 **RIGHT** (deep, evidenced, analytical):
-"According to the McKinsey Global Institute (2025), companies that integrate generative AI into operational processes report an average 23% reduction in decision-cycle time. Yet 67% of implementations fail because of misalignment between technical capability and organizational maturity — what Davenport and Ronanki classify as a 'cognitive absorption gap' in their HBR study."
+"According to the McKinsey Global Institute (2025), companies that integrate generative AI into operational processes report an average 23% reduction in decision-cycle time. Yet 67% of implementations fail because of misalignment between technical capability and organizational maturity, which Davenport and Ronanki classify as a 'cognitive absorption gap' in their HBR study."
 
 ### 3. Case Analysis or Practical Demonstration (400–600 words)
 
@@ -173,7 +211,7 @@ Example:
 > **Context:** You are the new head of data for a 120-store retail network. The CEO wants to roll out AI-driven dynamic pricing, but the current team works with spreadsheets and manual reports.
 > **Prompt:** Build a 5-dimension data maturity diagnostic, classify the company's current stage in each, and propose a 6-month roadmap to enable dynamic pricing.
 > **Excellence criteria:** The diagnostic must include measurable metrics per dimension, the roadmap must have biweekly milestones with concrete deliverables, and the proposal must consider budget and team-capability constraints.
-> **Strategic hint:** Start by mapping existing data flows before proposing new ones — maturity is built on what already works, not on what is missing.
+> **Strategic hint:** Start by mapping existing data flows before proposing new ones, because maturity is built on what already works.
 
 ### 6. Executive Synthesis and Bridge (200–250 words)
 
@@ -186,10 +224,10 @@ Example:
 
 ### Tone and language
 
-- Analytical and propositional tone — never shallow, generic, or "bloggy"
+- Analytical and propositional tone, never shallow, generic, or "bloggy"
 - Direct, active voice with intellectual authority
-- Concise paragraphs (max 5 lines) with one central idea per paragraph
-- Transition sentences between sections to keep the narrative flow
+- One central idea per paragraph, developed until it holds up the reasoning. The natural cut falls between three and six sentences; the criterion is the idea reaching its end, not a line count. Avoid both extremes: the stranded one-sentence paragraph and the ten-line block with no room to breathe
+- Transitions between sections that continue the argument instead of announcing it
 - FORBIDDEN: clichés and empty phrases
 
 **FORBIDDEN expressions** (eliminate ALL):
@@ -230,14 +268,14 @@ The content will be rendered by a `FormattedText` component that interprets the 
 
 ### Layout and Readability (Microsoft Learn + Salesforce Trailhead Standard)
 
-The goal is a premium reading experience for long-form content:
+The goal is a premium reading experience for long-form content. The rule that governs all the others: prose carries reasoning, structure carries comparison, sequence, and verification. Each format earns its place by doing its own job, never by quota.
 
-- **Short paragraphs**: max 5 lines. Break into multiple paragraphs as needed.
-- **Frequent sub-headings**: use a sub-heading (line ending in `:`) every 2–3 paragraphs to create visual hierarchy and ease scanning.
-- **Comparative tables**: at least ONE table per module. Tables break textual monotony and enable quick comparisons.
-- **Strategic blockquotes**: use `> ` for 1–2 central insights per module. These are the highlights the reader will remember.
-- **Structured lists**: prefer lists (`-- item`) to paragraphs with inline enumerations. Lists scan more easily.
-- **Format alternation**: alternate paragraphs, lists, tables, and blockquotes to create visual rhythm. Never more than 3 consecutive paragraphs without a visual element.
+- **Structure in service of the decision**: use a comparative table when there are alternatives with criteria, a decision matrix when the learner has to choose, a checklist when there are verifiable steps, a numbered list when order matters, a workflow when there is a process. A professional decides faster with one well-built matrix than with three equivalent paragraphs.
+- **When NOT to use a list**: if the items stand in a relationship of cause or consequence to each other, the right format is prose, because a list hides the chain. Bullets that merely rename the obvious, and strings of "bold term: explanation" used as a section skeleton, are forbidden.
+- **Sub-headings**: they enter when the subject changes, and the sub-heading text announces what the next part actually covers. There is no quota per number of paragraphs, and a sub-heading every two paragraphs usually means the reasoning was sliced before it finished.
+- **Comparative tables**: at least ONE per module, built on criteria that matter to the learner's decision, not on generic columns.
+- **Strategic blockquotes**: 1–2 per module, for the central concept or an expert quotation. Blockquotes in excess turn into decoration and lose the effect of a highlight.
+- **Prose density**: the module needs blocks of developed text, not only scannable elements. Text sliced entirely into bullets and highlights is the machine-content pattern this pipeline has to avoid.
 
 ### Spelling and Style — English (American)
 
@@ -283,14 +321,17 @@ ABSOLUTE RULE: American English with consistent spelling and idiom.
 
 Before delivering the module, verify EACH item:
 
-- [ ] Opening with impactful data/case (not generic)
+- [ ] Opening set in a concrete situation, with explicit tension and data (not a definition, not a generic scenario)
+- [ ] Anchor case present through the development and picked up again in the synthesis
 - [ ] Learning objectives with Bloom verbs at level 3+ (apply, analyze, evaluate, create)
 - [ ] At least 1 comparative table in the module
 - [ ] At least 3 exercises with real professional context
 - [ ] Blockquotes (>) for central insights
 - [ ] Bold on key terms on first occurrence
 - [ ] Title hierarchy H2 > H3 > H4 with no skipped levels
-- [ ] Paragraphs of at most 5 lines
+- [ ] Paragraphs carrying one central idea each, developed until the idea reaches its end
+- [ ] Rhythm: in a block of ten sentences, the longest exceeds the shortest by at least 15 words, and the variation follows the argument (no programmed alternation, no quota short sentence)
+- [ ] No em dash used as a stylistic device anywhere in the content; no recurring "it's not X, it's Y"; no triad deployed as rhythm
 - [ ] No clichés from the forbidden list
 - [ ] Consistent American English throughout
 - [ ] No emojis

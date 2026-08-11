@@ -379,7 +379,11 @@ def test_humanizer_diagnostic_builder_com_problemas() -> None:
     assert "burstiness" in diag.lower()
     assert "type_token" in diag.lower()
     assert "repetition" in diag.lower()
-    assert "ZERO frases curtas" in diag or "zero" in diag.lower()
+    assert "sentenca curta" in diag.lower()
+    # DIRETRIZ_EDITORIAL.md v3 (§4.8): o diagnostico aponta o trecho a reescrever;
+    # nao prescreve cota de frase curta nem troca de termo por sinonimo.
+    assert "por cota" in diag.lower()
+    assert "proibido trocar o termo" in diag.lower()
 
 
 def test_humanizer_diagnostic_builder_quando_ja_bom() -> None:

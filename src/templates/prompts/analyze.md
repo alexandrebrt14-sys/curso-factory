@@ -1,4 +1,4 @@
-# Prompt — Análise de Qualidade Pedagógica (Gemini)
+# Prompt: análise de qualidade pedagógica (Gemini)
 
 ## Contexto
 
@@ -27,7 +27,26 @@ Você é um especialista em design instrucional, andragogia e qualidade pedagóg
 - O conteúdo vai além de definições básicas, oferecendo insights e análises?
 - Há clichês ou expressões gastas que devem ser eliminados?
 - A linguagem é direta, ativa e com autoridade intelectual?
-- Os parágrafos são concisos (máximo 5 linhas)?
+- Cada parágrafo tem uma ideia central desenvolvida até terminar? Reprove os dois extremos: o bloco que empilha dois assuntos e a sequência de parágrafos de uma frase que fatia um único raciocínio.
+- O ritmo dos períodos acompanha o argumento? Verifique num bloco de dez frases: diferença menor que 15 palavras entre a mais longa e a mais curta indica uniformidade de máquina; sequência de frases curtas de enchimento, uma por parágrafo, indica o defeito oposto (staccato de manchete). Nenhum dos dois é aceitável, e nenhuma cota de comprimento deve ser recomendada na correção.
+- O texto está livre de travessão como recurso estilístico, de antítese em série ("não é X, é Y"), de tríade usada como ritmo e de conclusão-espelho?
+
+### 2.5. Substância e narrativa (dimensão de aprovação, não de rejeição)
+
+Esta dimensão pergunta o que o módulo TEM, e não apenas o que ele evitou. Um texto curto, uniforme e sem argumento passa em todos os gates automáticos do repositório, porque nenhum deles mede substância. Você é a camada que mede.
+
+Avalie e pontue:
+
+- **Tese própria**: o módulo defende uma posição identificável, ou é uma compilação neutra do que já existe? Aponte a frase que carrega a tese; se não houver, a nota desta dimensão não passa de 4.
+- **Evidência que sustenta a tese**: os dados citados sustentam o argumento defendido, ou apenas decoram o texto com números soltos?
+- **Information gain**: há pelo menos um dado, exemplo brasileiro, comparação ou framework que o aluno não encontraria nas três primeiras páginas de qualquer busca sobre o tema?
+- **Abertura**: o módulo abre em situação concreta com tensão explícita (caso, decisão difícil, número que contraria a expectativa), ou abre em definição e cenário genérico?
+- **Caso condutor**: existe um caso nomeado que atravessa o módulo e reaparece na fundamentação e nos exercícios, ou os exemplos são avulsos?
+- **Promessa cumprida**: o que a abertura prometeu foi entregue no desenvolvimento?
+- **Fechamento**: a síntese mostra o que mudou no caso ou na tensão inicial, ou apenas repete o que já foi dito?
+- **Critério de decisão**: quando o módulo apresenta alternativas, ele compara com critérios explícitos e recomenda com justificativa, ou lista opções sem ajudar a escolher?
+
+Referência normativa das duas dimensões acima: `DIRETRIZ_EDITORIAL.md`, seções 2, 3, 4 e 6.
 
 ### 3. Formatação e Estrutura Visual
 
@@ -82,6 +101,16 @@ Retorne um JSON estruturado com os campos:
   "dimensoes": {
     "coerencia_rigor": {"nota": 0-10, "observacoes": "..."},
     "qualidade_editorial": {"nota": 0-10, "observacoes": "..."},
+    "substancia_narrativa": {
+      "nota": 0-10,
+      "tese_identificada": "frase que carrega a tese, ou null se ausente",
+      "information_gain": "o que o módulo traz que não está em qualquer fonte, ou null",
+      "abertura_em_situacao": true/false,
+      "caso_condutor": "nome do caso que atravessa o módulo, ou null",
+      "promessa_cumprida": true/false,
+      "fechamento_com_callback": true/false,
+      "observacoes": "..."
+    },
     "formatacao_visual": {"nota": 0-10, "observacoes": "..."},
     "andragogia": {
       "nota_geral": 0-10,

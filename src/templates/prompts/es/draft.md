@@ -53,17 +53,55 @@ Antes de entregar, revisa el texto eliminando estas señales:
 
 Regla práctica: al final de cada sección, relee preguntando "¿podría haber salido esto de cualquier generador de contenido corporativo?". Si sí, reescribe con concreción, agente explícito y dato específico — o marca `[FALTA EVIDENCIA]`.
 
-## Cadencia y Burstiness — INVIOLABLE
+## Estructuras y puntuación vetadas
 
-Los LLM sin instrucción explícita producen cadencia homogénea — todas las frases en la misma franja de longitud. Detectores como GPTZero capturan eso vía `burstiness = std(perp)/mean(perp)`: humano nativo en prosa formal queda entre 0,9 y 1,5; LLM crudo queda entre 0,2 y 0,5 (Liang et al., Patterns 2023; Tian, GPTZero whitepaper). Esta instrucción es la única que mueve métrica estadística directamente.
+Fuente normativa: `DIRETRIZ_EDITORIAL.md` en la raíz del repositorio, secciones 5 y 6. Ninguna de estas puede aparecer en el contenido entregado:
 
-Reglas obligatorias:
+- La raya (—) como recurso estilístico, sea la pausa dramática o el inciso soltado en medio de la frase. Es regla de la casa en este repositorio. Usa coma, dos puntos, paréntesis o dos frases. Vale para el módulo entero, incluidos títulos, tablas, bloques de cita y ejercicios.
+- El guion usado como pausa en medio de la frase, en sustitución de la raya.
+- La construcción que niega para afirmar: "no se trata de X, se trata de Y", "no es solo X, es Y", "no basta con X, hace falta Y", "más que X, Y". Una aparición por módulo como máximo, y solo cuando aclare algo de verdad.
+- Regla de tres mecánica: tríadas de adjetivos, de beneficios o de ejemplos usadas como ritmo. Tres ítems solo cuando sean tres de verdad.
+- Conclusión espejo, que reafirma la apertura sin agregar consecuencia, y cierre pseudoprofundo ("el futuro ya llegó").
+- Los dos anglicismos de puntuación y titulación: coma antes de la "y" en enumeración simple (la coma de Oxford no existe en español) y title case en los títulos, donde corresponde mayúscula solo en la primera palabra y en los nombres propios.
+- Vicios del español generado por IA: gerundio de posterioridad ("se aprobó el plan, implementándose al día siguiente" en lugar de "se aprobó el plan y al día siguiente se implementó"), "adresar" o "direccionar" un problema en lugar de "abordarlo" o "resolverlo", software que "soporta" en lugar de "admite" o "es compatible con", "eventualmente" en el sentido de "finalmente", "asumir" en el sentido de "suponer".
 
-1. Varía longitud de frase entre 4 y 35 palabras a lo largo de cada módulo.
-2. En CADA párrafo, incluye al menos UNA frase de 6 palabras o menos.
-3. Nunca dos frases consecutivas en la misma franja de longitud: corta (4-10), media (11-22), larga (23-35).
-4. En cada sección de 400+ palabras, alterna al menos una vez entre voz activa y construcción menos previsible (pregunta directa breve, aposición, anáfora corta).
-5. Rompe simetría sintáctica: si tres frases seguidas comienzan con sujeto, mueve el sujeto al medio en la cuarta.
+## Narrativa: cómo sostener al lector
+
+Un módulo que nadie termina de leer no enseña nada. Profundidad y enganche no compiten entre sí en la publicación de negocios de alto nivel: lo que separa un texto leído de un texto abandonado es la técnica narrativa que sostiene el argumento. Aplica las seis siguientes en cada módulo.
+
+1. Abre en situación, no en definición. Empieza por una escena concreta, una decisión difícil, un número que contradice la expectativa o un caso que el alumno reconoce de su propia semana. La definición formal entra después, cuando ya sabe por qué la necesita.
+2. Instala la tensión antes de la solución. Di qué está en juego: el costo de equivocarse, el plazo que aprieta, lo que se pierde al ignorar el tema, con dato siempre que la investigación en `{context}` lo sostenga. Contenido sin tensión se convierte en catálogo de conceptos.
+3. Conduce el módulo con un caso. Elige un caso con nombre propio tomado de la investigación y hazlo atravesar el módulo, reapareciendo en la fundamentación, en la tabla comparativa y en los ejercicios. Un caso sin fuente en `{context}` solo entra como escenario declaradamente hipotético ("supongamos una operación con 120 tiendas y…").
+4. Cumple la promesa de la apertura. Lo que promete el primer párrafo tiene que entregarse en el desarrollo, de forma visible para el lector. Un gancho de curiosidad que el texto no paga es carnada, y la carnada destruye la confianza.
+5. Cierra retomando la apertura. La síntesis ejecutiva muestra qué cambió en el caso o en la tensión inicial después de lo que el módulo enseñó, en lugar de repetir lo ya dicho.
+6. Muestra en vez de calificar. En lugar de escribir que el problema es grave, presenta la pérdida, el plazo o la consecuencia en número. El alumno concluye la gravedad por su cuenta, y la conclusión propia convence más que el adjetivo ajeno.
+
+El límite es el de siempre: la historia sirve al argumento. El suspenso fabricado, el drama inventado y la anécdota que no sostiene la tesis se caen en la revisión, junto con los clichés.
+
+## Ritmo y cadencia
+
+El ritmo nace del sentido, nunca de una cuota. La prosa de especialista alterna períodos largos, que desarrollan un razonamiento con sus condiciones y salvedades, y frases cortas, que cierran una idea o marcan un giro. Un modelo de lenguaje sin cuidado produce lo contrario: casi todas las frases con una longitud casi idéntica, lo que la estilometría publicada en 2026 mide como una dispersión en torno a 5, frente a cerca de 16 en texto humano (Przystalski et al., Digital Scholarship in the Humanities, Oxford, 2026).
+
+Cómo escribir con ritmo de verdad:
+
+1. Deja que el contenido determine la longitud. Un argumento con causa, condición y salvedad pide período largo. Una constatación que cierra un bloque pide frase corta.
+2. La frase corta es un recurso de énfasis, y el énfasis pierde fuerza cuando se vuelve rutina. Úsala cuando haya algo que enfatizar; no repartas una por párrafo.
+3. Varía la apertura de las frases y de los párrafos. El sujeto no siempre va al principio: una subordinada, un complemento de tiempo, una aposición y alguna pregunta directa rompen la previsibilidad sintáctica sin volverse un tic.
+4. Diagnostica después de escribir, no mientras escribes. Toma un bloque de diez frases y compara la más larga con la más corta. Una diferencia por debajo de 15 palabras indica uniformidad de máquina en ese pasaje y pide reescritura.
+
+PROHIBIDO: la alternancia programada (corta, larga, corta, larga), la cuota de frase corta por párrafo y cualquier regla que fije la longitud antes que el sentido. Ese staccato de titular se reconoce como texto de máquina tanto como la uniformidad que pretende corregir, y fue el defecto dominante de la generación anterior de este pipeline.
+
+Ejemplo de cadencia mala por uniformidad (todas las frases entre 18 y 22 palabras):
+
+> "La inteligencia artificial generativa transforma la manera en que las empresas brasileñas toman sus decisiones operativas en cada área del negocio. Los modelos de lenguaje permiten analizar grandes volúmenes de texto con latencia reducida y un costo marginal muy pequeño. Las empresas que adoptan esta tecnología reportan ganancias medibles en productividad y en velocidad de respuesta al mercado."
+
+Ejemplo de cadencia mala por staccato (una frase corta forzada en cada párrafo, énfasis gastado):
+
+> "La IA generativa cambió el juego. Las empresas brasileñas deciden más rápido con modelos que leen miles de documentos por hora. La ganancia es real. Quien midió antes de adoptar demostró el retorno en el balance del trimestre siguiente. Eso importa."
+
+Ejemplo de cadencia buena (la variación acompaña al argumento):
+
+> "En 2024, Stone reportó una reducción del 23% en el tiempo de aprobación de crédito después de incorporar modelos de lenguaje en su embudo de underwriting (Stone, informe 4T24). El número importa menos por su tamaño que por su origen: salió de una operación que medía el tiempo de ciclo antes de la adopción, lo que permite atribuir la ganancia al cambio y no al azar del trimestre. Sin esa medición previa, sería apenas una coincidencia bien contada."
 
 ## Principios de Andragogía (Malcolm Knowles) — APLICACIÓN OBLIGATORIA
 
@@ -122,7 +160,7 @@ Ejemplo de profundidad esperada:
 "La inteligencia artificial está transformando el mercado. Las empresas que adoptan IA logran mejores resultados."
 
 **CORRECTO** (profundo, evidenciado, analítico):
-"Según el McKinsey Global Institute (2025), las empresas que integran IA generativa en procesos operacionales reportan una reducción promedio del 23% en el tiempo de ciclo de decisión. Sin embargo, el 67% de las implementaciones fallan por falta de alineación entre capacidad técnica y madurez organizacional — lo que Davenport y Ronanki clasifican como 'brecha de absorción cognitiva' en su estudio publicado en HBR."
+"Según el McKinsey Global Institute (2025), las empresas que integran IA generativa en procesos operacionales reportan una reducción promedio del 23% en el tiempo de ciclo de decisión. Sin embargo, el 67% de las implementaciones fallan por falta de alineación entre capacidad técnica y madurez organizacional, lo que Davenport y Ronanki clasifican como 'brecha de absorción cognitiva' en su estudio publicado en HBR."
 
 ### 3. Análisis de Caso o Demostración Práctica (400-600 palabras)
 
@@ -173,7 +211,7 @@ Ejemplo:
 > **Contexto:** Eres el nuevo responsable de datos de una red minorista con 120 tiendas. El CEO quiere implementar precios dinámicos con IA, pero el equipo actual trabaja con planillas e informes manuales.
 > **Enunciado:** Elabora un diagnóstico de madurez de datos con 5 dimensiones, clasifica la etapa actual de la empresa en cada una y propón el roadmap de 6 meses para viabilizar los precios dinámicos.
 > **Criterios de excelencia:** El diagnóstico debe incluir métricas medibles por dimensión, el roadmap debe tener hitos quincenales con entregables concretos, y la propuesta debe considerar restricciones presupuestarias y de capacitación del equipo.
-> **Pista estratégica:** Comienza mapeando los flujos de datos existentes antes de proponer nuevos — la madurez se construye sobre lo que ya funciona, no sobre lo que falta.
+> **Pista estratégica:** Comienza por mapear los flujos de datos existentes antes de proponer nuevos, porque la madurez se construye sobre lo que ya funciona.
 
 ### 6. Síntesis Ejecutiva y Conexión (200-250 palabras)
 
@@ -186,10 +224,10 @@ Ejemplo:
 
 ### Tono y Lenguaje
 
-- Tono analítico y propositivo — nunca superficial, genérico o "de blog"
+- Tono analítico y propositivo, nunca superficial, genérico o "de blog"
 - Lenguaje directo, activo, con autoridad intelectual
-- Párrafos concisos (máximo 5 líneas) con una idea central por párrafo
-- Frases de transición entre secciones para mantener el flujo narrativo
+- Una idea central por párrafo, desarrollada hasta sostener el razonamiento. El corte natural queda entre tres y seis frases; el criterio es que la idea termine, no el conteo de líneas. Evita los dos extremos: el párrafo de una frase suelta y el bloque de diez líneas sin respiro
+- Transiciones entre secciones que continúen el argumento en lugar de anunciarlo
 - PROHIBIDO: clichés y frases vacías
 
 **Expresiones PROHIBIDAS** (elimina TODAS):
@@ -230,14 +268,14 @@ El contenido será renderizado por un componente `FormattedText` que interpreta 
 
 ### Diseño y Legibilidad (Estándar Microsoft Learn + Salesforce Trailhead)
 
-El objetivo es crear una experiencia de lectura premium para contenido extenso:
+El objetivo es crear una experiencia de lectura premium para contenido extenso. La regla que organiza a todas las demás: la prosa carga el razonamiento, la estructura carga la comparación, la secuencia y la verificación. Cada formato entra cuando hace su trabajo, nunca por cuota.
 
-- **Párrafos cortos**: máximo 5 líneas. Divide en varios párrafos si es necesario.
-- **Subtítulos frecuentes**: usa un subtítulo (línea que termina en `:`) cada 2-3 párrafos para crear jerarquía visual y facilitar el escaneo.
-- **Tablas comparativas**: al menos UNA tabla por módulo. Las tablas rompen la monotonía del texto y permiten comparaciones rápidas.
-- **Bloques de cita estratégicos**: usa `> ` para 1-2 insights centrales por módulo. Son los "destacados" que el lector recordará.
-- **Listas estructuradas**: prefiere listas (`-- ítem`) a párrafos con enumeraciones inline. Las listas son más fáciles de escanear.
-- **Alternancia de formatos**: alterna entre párrafos, listas, tablas y bloques de cita para crear ritmo visual. Nunca más de 3 párrafos seguidos sin un elemento visual.
+- **Estructura al servicio de la decisión**: usa tabla comparativa cuando haya alternativas con criterios, matriz de decisión cuando el alumno tenga que elegir, checklist cuando haya pasos verificables, lista numerada cuando el orden importe, flujo de trabajo cuando haya un proceso. Un profesional decide más rápido con una matriz bien construida que con tres párrafos equivalentes.
+- **Cuándo NO usar lista**: si los ítems guardan entre sí relación de causa o consecuencia, el formato correcto es la prosa, porque la lista esconde el encadenamiento. Quedan prohibidas las viñetas que solo renombran obviedades y las series de "término en negrita: explicación" usadas como esqueleto de sección.
+- **Subtítulos**: entran cuando cambia el asunto, y el texto del subtítulo anuncia el contenido real de la parte siguiente. No hay cuota por número de párrafos, y un subtítulo cada dos párrafos suele indicar que el razonamiento se cortó antes de terminar.
+- **Tablas comparativas**: al menos UNA por módulo, con criterios que importen para la decisión del alumno, no con columnas genéricas.
+- **Bloques de cita estratégicos**: 1-2 por módulo, para el concepto central o la cita de un especialista. El bloque de cita en exceso se vuelve decoración y pierde el efecto de destaque.
+- **Densidad de prosa**: el módulo necesita bloques de texto desarrollado, y no solo elementos escaneables. El texto entero fraccionado en viñetas y destaques es el patrón de contenido de máquina que este pipeline debe evitar.
 
 ### Ortografía y Acentuación ES (INVIOLABLE)
 
@@ -286,14 +324,17 @@ REGLA ABSOLUTA: español neutro profesional con acentuación COMPLETA y ortograf
 
 Antes de entregar el módulo, verifica CADA ítem:
 
-- [ ] Apertura con dato/caso impactante (no genérica)
+- [ ] Apertura en situación concreta, con tensión explícita y dato (no en definición ni en escenario genérico)
+- [ ] Caso conductor presente en el desarrollo y retomado en la síntesis
 - [ ] Objetivos de aprendizaje con verbos de Bloom nivel 3+ (aplicar, analizar, evaluar, crear)
 - [ ] Al menos 1 tabla comparativa en el módulo
 - [ ] Al menos 3 ejercicios con contexto profesional real
 - [ ] Bloques de cita (>) para insights centrales
 - [ ] Negrita en términos clave en la primera aparición
 - [ ] Jerarquía de títulos H2 > H3 > H4 sin saltos
-- [ ] Párrafos de máximo 5 líneas
+- [ ] Párrafos con una idea central cada uno, desarrollados hasta que la idea termine
+- [ ] Ritmo: en un bloque de diez frases, la más larga supera a la más corta por al menos 15 palabras, y la variación acompaña al argumento (sin alternancia programada ni frase corta de cuota)
+- [ ] Cero rayas como recurso estilístico en el contenido; ninguna construcción "no es X, es Y" recurrente; ninguna tríada usada como ritmo
 - [ ] Ningún cliché de la lista prohibida
 - [ ] Acentuación ES completa en TODAS las palabras
 - [ ] Uso correcto de `ñ` y tildes diacríticas (`qué`, `cómo`, `dónde`)

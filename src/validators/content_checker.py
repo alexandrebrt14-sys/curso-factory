@@ -21,6 +21,10 @@ class ContentError:
     modulo: str = ""
 
 
+# Teto de linhas por parágrafo. Espelha `content_quality.max_paragraph_lines`
+# em config/quality_rules.yaml; mantenha os dois em sincronia.
+MAX_PARAGRAPH_LINES = 8
+
 # Clichês proibidos
 FORBIDDEN_CLICHES = [
     "nos dias de hoje",
@@ -159,7 +163,13 @@ def _check_heading_hierarchy(headings: list[tuple[int, str, str]]) -> list[str]:
 
 
 def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
-    """Encontra parágrafos com mais de 5 linhas."""
+    """Encontra parágrafos acima de MAX_PARAGRAPH_LINES linhas.
+
+    O limite é folgado de propósito. Parágrafo desenvolvido é requisito
+    editorial (DIRETRIZ_EDITORIAL.md, seções 2 e 6): o teto existe para pegar
+    o bloco que empilha dois assuntos, não para empurrar o texto ao formato
+    fatiado que caracteriza conteúdo de máquina.
+    """
     long_paragraphs = []
     paragraphs = text.split("\n\n")
     line_num = 1
@@ -169,7 +179,7 @@ def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
         if para.strip().startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
             line_num += len(lines) + 1
             continue
-        if len(lines) > 5:
+        if len(lines) > MAX_PARAGRAPH_LINES:
             long_paragraphs.append((line_num, len(lines)))
         line_num += len(lines) + 1
     return long_paragraphs
@@ -464,7 +474,8 @@ def check_content(text: str, module_name: str = "", geo_config=None) -> list[Con
             tipo="warning",
             categoria="formatação",
             mensagem=f"Parágrafo com {line_count} linhas próximo à linha {line_num} "
-                     f"(máximo: 5 linhas por parágrafo).",
+                     f"(acima de {MAX_PARAGRAPH_LINES}): verifique se ele trata de "
+                     f"mais de um assunto. Se tratar de um só, mantenha.",
             modulo=mod,
         ))
 

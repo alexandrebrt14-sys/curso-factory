@@ -109,12 +109,12 @@ El contenido se renderiza con un componente `FormattedText` que interpreta marca
 
 **Verificaciones obligatorias:**
 - **Tablas comparativas**: al menos UNA por módulo. Formato: filas con pipes separadas por `\n`. Si falta, AÑADE.
-- **Subtítulos frecuentes**: cada 2-3 párrafos debe haber un subtítulo (línea que termina con `:`). Crea jerarquía visual y facilita el escaneo. Si el texto tiene bloques largos sin subtítulo, ROMPE con subtítulos.
-- **Negrita**: para términos clave y conceptos en la PRIMERA aparición usando `**término**`. Si falta, AÑADE.
-- **Bloques de cita**: al menos 1-2 por módulo para insights centrales usando `> `. Si falta, AÑADE.
-- **Alternancia de formatos**: nunca más de 3 párrafos seguidos sin un elemento visual (tabla, lista, bloque de cita o subtítulo). Si encuentras bloques monótonos, ROMPE con elementos visuales.
+- **Subtítulos**: entran cuando cambia el asunto, con un texto que anuncia el contenido real de la parte siguiente. No hay cuota por número de párrafos. Si el módulo tiene un subtítulo cada dos párrafos, el razonamiento se cortó antes de terminar: FUNDE los bloques que tratan del mismo asunto.
+- **Negrita**: para términos clave y conceptos en la PRIMERA aparición usando `**término**`. Si falta, AÑADE. Si hay negrita por costumbre en palabras corrientes, QUÍTALA, porque el destaque en exceso anula el destaque.
+- **Bloques de cita**: 1-2 por módulo para insights centrales usando `> `. Si falta, AÑADE; si hay más de tres, convierte los excedentes en prosa.
+- **Equilibrio entre prosa y estructura**: la prosa carga el razonamiento; la tabla, el checklist y la lista numerada cargan la comparación, la verificación y la secuencia. Convierte en prosa las listas cuyos ítems guarden entre sí relación de causa y las series de "término en negrita: explicación". Convierte en tabla o checklist los párrafos que estén enumerando criterios comparables o pasos verificables.
 - **Listas con `-- `**: verifica que usan `-- ` (dos guiones), NUNCA `- ` (un guion).
-- **Párrafos**: máximo 5 líneas cada uno, una idea central por párrafo. Rompe los párrafos largos.
+- **Párrafos**: una idea central cada uno, desarrollada hasta que la idea termine. Rompe el bloque de diez líneas que trata dos asuntos; junta la secuencia de párrafos de una frase que fracciona un mismo razonamiento.
 - **PROHIBIDO**: emojis en cualquier parte del contenido
 
 ### 3.5. Auditoría anti-"cara de IA" (Humanizador 2.6.2) — NUEVA CAPA
@@ -142,6 +142,22 @@ Repasa el texto y CORRIGE cada aparición de los 21 patrones de escritura artifi
 19. Palabras "bonitas" desgastadas por la IA ("estratégico", "viaje", "potenciar", "impulsar", "robusto", "dinámico", "excelencia") → elimina cuando no midan nada
 20. Nominalización excesiva ("implementación", "utilización", "operacionalización") → usa el verbo
 21. Ausencia de voz autoral en géneros que piden opinión → añade un ángulo analítico claro
+
+### 3.55. Estructuras vetadas, ritmo y narrativa (`DIRETRIZ_EDITORIAL.md`)
+
+Fuente normativa: `DIRETRIZ_EDITORIAL.md` en la raíz del repositorio, secciones 3, 4, 5 y 6. Corrige activamente:
+
+**Estructuras y puntuación vetadas:**
+- La raya (—) como recurso estilístico, en cualquier parte del módulo, incluidos títulos, tablas y ejercicios. Es regla de la casa en este repositorio. Reescribe con coma, dos puntos, paréntesis o dos frases.
+- La construcción que niega para afirmar ("no se trata de X, se trata de Y", "no es solo X, es Y", "no basta con X, hace falta Y", "más que X, Y"). Tolera una aparición por módulo como máximo y reescribe las demás como afirmación directa.
+- Regla de tres mecánica: tríadas de adjetivos, beneficios o ejemplos usadas como ritmo. Recorta a dos o amplía al número real de ítems.
+- Conclusión espejo que reafirma la apertura sin agregar consecuencia, y cierre pseudoprofundo. Sustituye por la consecuencia concreta o por el siguiente paso.
+- Los dos anglicismos: coma antes de la "y" en enumeración simple y title case en los títulos, donde corresponde mayúscula solo en la primera palabra y en los nombres propios.
+- Vicios del español generado por IA: gerundio de posterioridad ("se aprobó el plan, implementándose al día siguiente"), "adresar" o "direccionar" en lugar de "abordar" o "resolver", "soportar" en lugar de "admitir" o "ser compatible con", "eventualmente" en el sentido de "finalmente", "asumir" en el sentido de "suponer".
+
+**Ritmo:** toma bloques de diez frases y compara la más larga con la más corta. Una diferencia por debajo de 15 palabras indica uniformidad de máquina y pide reescribir ese pasaje, dejando que el contenido gobierne la longitud. El defecto opuesto también se corrige: una secuencia de frases cortas de relleno, una por párrafo, es staccato de titular y debe fundirse en períodos que sostengan el razonamiento. Nunca apliques cuota de frase corta ni alternancia programada.
+
+**Narrativa:** verifica si el módulo abre en situación concreta con tensión explícita (y no en una definición o un escenario genérico), si la promesa de la apertura se cumple en el desarrollo, si existe un caso conduciendo el argumento y si la síntesis retoma ese caso mostrando qué cambió. Si la apertura es genérica, REESCRÍBELA con el dato o el caso más fuerte que ya esté en el módulo; si la síntesis solo repite lo dicho, REESCRÍBELA como consecuencia y siguiente paso. No inventes el caso: si no hay material, marca `[FALTA EVIDENCIA: caso real para abrir el módulo]`.
 
 ### 3.6. Señalización de falta de sustancia (Humanizador 2.6.2)
 

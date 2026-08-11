@@ -1,4 +1,4 @@
-# Prompt — Revisão Final (Claude)
+# Prompt: revisão final (Claude)
 
 ## Contexto
 
@@ -8,7 +8,7 @@ Sua tarefa é CORRIGIR o conteúdo, não apenas comentá-lo. Retorne o texto int
 
 ## Checklist de revisão obrigatória
 
-### 1. Acentuação e Ortografia PT-BR (PRIORIDADE MÁXIMA — ZERO TOLERÂNCIA)
+### 1. Acentuação e ortografia PT-BR (PRIORIDADE MÁXIMA, ZERO TOLERÂNCIA)
 
 REGRA INVIOLÁVEL: Corrija TODA e QUALQUER ocorrência de palavra sem acento obrigatório.
 
@@ -76,7 +76,20 @@ Passe por CADA parágrafo verificando CADA palavra da lista abaixo. Se encontrar
 
 Também verifique: aí, aliás, porém, além, através, difíceis, possíveis, disponíveis, mínimo, máximo, ótimo, péssimo, último, síntese, hipótese, âmbito, propósito, vocabulário, formulário, calendário, usuário, horário, temporário, sistemático, temático, teórico, crítico.
 
-**EXCEÇÕES — NUNCA adicionar acentos em:**
+**Homógrafos: esta camada é SUA, e só sua.** O corretor automático do pipeline foi proibido de mexer nas palavras abaixo, porque a forma sem acento também é português correto e só o contexto decide. Corrija uma a uma, lendo a frase:
+
+| Palavra | Sem acento (correto quando) | Com acento (correto quando) |
+|---|---|---|
+| nos / nós | preposição ou pronome oblíquo ("nos projetos", "ele nos ajuda") | pronome sujeito ("nós decidimos") |
+| esta / está | demonstrativo ("esta análise") | verbo estar ("o dado está correto") |
+| seria / séria | futuro do pretérito ("seria melhor") | adjetivo ("uma falha séria") |
+| analise / análise | verbo, subjuntivo ou imperativo ("analise os dados") | substantivo ("a análise mostrou") |
+| pratica / prática | verbo ("a equipe pratica") | substantivo ou adjetivo ("boa prática") |
+| pratico / prático | verbo ("eu pratico") | adjetivo ("um método prático") |
+| publico / público | verbo ("eu publico") | substantivo ou adjetivo ("o público leitor") |
+| valido / válido | verbo ("eu valido") | adjetivo ("um argumento válido") |
+
+**EXCEÇÕES, NUNCA adicionar acentos em:**
 - URLs e slugs (`/curso-producao-conteudo`)
 - Nomes de variáveis e funções (`producao_total`, `get_modulo()`)
 - Código-fonte, imports e atributos JSX/HTML
@@ -121,15 +134,15 @@ O conteúdo é renderizado por um componente `FormattedText` que interpreta marc
 
 **Verificações obrigatórias:**
 - **Tabelas comparativas**: ao menos UMA por módulo. Formato: linhas com pipes separadas por `\n`. Se faltar, ADICIONE.
-- **Sub-headings frequentes**: a cada 2-3 parágrafos deve haver um sub-heading (linha terminando com `:`). Cria hierarquia visual e facilita scanning. Se o texto tiver blocos longos sem heading, QUEBRE com sub-headings.
-- **Negrito**: para termos-chave e conceitos na PRIMEIRA ocorrência usando `**termo**`. Se faltar, ADICIONE.
-- **Blockquotes**: ao menos 1-2 por módulo para insights centrais usando `> `. Se faltar, ADICIONE.
-- **Alternância de formatos**: nunca mais de 3 parágrafos seguidos sem algum elemento visual (tabela, lista, blockquote ou sub-heading). Se encontrar blocos monótonos, QUEBRE com elementos visuais.
+- **Sub-headings**: entram quando o assunto muda, com texto que anuncia o conteúdo real da parte seguinte. Não há cota por número de parágrafos. Se o módulo tiver sub-heading a cada dois parágrafos, o raciocínio foi fatiado antes de terminar: FUNDA os blocos que tratam do mesmo assunto.
+- **Negrito**: para termos-chave e conceitos na PRIMEIRA ocorrência usando `**termo**`. Se faltar, ADICIONE. Se houver negrito por hábito em palavras comuns, REMOVA, porque destaque em excesso anula o destaque.
+- **Blockquotes**: 1-2 por módulo para insights centrais usando `> `. Se faltar, ADICIONE; se houver mais de três, converta os excedentes em prosa.
+- **Equilíbrio entre prosa e estrutura**: prosa carrega raciocínio; tabela, checklist e lista numerada carregam comparação, verificação e sequência. Converta em prosa as listas cujos itens tenham relação de causa entre si e as séries de "termo em negrito: explicação". Converta em tabela ou checklist os parágrafos que estejam enumerando critérios comparáveis ou passos verificáveis.
 - **Listas com `-- `**: verificar que usam `-- ` (dois hífens), NUNCA `- ` (um hífen).
-- **Parágrafos**: máximo 5 linhas cada, uma ideia central por parágrafo. Quebre parágrafos longos.
+- **Parágrafos**: uma ideia central cada, desenvolvida até a ideia terminar. Quebre o bloco de dez linhas que trata de dois assuntos; junte a sequência de parágrafos de uma frase que fatia um único raciocínio.
 - **PROIBIDO**: emojis em qualquer parte do conteúdo
 
-### 3.5. Auditoria anti-"cara de IA" (Humanizador 2.6.2) — NOVA CAMADA
+### 3.5. Auditoria anti-"cara de IA" (Humanizador 2.6.2)
 
 Varra o texto e CORRIJA cada ocorrência dos 21 padrões de escrita artificial:
 
@@ -154,6 +167,35 @@ Varra o texto e CORRIJA cada ocorrência dos 21 padrões de escrita artificial:
 19. Palavras "bonitas" desgastadas ("estratégico", "jornada", "potencializar", "impulsionar", "robusto", "dinâmico", "excelência") → remova quando não medirem nada
 20. Nominalização excessiva ("implementação", "utilização", "operacionalização") → use o verbo
 21. Ausência de voz autoral no gênero que pede opinião → adicione ângulo analítico claro
+
+### 3.4. Piso de substância (verificar ANTES de qualquer corte)
+
+Os validadores automáticos deste repositório medem forma e não medem substância: módulo raso e uniforme passa em todos eles. Antes de aplicar qualquer proibição das seções seguintes, verifique os seis itens de `DIRETRIZ_EDITORIAL.md` seção 2.1:
+
+1. Tese identificável, enunciada cedo, com a qual seria possível discordar.
+2. Evidência ligada à tese, e não números avulsos.
+3. Ganho de informação: algo que o aluno não acharia em qualquer fonte sobre o tema.
+4. Critério de decisão explícito onde houver alternativas, com recomendação justificada.
+5. Arco de leitura (abertura em situação, promessa paga, fechamento com callback).
+6. Consequência executável para o aluno.
+
+Faltando qualquer um deles, o conserto é acrescentar, reescrever ou marcar `[FALTA EVIDÊNCIA: ...]`, nunca cortar. Se um item colidir com uma proibição das seções seguintes, o item vence e você reformula o trecho até cumprir os dois. Reporte no bloco final quais itens estavam ausentes no rascunho recebido.
+
+### 3.55. Estruturas vetadas, ritmo e narrativa (`DIRETRIZ_EDITORIAL.md`)
+
+Fonte normativa: `DIRETRIZ_EDITORIAL.md` na raiz do repositório, seções 3, 4, 5 e 6. Corrija ativamente:
+
+**Estruturas e pontuação vetadas:**
+- Travessão como recurso estilístico, em qualquer parte do módulo, inclusive títulos, tabelas e exercícios. Reescreva com vírgula, dois-pontos, parênteses ou duas frases.
+- A construção que nega para afirmar ("não se trata de X, trata-se de Y", "não é apenas X, é Y", "não basta X, é preciso Y", "mais do que X, Y"). Tolere no máximo uma ocorrência por módulo e reescreva as demais como afirmação direta.
+- Regra de três mecânica: tríades de adjetivos, benefícios ou exemplos usadas como ritmo. Corte para dois ou expanda para o número real de itens.
+- Conclusão-espelho que reafirma a abertura sem acrescentar consequência, e fecho pseudo-profundo. Substitua pela consequência concreta ou pelo próximo passo.
+- Vírgula antes do "e" em enumeração simples e title case em títulos, os dois anglicismos.
+- Vícios de português gerado por IA: gerundismo, "endereçar" no lugar de "tratar", "suportar" no lugar de "aceitar", "eventualmente" no sentido de "no fim", "assumir" no sentido de "supor".
+
+**Ritmo:** pegue blocos de dez frases e compare a mais longa com a mais curta. Diferença abaixo de 15 palavras indica uniformidade de máquina e pede reescrita daquele trecho, deixando o conteúdo governar o comprimento. O defeito oposto também se corrige: sequência de frases curtas de enchimento, uma por parágrafo, é staccato de manchete e deve ser fundida em períodos que sustentem o raciocínio. Nunca aplique cota de frase curta nem alternância programada.
+
+**Narrativa:** verifique se o módulo abre em situação concreta com tensão explícita (e não em definição ou cenário genérico), se a promessa da abertura é cumprida no desenvolvimento, se existe um caso conduzindo o argumento e se a síntese retoma esse caso mostrando o que mudou. Se a abertura for genérica, REESCREVA usando o dado ou o caso mais forte que já estiver no módulo; se a síntese apenas repetir o que foi dito, REESCREVA como consequência e próximo passo. Não invente caso: se não houver material, marque `[FALTA EVIDÊNCIA: caso real para abrir o módulo]`.
 
 ### 3.6. Sinalização de falta de substância (Humanizador 2.6.2)
 
@@ -192,29 +234,6 @@ Se algum princípio estiver ausente, ADICIONE o conteúdo necessário.
 - Referências citadas são reais e verificáveis?
 - A progressão entre módulos é coerente?
 
-### 7. Disclosure de IA (PL 2338/2023 + EEAT Google)
-
-Para clientes brasileiros com `disclosure.enabled: true` no client.yaml, o rodapé de CADA módulo DEVE conter um bloco padronizado de disclosure. Se ausente, INSIRA usando o template abaixo, parametrizado com os campos do cliente:
-
-```
-> **Sobre a producao deste conteudo**: Co-produzido com pipeline de IA
-> ({{models canônicos da banca}}) e revisado por {{author.name}}
-> ({{author.credential}}). Disclosure conforme {{normas listadas em
-> disclosure.required_by — humanizar: "PL 2338/2023 (Marco Legal da IA,
-> Brasil)", "Posicionamento CFP de 03/07/2025", "Marco Referencial MEC
-> IA na Educacao"}}.
-```
-
-Para clientes em domínios regulados (saúde, psicologia, direito), adicione segunda linha:
-
-```
->
-> Revisão técnica adicional por {{role específica, ex: psicólogo registrado
-> CRP XX/XXXXX}}.
-```
-
-A barreira programática `disclosure_checker.py` valida presença do bloco, autor canônico e norma citada. Se ausentes E `block_if_missing=true`, módulo é rejeitado.
-
 ## Formato de saída
 
 Retorne o conteúdo revisado e corrigido NA ÍNTEGRA em Markdown, seguido de um bloco separado:
@@ -230,6 +249,7 @@ Tabelas adicionadas: [número]
 Exercícios corrigidos/adicionados: [número]
 Clichês removidos: [número]
 Padrões anti-IA corrigidos (1-21): [número por categoria]
+Piso de substância: [itens da seção 3.4 ausentes no rascunho recebido, ou "completo"]
 Evidências pendentes: [lista de marcadores [FALTA EVIDÊNCIA: ...] não resolvidos]
 Principais ajustes: [lista dos 5 ajustes mais relevantes]
 Aprovado para publicação: sim/não

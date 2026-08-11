@@ -158,11 +158,14 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 
 ## Padrão Editorial — Regras de Qualidade
 
+Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/2026) e o anexo [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md). Em conflito, a diretriz prevalece sobre o resumo desta seção.
+
 ### Estilo HSM/HBR/MIT Sloan
 - Tom analítico, direto, orientado por dados, sem jargão vazio
-- Frases curtas. Parágrafos de 2-3 frases (máximo 5 linhas). Sem floreios
-- Dados e estatísticas para sustentar argumentos — nunca afirmar sem evidência
+- Uma ideia central por parágrafo, desenvolvida até a ideia terminar. O ritmo vem do conteúdo: período longo para raciocínio com causa e ressalva, frase curta quando houver o que enfatizar. PROIBIDA qualquer cota de ritmo (frase curta por parágrafo, alternância programada, teto fixo de linhas), que produz staccato de manchete
+- Dados e estatísticas para sustentar argumentos, nunca afirmar sem evidência
 - Evitar superlativos sem evidência ("o melhor", "revolucionário")
+- Narrativa obrigatória: abrir em situação concreta com tensão explícita, conduzir por um caso nomeado, cumprir a promessa da abertura e fechar retomando esse caso (diretriz §3)
 
 ### Andragogia (6 Princípios de Knowles) — OBRIGATÓRIO
 1. Necessidade de saber — POR QUE antes do COMO
@@ -179,11 +182,11 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 ### Formatação Obrigatória por Módulo
 - Ao menos 1 tabela comparativa (formato markdown com pipes)
 - Ao menos 3 exercícios com contexto profissional e progressão Bloom
-- Sub-headings (linha terminando com `:`) a cada 2-3 parágrafos
+- Sub-headings (linha terminando com `:`) quando o assunto muda, sem cota por número de parágrafos
 - Negrito em termos-chave na primeira ocorrência usando `**termo**`
-- Blockquotes (`> `) para insights centrais — ao menos 1-2 por módulo
+- Blockquotes (`> `) para insights centrais, 1-2 por módulo
 - Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen)
-- Nunca mais de 3 parágrafos seguidos sem elemento visual
+- Estrutura entra quando organiza comparação, sequência ou verificação (tabela, matriz de decisão, checklist, passos). Lista cujos itens têm relação de causa entre si vira prosa: prosa carrega raciocínio
 - 2.500-4.000 palavras por módulo
 
 ### Padrão de Layout (FormattedText — UX Microsoft Learn + Salesforce Trailhead)
@@ -325,39 +328,12 @@ python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 
 **Para outro cliente:** consulte `config/clients/<id>/client.yaml` → seção `author:` e `voice_guard.canonical:`. O voice guard bloqueia textos que violem o naming canônico do cliente ativo.
 
-## Padrão editorial — escrita humanizada (17/07/2026)
-
-Todo conteúdo de leitura humana produzido neste repo (artigo, curso, página, post,
-e-mail, relatório, parecer, resposta ao usuário) segue o padrão editorial global do
-Alexandre. Qualidade vence velocidade; profundidade proporcional ao problema;
-escrever como especialista sênior conversando com outro profissional experiente.
-Fonte de verdade completa: `docs/ESTILO_EDITORIAL.md` do repo GEO-Pesquisador
-(clone local em `C:/Sandyboxclaude/GEO-Pesquisador`).
-
-Proibidos como padrão recorrente (uso pontual e consciente é tolerado):
-
-- Antítese em série: "não se trata de X, trata-se de Y", "não é apenas X, é Y",
-  "não basta X, é preciso Y", "mais do que X, Y". Afirmar direto o que a evidência
-  sustenta.
-- Conectivos batidos repetidos: "além disso", "por outro lado", "nesse contexto",
-  "vale destacar", "é importante ressaltar", "nesse sentido", "por fim".
-- Parágrafos vizinhos abrindo com a mesma construção sintática; blocos com ritmo
-  idêntico; excesso de paralelismo; perguntas retóricas em série; conclusões
-  idênticas fechando tópicos sucessivos.
-- Travessão e hífen como recurso estilístico no conteúdo final: preferir vírgula,
-  dois-pontos ou ponto.
-- Clichês, frases genéricas que serviriam para qualquer assunto, tom promocional,
-  superlativo sem número ao lado, adjetivo decorativo, negrito por hábito.
-
-Obrigatório: linha de raciocínio lógica; cada parágrafo acrescenta uma ideia nova;
-alternar períodos curtos, médios e longos; recomendação sempre acompanhada do
-porquê; conceito técnico coberto com contexto, motivação, funcionamento,
-limitações e critérios de decisão quando relevantes; material educacional abre
-pelo problema e fecha com síntese prática. Antes de entregar, reler procurando
-esses padrões e reescrever o que soar texto de máquina. Sub-agentes que geram
-copy recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md`
-carimbado no prompt.
-
 ## Padrão editorial obrigatório
 
-Antes de produzir qualquer texto de leitura humana neste repositório (documentação, cursos, páginas, relatórios, descrições de PR, mensagens longas de commit), leia e aplique `DIRETRIZ_EDITORIAL.md` na raiz do repositório (versão 2, 23/07/2026) e consulte o anexo prático `GUIA_ESCRITA_HUMANIZADA.md`, que traz exemplos antes e depois, heurísticas mensuráveis e fontes. O essencial: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; ritmo variado de verdade (num bloco de dez frases, amplitude acima de 30 palavras entre a mais longa e a mais curta); proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta. Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.
+Antes de produzir qualquer texto de leitura humana neste repositório (documentação, cursos, páginas, relatórios, descrições de PR, mensagens longas de commit), leia e aplique [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) na raiz (versão 3, 11/08/2026) e consulte o anexo prático [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md), com exemplos antes e depois, heurísticas mensuráveis e fontes. Esta é a fonte única do padrão editorial do repositório: os prompts do pipeline (`src/templates/prompts/`) e o resumo da seção "Padrão Editorial" acima se subordinam a ela, e a duplicação de camadas editoriais divergentes foi o que degradou a qualidade entre julho e agosto de 2026 (ver `wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`).
+
+Antes de qualquer regra de evitação vem o piso de substância (diretriz §2.1), porque os cinco gates automáticos deste repo medem forma e nenhum deles mede argumento: texto raso e uniforme passa em todos. Toda peça precisa ter tese identificável, evidência ligada à tese, ganho de informação, critério de decisão explícito onde houver alternativas, arco de leitura e consequência executável para o leitor. Aprovação no gate não é aprovação editorial, e em conflito entre proibição e piso de substância o piso vence.
+
+O essencial, em uma passada: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; storytelling obrigatório em conteúdo longo (abertura em situação, tensão antes da solução, caso condutor, promessa cumprida, fechamento com callback, mostrar em vez de qualificar); ritmo nascido do sentido, com o teste do bloco de dez frases servindo de diagnóstico depois de escrever e nunca de cota durante a escrita; proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); tabela, matriz de decisão e checklist usados sempre que houver comparação, escolha ou passo verificável, e prosa sempre que houver raciocínio encadeado; dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta.
+
+Sub-agentes que geram copy longa recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md` carimbado no prompt. Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.
