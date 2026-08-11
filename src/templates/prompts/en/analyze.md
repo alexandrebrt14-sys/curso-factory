@@ -1,4 +1,4 @@
-# Prompt — Pedagogical Quality Analysis (Gemini)
+# Prompt: pedagogical quality analysis (Gemini)
 
 ## Context
 
@@ -27,7 +27,26 @@ You are an expert in instructional design, andragogy, and pedagogical quality, w
 - Does the content go beyond basic definitions, offering insights and analysis?
 - Are there clichés or worn phrases that should be removed?
 - Is the language direct, active, with intellectual authority?
-- Are paragraphs concise (max 5 lines)?
+- Does each paragraph carry one central idea developed until it closes? Fail both extremes: the block that stacks two subjects, and the run of one-sentence paragraphs that slices a single line of reasoning.
+- Does the rhythm of the sentences follow the argument? Check any stretch of ten sentences: a gap of fewer than 15 words between the longest and the shortest signals machine uniformity; a run of short filler sentences, one per paragraph, signals the opposite defect (headline staccato). Neither is acceptable, and no length quota should be recommended in the correction.
+- Is the text free of the em dash used as a stylistic device, of serial antithesis ("it is not X, it is Y"), of the triad used as rhythm, and of the mirror conclusion?
+
+### 2.5. Substance and narrative (approval dimension, not rejection)
+
+This dimension asks what the module HAS, and not only what it managed to avoid. A short, uniform, argument-free text passes every automated gate in the repository, because none of them measures substance. You are the layer that does.
+
+Assess and score:
+
+- **Own thesis**: does the module defend an identifiable position, or is it a neutral compilation of what already exists? Point to the sentence that carries the thesis; if there is none, the score for this dimension cannot go above 4.
+- **Evidence tied to the thesis**: do the cited figures support the argument being defended, or do they merely decorate the text with loose numbers?
+- **Information gain**: is there at least one data point, local-market example, comparison, or framework that the learner would not find in the first three pages of any search on the topic?
+- **Opening**: does the module open on a concrete situation with explicit tension (a case, a hard decision, a number that contradicts expectation), or on a definition and a generic scenario?
+- **Anchor case**: is there a named case that runs across the module and comes back in the conceptual grounding and in the exercises, or are the examples one-off?
+- **Promise kept**: was what the opening promised actually delivered in the development?
+- **Closing**: does the synthesis show what changed in the case or in the initial tension, or does it repeat what was already said?
+- **Decision criterion**: when the module presents alternatives, does it compare them against explicit criteria and recommend with a justification, or does it list options without helping the learner choose?
+
+Normative reference for the two dimensions above: `DIRETRIZ_EDITORIAL.md`, sections 2, 3, 4, and 6.
 
 ### 3. Formatting and Visual Structure
 
@@ -84,6 +103,16 @@ Return a structured JSON with these fields:
   "dimensions": {
     "coherence_rigor": {"score": 0-10, "notes": "..."},
     "editorial_quality": {"score": 0-10, "notes": "..."},
+    "substancia_narrativa": {
+      "nota": 0-10,
+      "tese_identificada": "the sentence that carries the thesis, or null if absent",
+      "information_gain": "what the module brings that no generic source has, or null",
+      "abertura_em_situacao": true/false,
+      "caso_condutor": "name of the case that runs across the module, or null",
+      "promessa_cumprida": true/false,
+      "fechamento_com_callback": true/false,
+      "observacoes": "..."
+    },
     "visual_formatting": {"score": 0-10, "notes": "..."},
     "andragogy": {
       "overall_score": 0-10,

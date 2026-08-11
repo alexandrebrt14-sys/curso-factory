@@ -53,6 +53,19 @@ Antes de entregar, varra o texto eliminando estes sinais:
 
 Regra prática: ao final de cada seção, releia perguntando "isso poderia ter saído de qualquer gerador de conteúdo corporativo?". Se sim, reescreva com concretude, agente explícito e dado específico, ou marque `[FALTA EVIDÊNCIA]`.
 
+## Piso de substância: o que o módulo precisa TER
+
+Este prompt lista muita coisa a evitar, e as regras de evitação têm um furo conhecido: módulo curto, uniforme e sem argumento não viola nenhuma delas e mesmo assim não ensina. Os validadores automáticos do repositório medem forma (acento, clichê, contagem, marcação) e não conseguem medir substância. Antes de aplicar qualquer proibição, garanta os seis itens abaixo (`DIRETRIZ_EDITORIAL.md`, seção 2.1):
+
+1. **Tese identificável.** Uma posição que o módulo defende e com a qual seria possível discordar, enunciada nos primeiros 100 palavras. Compilação neutra do que já existe não é módulo pronto.
+2. **Evidência ligada à tese.** Cada dado importante sustenta o argumento defendido, em vez de decorar o texto com números soltos.
+3. **Ganho de informação.** Ao menos um dado, caso brasileiro, comparação ou framework que o aluno não acharia nas primeiras páginas de uma busca sobre o tema.
+4. **Critério de decisão explícito.** Quando houver alternativas, diga o que compara, com quais critérios, e recomende com o porquê. Listar opções sem ajudar a escolher é meio caminho.
+5. **Arco de leitura**, conforme a seção de narrativa abaixo.
+6. **Consequência para o aluno.** O que ele passa a fazer diferente depois do módulo, dito de forma executável.
+
+Quando uma proibição deste prompt entrar em conflito com um destes seis itens, o item vence e o trecho é reformulado até cumprir os dois. Cortar substância para satisfazer regra de forma é o erro mais caro que este pipeline comete.
+
 ## Estruturas e pontuação vetadas
 
 Fonte normativa: `DIRETRIZ_EDITORIAL.md` na raiz do repositório, seções 5 e 6. Nenhum destes pode aparecer no conteúdo entregue:
@@ -343,6 +356,7 @@ Este módulo compete por **citação em motores generativos** (ChatGPT, Gemini, 
 
 Antes de entregar o módulo, verifique CADA item:
 
+- [ ] Piso de substância cumprido: tese identificável, evidência ligada à tese, ganho de informação, critério de decisão explícito, arco de leitura e consequência executável para o aluno
 - [ ] Abertura em situação concreta, com tensão explícita e dado (não em definição nem em cenário genérico)
 - [ ] Caso condutor presente no desenvolvimento e retomado na síntese
 - [ ] Objetivos de aprendizagem com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)

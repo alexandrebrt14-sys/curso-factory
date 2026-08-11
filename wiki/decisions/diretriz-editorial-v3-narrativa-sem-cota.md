@@ -6,17 +6,34 @@ metadata:
   created: 2026-08-11
 ---
 
-A qualidade do texto produzido pelo pipeline caiu porque as regras de escrita eram
-mecânicas e se contradiziam entre camadas. Três defeitos, todos corrigidos na
+A qualidade do texto produzido pelo pipeline caiu porque a doutrina editorial era
+feita quase só de mecanismos de reprovação, e as poucas regras positivas eram
+mecânicas e se contradiziam entre camadas. Quatro defeitos, todos corrigidos na
 `DIRETRIZ_EDITORIAL.md` v3 (11/08/2026):
 
+0. **Doutrina só de reprovação.** 46 expressões banidas com `fail_on_found` no
+   `quality_rules.yaml`, orçamento de formatação, tetos de bloco e de marcador,
+   trava de estilometria, e nenhuma regra dizendo o que a peça precisa TER. As
+   cinco camadas do quality gate medem forma (acento, clichê, contagem, marcação)
+   e nenhuma mede argumento: módulo curto, uniforme e sem tese passa em todas.
+   A v3 instala o piso de substância (§2.1, seis itens) e uma dimensão de
+   aprovação no `analyze.md`, que é a única camada capaz de medir substância
+   porque é LLM e não regex. Regra de precedência nova: em conflito entre
+   proibição e piso de substância, o piso vence.
 1. **Cota de ritmo.** `draft.md` e `humanize.md` exigiam "uma frase de 6 palavras ou
    menos em CADA parágrafo" e "nunca duas frases consecutivas na mesma faixa de
    comprimento". O `humanizer.py` reforçava isso reescrevendo em loop até subir o
    score de burstiness, e o `stylometry_checker.py` avisava quando faltava frase
    curta. O resultado foi staccato de manchete: melhora a métrica, piora a leitura,
    e continua sendo identificado como texto de máquina (Tabach, arXiv:2604.23471).
-   A métrica agora é diagnóstico do texto pronto, nunca fórmula de produção.
+   Pior: o conjunto era insatisfazível. Regra de crescimento por frase mais ração
+   de uma frase curta por bloco produz amplitude perto de 13 a 16 palavras em dez
+   frases, e a mesma tabela de limiares reprovava amplitude abaixo de 30. Três
+   regras derrubavam a quarta, e quem obedecia às quatro escrevia exatamente a
+   faixa estreita que a diretriz classifica como assinatura de máquina. A métrica
+   agora é diagnóstico do texto pronto, em duas faixas (abaixo de 15 é defeito,
+   acima de 30 é folgado), e a v3 proíbe combiná-la com qualquer outra regra de
+   comprimento.
 2. **Cota de formatação.** "Parágrafo com no máximo 5 linhas", "sub-heading a cada
    2-3 parágrafos" e "nunca mais de 3 parágrafos sem elemento visual" fatiavam o
    raciocínio antes de ele terminar. A v3 mantém tabela, matriz de decisão e
@@ -28,9 +45,32 @@ mecânicas e se contradiziam entre camadas. Três defeitos, todos corrigidos na
    solução, caso condutor, promessa cumprida, fechamento com callback, mostrar em
    vez de qualificar) e passa a ser fonte única, com prompts e resumos subordinados.
 
-Regra prática ao mexer em prompt de escrita neste repo: toda instrução de estilo
-precisa poder ser cumprida por um bom escritor humano sem contar palavras. Se a
-instrução vira aritmética durante a escrita, ela vira cacoete no texto.
+4. **Auto-correção de acento corrompendo português correto.** Achado colateral,
+   e provavelmente o mais caro dos quatro. O `ACCENT_MAP` do `accent_checker.py`
+   tratava homógrafos como erro de digitação, e o gate roda com `auto_fix=True`:
+   "nos projetos" virava "nós projetos", "esta análise" virava "está análise",
+   "seria bom" virava "séria bom", o imperativo "Analise os dados" virava
+   "Análise os dados". Cada curso gerado saía com erro de gramática introduzido
+   pelo próprio validador de qualidade. Descoberto ao rodar o validador contra a
+   diretriz editorial nova: 14 achados, todos falsos. Os nove pares ambíguos
+   foram movidos para `AMBIGUOUS_HOMOGRAPHS`, fora do dicionário de correção, e a
+   responsabilidade passou para o `review.md`, que agora traz a tabela de
+   desambiguação por classe gramatical. Regex cuida do inequívoco; contexto é
+   trabalho do revisor LLM.
+
+Três regras práticas ao mexer em doutrina editorial neste repo:
+
+1. Toda instrução de estilo precisa poder ser cumprida por um bom escritor humano
+   sem contar palavras. Se vira aritmética durante a escrita, vira cacoete no
+   texto. E antes de adicionar qualquer limiar novo, teste se ele é satisfazível
+   junto com os que já existem.
+2. Nenhuma regra de reprovação entra sozinha. Quem proíbe precisa dizer o que
+   colocar no lugar, senão o caminho mais barato para passar no gate é escrever
+   menos e dizer nada.
+3. Todo validador com auto-correção deve ser rodado contra um texto que se sabe
+   correto antes de entrar em produção. Falso positivo em validador que só
+   reporta custa atenção; em validador que corrige, custa a qualidade que ele
+   deveria proteger.
 
 Relacionadas: [[padrao-editorial-hsm-hbr]], [[ADR-001-adopcao-llm-wiki]].
 
@@ -39,7 +79,7 @@ Relacionadas: [[padrao-editorial-hsm-hbr]], [[ADR-001-adopcao-llm-wiki]].
 ## Linha do tempo (append-only, ordem reversa)
 
 - **2026-08-11** — [correção] v3 da diretriz: storytelling obrigatório (§3), veto a
-  cota mecânica de ritmo (§4.7), estrutura visual reposicionada a serviço da decisão
+  cota mecânica de ritmo (§4.8), estrutura visual reposicionada a serviço da decisão
   (§6). Propagado para `draft.md`, `review.md` e `humanize.md` (pt-br, raiz, en, es),
   `humanizer.py`, `stylometry_checker.py`, `content_checker.py` (teto de parágrafo de
   5 para 8 linhas), `voice_guard.py`, `quality_rules.yaml`, `CLAUDE.md`, `AGENTS.md`

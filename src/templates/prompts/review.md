@@ -76,6 +76,19 @@ Passe por CADA parágrafo verificando CADA palavra da lista abaixo. Se encontrar
 
 Também verifique: aí, aliás, porém, além, através, difíceis, possíveis, disponíveis, mínimo, máximo, ótimo, péssimo, último, síntese, hipótese, âmbito, propósito, vocabulário, formulário, calendário, usuário, horário, temporário, sistemático, temático, teórico, crítico.
 
+**Homógrafos: esta camada é SUA, e só sua.** O corretor automático do pipeline foi proibido de mexer nas palavras abaixo, porque a forma sem acento também é português correto e só o contexto decide. Corrija uma a uma, lendo a frase:
+
+| Palavra | Sem acento (correto quando) | Com acento (correto quando) |
+|---|---|---|
+| nos / nós | preposição ou pronome oblíquo ("nos projetos", "ele nos ajuda") | pronome sujeito ("nós decidimos") |
+| esta / está | demonstrativo ("esta análise") | verbo estar ("o dado está correto") |
+| seria / séria | futuro do pretérito ("seria melhor") | adjetivo ("uma falha séria") |
+| analise / análise | verbo, subjuntivo ou imperativo ("analise os dados") | substantivo ("a análise mostrou") |
+| pratica / prática | verbo ("a equipe pratica") | substantivo ou adjetivo ("boa prática") |
+| pratico / prático | verbo ("eu pratico") | adjetivo ("um método prático") |
+| publico / público | verbo ("eu publico") | substantivo ou adjetivo ("o público leitor") |
+| valido / válido | verbo ("eu valido") | adjetivo ("um argumento válido") |
+
 **EXCEÇÕES, NUNCA adicionar acentos em:**
 - URLs e slugs (`/curso-producao-conteudo`)
 - Nomes de variáveis e funções (`producao_total`, `get_modulo()`)
@@ -155,6 +168,19 @@ Varra o texto e CORRIJA cada ocorrência dos 21 padrões de escrita artificial:
 20. Nominalização excessiva ("implementação", "utilização", "operacionalização") → use o verbo
 21. Ausência de voz autoral no gênero que pede opinião → adicione ângulo analítico claro
 
+### 3.4. Piso de substância (verificar ANTES de qualquer corte)
+
+Os validadores automáticos deste repositório medem forma e não medem substância: módulo raso e uniforme passa em todos eles. Antes de aplicar qualquer proibição das seções seguintes, verifique os seis itens de `DIRETRIZ_EDITORIAL.md` seção 2.1:
+
+1. Tese identificável, enunciada cedo, com a qual seria possível discordar.
+2. Evidência ligada à tese, e não números avulsos.
+3. Ganho de informação: algo que o aluno não acharia em qualquer fonte sobre o tema.
+4. Critério de decisão explícito onde houver alternativas, com recomendação justificada.
+5. Arco de leitura (abertura em situação, promessa paga, fechamento com callback).
+6. Consequência executável para o aluno.
+
+Faltando qualquer um deles, o conserto é acrescentar, reescrever ou marcar `[FALTA EVIDÊNCIA: ...]`, nunca cortar. Se um item colidir com uma proibição das seções seguintes, o item vence e você reformula o trecho até cumprir os dois. Reporte no bloco final quais itens estavam ausentes no rascunho recebido.
+
 ### 3.55. Estruturas vetadas, ritmo e narrativa (`DIRETRIZ_EDITORIAL.md`)
 
 Fonte normativa: `DIRETRIZ_EDITORIAL.md` na raiz do repositório, seções 3, 4, 5 e 6. Corrija ativamente:
@@ -223,6 +249,7 @@ Tabelas adicionadas: [número]
 Exercícios corrigidos/adicionados: [número]
 Clichês removidos: [número]
 Padrões anti-IA corrigidos (1-21): [número por categoria]
+Piso de substância: [itens da seção 3.4 ausentes no rascunho recebido, ou "completo"]
 Evidências pendentes: [lista de marcadores [FALTA EVIDÊNCIA: ...] não resolvidos]
 Principais ajustes: [lista dos 5 ajustes mais relevantes]
 Aprovado para publicação: sim/não

@@ -57,6 +57,31 @@ def test_fix_accents_corrige_e_preserva_capitalizacao() -> None:
     assert "Vocêcê" not in corrigido
 
 
+def test_fix_accents_nao_corrompe_homografos() -> None:
+    """Homografo com forma sem acento valida NUNCA e trocado por dicionario.
+
+    Regressao de 11/08/2026: o gate roda com auto_fix=True, e estas entradas
+    injetavam erro de portugues em todo curso gerado ("nos projetos" ->
+    "nos projetos" acentuado, "seria bom" -> "seria" acentuado, imperativo
+    "Analise os dados" -> substantivo). Contexto e trabalho do revisor LLM.
+    """
+    text = (
+        "Ele trabalha nos projetos e esta analise nos ajuda. "
+        "Analise os dados. Se ele quiser, seria bom. Eu publico e valido o "
+        "material que a equipe pratica."
+    )
+    corrigido, _ = fix_accents(text)
+    assert corrigido == text
+    assert check_accents(text) == []
+
+
+def test_fix_accents_ainda_corrige_inequivocos() -> None:
+    """A protecao de homografos nao pode desligar o caso inequivoco."""
+    corrigido, n = fix_accents("Voce nao tem informacao sobre a producao.")
+    assert n >= 4
+    assert corrigido == "Você não tem informação sobre a produção."
+
+
 def test_fix_accents_preserva_codigo() -> None:
     text = "Texto: producao\n```\nproducao = 42\n```"
     corrigido, _ = fix_accents(text)

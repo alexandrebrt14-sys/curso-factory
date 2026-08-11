@@ -14,6 +14,8 @@ A consequência prática: revisar léxico sem revisar estrutura não resolve. Es
 
 Pegue qualquer bloco de dez frases do texto. Subtraia o tamanho da menor do tamanho da maior. Amplitude abaixo de 15 palavras é forte indício de texto de máquina; acima de 30, compatível com escrita humana. O teste se aplica ao texto pronto, para localizar o trecho que precisa de reescrita. Ele não vira regra de produção.
 
+Uma armadilha aritmética explica por que a versão anterior desta doutrina não funcionava. Se o guia manda o parágrafo abrir curto e crescer, digamos, uma palavra e meia por frase, e ao mesmo tempo raciona a frase de veredito em uma por bloco, um bloco que abre em 11 palavras chega à décima frase perto de 24. A amplitude resultante fica em 13, ou 16 contando a frase curta de fechamento, e o mesmo documento que prescreveu o crescimento reprova o resultado por amplitude insuficiente. Três regras derrubavam a quarta, e o texto produzido por quem tentava obedecer às quatro era justamente o de faixa estreita que a diretriz classifica como assinatura de máquina. Daí a regra da seção 4.1 da diretriz: este diagnóstico não se combina com nenhuma outra regra de comprimento.
+
 Antes (amplitude 9; toda frase entre 14 e 23 palavras):
 
 > A otimização para motores generativos exige uma abordagem estruturada e consistente ao longo do tempo. As empresas precisam entender como os modelos de linguagem selecionam as fontes que citam. A produção de conteúdo deve considerar tanto os leitores humanos quanto os sistemas automatizados. Os resultados costumam aparecer de forma gradual conforme a autoridade do domínio se consolida.
@@ -88,7 +90,9 @@ O orçamento limita o excesso, não o uso. Tabela comparativa, matriz de decisã
 
 ## 7. Fluxo de revisão em três passadas
 
-1. Substância: fatos, datas, números e fontes conferidos; a pergunta central do texto respondida; nenhum dado inventado; slots `[PREENCHER-HUMANO]` resolvidos com o autor (caso vivido, número proprietário, posição de negócio) ou o trecho cortado.
+Antes das três passadas, uma verificação que nenhum gate automático faz: os seis itens do piso de substância (diretriz, seção 2.1). Tese identificável, evidência ligada à tese, ganho de informação, critério de decisão, arco de leitura e consequência para o leitor. Os validadores do repositório medem forma, e forma limpa em texto vazio continua sendo texto vazio.
+
+1. Substância: os seis itens acima; fatos, datas, números e fontes conferidos; a pergunta central do texto respondida; nenhum dado inventado; slots `[PREENCHER-HUMANO]` resolvidos com o autor (caso vivido, número proprietário, posição de negócio) ou o trecho cortado.
 2. Estrutura: seções 3 e 5 deste guia aplicadas; arco narrativo verificado (a abertura prende, a promessa é paga, o fechamento retoma); cápsula de resposta presente na abertura de cada seção interna; headings que são perguntas reais do público; nenhuma seção que não se sustente sozinha.
 3. Linguagem: heurística do bloco de dez frases; aberturas de parágrafo todas distintas; conectivos cortados; tabela da seção 4 varrida; orçamento de formatação da seção 6 conferido; leitura em voz alta do texto inteiro.
 
