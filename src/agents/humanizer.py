@@ -87,22 +87,30 @@ class Humanizer(Agent):
 
     # Fallback inline (mantem o agente operavel se humanize.md nao existir)
     TEMPLATE = (
-        "Voce e um editor de prosa humana de alto padrao. Recebe um texto que\n"
-        "ja passou por revisao editorial mas tem cadencia uniforme demais —\n"
-        "padrao tipico de LLM. Sua tarefa: reescrever para aumentar burstiness\n"
-        "(variancia de comprimento de sentenca) SEM mudar conteudo factual.\n\n"
+        "Voce e um editor de prosa de alto padrao. Recebe um texto que ja\n"
+        "passou por revisao editorial mas tem cadencia uniforme, paragrafos\n"
+        "simetricos e aberturas repetidas, padrao tipico de LLM. Sua tarefa:\n"
+        "reescrever a estrutura desses trechos SEM mudar conteudo factual.\n\n"
         "DIAGNOSTICO STYLOMETRIA:\n{diagnostic}\n\n"
         "REGRAS INVIOLAVEIS:\n"
         "1. NAO mude numeros, datas, citacoes, nomes proprios, blocos de\n"
-        "   codigo, tabelas, marcadores [FALTA EVIDENCIA: ...].\n"
-        "2. NAO mude o sentido logico de nenhum paragrafo.\n"
+        "   codigo, tabelas, marcadores [FALTA EVIDENCIA: ...] nem termos\n"
+        "   tecnicos canonicos.\n"
+        "2. NAO mude o sentido logico de nenhum paragrafo e nao corte\n"
+        "   informacao.\n"
         "3. NAO insira hedges ('talvez', 'pode ser') onde o texto original\n"
         "   afirma com convicao.\n"
-        "4. SIM, varie comprimento de sentenca entre 4 e 35 palavras.\n"
-        "5. SIM, em CADA paragrafo, garanta ao menos UMA frase de 6 palavras\n"
-        "   ou menos.\n"
-        "6. SIM, quebre simetria sintatica (se 3 frases seguidas comecam com\n"
-        "   sujeito, mova sujeito para o meio na quarta).\n\n"
+        "4. NAO use travessao nem hifen como recurso estilistico.\n"
+        "5. NAO aplique cota de ritmo: nada de uma frase curta por paragrafo\n"
+        "   nem de alternancia programada curta/longa. O comprimento vem do\n"
+        "   conteudo.\n"
+        "6. NAO troque termo tecnico por sinonimo para variar vocabulario.\n\n"
+        "O QUE REESCREVER: blocos com frases todas do mesmo tamanho;\n"
+        "paragrafos vizinhos que abrem com a mesma construcao; simetria de\n"
+        "secao e triades de ritmo; conectivos de abertura ('alem disso',\n"
+        "'nesse contexto', 'vale destacar'), que saem por subtracao; fechos\n"
+        "que apenas resumem o que foi dito; listas cujos itens tem relacao de\n"
+        "causa entre si, que voltam a ser prosa.\n\n"
         "Devolva o texto reescrito NA INTEGRA. Sem preambulo, sem epilogo,\n"
         "sem 'aqui esta o texto reescrito:'. Apenas o texto.\n\n"
         "--- TEXTO ORIGINAL ---\n{context}"
@@ -125,34 +133,51 @@ class Humanizer(Agent):
         return _safe_substitute(self.TEMPLATE, substitutions)
 
     def _build_diagnostic(self, report: StylometryReport) -> str:
-        """Gera string de diagnostico cirurgico a partir do StylometryReport."""
+        """Gera diagnostico a partir do StylometryReport.
+
+        O diagnostico aponta ONDE o texto esta uniforme e manda reescrever a
+        estrutura daquele trecho. Nao prescreve cota de frase curta nem troca
+        de termo por sinonimo: as duas "correcoes" melhoram a metrica e pioram
+        o texto (staccato de manchete e incoerencia terminologica), conforme
+        DIRETRIZ_EDITORIAL.md secoes 4 e 6.
+        """
         lines = []
         if report.burstiness < 0.6:
             lines.append(
-                f"- burstiness={report.burstiness:.2f} (alvo >= 0.80). "
-                "Cadencia uniforme — quebre criando frases curtas (4-6 palavras) "
-                "entre frases longas analiticas."
+                f"- burstiness={report.burstiness:.2f} (referencia humana >= 0.60). "
+                "Cadencia uniforme: localize os blocos em que quase todas as frases "
+                "tem tamanho parecido e reescreva-os deixando o conteudo governar o "
+                "comprimento (periodo longo para raciocinio com causa e ressalva, "
+                "frase curta quando houver o que enfatizar). Nao distribua frase "
+                "curta por cota."
             )
         if report.sentence_len_variance < 40:
             lines.append(
                 f"- variancia de comprimento={report.sentence_len_variance:.1f} "
-                "(alvo >= 50). Mais contraste entre frases curtas e longas."
+                "(referencia >= 40). Funda em periodos os trechos que fatiam um "
+                "unico raciocinio e desenvolva os argumentos que hoje estao "
+                "resumidos em uma frase."
             )
         if report.type_token_ratio < 0.40:
             lines.append(
                 f"- type_token_ratio={report.type_token_ratio:.2f} "
-                "(alvo >= 0.45). Vocabulario restrito — substitua termos "
-                "repetidos por sinonimos do mesmo registro."
+                "(referencia >= 0.45). Vocabulario restrito por repeticao de "
+                "construcoes de apoio. Acrescente informacao concreta (dado, caso, "
+                "consequencia) ou reformule a construcao. PROIBIDO trocar o termo "
+                "tecnico canonico por sinonimo."
             )
         if report.repetition_score > 0.10:
             lines.append(
                 f"- repetition_score={report.repetition_score:.2f} "
-                "(alvo <= 0.08). Bigramas boilerplate em excesso — varie "
-                "construcoes que se repetem ('temos que', 'e importante')."
+                "(referencia <= 0.08). Bigramas boilerplate em excesso: varie as "
+                "construcoes-molde que se repetem ('temos que', 'e importante', "
+                "'isso significa que') mantendo a terminologia tecnica."
             )
         if report.sentences_short == 0:
             lines.append(
-                "- ZERO frases curtas (<=6 palavras). Adicione 1-2 por secao."
+                "- nenhuma sentenca curta (<=6 palavras) no modulo inteiro. "
+                "Verifique se algum fechamento de bloco ganharia forca em frase "
+                "seca; se nenhum ganhar, deixe como esta."
             )
         if not lines:
             lines.append("- score ja satisfatorio; reescrita marginal apenas.")

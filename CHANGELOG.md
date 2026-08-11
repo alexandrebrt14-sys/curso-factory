@@ -6,6 +6,18 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
+### Corrigido / Qualidade — Diretriz editorial v3: narrativa obrigatória, fim das cotas mecânicas (2026-08-11)
+
+O curador reportou queda de qualidade nos textos gerados pelo pipeline. A causa não era falta de regra, era o tipo de regra: as instruções de estilo tinham virado aritmética, e o que era medida de diagnóstico virou fórmula de produção. Detalhe do diagnóstico em [`wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`](wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md).
+
+- **`DIRETRIZ_EDITORIAL.md` v3** — nova §3 (narrativa: abertura em situação, tensão antes da solução, caso condutor, promessa cumprida, fechamento com callback, mostrar em vez de qualificar); §4.7 veta cota mecânica de ritmo; §6 recoloca tabela, matriz de decisão e checklist como ferramentas obrigatórias quando há comparação, escolha ou passo verificável, separando o que é trabalho de prosa do que é trabalho de estrutura; §9 explica como cápsula de resposta para motores generativos convive com abertura narrativa. A diretriz passa a ser fonte única, com prompts e resumos subordinados.
+- **`GUIA_ESCRITA_HUMANIZADA.md`** — seção 3 nova (tabela das seis técnicas narrativas com exemplo antes e depois), seção 2 reescrita com o contraexemplo de staccato, seção 8 passa a listar cota de ritmo entre as modinhas sem evidência.
+- **Prompts do pipeline** (`draft.md`, `review.md`, `humanize.md` em `pt-br/`, raiz, `en/` e `es/`) — removidas as regras "uma frase de 6 palavras ou menos em CADA parágrafo", "nunca duas frases consecutivas na mesma faixa de comprimento", "parágrafo com no máximo 5 linhas", "sub-heading a cada 2-3 parágrafos" e "nunca mais de 3 parágrafos sem elemento visual". Entraram seções de narrativa, de ritmo diagnóstico e de estruturas vetadas (travessão, antítese em série, tríade de ritmo, conclusão-espelho, anglicismos de pontuação, vícios de português de LLM). Os exemplos internos dos prompts foram corrigidos, porque ensinavam travessão pelo exemplo enquanto o texto proibia.
+- **`humanizer.py`** — `_build_diagnostic` deixou de mandar "adicione 1-2 frases curtas por seção" e "substitua termos repetidos por sinônimos" (esta última contradizia a regra de coerência terminológica do próprio `draft.md`); agora aponta o trecho uniforme e manda reescrever a estrutura. Fallback inline alinhado.
+- **`stylometry_checker.py`** — mensagens de erro e aviso reescritas: a métrica continua sendo medida e reportada, mas deixou de instruir cota. O aviso de "zero frases curtas" virou sinal para inspecionar, não ordem para inserir.
+- **`content_checker.py` / `voice_guard.py` / `quality_rules.yaml`** — teto de parágrafo de 5 para 8 linhas, com a constante única `MAX_PARAGRAPH_LINES` espelhada no YAML; a mensagem pede verificação de assunto duplo em vez de quebra automática.
+- **`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`** — três blocos editoriais sobrepostos e divergentes viraram um, apontando para a diretriz; `writer.py` e `reviewer.py` tiveram os fallbacks inline alinhados.
+
 ### Corrigido / Qualidade — Onda de hardening + tooling de lint (2026-06-08)
 
 Revisão transversal do código de produção (auditoria multiagente: arquitetura, robustez, testes, docs, segurança/FinOps) seguida de correções cirúrgicas de alto valor e baixo risco. Suíte: **232 → 245 passing** (+13), zero regressões.

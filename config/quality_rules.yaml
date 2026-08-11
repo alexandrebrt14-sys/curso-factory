@@ -42,7 +42,10 @@ validation:
     min_blockquotes_per_module: 1
     min_exercises_per_module: 3
     min_bold_terms_per_module: 3
-    max_paragraph_lines: 5
+    # Teto folgado: parágrafo desenvolvido é requisito editorial
+    # (DIRETRIZ_EDITORIAL.md §2 e §6). Espelhado em
+    # src/validators/content_checker.py::MAX_PARAGRAPH_LINES.
+    max_paragraph_lines: 8
 
   # Padrão editorial HSM/HBR/MIT Sloan
   editorial_style:

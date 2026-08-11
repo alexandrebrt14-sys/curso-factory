@@ -81,12 +81,12 @@ The content is rendered by a `FormattedText` component that interprets specific 
 
 **Required checks:**
 - **Comparative tables**: at least ONE per module. Format: rows with pipes separated by `\n`. If missing, ADD.
-- **Frequent sub-headings**: every 2–3 paragraphs there should be a sub-heading (line ending with `:`). They build visual hierarchy and ease scanning. If long blocks lack headings, BREAK them with sub-headings.
-- **Bold**: for key terms and concepts on FIRST occurrence using `**term**`. If missing, ADD.
-- **Blockquotes**: at least 1–2 per module for central insights using `> `. If missing, ADD.
-- **Format alternation**: never more than 3 consecutive paragraphs without a visual element (table, list, blockquote, or sub-heading). If you find monotonous blocks, BREAK them with visual elements.
+- **Sub-headings**: they enter when the subject changes, with text that announces what the next part actually covers. There is no quota per number of paragraphs. If the module carries a sub-heading every two paragraphs, the reasoning was sliced before it finished: MERGE the blocks that deal with the same subject.
+- **Bold**: for key terms and concepts on FIRST occurrence using `**term**`. If missing, ADD. If bold appears out of habit on ordinary words, REMOVE it, because emphasis in excess cancels emphasis.
+- **Blockquotes**: 1–2 per module for central insights using `> `. If missing, ADD; if there are more than three, convert the surplus into prose.
+- **Balance between prose and structure**: prose carries reasoning; tables, checklists, and numbered lists carry comparison, verification, and sequence. Convert into prose the lists whose items stand in a relationship of cause to each other, and the strings of "bold term: explanation". Convert into a table or a checklist the paragraphs that are enumerating comparable criteria or verifiable steps.
 - **Lists with `-- `**: confirm they use `-- ` (two hyphens), NEVER `- ` (single hyphen).
-- **Paragraphs**: max 5 lines each, one central idea per paragraph. Break long paragraphs.
+- **Paragraphs**: one central idea each, developed until the idea reaches its end. Break the ten-line block that covers two subjects; join the run of one-sentence paragraphs that slices a single line of reasoning.
 - **FORBIDDEN**: emojis anywhere in the content
 
 ### 3.5. Anti-"AI tells" audit (Humanizer 2.6.2) — NEW LAYER
@@ -114,6 +114,22 @@ Sweep the text and CORRECT each occurrence of the 21 patterns of artificial writ
 19. AI-worn "pretty" words ("strategic", "journey", "leverage", "robust", "dynamic", "excellence") → remove when they measure nothing
 20. Excessive nominalization ("implementation", "utilization", "operationalization") → use the verb
 21. Absence of authorial voice in genres that require an opinion → add a clear analytical angle
+
+### 3.55. Banned structures, rhythm, and narrative (`DIRETRIZ_EDITORIAL.md`)
+
+Normative source: `DIRETRIZ_EDITORIAL.md` at the repository root, sections 3, 4, 5, and 6. Correct actively:
+
+**Banned structures and punctuation:**
+- The em dash as a stylistic device, meaning the dramatic pause or the dropped-in aside, anywhere in the module, headings, tables, and exercises included. This is a house rule of this repository. Rewrite with a comma, a colon, parentheses, or two sentences. The en dash stays only in numeric ranges.
+- The negate-to-affirm construction ("this isn't X, it's Y", "it's not just X, it's Y", "X alone won't do, you need Y", "more than X, it's Y"). Tolerate one occurrence per module at most and rewrite the rest as direct assertions.
+- Mechanical rule of three: triads of adjectives, benefits, or examples deployed as rhythm. Cut to two or expand to the real number of items.
+- The mirror conclusion that restates the opening without adding a consequence, and the pseudo-profound closer. Replace with the concrete consequence or the next step.
+- Title case in headings: house convention is sentence case, capitalizing the first word and proper nouns only. The Oxford comma is standard American usage and stays; do not remove it.
+- Vocabulary tics of AI-generated English: "delve into", "a testament to", "tapestry", "in the realm of", "navigate the complexities of", "ever-evolving landscape", "utilize" where "use" works, "leverage" as a verb where "use" works.
+
+**Rhythm:** take blocks of ten sentences and compare the longest with the shortest. A gap under 15 words points to machine uniformity and calls for a rewrite of that passage, letting the content govern the length. The opposite defect gets fixed too: a run of short filler sentences, one per paragraph, is headline staccato and must be merged into periods that hold up the reasoning. Never apply a short-sentence quota or programmed alternation.
+
+**Narrative:** check whether the module opens on a concrete situation with explicit tension (rather than on a definition or a generic scenario), whether the promise of the opening is paid off in the body, whether a case runs through the argument, and whether the synthesis returns to that case showing what changed. If the opening is generic, REWRITE it using the strongest data point or case already present in the module; if the synthesis merely repeats what was said, REWRITE it as consequence and next step. Do not invent a case: if the material is not there, mark `[MISSING EVIDENCE: real case to open the module]`.
 
 ### 3.6. Flagging missing substance (Humanizer 2.6.2)
 

@@ -46,9 +46,11 @@ herdar ou customizar em `config/clients/<id>/client.yaml`.
 - 1+ tabela comparativa por módulo (markdown com pipes).
 - 3+ exercícios com contexto profissional real e progressão
   [[taxonomia-bloom]].
-- Sub-headings (linha terminando com `:`) a cada 2-3 parágrafos.
+- Sub-headings (linha terminando com `:`) quando o assunto muda, sem cota
+  por número de parágrafos (revisado em 11/08/2026; ver
+  [[diretriz-editorial-v3-narrativa-sem-cota]]).
 - Negrito em termos-chave na primeira ocorrência (`**termo**`).
-- Blockquotes (`> `) para insights centrais — 1-2 por módulo.
+- Blockquotes (`> `) para insights centrais, 1-2 por módulo.
 - Bullets com `-- ` (dois hífens), nunca `- `.
 - 2.500-4.000 palavras por módulo.
 

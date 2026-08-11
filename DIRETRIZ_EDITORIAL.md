@@ -1,6 +1,6 @@
 # Diretriz Editorial Permanente
 
-Versão 2, de 23 de julho de 2026, revisada com base em pesquisa publicada entre junho e julho de 2026 sobre marcadores de texto sintético, técnicas de humanização e escrita para motores generativos. O anexo prático `GUIA_ESCRITA_HUMANIZADA.md`, na raiz deste repositório, traz exemplos antes e depois, heurísticas mensuráveis e as fontes da pesquisa.
+Versão 3, de 11 de agosto de 2026. A versão 2 (23 de julho de 2026) foi revisada depois que o curador constatou queda de qualidade nos conteúdos produzidos sob as regras então vigentes. O diagnóstico apontou quatro causas: cotas mecânicas de cadência nos prompts do pipeline, cotas de formatação que fragmentavam e uniformizavam os textos, camadas de orientação contraditórias acumuladas e ausência completa de técnica narrativa. Esta versão corrige as quatro: instala o storytelling como obrigação editorial (seção 3), veta cota mecânica de ritmo (seção 4), recoloca a estrutura visual a serviço da leitura e da decisão (seção 6) e passa a ser a fonte única do padrão, à qual prompts e demais documentos devem se subordinar. O anexo prático `GUIA_ESCRITA_HUMANIZADA.md`, na raiz deste repositório, traz exemplos antes e depois, heurísticas mensuráveis e as fontes da pesquisa.
 
 Este documento define o padrão editorial, técnico e comportamental deste repositório. Ele vale para todo agente de IA (Claude Code, Codex, Gemini CLI e equivalentes) e para todo colaborador que produza texto, documentação, cursos, relatórios, código ou artefatos aqui. Quando houver conflito entre velocidade e qualidade, prevalece a qualidade. Quando houver conflito entre uma convenção genérica e uma convenção explícita deste repositório, prevalece a do repositório, desde que isso não comprometa segurança, corretude ou requisitos informados pelo usuário.
 
@@ -16,11 +16,24 @@ Tipografia à brasileira, porque o padrão inglês em texto português é marca 
 
 Desenvolva sempre uma linha de raciocínio lógica, com a conclusão antes da sustentação. Cada parágrafo deve acrescentar uma ideia nova; se um parágrafo apenas repete o anterior com outras palavras, ele deve ser cortado. Respostas infladas para parecer completas são um defeito, e respostas rasas diante de problemas complexos também. A profundidade certa é proporcional à complexidade do problema.
 
-Explique causas, consequências, alternativas, riscos, benefícios, limitações e critérios de decisão sempre que forem relevantes. Quando existir mais de uma solução possível, compare as alternativas, explicite os critérios usados para escolher entre elas e indique em quais cenários cada abordagem funciona melhor.
+Explique causas, consequências, alternativas, riscos, benefícios, limitações e critérios de decisão sempre que forem relevantes. Quando existir mais de uma solução possível, compare as alternativas, explicite os critérios usados para escolher entre elas e indique em quais cenários cada abordagem funciona melhor. Uma matriz de decisão ou tabela comparativa costuma ser a forma mais honesta de registrar essa comparação: critérios nas linhas, alternativas nas colunas, e a recomendação justificada na prosa que a acompanha.
 
 Toda atribuição é nomeada. Fórmulas como "especialistas apontam" e "estudos mostram" sem fonte identificável são um dos marcadores mais documentados de texto sintético e estão vetadas: diga qual estudo, de quem, de quando. Números vêm com fonte e data; número sem proveniência verificável não entra no texto.
 
-## 3. Humanização da escrita
+## 3. Narrativa e engajamento
+
+Profundidade que ninguém lê não ensina nada. O texto precisa prender o leitor pelo interesse, nunca pelo artifício, e as técnicas que sustentam isso em publicação de negócios de alto nível são conhecidas. As seis abaixo são obrigatórias em conteúdo de leitura humana com mais de algumas centenas de palavras (artigo, aula, landing page, capítulo, post longo):
+
+1. Abertura em situação, não em definição. Comece por uma cena concreta, um caso, um número que contraria a expectativa ou uma decisão difícil que o leitor reconhece da própria rotina. A definição chega depois, quando o leitor já sabe por que precisa dela. Abrir com "X é..." ou com cenário genérico desperdiça a frase mais lida do texto.
+2. Tensão real antes da solução. Antes de apresentar a resposta, deixe claro o que está em jogo: o custo de errar, o ganho de acertar, o prazo que aperta, com dado quando houver. Solução sem tensão chega como catálogo.
+3. Caso condutor. Quando houver material, conduza o argumento por um caso nomeado (empresa, projeto, situação) que atravessa o texto e reaparece nos exemplos. Caso real vem de fonte verificável; cenário hipotético é sinalizado como tal; caso inventado apresentado como real é defeito grave (regra de proveniência da seção 8).
+4. Loop aberto honesto. A abertura promete algo que o texto entrega de verdade, e o leitor percebe a promessa sendo cumprida. Curiosity gap fabricado ("o que descobrimos vai te surpreender") é isca, não narrativa, e está vetado.
+5. Fechamento com callback. O final retoma o caso ou a tensão da abertura e mostra a resolução que o desenvolvimento construiu. Isso substitui o parágrafo-recap proibido na seção 5: em vez de repetir o que foi dito, o fechamento mostra o que mudou.
+6. Mostrar antes de qualificar. Em vez de afirmar que algo é grave, transformador ou urgente, mostre o prejuízo, o ganho ou o prazo em número e consequência. O leitor conclui a gravidade sozinho, e conclusão própria persuade mais que adjetivo alheio.
+
+O limite é o mesmo de toda técnica: a história serve ao argumento. Drama fabricado, suspense artificial e anedota que não sustenta a tese saem do texto junto com os clichês. Quando a história e a tese competem, corta-se a história.
+
+## 4. Humanização da escrita
 
 A pesquisa de 2026 mostra que a detecção de texto de IA migrou do vocabulário isolado para padrões estruturais: uniformidade de ritmo, simetria de parágrafos e fórmulas de abertura e fechamento persistem mesmo nos modelos mais recentes. As regras a seguir atacam esses padrões na origem.
 
@@ -30,8 +43,9 @@ A pesquisa de 2026 mostra que a detecção de texto de IA migrou do vocabulário
 4. Nada de clichês nem frases genéricas que caberiam em qualquer assunto. Aberturas de cenário ("no cenário atual em constante evolução"), meta-comentário ("nesta seção veremos") e parágrafo final que apenas resume o que acabou de ser dito devem ser cortados.
 5. Exemplos devem ser concretos, nomeados e plausíveis. Tenha opinião e assuma posição quando o assunto pedir; neutralidade relutante e hedging uniforme em todas as afirmações são marcas de máquina, não de prudência.
 6. O tom é o de um especialista experiente conversando com outro profissional experiente: sem promoção, sem entusiasmo excessivo, sem adjetivos desnecessários. Precisão vale mais que ênfase.
+7. Nenhuma cota mecânica de ritmo, nunca. Regras do tipo "uma frase curta em cada parágrafo" ou "nunca duas frases seguidas do mesmo tamanho" produzem um staccato de manchete que os catálogos de detecção listam como assinatura de máquina tanto quanto a uniformidade que pretendiam corrigir; foi o principal cacoete introduzido pela geração anterior deste pipeline. O diagnóstico de amplitude do item 1 mede o texto pronto e aponta onde reescrever; ele nunca vira fórmula de produção, contagem de palavras durante a escrita ou alternância programada.
 
-## 4. Estruturas proibidas
+## 5. Estruturas proibidas
 
 Os padrões abaixo estão documentados em catálogos de 2026 como assinaturas de texto gerado por modelo. Nenhum deles pode aparecer como padrão recorrente; a maioria não deve aparecer nunca.
 
@@ -43,13 +57,15 @@ Os padrões abaixo estão documentados em catálogos de 2026 como assinaturas de
 - Gerúndio analítico vago encerrando frases: "contribuindo para", "promovendo", "impulsionando".
 - Perguntas retóricas repetidas, conclusões idênticas em tópicos sucessivos e excesso de paralelismo sintático.
 
-## 5. Pontuação e estilo
+## 6. Pontuação, estilo e estrutura visual
 
 Não use travessão. Em 2026 os modelos aprenderam a evitá-lo quando instruídos, e a frequência dele deixou de ser um detector confiável; a regra desta casa permanece por outra razão: quase sempre existe construção mais fluida com vírgulas, parênteses ou duas frases. Não use hífen como recurso estilístico. A pontuação é a tradicional, sem vírgula antes do "e" em enumeração simples (a vírgula de Oxford é anglicismo) e nunca entre sujeito e verbo.
 
-Formatação tem orçamento. Negrito só quando contribuir de fato para a leitura; destacar palavras por hábito dilui o destaque de todas. Listas só quando a informação for genuinamente enumerável; quando houver relação de causa ou narrativa entre os itens, escreva prosa. No máximo uma analogia por texto. Bullets no padrão "termo em negrito: explicação" repetidos em série devem ser convertidos em prosa.
+Formatação tem orçamento, e o orçamento existe para proteger o destaque do que merece destaque. Negrito só em termos que o leitor precisará reencontrar ao escanear a página; destacar palavras por hábito dilui o destaque de todas. No máximo uma analogia por texto.
 
-## 6. Vícios de português gerado por IA
+Elementos estruturados são ferramentas de consultoria, não enfeite, e devem ser usados sempre que organizarem informação genuinamente comparável, sequencial ou verificável: tabela comparativa quando há alternativas com critérios, matriz de decisão quando o leitor precisa escolher, checklist quando há passos verificáveis, lista numerada quando a ordem importa, fluxo de trabalho quando há processo, resumo executivo quando o documento é longo o bastante para ser lido em dois níveis. Um profissional decide mais rápido com uma matriz bem construída do que com três parágrafos de prosa equivalente. A proibição atinge outra coisa: lista que substitui argumentação, bullets que escondem relação de causa entre os itens (esses viram prosa), série de "termo em negrito: explicação" como esqueleto de seção e o texto inteiro fatiado em fragmentos escaneáveis sem um parágrafo desenvolvido. Prosa carrega raciocínio; estrutura carrega comparação, sequência e verificação. Cada formato faz o seu trabalho, e nenhum dos dois entra por cota.
+
+## 7. Vícios de português gerado por IA
 
 Modelos escrevendo português do Brasil produzem vícios próprios, na maioria calques do inglês. Os principais, com o conserto:
 
@@ -59,36 +75,37 @@ Modelos escrevendo português do Brasil produzem vícios próprios, na maioria c
 - Adjetivos vazios e vocabulário etéreo: "robusto", "crucial", "fascinante", "transformador", "disruptivo", "jornada", "essência", "mergulhar em", "abordagem holística". O conserto nunca é o sinônimo; é substituir o adjetivo pelo dado, pelo número ou pela consequência que o justificaria.
 - Voz passiva e nominalização em cadeia: "foi realizada a implementação da solução" vira "implementamos a solução". Ordem direta como norma, passiva só quando o agente é irrelevante ou desconhecido.
 
-## 7. Profundidade técnica e honestidade de proveniência
+## 8. Profundidade técnica e honestidade de proveniência
 
 Ao explicar um conceito técnico, cubra o que for pertinente entre contexto, motivação, funcionamento, benefícios, limitações, impactos, boas práticas, erros comuns e critérios de decisão. Toda recomendação vem acompanhada do seu motivo; regra sem porquê não ensina e não convence.
 
 O que só o autor humano pode fornecer não se inventa. Quando o texto pedir um caso vivido, um número proprietário ou uma posição de negócio que o agente não tem como saber, o agente deixa o marcador `[PREENCHER-HUMANO: descrição do que falta]` no lugar, em vez de fabricar experiência. Texto com dado inventado é defeito grave, não rascunho aproveitável.
 
-## 8. Escrita para leitores e para motores generativos
+## 9. Escrita para leitores e para motores generativos
 
 Os sites deste ecossistema precisam ser citáveis por motores de busca generativos sem soar sintéticos para leitores humanos. A pesquisa de 2026 (incluindo o guia oficial do Google de maio de 2026) indica que essa tensão é menor do que parece: o que determina citação é relevância e evidência extraível, que a boa prosa também exige. As regras de conciliação:
 
-- Abra cada seção com uma cápsula de resposta autossuficiente: uma ou duas frases declarativas que respondem a pergunta do título, com a entidade e um dado. Depois desenvolva com voz, opinião e contexto. Enterrar a resposta sob abertura anedótica prejudica leitor e máquina.
+- Abra cada seção interna com uma cápsula de resposta autossuficiente: uma ou duas frases declarativas que respondem a pergunta do título, com a entidade e um dado. Depois desenvolva com voz, opinião e contexto. Enterrar a resposta sob abertura anedótica prejudica leitor e máquina.
+- A cápsula convive com a narrativa, e a divisão de trabalho é clara: a abertura do texto inteiro (o lede) usa as técnicas da seção 3 para prender o leitor; as seções internas, com headings que são perguntas reais, abrem com resposta direta. Um artigo pode instalar tensão na abertura e ainda assim entregar resposta extraível em cada H2.
 - Dados proprietários, datados e com metodologia valem mais que dez listas. Um número seu, com data e fonte, é o diferencial de citação com melhor evidência.
 - Demonstre experiência de primeira mão no próprio texto: o caso concreto, com quando e o que mudou, e não só afirmações de autoridade.
 - Não fragmente o texto artificialmente para "facilitar para a IA": os sistemas extraem a passagem relevante de páginas multitópico. Headings que são perguntas reais do público e seções que se sustentam sozinhas bastam.
 - Reescrita mecânica "para citação" e publicação de IA em massa sem revisão editorial destroem os dois públicos ao mesmo tempo; conteúdo em escala sem valor é alvo declarado de rebaixamento desde março de 2026.
 
-## 9. Aprendizado a partir do repositório
+## 10. Aprendizado a partir do repositório
 
 Trate este repositório como fonte de conhecimento para o trabalho nele. Analise arquitetura, organização, documentação, convenções, padrões de código, decisões registradas (READMEs, ADRs, guias de contribuição, especificações) e fluxos de trabalho, e use esse conhecimento para manter consistência em tudo o que produzir. Convenção explícita do projeto prevalece sobre convenção genérica, com a única ressalva de segurança e corretude.
 
-## 10. Conteúdo educacional
+## 11. Conteúdo educacional
 
-Documentação, tutoriais, cursos e materiais de aprendizagem começam pelo problema que será resolvido e pelo motivo de aquele conhecimento importar. Conecte o tema a situações reais, apresente exemplos completos, use estudos de caso quando fizer sentido, proponha exercícios contextualizados e feche com uma síntese prática que o leitor consiga aplicar.
+Documentação, tutoriais, cursos e materiais de aprendizagem começam pelo problema que será resolvido e pelo motivo de aquele conhecimento importar, e a seção 3 vale integralmente aqui: o problema chega como situação concreta, com tensão e custo, antes da teoria que o resolve. Conecte o tema a situações reais, apresente exemplos completos, use estudos de caso quando fizer sentido, proponha exercícios contextualizados e feche com uma síntese prática que o leitor consiga aplicar, retomando o caso da abertura quando houver um.
 
-## 11. Código
+## 12. Código
 
 Código limpo e legível, com nomes consistentes e sem complexidade desnecessária. Decisões arquiteturais relevantes são explicadas. Sugestões de refatoração vêm com os ganhos esperados. Comentários existem para registrar restrições que o código não consegue mostrar, nunca para narrar o óbvio.
 
-## 12. Fluxo de revisão obrigatório
+## 13. Fluxo de revisão obrigatório
 
-Antes de entregar qualquer texto, revise em três passadas, nesta ordem, porque polir frase antes de consertar estrutura desperdiça a passada: primeiro substância (fatos, datas, fontes, se o texto responde a pergunta central e se há dado inventado ou marcador `[PREENCHER-HUMANO]` pendente); depois estrutura (organização, seções redundantes, simetria artificial, parágrafo-recap); por último linguagem, contra a lista deste documento: ritmo dos períodos, aberturas de parágrafo, conectivos, estruturas proibidas da seção 4, vícios de português da seção 6, orçamento de formatação.
+Antes de entregar qualquer texto, revise em três passadas, nesta ordem, porque polir frase antes de consertar estrutura desperdiça a passada: primeiro substância (fatos, datas, fontes, se o texto responde a pergunta central e se há dado inventado ou marcador `[PREENCHER-HUMANO]` pendente); depois estrutura (organização, arco narrativo da seção 3, seções redundantes, simetria artificial, parágrafo-recap, e se a abertura prende e o fechamento retoma); por último linguagem, contra a lista deste documento: ritmo dos períodos, aberturas de parágrafo, conectivos, estruturas proibidas da seção 5, vícios de português da seção 7, orçamento de formatação da seção 6.
 
-Dois testes baratos fecham a revisão: a leitura em voz alta (frase que trava a língua trava o leitor) e o teste do bloco de dez frases da seção 3. O conserto de um trecho reprovado é a reescrita da estrutura, nunca a troca de palavras por sinônimos, que mantém o ritmo sintético e cria um cacoete novo. Um texto que precisa ser relido para ser entendido desperdiça o tempo que a concisão fingiu economizar.
+Dois testes baratos fecham a revisão: a leitura em voz alta (frase que trava a língua trava o leitor) e o teste do bloco de dez frases da seção 4. O conserto de um trecho reprovado é a reescrita da estrutura, nunca a troca de palavras por sinônimos, que mantém o ritmo sintético e cria um cacoete novo. Um texto que precisa ser relido para ser entendido desperdiça o tempo que a concisão fingiu economizar.

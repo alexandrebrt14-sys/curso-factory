@@ -44,6 +44,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from src.validators.content_checker import (
+    MAX_PARAGRAPH_LINES,
     _check_bloom_objectives,
     _check_cliches,
 )
@@ -243,10 +244,13 @@ def _score_hbr_style(
     for para in text.split("\n\n"):
         if para.strip().startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
             continue
-        if len(para.strip().split("\n")) > 5:
+        if len(para.strip().split("\n")) > MAX_PARAGRAPH_LINES:
             long_paragraphs += 1
     if long_paragraphs > 0:
-        avisos.append(f"{long_paragraphs} paragrafo(s) com mais de 5 linhas")
+        avisos.append(
+            f"{long_paragraphs} paragrafo(s) com mais de {MAX_PARAGRAPH_LINES} "
+            "linhas: verifique se algum empilha dois assuntos"
+        )
         score -= long_paragraphs * 10
 
     return max(0, score), erros, avisos
