@@ -6,6 +6,22 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
+### Adicionado — Contrato de geração com bloco visual e cobrança da régua (2026-08-17, PR #67)
+
+A doutrina do PR #66 virou código. Até aqui o gerador emitia cinco tipos de bloco, todos de prosa ou código, e nenhum contava como peça visual: curso gerado pelo caminho padrão nascia reprovado na própria régua da casa.
+
+- **Seis tipos visuais no contrato:** `figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide` e `timeline`, exatamente os que o portão `gate-peso-visual.mjs` da landing conta. `figure` leva a imagem em `value` e a legenda em `label`; os outros cinco levam a estrutura em `data`. O modelo recusa bloco que sairia vazio (payload ausente, linha de tabela com tamanho diferente do cabeçalho, figura sem legenda), porque o motor da landing degrada bloco sem carga para nada, sem erro e sem console.
+- **Quatro lugares que mudam sempre juntos** ao criar ou alterar tipo: `src/models.py` (enum e conjuntos `VISUAL_SECTION_TYPES`/`PAYLOAD_SECTION_TYPES`), `src/schemas/course.schema.json` (mesmo enum, com regra condicional de payload por tipo), `src/templates/page.tsx.j2` (o `switch (section.type)`) e o filtro `js_json` de `src/generators/tsx_generator.py` (serialização da carga). Mexer em um só produz bloco que o validador aceita e a página não desenha, ou o contrário.
+- **Promoção automática no parser:** tabela em Markdown vira `dataTable`, lista numerada de passos vira `stepGuide` sob critério conservador, imagem com legenda vira `figure`. Carga que não bate mantém o conteúdo como `text` em vez de deixar a exceção subir. `comparison`, `statGrid` e `timeline` **não** são promovidos, por decisão: nenhuma construção de Markdown os sinaliza sem ambiguidade, e promover errado é pior que não promover. Entram por autoria explícita.
+- **`visual_density` deixou de ser declarativa.** `src/validators/visual_density.py` lê a camada do `config/quality_rules.yaml` e `TsxGenerator.render_page` a cobra antes de renderizar: módulo reprovado levanta `VisualDensityError` e o curso não chega a virar arquivo. Nenhum dos três limites existe como constante em código. Legado passa com `cobrar_peso_visual=False`, que rebaixa todo achado a aviso no log.
+- **`content_checker.MAX_PARAGRAPH_LINES` passou a ler o YAML.** Era constante com um comentário pedindo sincronia manual, e o número já tinha subido de 5 para 8 no arquivo sem o código saber. `voice_guard.py` herda o valor pelo mesmo import.
+- **Dois defeitos consertados de raspão:** o prompt do redator mandava formatar tabela como **uma única linha**, o que impedia qualquer promoção a `dataTable`; e a expressão que reconhece cerca de código não casava em arquivo com quebra CRLF.
+
+### Adicionado — Doutrina visual dos cursos gerados (2026-08-17, PR #66)
+
+- **[`docs/DOUTRINA_VISUAL_CURSOS.md`](docs/DOUTRINA_VISUAL_CURSOS.md):** três limites verificáveis por máquina para todo curso novo: nenhum parágrafo acima de 1.200 caracteres (medida de tela, o que cabe num celular de 390 pontos sem rolagem interna), ao menos três blocos visuais por módulo e ao menos um bloco visual a cada 2.500 caracteres de prosa. O documento registra o caso que motivou a régua (`motor-de-crescimento-ia` publicado com 114 blocos de prosa acima do teto, o maior com 3.492 caracteres, e nenhuma figura, aprovado por todos os portões existentes) e a varredura do acervo, em que 26 dos 52 cursos medidos não tinham um único bloco visual.
+- **`DIRETRIZ_EDITORIAL.md` §11.1:** forma curta e normativa da doutrina, para quem lê a diretriz e não o documento longo.
+
 ### Corrigido / Qualidade — Diretriz editorial v4: prova antes da escrita, promessa antes do esqueleto, config que finalmente é lida (2026-08-11)
 
 Segunda rodada do mesmo dia, com a doutrina completa do curador aplicada de ponta a ponta e um achado de governança que explica parte do problema original.
