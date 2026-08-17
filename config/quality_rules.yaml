@@ -59,6 +59,59 @@ validation:
     # src/validators/content_checker.py::MAX_PARAGRAPH_LINES.
     max_paragraph_lines: 8
 
+  # Camada 2b: Densidade visual (DIRETRIZ_EDITORIAL.md §11.1 e
+  # docs/DOUTRINA_VISUAL_CURSOS.md). Instalada em 17/08/2026, depois de o curso
+  # motor-de-crescimento-ia ir ao ar com 114 blocos de prosa acima de 1.200
+  # caracteres e nenhuma figura, aprovado por todos os portões da casa porque
+  # nenhum deles mede peso de bloco.
+  #
+  # DECLARATIVA HOJE: nenhum validador lê esta seção. O rules_loader.py carrega
+  # o YAML inteiro, mas só forbidden_expressions.expressions e anti_invencao são
+  # consumidos em runtime. Aplicar de verdade exige um checador novo que conte
+  # parágrafos e blocos por módulo. Até lá, quem cobra é o portão da landing
+  # (node scripts/gate-peso-visual.mjs <slug>).
+  visual_density:
+    enabled: true
+    # Obrigatória e integral para curso novo. Para o acervo já publicado a régua
+    # entra por linha de base congelada: a dívida registrada só pode diminuir.
+    required_for_new_course: true
+    # Teto do PARÁGRAFO, não do bloco: um bloco de prosa com três parágrafos
+    # separados por linha em branco responde por cada um deles isoladamente.
+    # 1.200 é o que cabe num celular de 390 pontos sem rolagem interna.
+    max_paragraph_chars: 1200
+    min_visual_blocks_per_module: 3
+    # Um bloco visual a cada 2.500 caracteres de prosa do módulo. Módulo curto
+    # com 3 figuras passa; módulo de 20 mil caracteres com 3 figuras não.
+    chars_per_visual_block: 2500
+    # Tipos que CONTAM como bloco visual. Ilustração e diagrama quebram parede
+    # de verdade; estrutura organiza o que já era comparável ou sequencial;
+    # o terceiro grupo divide conteúdo longo sem perder profundidade.
+    visual_block_types:
+      - figure
+      - dataTable
+      - comparison
+      - matrix
+      - statGrid
+      - timeline
+      - flow
+      - checklist
+      - glossary
+      - accordion
+      - template
+      - useCase
+      - tabs
+      - slides
+      - tipCard
+      - stepGuide
+      - codeDownload
+    # Aparato, não respiro: NÃO contam como bloco visual. sourceNote é registro
+    # de procedência em corpo reduzido e não conta nem como paredão nem como
+    # alívio; quem mede pelo DOM filtra pela cadeia de ancestrais.
+    non_visual_types:
+      - code
+      - prompt
+      - sourceNote
+
   # Padrão editorial HSM/HBR/MIT Sloan
   editorial_style:
     reference_publications:
