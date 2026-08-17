@@ -122,6 +122,9 @@ Mudanças aplicadas datadas de abril/2026 — refactors (multi-tenant, 5 waves),
 ### Frontend — layout, UX, animação, contraste (LEIA ANTES de mexer em template visual)
 Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GERADOR, corrija sempre no TEMPLATE para que todo curso gerado herde a prática. Cobre: layout/UX/navegabilidade de conteúdo longo, régua de stacks premium 2026, **REGRA inviolável de contraste WCAG AA nos dois temas** (dark/light; spans inline; `pre` com fundo escuro fixo), **parágrafos justificados** (`text-justify`), **animação à prova de falha** (nunca esconder dependendo de JS; CSS `fill:both`; `prefers-reduced-motion`), **auditoria da SAÍDA renderizada** (dois temas, transições mortas, cache-bust, iterar até zerar) e catálogo de **erros frequentes** (inclui acentuação em geração longa). Defeito no template multiplica por todos os cursos — pegue cedo.
 
+### Peso visual do curso gerado (LEIA ANTES de gerar curso)
+Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**, com a forma curta e normativa na §11.1 da `DIRETRIZ_EDITORIAL.md`. Cobra três limites verificáveis por máquina: nenhum parágrafo acima de 1.200 caracteres, ao menos três blocos visuais por módulo e ao menos um bloco visual a cada 2.500 caracteres de prosa. **O que mudou no gerador:** o contrato de geração passou a emitir seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), declarados sempre nos mesmos quatro lugares (`src/models.py`, `src/schemas/course.schema.json`, `src/templates/page.tsx.j2` e o filtro `js_json` de `src/generators/tsx_generator.py`); o parser promove sozinho tabela, lista numerada de passos e imagem com legenda; e a camada `visual_density` do `config/quality_rules.yaml` deixou de ser declarativa e é cobrada dentro de `TsxGenerator.render_page`. Curso que nasce como coluna de texto **não chega a virar arquivo**: a cobrança levanta `VisualDensityError` antes da renderização. Curso legado atravessa com `cobrar_peso_visual=False`, com os achados só no log.
+
 ### Idioma
 - TODO texto de curso DEVE ser em Português do Brasil com acentuação completa
 - NUNCA: "nao", "voce", "producao" — SEMPRE: "não", "você", "produção"
@@ -283,7 +286,8 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 ## Estrutura de Arquivos
 
 - config/courses.yaml — definição dos cursos
-- config/quality_rules.yaml — regras de qualidade
+- config/quality_rules.yaml — regras de qualidade (inclui a camada `visual_density`, cobrada em runtime)
+- docs/DOUTRINA_VISUAL_CURSOS.md — doutrina de peso visual: tetos, os seis tipos de bloco e os quatro lugares que mudam juntos
 - src/agents/ — um agente por LLM (carrega prompt de templates/prompts/)
 - src/templates/prompts/ — prompts externos de alta densidade (.md)
 - src/templates/ — templates Jinja2 para TSX (NUNCA heredoc)
