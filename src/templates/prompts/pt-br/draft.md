@@ -225,29 +225,52 @@ Exemplo de profundidade esperada:
 - Se o tema envolver código, comandos ou fórmulas, apresente em blocos de código bem comentados
 - Inclua uma **tabela de decisão** ou **framework de análise** quando aplicável
 
-### 4. Quadro Comparativo ou Síntese Visual (OBRIGATÓRIO)
+### 4. Peso visual do módulo (OBRIGATÓRIO, com número)
 
-Inclua ao menos UMA tabela estruturada por módulo. Exemplos de formato:
+Três limites valem para cada módulo, e o conversor mede os três:
 
-**Tabela comparativa:**
+1. **Nenhum parágrafo acima de 1.200 caracteres.** É o que cabe num celular de 390 pontos de largura sem rolagem dentro do próprio parágrafo. Acima disso o leitor perde a referência de onde estava ao voltar do scroll.
+2. **Pelo menos três apoios visuais.**
+3. **Pelo menos um apoio visual a cada 2.500 caracteres de prosa.** Módulo com 7.500 caracteres de prosa precisa de três; com 12.500, de cinco.
 
-| Critério | Opção A | Opção B | Opção C |
-|----------|---------|---------|---------|
-| Custo    | ...     | ...     | ...     |
-| Escala   | ...     | ...     | ...     |
-| Curva de aprendizado | ... | ... | ... |
+O teto de 1.200 não é cota de brevidade. Um parágrafo de 1.100 caracteres que desenvolve um raciocínio até o fim vale mais que quatro de 200 que fatiam o mesmo raciocínio, e prosa picada em fragmentos escaneáveis já está proibida nas seções de ritmo e de layout. Quando um parágrafo estourar o teto, veja primeiro se ele carrega duas ideias: se carregar, separe pela ideia. Se carregar uma só, o excedente costuma ser comparação, sequência ou conjunto de números disfarçado de prosa, e vira apoio visual.
 
-**Framework de decisão:**
+**Qual peça para qual problema.** A escolha não é de gosto: cada defeito de leitura tem a peça que o resolve.
 
-| Situação | Recomendação | Justificativa |
-|----------|--------------|---------------|
-| ...      | ...          | ...           |
+| O que trava o leitor | A peça | O que ela precisa ter |
+| --- | --- | --- |
+| Alternativas com critérios | tabela | alternativas nas colunas, critérios nas linhas |
+| Processo em que a ordem importa | lista numerada de passos | um verbo por passo e o resultado observável dele |
+| Números que só fazem sentido juntos | tabela curta de números | uma linha por número, com a origem na própria linha |
+| Fontes que discordam | tabela de três colunas | régua, número e origem, uma linha por fonte |
+| Conceito abstrato sem âncora | imagem com legenda | legenda que afirma o que a figura mostra |
 
-**Matriz antes/depois:**
+Não contam como apoio visual: bloco de código, blockquote e parágrafo em negrito.
 
-| Dimensão | Antes | Depois | Impacto |
-|----------|-------|--------|---------|
-| ...      | ...   | ...    | ...     |
+**Como escrever cada peça em Markdown.** O conversor promove a marcação abaixo a bloco visual; marcação torta volta a ser prosa e não recebe crédito.
+
+Tabela: linha de cabeçalho, linha de separação logo abaixo e o MESMO número de células em todas as linhas. Cada linha ocupa uma linha própria do texto, nunca tudo grudado numa linha só.
+
+```
+| Critério | Ferramenta A | Ferramenta B |
+| --- | --- | --- |
+| Custo mensal | R$ 1.200 | R$ 3.400 |
+| Prazo de implantação | 2 semanas | 6 semanas |
+```
+
+Lista numerada de passos: numeração contínua começando em 1, verbo no imperativo abrindo cada passo e o resultado observável no mesmo item.
+
+```
+1. Abra o relatório de origem e filtre os últimos 90 dias. O painel lista as campanhas com sessão registrada.
+2. Marque as campanhas sem etiqueta de origem. A contagem de órfãs aparece no rodapé.
+3. Corrija a etiqueta da campanha de maior volume e recarregue. A campanha sai da lista de órfãs.
+```
+
+Imagem com legenda: a legenda vai no texto entre colchetes e não pode ficar vazia, porque figura sem legenda é recusada. Ela afirma o que a figura mostra, e não o que ela é.
+
+```
+![O dado de origem do clique ao cadastro, com o ponto em que a etiqueta se perde](fluxo-origem.svg)
+```
 
 ### 5. Exercícios Práticos (mínimo 3, progressão de complexidade)
 
@@ -314,13 +337,7 @@ O conteúdo será renderizado por um componente `FormattedText` que interpreta a
 - **Sub-headings**: linhas que terminam com `:` e começam com maiúscula são renderizadas como `<h4>` com border-bottom. Use para separar seções dentro do módulo (ex: "Análise competitiva das sete superfícies:").
 - **Bullet points**: linhas que começam com `-- ` (dois hífens + espaço) são renderizadas como lista com dot azul estilizado. NUNCA use `- ` (um hífen), use SEMPRE `-- ` (dois hífens).
 - **Listas numeradas**: linhas com `1. texto`, `2. texto` são renderizadas como lista ordenada com número azul.
-- **Tabelas markdown**: use pipes para tabelas comparativas. O renderer cria uma `<table>` estilizada com header uppercase, zebra striping e bordas. Formato:
-  ```
-  | Coluna 1 | Coluna 2 | Coluna 3 |
-  |---|---|---|
-  | dado | dado | dado |
-  ```
-  IMPORTANTE: tabelas devem ser formatadas como UMA ÚNICA LINHA com `\n` separando as rows, pois estão dentro de strings JavaScript.
+- **Tabelas markdown**: use pipes, uma linha de texto por linha da tabela, no formato da seção 4. O renderer cria uma `<table>` estilizada com header uppercase, zebra striping e bordas.
 - **Blockquotes**: linhas que começam com `> ` são renderizadas como citação com borda lateral azul e fundo destacado. Use para insights centrais e conceitos memoráveis.
 - **Blocos de código**: use type "code" com language para exemplos técnicos.
 - **Parágrafos**: texto normal é renderizado com `text-justify` e `leading-[1.75]` para leitura confortável.
@@ -333,7 +350,7 @@ O objetivo é criar uma experiência de leitura premium para conteúdo longo. A 
 - **Estrutura a serviço da decisão**: use tabela comparativa quando houver alternativas com critérios, matriz de decisão quando o aluno precisar escolher, checklist quando houver passos verificáveis, lista numerada quando a ordem importar, fluxo de trabalho quando houver processo. Um profissional decide mais rápido com uma matriz bem construída do que com três parágrafos equivalentes.
 - **Quando NÃO usar lista**: se os itens têm relação de causa ou consequência entre si, o formato certo é prosa, porque a lista esconde o encadeamento. Bullets que apenas renomeiam obviedades e séries de "termo em negrito: explicação" como esqueleto de seção estão proibidos.
 - **Sub-headings**: entram quando o assunto muda, e o texto do sub-heading anuncia o conteúdo real da parte seguinte. Não há cota por número de parágrafos, e sub-heading a cada dois parágrafos costuma indicar que o raciocínio foi fatiado antes de terminar.
-- **Tabelas comparativas**: ao menos UMA por módulo, com critérios que importam para a decisão do aluno, não com colunas genéricas.
+- **Tabelas comparativas**: com critérios que importam para a decisão do aluno, não com colunas genéricas. O piso por módulo está na seção 4.
 - **Blockquotes estratégicos**: 1-2 por módulo, para o conceito central ou a citação de especialista. Blockquote em excesso vira decoração e perde o efeito de destaque.
 - **Densidade de prosa**: o módulo precisa de blocos de texto desenvolvido, e não apenas de elementos escaneáveis. Texto todo fatiado em bullets e destaques é o padrão de conteúdo de máquina que este pipeline precisa evitar.
 
@@ -414,7 +431,9 @@ Antes de entregar o módulo, verifique CADA item:
 - [ ] Abertura em situação concreta, com tensão explícita e dado (não em definição nem em cenário genérico)
 - [ ] Caso condutor presente no desenvolvimento e retomado na síntese
 - [ ] Objetivos de aprendizagem com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)
-- [ ] Ao menos 1 tabela comparativa no módulo
+- [ ] Nenhum parágrafo acima de 1.200 caracteres e nenhum raciocínio fatiado só para caber no teto
+- [ ] Ao menos 3 apoios visuais no módulo e ao menos 1 a cada 2.500 caracteres de prosa
+- [ ] Toda tabela com linha de separação e o mesmo número de células em todas as linhas; toda imagem com legenda preenchida
 - [ ] Ao menos 3 exercícios com contexto profissional real
 - [ ] Blocos de citação (>) para insights centrais
 - [ ] Negrito em termos-chave na primeira ocorrência

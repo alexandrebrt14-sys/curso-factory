@@ -80,7 +80,8 @@ The content is rendered by a `FormattedText` component that interprets specific 
 - Plain text → paragraph with `text-justify`
 
 **Required checks:**
-- **Comparative tables**: at least ONE per module. Format: rows with pipes separated by `\n`. If missing, ADD.
+- **Visual weight (count it, do not estimate it)**: no paragraph above 1,200 characters, at least three visual supports per module, and at least one per 2,500 characters of prose. Tables, numbered lists of steps, and images with captions count as visual support; code blocks, blockquotes, and bold do not. When weight is missing, first convert into a piece the passage that was already a comparison, a sequence, or a set of numbers, and only then, if it is still missing, ADD a new piece. A paragraph over the ceiling carrying two ideas gets split by idea; carrying only one, the surplus becomes a piece. Never cut reasoning to fit the ceiling, because prose chopped into scannable fragments is the very defect section 3.5 orders you to remove.
+- **Markup of the pieces**: every table needs a separator row, the same number of cells in every row, and one line of text per table row, never packed into a single line. Every image needs a filled-in caption in the bracketed text, because a figure with no caption is rejected. Malformed markup falls back to prose and loses the credit: FIX it.
 - **Sub-headings**: they enter when the subject changes, with text that announces what the next part actually covers. There is no quota per number of paragraphs. If the module carries a sub-heading every two paragraphs, the reasoning was sliced before it finished: MERGE the blocks that deal with the same subject.
 - **Bold**: for key terms and concepts on FIRST occurrence using `**term**`. If missing, ADD. If bold appears out of habit on ordinary words, REMOVE it, because emphasis in excess cancels emphasis.
 - **Blockquotes**: 1–2 per module for central insights using `> `. If missing, ADD; if there are more than three, convert the surplus into prose.
@@ -201,6 +202,7 @@ Spelling/idiom corrections: [number]
 Editorial corrections: [number]
 Formatting corrections: [number]
 Tables added: [number]
+Visual weight: [paragraphs above 1,200 characters in the draft received / visual supports per module after the review]
 Exercises corrected/added: [number]
 Clichés removed: [number]
 Anti-AI patterns corrected (1-21): [count by category]

@@ -32,23 +32,44 @@ A varredura dos 55 cursos publicados no portal, feita no mesmo dia, mostrou que 
 
 Nada nesse retrabalho exigiu conhecimento que o gerador não tivesse. Exigiu só que a régua existisse antes da geração.
 
-## 3. O que o gerador emite hoje, e o que falta
+## 3. O que o gerador emite
 
-Este é o ponto que separa esta doutrina de uma cópia da doutrina da landing.
+Até 17 de agosto de 2026 o gerador emitia cinco tipos de bloco, todos de prosa ou código, e **nenhum contava como bloco visual**. Curso gerado pelo caminho padrão nascia reprovado nos limites 2 e 3, e só passava porque a montagem na landing era manual. O contrato de geração foi estendido para consertar isso na origem.
 
-O motor de cursos do `landing-page-geo` renderiza um vocabulário largo de blocos. O gerador deste repositório, hoje, emite **seis**. A enumeração está em `src/models.py::SectionType` e é espelhada em três lugares:
+O vocabulário agora tem **onze tipos**, declarados nos mesmos quatro lugares, que mudam sempre juntos:
 
 | Onde | O que declara |
 | --- | --- |
-| `src/models.py::SectionType` | `text`, `code`, `warning`, `tip`, `checkpoint` |
-| `src/schemas/course.schema.json`, `$defs.CourseSection.type.enum` | os mesmos cinco |
-| `src/templates/page.tsx.j2` | os cinco mais `image-placeholder`, com o `switch (section.type)` que os desenha |
+| `src/models.py::SectionType` | os onze tipos, mais os conjuntos `VISUAL_SECTION_TYPES` e `PAYLOAD_SECTION_TYPES` |
+| `src/schemas/course.schema.json` | o mesmo enum, com uma regra condicional por tipo que cobra a forma da carga |
+| `src/templates/page.tsx.j2` | o `switch (section.type)` que desenha cada um |
+| `src/generators/tsx_generator.py` | o filtro que serializa a carga para dentro do TSX |
 
-Nenhum dos seis conta como bloco visual pela régua da seção 4. Um curso gerado hoje pelo caminho padrão, sem montagem manual depois, **nasce reprovado nos limites 2 e 3**.
+Acrescentar um tipo em só um desses lugares produz bloco que o validador aceita e a página não desenha, ou o contrário. **Os quatro andam juntos, sempre.**
 
-A consequência prática é clara: cumprir esta doutrina no gerador é trabalho de código, não de prompt. Estender o vocabulário exige mexer nos três lugares da tabela ao mesmo tempo, porque o modelo Pydantic valida, o schema JSON documenta e o Jinja desenha. Acrescentar um tipo em só um deles produz bloco que o validador aceita e a página não mostra.
+### Os seis tipos visuais, e a carga de cada um
 
-Enquanto o vocabulário não for estendido, a regra que vale é a de montagem: o curso gerado passa por conversão manual para o formato `<CoursePage>` da landing (fluxo descrito em `docs/GOVERNANCA_PUBLICACAO_CURSO.md`), e é nessa conversão que as peças visuais entram, sob o portão `node scripts/gate-peso-visual.mjs <slug>`.
+`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide` e `timeline`. São exatamente os seis que o portão `scripts/gate-peso-visual.mjs` da landing conta como bloco visual, e as formas de carga são as do motor de cursos (`src/types/course-page.ts`), porque é para lá que o curso é montado.
+
+O `figure` carrega o SVG ou a imagem em `value` e a legenda em `label`. Os outros cinco carregam a estrutura em `data` e deixam `value` vazio, que é como o motor da landing espera.
+
+O modelo **recusa** bloco que sairia vazio: payload ausente, tabela com linha de tamanho diferente do cabeçalho, figura sem legenda. Isso é deliberado. O motor da landing degrada bloco sem carga para nada, sem erro e sem registro no console, e é a falha mais silenciosa que ele tem. O lugar de pegá-la é aqui, na geração, onde alguém ainda está olhando.
+
+### O que o parser promove sozinho
+
+O modelo escreve Markdown e o parser converte. Três construções são promovidas automaticamente:
+
+| O que o modelo escreve | Vira |
+| --- | --- |
+| Tabela em Markdown | `dataTable`, com cabeçalho em `columns` e corpo em `rows` |
+| Lista numerada de passos, sob critério conservador | `stepGuide` |
+| Imagem com legenda | `figure` |
+
+A promoção da tabela é a de maior retorno, porque `config/quality_rules.yaml` **já exigia** uma tabela por módulo. O modelo já a escrevia, o template já a desenhava, mas ela vivia dentro de um bloco `text`: para a régua aquilo era prosa, e os caracteres da tabela ainda contavam no teto de parágrafo. O trabalho já era feito e o crédito não era dado.
+
+`comparison`, `statGrid` e `timeline` **não são promovidos automaticamente**, por decisão. Não existe construção de Markdown que os sinalize sem ambiguidade, e promover errado é pior que não promover. Eles entram por autoria explícita ou na conversão para a landing.
+
+Toda promoção passa pela validação do `CourseSection`. Quando a carga não bate, o parser **mantém o conteúdo como `text`** em vez de deixar a exceção subir: perder conteúdo é o pior desfecho possível.
 
 ## 4. O que conta como bloco visual
 
@@ -152,8 +173,30 @@ Registro honesto do que existe hoje, para que ninguém confunda regra escrita co
 | Peça | Estado |
 | --- | --- |
 | Os três limites, como norma | Escritos na seção 11.1 da `DIRETRIZ_EDITORIAL.md` e aqui |
-| `validation.visual_density` em `config/quality_rules.yaml` | Declarado, **não lido por código** |
-| Vocabulário de blocos visuais no gerador | **Ausente**, ver seção 3 |
-| Portão de peso visual | Existe na landing (`scripts/gate-peso-visual.mjs`), não neste repositório |
+| `validation.visual_density` em `config/quality_rules.yaml` | **Lido e cobrado** por `src/validators/visual_density.py` |
+| Vocabulário de blocos visuais no gerador | **Seis tipos**, ver seção 3 |
+| Cobrança na geração | `TsxGenerator.render_page` reprova antes de escrever o arquivo |
+| Prompt de escrita | Pede as peças e ensina a marcação em `src/templates/prompts/draft.md` |
+| Portão de peso visual do acervo publicado | Na landing (`scripts/gate-peso-visual.mjs`), com linha de base congelada |
 
-O `src/validators/rules_loader.py` lê o YAML em runtime, mas hoje só `forbidden_expressions.expressions` e a seção `anti_invencao` são consumidos por validador. Fazer `visual_density` valer exige um checador novo que leia a seção e conte parágrafos e blocos por módulo. A advertência final da `DIRETRIZ_EDITORIAL.md` vale literalmente aqui: configuração que ninguém lê não protege nada.
+### Onde a régua morde
+
+`TsxGenerator.render_page` roda `check_visual_density` em cada módulo **antes** de renderizar, e levanta `VisualDensityError` quando algum reprova. Curso que nasce como coluna de texto não chega a virar arquivo. A mensagem nomeia o módulo, a chave da regra, o número medido e a peça que resolve.
+
+Quem precisa renderizar um curso legado passa `cobrar_peso_visual=False`, e aí os achados saem no log em vez de bloquear. É o mesmo princípio da linha de base congelada da landing: a dívida do acervo fica contada e nomeada, sem virar refém.
+
+Um checador que existe e não é chamado por pipeline nenhum é a mesma configuração declarativa que esta rodada veio consertar, e é por isso que a costura tem teste próprio em `tests/test_visual_density.py`.
+
+### As três severidades, e por quê
+
+| Regra | Severidade | Razão |
+| --- | --- | --- |
+| `max_paragraph_chars` | erro | Paredão é defeito objetivo, e o conserto está sempre disponível |
+| `min_visual_blocks_per_module` | erro | A contagem é determinística, sem heurística no meio |
+| `chars_per_visual_block` | aviso | O denominador depende do critério de exclusão, e módulo denso de propósito não deve morrer numa divisão |
+
+O piso só vale para módulo que passa de `min_prose_chars_for_floor` caracteres de prosa. Abaixo disso o módulo é abertura, encerramento ou trecho de apoio, e cobrar três peças ali produz enfeite em vez de leitura. É o mesmo corte que o portão da landing usa. A densidade continua valendo em qualquer tamanho, e é ela que pega o módulo longo escondido atrás de duas figuras.
+
+### O que continua pendente
+
+`content_quality.max_paragraph_lines` era constante fixa em `src/validators/content_checker.py`, com um comentário pedindo sincronia manual com o YAML. Esse é o mecanismo exato pelo qual configuração apodrece, e por isso passou a ser lido do arquivo. Vale a advertência da `DIRETRIZ_EDITORIAL.md`, literalmente: configuração que ninguém lê não protege nada.

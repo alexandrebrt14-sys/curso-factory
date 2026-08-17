@@ -214,29 +214,52 @@ Ejemplo de profundidad esperada:
 - Si el tema involucra código, comandos o fórmulas, preséntalos en bloques de código bien comentados
 - Incluye una **tabla de decisión** o **marco de análisis** cuando sea aplicable
 
-### 4. Cuadro Comparativo o Síntesis Visual (OBLIGATORIO)
+### 4. Peso visual del módulo (OBLIGATORIO, con número)
 
-Incluye al menos UNA tabla estructurada por módulo. Ejemplos de formato:
+Tres límites valen para cada módulo, y el conversor mide los tres:
 
-**Tabla comparativa:**
+1. **Ningún párrafo por encima de 1.200 caracteres.** Es lo que cabe en un celular de 390 puntos de ancho sin desplazamiento dentro del propio párrafo. Por encima de eso el lector pierde la referencia de dónde estaba al volver del scroll.
+2. **Al menos tres apoyos visuales.**
+3. **Al menos un apoyo visual cada 2.500 caracteres de prosa.** Un módulo con 7.500 caracteres de prosa necesita tres; con 12.500, cinco.
 
-| Criterio | Opción A | Opción B | Opción C |
-|----------|----------|----------|----------|
-| Costo    | …        | …        | …        |
-| Escala   | …        | …        | …        |
-| Curva de aprendizaje | … | …    | …        |
+El techo de 1.200 no es una cuota de brevedad. Un párrafo de 1.100 caracteres que desarrolla un razonamiento hasta el final vale más que cuatro de 200 que fraccionan ese mismo razonamiento, y la prosa partida en fragmentos escaneables ya está prohibida en las secciones de ritmo y de diseño. Cuando un párrafo pase el techo, revisa primero si carga dos ideas: si las carga, sepáralo por idea. Si carga una sola, el excedente suele ser una comparación, una secuencia o un conjunto de números disfrazado de prosa, y se convierte en apoyo visual.
 
-**Marco de decisión:**
+**Qué pieza para qué problema.** La elección no es de gusto: cada defecto de lectura tiene la pieza que lo resuelve.
 
-| Situación | Recomendación | Justificación |
-|-----------|---------------|---------------|
-| …         | …             | …             |
+| Qué traba al lector | La pieza | Qué debe llevar |
+| --- | --- | --- |
+| Alternativas con criterios | tabla | alternativas en las columnas, criterios en las filas |
+| Un proceso donde el orden importa | lista numerada de pasos | un verbo por paso y su resultado observable |
+| Números que solo tienen sentido juntos | tabla corta de números | una fila por número, con su origen en la misma fila |
+| Fuentes que se contradicen | tabla de tres columnas | medida, número y origen, una fila por fuente |
+| Un concepto abstracto sin ancla | imagen con leyenda | una leyenda que afirma lo que la figura muestra |
 
-**Matriz antes/después:**
+NO cuentan como apoyo visual: los bloques de código, los bloques de cita y los párrafos en negrita.
 
-| Dimensión | Antes | Después | Impacto |
-|-----------|-------|---------|---------|
-| …         | …     | …       | …       |
+**Cómo escribir cada pieza en Markdown.** El conversor promueve la marcación de abajo a bloque visual; la marcación mal formada vuelve a ser prosa y no recibe crédito.
+
+Tabla: fila de encabezado, fila separadora justo debajo y el MISMO número de celdas en todas las filas. Cada fila ocupa su propia línea de texto, nunca todo pegado en una sola línea.
+
+```
+| Criterio | Herramienta A | Herramienta B |
+| --- | --- | --- |
+| Costo mensual | 1.200 USD | 3.400 USD |
+| Plazo de implantación | 2 semanas | 6 semanas |
+```
+
+Lista numerada de pasos: numeración continua que empieza en 1, verbo en imperativo abriendo cada paso y el resultado observable dentro del mismo ítem.
+
+```
+1. Abre el informe de origen y filtra los últimos 90 días. El panel lista las campañas con sesión registrada.
+2. Marca las campañas sin etiqueta de origen. El conteo de huérfanas aparece en el pie.
+3. Corrige la etiqueta de la campaña de mayor volumen y recarga. Esa campaña sale de la lista de huérfanas.
+```
+
+Imagen con leyenda: la leyenda va en el texto entre corchetes y no puede quedar vacía, porque una figura sin leyenda se rechaza. Afirma lo que la figura muestra, no lo que ella es.
+
+```
+![El dato de origen desde el clic hasta el registro, con el punto donde se pierde la etiqueta](flujo-origen.svg)
+```
 
 ### 5. Ejercicios Prácticos (mínimo 3, progresión de complejidad)
 
@@ -303,13 +326,7 @@ El contenido será renderizado por un componente `FormattedText` que interpreta 
 - **Subtítulos**: las líneas que terminan con `:` y empiezan con mayúscula se renderizan como `<h4>` con border-bottom. Úsalos para separar secciones dentro del módulo.
 - **Viñetas**: las líneas que comienzan con `-- ` (dos guiones + espacio) se renderizan como lista con punto azul estilizado. NUNCA uses `- ` (un solo guion); usa SIEMPRE `-- `.
 - **Listas numeradas**: las líneas con `1. texto`, `2. texto` se renderizan como lista ordenada con número azul.
-- **Tablas markdown**: usa pipes para tablas comparativas. El renderer crea una `<table>` estilizada con encabezado en mayúsculas, zebra striping y bordes. Formato:
-  ```
-  | Columna 1 | Columna 2 | Columna 3 |
-  |---|---|---|
-  | dato | dato | dato |
-  ```
-  IMPORTANTE: las tablas deben formatearse como UNA SOLA LÍNEA con `\n` separando las filas, ya que viven dentro de cadenas JavaScript.
+- **Tablas markdown**: usa pipes, una línea de texto por fila de la tabla, en el formato de la sección 4. El renderer crea una `<table>` estilizada con encabezado en mayúsculas, zebra striping y bordes.
 - **Bloques de cita**: las líneas que empiezan con `> ` se renderizan como cita con borde lateral azul y fondo destacado. Úsalas para insights centrales y conceptos memorables.
 - **Bloques de código**: usa el tipo "code" con `language` para ejemplos técnicos.
 - **Párrafos**: el texto normal se renderiza con `text-justify` y `leading-[1.75]` para una lectura cómoda.
@@ -322,7 +339,7 @@ El objetivo es crear una experiencia de lectura premium para contenido extenso. 
 - **Estructura al servicio de la decisión**: usa tabla comparativa cuando haya alternativas con criterios, matriz de decisión cuando el alumno tenga que elegir, checklist cuando haya pasos verificables, lista numerada cuando el orden importe, flujo de trabajo cuando haya un proceso. Un profesional decide más rápido con una matriz bien construida que con tres párrafos equivalentes.
 - **Cuándo NO usar lista**: si los ítems guardan entre sí relación de causa o consecuencia, el formato correcto es la prosa, porque la lista esconde el encadenamiento. Quedan prohibidas las viñetas que solo renombran obviedades y las series de "término en negrita: explicación" usadas como esqueleto de sección.
 - **Subtítulos**: entran cuando cambia el asunto, y el texto del subtítulo anuncia el contenido real de la parte siguiente. No hay cuota por número de párrafos, y un subtítulo cada dos párrafos suele indicar que el razonamiento se cortó antes de terminar.
-- **Tablas comparativas**: al menos UNA por módulo, con criterios que importen para la decisión del alumno, no con columnas genéricas.
+- **Tablas comparativas**: con criterios que importen para la decisión del alumno, no con columnas genéricas. El piso por módulo está en la sección 4.
 - **Bloques de cita estratégicos**: 1-2 por módulo, para el concepto central o la cita de un especialista. El bloque de cita en exceso se vuelve decoración y pierde el efecto de destaque.
 - **Densidad de prosa**: el módulo necesita bloques de texto desarrollado, y no solo elementos escaneables. El texto entero fraccionado en viñetas y destaques es el patrón de contenido de máquina que este pipeline debe evitar.
 
@@ -383,7 +400,9 @@ Antes de entregar el módulo, verifica CADA ítem:
 - [ ] Apertura en situación concreta, con tensión explícita y dato (no en definición ni en escenario genérico)
 - [ ] Caso conductor presente en el desarrollo y retomado en la síntesis
 - [ ] Objetivos de aprendizaje con verbos de Bloom nivel 3+ (aplicar, analizar, evaluar, crear)
-- [ ] Al menos 1 tabla comparativa en el módulo
+- [ ] Ningún párrafo por encima de 1.200 caracteres, y ningún razonamiento fraccionado solo para caber en el techo
+- [ ] Al menos 3 apoyos visuales en el módulo, y al menos 1 cada 2.500 caracteres de prosa
+- [ ] Toda tabla con fila separadora y el mismo número de celdas en todas las filas; toda imagen con leyenda completa
 - [ ] Al menos 3 ejercicios con contexto profesional real
 - [ ] Bloques de cita (>) para insights centrales
 - [ ] Negrita en términos clave en la primera aparición

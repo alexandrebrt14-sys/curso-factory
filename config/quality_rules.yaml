@@ -10,6 +10,7 @@
 #   validation.forbidden_expressions.expressions  -> _check_cliches
 #   validation.anti_invencao.require_source_for_percentages
 #   validation.anti_invencao.fail_if_unresolved_markers_above
+#   validation.visual_density.*                  -> check_visual_density
 # As demais seções seguem descritivas; o valor espelhado em código está
 # anotado por comentário na chave correspondente.
 
@@ -65,25 +66,43 @@ validation:
   # caracteres e nenhuma figura, aprovado por todos os portões da casa porque
   # nenhum deles mede peso de bloco.
   #
-  # DECLARATIVA HOJE: nenhum validador lê esta seção. O rules_loader.py carrega
-  # o YAML inteiro, mas só forbidden_expressions.expressions e anti_invencao são
-  # consumidos em runtime. Aplicar de verdade exige um checador novo que conte
-  # parágrafos e blocos por módulo. Até lá, quem cobra é o portão da landing
-  # (node scripts/gate-peso-visual.mjs <slug>).
+  # LIDA EM RUNTIME desde 17/08/2026 por
+  # src/validators/visual_density.py::check_visual_density, que mede a lista de
+  # CourseSection de cada módulo. Até essa data a seção era declarativa e quem
+  # cobrava era só o portão da landing (node scripts/gate-peso-visual.mjs <slug>).
+  # Mudar qualquer número aqui MUDA O VEREDITO no próximo run: nenhum dos três
+  # limites existe como constante em código, e tests/test_visual_density.py
+  # prova isso trocando a configuração e conferindo que o resultado acompanha.
+  # Chaves consumidas: enabled, required_for_new_course, max_paragraph_chars,
+  # min_visual_blocks_per_module, chars_per_visual_block, visual_block_types e
+  # non_visual_types. Seção ausente ou enabled: false não derruba o pipeline:
+  # o checador devolve um aviso dizendo que a densidade não foi cobrada.
   visual_density:
     enabled: true
     # Obrigatória e integral para curso novo. Para o acervo já publicado a régua
     # entra por linha de base congelada: a dívida registrada só pode diminuir.
+    # Em código: check_visual_density(..., curso_novo=False) rebaixa todo achado
+    # a aviso, então o legado aparece contado no relatório sem bloquear.
     required_for_new_course: true
     # Teto do PARÁGRAFO, não do bloco: um bloco de prosa com três parágrafos
     # separados por linha em branco responde por cada um deles isoladamente.
     # 1.200 é o que cabe num celular de 390 pontos sem rolagem interna.
     max_paragraph_chars: 1200
     min_visual_blocks_per_module: 3
+    # O piso acima só vale para módulo que é capítulo de verdade. Abaixo deste
+    # tanto de prosa o módulo é abertura, encerramento ou trecho de apoio, e
+    # cobrar três peças ali produz enfeite, não leitura. A densidade continua
+    # valendo em qualquer tamanho, e é ela que pega o módulo longo. O portão
+    # gate-peso-visual.mjs do landing-page-geo usa o mesmo corte.
+    min_prose_chars_for_floor: 800
     # Um bloco visual a cada 2.500 caracteres de prosa do módulo. Módulo curto
     # com 3 figuras passa; módulo de 20 mil caracteres com 3 figuras não.
     chars_per_visual_block: 2500
-    # Tipos que CONTAM como bloco visual. Ilustração e diagrama quebram parede
+    # Tipos que CONTAM como bloco visual. O checador usa a UNIÃO desta lista com
+    # VISUAL_SECTION_TYPES de src/models.py, que é o que o gerador sabe emitir
+    # hoje (figure, dataTable, comparison, statGrid, stepGuide, timeline). Os
+    # demais nomes abaixo só o motor da landing desenha; ficam listados para dar
+    # crédito a curso montado lá. Ilustração e diagrama quebram parede
     # de verdade; estrutura organiza o que já era comparável ou sequencial;
     # o terceiro grupo divide conteúdo longo sem perder profundidade.
     visual_block_types:
@@ -104,7 +123,8 @@ validation:
       - tipCard
       - stepGuide
       - codeDownload
-    # Aparato, não respiro: NÃO contam como bloco visual. sourceNote é registro
+    # Aparato, não respiro: NÃO contam como bloco visual e também ficam fora do
+    # denominador de prosa da regra de densidade. sourceNote é registro
     # de procedência em corpo reduzido e não conta nem como paredão nem como
     # alívio; quem mede pelo DOM filtra pela cadeia de ancestrais.
     non_visual_types:
