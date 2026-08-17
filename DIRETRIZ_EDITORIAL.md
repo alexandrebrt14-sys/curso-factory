@@ -187,6 +187,24 @@ Trate este repositório como fonte de conhecimento para o trabalho nele. Analise
 
 Documentação, tutoriais, cursos e materiais de aprendizagem seguem a ordem de gênero da seção 3.2 e as seis técnicas da seção 3. O problema chega como situação concreta, com tensão e custo, antes da teoria que o resolve. Conecte o tema a situações reais, apresente exemplos completos, use estudos de caso quando fizer sentido, proponha exercícios contextualizados e feche com a síntese prática: o que a pessoa faz na segunda-feira, com qual artefato e sob qual critério de pronto.
 
+### 11.1 Peso visual: nenhum curso nasce com paredão
+
+Nenhum curso novo nasce com paredão de texto, e todo curso novo nasce com elemento visual. Três limites, verificáveis por máquina, valem para todo material educacional produzido aqui:
+
+1. **Nenhum parágrafo acima de 1.200 caracteres.** O teto é do parágrafo, não do bloco: um bloco de prosa pode ter três parágrafos separados por linha em branco, e cada um responde sozinho pelo limite. O número corresponde ao que cabe em uma tela de celular de 390 pontos sem rolagem dentro do próprio parágrafo.
+2. **Pelo menos três blocos visuais por módulo.**
+3. **Pelo menos um bloco visual a cada 2.500 caracteres de prosa** daquele módulo. Módulo curto com três figuras passa; módulo de 20 mil caracteres com três figuras não.
+
+Contam como bloco visual a ilustração e o diagrama (`figure`, incluindo diagrama Mermaid compilado no build), as peças de estrutura (`dataTable`, `comparison`, `matrix`, `statGrid`, `timeline`, `flow`, `checklist`, `glossary`, `accordion`, `template`, `useCase`) e as peças de leitura no celular (`tabs`, `slides`, `tipCard`, `stepGuide`, `codeDownload`). Não contam `code`, `prompt` e `sourceNote`, que são aparato e não respiro.
+
+O teto de 1.200 caracteres não é cota de brevidade e não revoga a seção 6. Um parágrafo de 1.100 caracteres que desenvolve um raciocínio vale mais que quatro de 200 que fatiam o mesmo raciocínio em pedaços escaneáveis. Prosa carrega raciocínio, estrutura carrega comparação, sequência e verificação, e nenhum dos dois entra por cota.
+
+A regra é de criação, não de revisão. As peças visuais de cada módulo se decidem junto com o índice, antes da primeira linha de texto: peça escolhida depois da escrita é remendo. O curso `motor-de-crescimento-ia` foi publicado em 17 de agosto de 2026 com 114 blocos de prosa acima de 1.200 caracteres, o maior deles com 3.492, e nenhuma figura. Todos os portões da casa aprovaram, porque nenhum media peso de bloco. Desfazer o defeito custou cinco ondas de trabalho; evitá-lo na criação custaria quase nada.
+
+Para o acervo já publicado a régua entra por linha de base congelada: a dívida de cada curso existente fica registrada e só pode diminuir. Reduzir paredão não é deriva. Quebrar um parágrafo em dois, mover uma comparação de prosa para tabela e acrescentar uma figura que mostra o que o texto já dizia não altera nenhum fato, e é rearranjo de forma. O que continua proibido é a figura que afirma o que o texto não afirmava, a tabela que arredonda um número para caber na célula e a legenda que atribui a fonte errada.
+
+A aplicação completa, com o vocabulário de peças que o gerador precisa emitir, o payload de cada uma e as armadilhas do motor de cursos, está em `docs/DOUTRINA_VISUAL_CURSOS.md`.
+
 ## 12. Código
 
 Código limpo e legível, com nomes consistentes e sem complexidade desnecessária. Decisões arquiteturais relevantes são explicadas. Sugestões de refatoração vêm com os ganhos esperados. Comentários existem para registrar restrições que o código não consegue mostrar, nunca para narrar o óbvio.

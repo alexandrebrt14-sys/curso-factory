@@ -2,6 +2,8 @@
 
 Documento canônico de **layout, UX, navegabilidade, stacks de frontend, animação, acessibilidade e — sobretudo — processo de auditoria** para qualquer trabalho visual. Como este repositório é um **gerador** (templates Jinja → React/Tailwind), o objetivo é que **todo curso gerado já nasça** com estas práticas embutidas nos templates. Consolida aprendizados reais (incluindo erros recorrentes) para que não se repitam.
 
+> Doutrina irmã: **peso visual de curso** (nenhum parágrafo acima de 1.200 caracteres, no mínimo 3 blocos visuais por módulo, 1 bloco visual a cada 2.500 caracteres de prosa) está em `docs/DOUTRINA_VISUAL_CURSOS.md`, com a forma normativa curta na seção 11.1 da `DIRETRIZ_EDITORIAL.md`. Este playbook cuida de **como** a peça visual fica boa; a doutrina cuida de **quantas** peças o curso precisa ter e de qual peça resolve qual defeito de leitura.
+
 > Regra-mãe: **qualidade visual não é opinião, é verificação.** Contraste, legibilidade e "o conteúdo aparece" se medem no navegador renderizado, nos dois temas — não se confia no olho nem na leitura do código. Num gerador, isso significa: corrija no TEMPLATE e audite a SAÍDA renderizada.
 
 ---
@@ -101,5 +103,6 @@ Este repo **gera** cursos (templates Jinja → React/Tailwind/Next). Corrija sem
 - **Fluxogramas/diagramas dos cursos:** HTML/CSS (cartões alto contraste) em vez de Mermaid exibido.
 - **Auditoria da saída:** após gerar, abra o curso no navegador e rode a auditoria da seção 6 (dois temas, transições mortas) — o defeito no template aparece multiplicado, então vale ouro pegá-lo cedo.
 - **Geração de copy longa:** carimbe a regra de PT-BR acentuado explicitamente no prompt do sub-agente e valide a contagem de acentos (erro recorrente em geração longa).
+- **Peso visual da saída:** o gerador só emite `text`, `code`, `warning`, `tip`, `checkpoint` e `image-placeholder` (`src/models.py::SectionType`, `src/schemas/course.schema.json` e `src/templates/page.tsx.j2`), e **nenhum deles conta como bloco visual**. Curso gerado pelo caminho padrão nasce reprovado nos limites de densidade. Os limites, o vocabulário de peças e o que falta implementar estão em `docs/DOUTRINA_VISUAL_CURSOS.md`.
 
 Memórias de origem (operador): `reference_stacks_frontend_2026`, `feedback_contraste_fontes_frontend`, `feedback_animacao_entrada_nao_esconder`, `feedback_auditoria_robusta_visual`, `feedback_curso_factory_paragrafos_justificados`.
