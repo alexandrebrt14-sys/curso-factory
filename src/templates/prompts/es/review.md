@@ -108,7 +108,8 @@ El contenido se renderiza con un componente `FormattedText` que interpreta marca
 - Texto simple → párrafo con `text-justify`
 
 **Verificaciones obligatorias:**
-- **Tablas comparativas**: al menos UNA por módulo. Formato: filas con pipes separadas por `\n`. Si falta, AÑADE.
+- **Peso visual (cuéntalo, no lo estimes)**: ningún párrafo por encima de 1.200 caracteres, al menos tres apoyos visuales por módulo y al menos uno cada 2.500 caracteres de prosa. Cuentan como apoyo visual la tabla, la lista numerada de pasos y la imagen con leyenda; no cuentan el bloque de código, el bloque de cita ni la negrita. Si falta peso, convierte primero en pieza el pasaje que ya era comparación, secuencia o conjunto de números, y solo entonces, si aún falta, AÑADE una pieza nueva. Un párrafo por encima del techo que carga dos ideas se separa por idea; si carga una sola, el excedente se vuelve pieza. Nunca cortes razonamiento para caber en el techo, porque la prosa partida en fragmentos escaneables es justamente el defecto que la sección 3.5 manda eliminar.
+- **Marcación de las piezas**: toda tabla necesita fila separadora, el mismo número de celdas en todas las filas y una línea de texto por fila de la tabla, nunca todo pegado en una sola línea. Toda imagen necesita leyenda completa en el texto entre corchetes, porque una figura sin leyenda se rechaza. La marcación mal formada vuelve a ser prosa y pierde el crédito: CORRÍGELA.
 - **Subtítulos**: entran cuando cambia el asunto, con un texto que anuncia el contenido real de la parte siguiente. No hay cuota por número de párrafos. Si el módulo tiene un subtítulo cada dos párrafos, el razonamiento se cortó antes de terminar: FUNDE los bloques que tratan del mismo asunto.
 - **Negrita**: para términos clave y conceptos en la PRIMERA aparición usando `**término**`. Si falta, AÑADE. Si hay negrita por costumbre en palabras corrientes, QUÍTALA, porque el destaque en exceso anula el destaque.
 - **Bloques de cita**: 1-2 por módulo para insights centrales usando `> `. Si falta, AÑADE; si hay más de tres, convierte los excedentes en prosa.
@@ -229,6 +230,7 @@ Correcciones de acentuación: [número]
 Correcciones editoriales: [número]
 Correcciones de formato: [número]
 Tablas añadidas: [número]
+Peso visual: [párrafos por encima de 1.200 caracteres en el borrador recibido / apoyos visuales por módulo después de la revisión]
 Ejercicios corregidos/añadidos: [número]
 Clichés eliminados: [número]
 Patrones anti-IA corregidos (1-21): [número por categoría]

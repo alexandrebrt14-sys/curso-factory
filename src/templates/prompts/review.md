@@ -133,7 +133,8 @@ O conteúdo é renderizado por um componente `FormattedText` que interpreta marc
 - Texto simples → parágrafo com text-justify
 
 **Verificações obrigatórias:**
-- **Tabelas comparativas**: ao menos UMA por módulo. Formato: linhas com pipes separadas por `\n`. Se faltar, ADICIONE.
+- **Peso visual (conte, não estime)**: nenhum parágrafo acima de 1.200 caracteres, ao menos três apoios visuais por módulo e ao menos um a cada 2.500 caracteres de prosa. Contam como apoio visual a tabela, a lista numerada de passos e a imagem com legenda; não contam bloco de código, blockquote nem negrito. Faltando peso, converta em peça o trecho que já era comparação, sequência ou conjunto de números, e só então, se ainda faltar, ADICIONE peça nova. Parágrafo acima do teto com duas ideias se separa pela ideia; com uma ideia só, o excedente vira peça. Nunca corte raciocínio para caber no teto, porque prosa picada em fragmentos escaneáveis é o defeito que a seção 3.5 manda eliminar.
+- **Marcação das peças**: toda tabela precisa de linha de separação, do mesmo número de células em todas as linhas e de uma linha de texto por linha da tabela, nunca tudo grudado numa linha só. Toda imagem precisa de legenda preenchida no texto entre colchetes, porque figura sem legenda é recusada. Marcação torta volta a ser prosa e perde o crédito: CORRIJA.
 - **Sub-headings**: entram quando o assunto muda, com texto que anuncia o conteúdo real da parte seguinte. Não há cota por número de parágrafos. Se o módulo tiver sub-heading a cada dois parágrafos, o raciocínio foi fatiado antes de terminar: FUNDA os blocos que tratam do mesmo assunto.
 - **Negrito**: para termos-chave e conceitos na PRIMEIRA ocorrência usando `**termo**`. Se faltar, ADICIONE. Se houver negrito por hábito em palavras comuns, REMOVA, porque destaque em excesso anula o destaque.
 - **Blockquotes**: 1-2 por módulo para insights centrais usando `> `. Se faltar, ADICIONE; se houver mais de três, converta os excedentes em prosa.
@@ -267,6 +268,7 @@ Correções de acentuação: [número]
 Correções editoriais: [número]
 Correções de formatação: [número]
 Tabelas adicionadas: [número]
+Peso visual: [parágrafos acima de 1.200 caracteres no rascunho recebido / apoios visuais por módulo depois da revisão]
 Exercícios corrigidos/adicionados: [número]
 Clichês removidos: [número]
 Padrões anti-IA corrigidos (1-21): [número por categoria]

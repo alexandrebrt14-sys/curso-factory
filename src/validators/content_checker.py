@@ -27,9 +27,25 @@ class ContentError:
     modulo: str = ""
 
 
-# Teto de linhas por parágrafo. Espelha `content_quality.max_paragraph_lines`
-# em config/quality_rules.yaml; mantenha os dois em sincronia.
-MAX_PARAGRAPH_LINES = 8
+def _max_paragraph_lines() -> int:
+    """Teto de linhas por parágrafo, lido de `content_quality` no YAML.
+
+    Antes era constante fixa, com um comentário pedindo sincronia manual com
+    `config/quality_rules.yaml`. Sincronia manual é o mecanismo exato pelo qual
+    configuração apodrece: o número no arquivo foi de 5 para 8 e o código nunca
+    soube. Agora o arquivo manda, e o 8 abaixo é só a rede para YAML ausente ou
+    ilegível.
+    """
+    try:
+        from src.validators.rules_loader import validation_section
+
+        valor = (validation_section("content_quality") or {}).get("max_paragraph_lines")
+        return int(valor) if valor is not None else 8
+    except Exception:  # noqa: BLE001 - configuração ilegível nunca derruba o gate
+        return 8
+
+
+MAX_PARAGRAPH_LINES = _max_paragraph_lines()
 
 # Clichês proibidos — FALLBACK.
 # A lista viva é `validation.forbidden_expressions.expressions` em

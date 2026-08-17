@@ -20,11 +20,73 @@ interface Step {
   content: Section[];
 }
 
+/* Cargas dos blocos visuais. As formas são as do motor de cursos da landing
+   (src/types/course-page.ts): campo renomeado aqui quebra a montagem lá. */
+interface DataTablePayload {
+  title?: string;
+  columns: string[];
+  rows: string[][];
+  source?: string;
+  note?: string;
+}
+
+interface ComparisonSide {
+  header: string;
+  items: string[];
+}
+
+/* Valência fixa: `left` é sempre o lado a evitar, `right` o recomendado. */
+interface ComparisonPayload {
+  title: string;
+  left: ComparisonSide;
+  right: ComparisonSide;
+  leftChip?: string;
+  rightChip?: string;
+}
+
+interface StatGridPayload {
+  title?: string;
+  stats: { value: string; label: string; sub?: string }[];
+  source?: string;
+}
+
+interface StepGuidePayload {
+  title: string;
+  intro?: string;
+  steps: { label: string; detail?: string; success?: string; pitfall?: string }[];
+  outcome?: string;
+}
+
+interface TimelinePayload {
+  title?: string;
+  events: { date: string; label: string; detail?: string; tone?: "past" | "now" | "future" }[];
+}
+
+type SectionData =
+  | DataTablePayload
+  | ComparisonPayload
+  | StatGridPayload
+  | StepGuidePayload
+  | TimelinePayload;
+
 interface Section {
-  type: "text" | "code" | "warning" | "tip" | "checkpoint" | "image-placeholder";
+  type:
+    | "text"
+    | "code"
+    | "warning"
+    | "tip"
+    | "checkpoint"
+    | "figure"
+    | "dataTable"
+    | "comparison"
+    | "statGrid"
+    | "stepGuide"
+    | "timeline"
+    | "image-placeholder";
   value: string;
   language?: string;
   label?: string;
+  data?: SectionData;
 }
 
 /* ───────── LUCIDE ICONS (enterprise style) ───────── */
@@ -191,6 +253,32 @@ const icons: Record<string, React.ReactNode> = {
       <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
     </svg>
   ),
+  /* ── Ícones dos blocos visuais ── */
+  circleX: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+    </svg>
+  ),
+  circleXSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+    </svg>
+  ),
+  circleCheckSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+    </svg>
+  ),
+  alertTriangleSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  ),
+  flagSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+    </svg>
+  ),
   clipboard: (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
@@ -249,6 +337,10 @@ const STEPS: Step[] = [
 {% for section in step.content %}
 {% if section.type == "code" %}
       { type: "code", value: "{{ section.value | js_escape }}", language: "{{ section.language | default('text') }}" },
+{% elif section.data %}
+      { type: "{{ section.type }}", value: "{{ section.value | js_escape }}", label: "{{ section.label | js_escape }}", data: {{ section.data | js_json }} },
+{% elif section.type == "figure" %}
+      { type: "figure", value: "{{ section.value | js_escape }}", label: "{{ section.label | js_escape }}" },
 {% else %}
       { type: "{{ section.type }}", value: "{{ section.value | js_escape }}" },
 {% endif %}
@@ -493,6 +585,277 @@ function FormattedText({ value }: { value: string }) {
   return <div className="text-[var(--text)] text-[15px]">{elements}</div>;
 }
 
+/* ───────── BLOCOS VISUAIS ───────── */
+/* Todos usam token CSS para cor. Hex cravado some no tema escuro. */
+
+function BlockTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h4 className="font-bold text-[var(--text)] text-[15px] mb-3">{children}</h4>
+  );
+}
+
+function BlockFootnote({ source, note }: { source?: string; note?: string }) {
+  if (!source && !note) return null;
+  return (
+    <div className="mt-2 space-y-1">
+      {note && (
+        <p className="text-xs text-[var(--text-muted)] leading-relaxed">{note}</p>
+      )}
+      {source && (
+        <p className="text-xs text-[var(--text-light)] leading-relaxed">Fonte: {source}</p>
+      )}
+    </div>
+  );
+}
+
+/* Figura: SVG inline ou marcação de imagem, com legenda obrigatória. */
+function FigureBlock({ markup, caption }: { markup: string; caption?: string }) {
+  return (
+    <figure className="my-5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-4">
+      <div
+        className="w-full overflow-x-auto [&>svg]:max-w-full [&>svg]:h-auto [&_img]:max-w-full [&_img]:h-auto"
+        dangerouslySetInnerHTML={% raw %}{{ __html: markup }}{% endraw %}
+      />
+      {caption && (
+        <figcaption className="mt-3 text-xs text-[var(--text-muted)] leading-relaxed">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* Tabela de dados. Rola sozinha no celular: o contêiner tem overflow-x-auto e
+   largura máxima própria, então a página nunca rola na horizontal. */
+function DataTableBlock({ data }: { data: DataTablePayload }) {
+  return (
+    <div className="my-5 max-w-full">
+      {data.title && <BlockTitle>{data.title}</BlockTitle>}
+      <div className="w-full max-w-full overflow-x-auto rounded-[var(--radius)] border border-[var(--border)]">
+        <table className="w-full min-w-[520px] text-sm border-collapse">
+          <thead>
+            <tr className="bg-[var(--bg-muted)] border-b border-[var(--border)]">
+              {data.columns.map((col, ci) => (
+                <th
+                  key={ci}
+                  className="px-3 py-2.5 text-left font-semibold text-[var(--text)] text-[13px] uppercase tracking-wider whitespace-nowrap"
+                  scope="col"
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.rows.map((row, ri) => (
+              <tr
+                key={ri}
+                className={`border-b border-[var(--border-light)] ${ri % 2 === 1 ? "bg-[var(--bg-muted)]/40" : ""}`}
+              >
+                {row.map((cell, ci) => (
+                  <td
+                    key={ci}
+                    className={`px-3 py-2 text-[13px] align-top ${ci === 0 ? "font-medium text-[var(--text)]" : "text-[var(--text-muted)]"}`}
+                  >
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <BlockFootnote source={data.source} note={data.note} />
+    </div>
+  );
+}
+
+/* Comparativo de valência FIXA: `left` é o lado a evitar, `right` o
+   recomendado. Ícone, cor e etiqueta seguem essa ordem, e trocá-los carimba um
+   certo justamente no que o texto manda descartar. */
+function ComparisonBlock({ data }: { data: ComparisonPayload }) {
+  return (
+    <div className="my-5">
+      <BlockTitle>{data.title}</BlockTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Lado a evitar */}
+        <div className="rounded-[var(--radius)] border border-[var(--danger)]/40 bg-[var(--danger-light)] p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="flex-shrink-0">{icons.circleX}</span>
+            <span className="font-bold text-sm text-[var(--danger)]">{data.left.header}</span>
+          </div>
+          <span className="inline-block mb-3 text-[11px] font-bold uppercase tracking-wider text-[var(--danger)] border border-[var(--danger)]/40 rounded-full px-2 py-0.5">
+            {data.leftChip || "Evite"}
+          </span>
+          <ul className="space-y-2">
+            {data.left.items.map((item, i) => (
+              <li key={i} className="flex gap-2 items-start text-sm text-[var(--text)] leading-relaxed">
+                <span className="flex-shrink-0 mt-[3px]">{icons.circleXSm}</span>
+                <span className="flex-1">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Lado recomendado */}
+        <div className="rounded-[var(--radius)] border border-[var(--success)]/40 bg-[var(--success-light)] p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="flex-shrink-0">{icons.circleCheck}</span>
+            <span className="font-bold text-sm text-[var(--success)]">{data.right.header}</span>
+          </div>
+          <span className="inline-block mb-3 text-[11px] font-bold uppercase tracking-wider text-[var(--success)] border border-[var(--success)]/40 rounded-full px-2 py-0.5">
+            {data.rightChip || "Recomendado"}
+          </span>
+          <ul className="space-y-2">
+            {data.right.items.map((item, i) => (
+              <li key={i} className="flex gap-2 items-start text-sm text-[var(--text)] leading-relaxed">
+                <span className="flex-shrink-0 mt-[3px]">{icons.circleCheckSm}</span>
+                <span className="flex-1">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Painel de números que só fazem sentido juntos. */
+function StatGridBlock({ data }: { data: StatGridPayload }) {
+  return (
+    <div className="my-5">
+      {data.title && <BlockTitle>{data.title}</BlockTitle>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {data.stats.map((stat, i) => (
+          <div
+            key={i}
+            className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-4"
+          >
+            <div className="text-[28px] font-extrabold leading-tight text-[var(--accent)]">
+              {stat.value}
+            </div>
+            <div className="mt-1 text-sm font-semibold text-[var(--text)] leading-snug">
+              {stat.label}
+            </div>
+            {stat.sub && (
+              <div className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">{stat.sub}</div>
+            )}
+          </div>
+        ))}
+      </div>
+      <BlockFootnote source={data.source} />
+    </div>
+  );
+}
+
+/* Passo a passo numerado. `success` e `pitfall` ficam visualmente distintos do
+   `detail` por ícone, cor e fundo. */
+function StepGuideBlock({ data }: { data: StepGuidePayload }) {
+  return (
+    <div className="my-5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-4 sm:p-5">
+      <BlockTitle>{data.title}</BlockTitle>
+      {data.intro && (
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">{data.intro}</p>
+      )}
+      <ol className="space-y-4">
+        {data.steps.map((step, i) => (
+          <li key={i} className="flex gap-3 items-start">
+            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[var(--accent)] text-white text-xs font-bold flex items-center justify-center">
+              {i + 1}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm text-[var(--text)] leading-snug">{step.label}</p>
+              {step.detail && (
+                <p className="mt-1 text-sm text-[var(--text-muted)] leading-relaxed">{step.detail}</p>
+              )}
+              {step.success && (
+                <p className="mt-2 flex gap-2 items-start text-xs leading-relaxed text-[var(--success)] bg-[var(--success-light)] rounded-[var(--radius)] px-2.5 py-1.5">
+                  <span className="flex-shrink-0 mt-[1px]">{icons.circleCheckSm}</span>
+                  <span className="flex-1">
+                    <strong className="font-bold">Deu certo quando: </strong>
+                    {step.success}
+                  </span>
+                </p>
+              )}
+              {step.pitfall && (
+                <p className="mt-2 flex gap-2 items-start text-xs leading-relaxed text-[var(--danger)] bg-[var(--danger-light)] rounded-[var(--radius)] px-2.5 py-1.5">
+                  <span className="flex-shrink-0 mt-[1px]">{icons.alertTriangleSm}</span>
+                  <span className="flex-1">
+                    <strong className="font-bold">Onde se erra: </strong>
+                    {step.pitfall}
+                  </span>
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+      {data.outcome && (
+        <div className="mt-4 pt-3 border-t border-[var(--border-light)] flex gap-2 items-start">
+          <span className="flex-shrink-0 mt-[3px]">{icons.flagSm}</span>
+          <p className="text-sm text-[var(--text)] leading-relaxed">
+            <strong className="font-bold">No fim você tem: </strong>
+            {data.outcome}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Linha do tempo. O `tone` muda a marcação do marco: passado discreto, agora em
+   destaque, futuro apenas contornado. */
+function TimelineBlock({ data }: { data: TimelinePayload }) {
+  return (
+    <div className="my-5">
+      {data.title && <BlockTitle>{data.title}</BlockTitle>}
+      <ol className="relative border-l-2 border-[var(--border)] ml-2 space-y-5 pl-5 py-1">
+        {data.events.map((event, i) => {
+          const tone = event.tone || "past";
+          const dot =
+            tone === "now"
+              ? "bg-[var(--accent)] border-[var(--accent)]"
+              : tone === "future"
+              ? "bg-[var(--card)] border-[var(--text-light)]"
+              : "bg-[var(--text-light)] border-[var(--text-light)]";
+          const dateColor =
+            tone === "now"
+              ? "text-[var(--accent)]"
+              : tone === "future"
+              ? "text-[var(--text-light)]"
+              : "text-[var(--text-muted)]";
+          return (
+            <li key={i} className="relative">
+              <span
+                className={`absolute -left-[27px] top-1 w-3 h-3 rounded-full border-2 ${dot}`}
+                aria-hidden="true"
+              />
+              <div className="flex flex-wrap items-baseline gap-x-2">
+                <span className={`text-xs font-bold uppercase tracking-wider ${dateColor}`}>
+                  {event.date}
+                </span>
+                {tone === "now" && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] border border-[var(--accent)]/40 rounded-full px-1.5 py-[1px]">
+                    Agora
+                  </span>
+                )}
+              </div>
+              <p className="font-semibold text-sm text-[var(--text)] leading-snug mt-0.5">
+                {event.label}
+              </p>
+              {event.detail && (
+                <p className="mt-1 text-sm text-[var(--text-muted)] leading-relaxed">
+                  {event.detail}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 /* ───────── COMPONENT: StepCard ───────── */
 function StepCard({
   step,
@@ -591,6 +954,28 @@ function StepCard({
                       </div>
                     </div>
                   );
+                case "figure":
+                  return <FigureBlock key={i} markup={section.value} caption={section.label} />;
+                case "dataTable":
+                  return section.data ? (
+                    <DataTableBlock key={i} data={section.data as DataTablePayload} />
+                  ) : null;
+                case "comparison":
+                  return section.data ? (
+                    <ComparisonBlock key={i} data={section.data as ComparisonPayload} />
+                  ) : null;
+                case "statGrid":
+                  return section.data ? (
+                    <StatGridBlock key={i} data={section.data as StatGridPayload} />
+                  ) : null;
+                case "stepGuide":
+                  return section.data ? (
+                    <StepGuideBlock key={i} data={section.data as StepGuidePayload} />
+                  ) : null;
+                case "timeline":
+                  return section.data ? (
+                    <TimelineBlock key={i} data={section.data as TimelinePayload} />
+                  ) : null;
                 default:
                   return null;
               }
