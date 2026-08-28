@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
 
 
 def _now_utc() -> datetime:
@@ -90,20 +90,203 @@ class Course(BaseModel):
 
 
 class SectionType(str, Enum):
-    """Tipos de seção de conteúdo dentro de um módulo."""
+    """Tipos de seção de conteúdo dentro de um módulo.
+
+    Os cinco primeiros carregam prosa ou código no campo `value`. Os seis
+    seguintes são blocos visuais, com carga tipada em `data`, e existem para
+    cumprir a doutrina de peso visual (`docs/DOUTRINA_VISUAL_CURSOS.md`):
+    nenhum curso nasce como coluna de texto.
+
+    As formas de payload são as do motor de cursos do `landing-page-geo`
+    (`src/types/course-page.ts`). Curso gerado aqui é montado lá, então
+    divergir de campo ou de opcionalidade quebra a montagem.
+    """
     TEXT = "text"
     CODE = "code"
     WARNING = "warning"
     TIP = "tip"
     CHECKPOINT = "checkpoint"
+    # Blocos visuais. Carga em `data`, e `value` fica vazio.
+    FIGURE = "figure"
+    DATA_TABLE = "dataTable"
+    COMPARISON = "comparison"
+    STAT_GRID = "statGrid"
+    STEP_GUIDE = "stepGuide"
+    TIMELINE = "timeline"
+
+
+#: Tipos que produzem alívio visual. Espelha o conjunto VISUAL do portão
+#: `scripts/gate-peso-visual.mjs` do `landing-page-geo`.
+VISUAL_SECTION_TYPES: frozenset[SectionType] = frozenset({
+    SectionType.FIGURE,
+    SectionType.DATA_TABLE,
+    SectionType.COMPARISON,
+    SectionType.STAT_GRID,
+    SectionType.STEP_GUIDE,
+    SectionType.TIMELINE,
+})
+
+#: Tipos cuja carga vive em `data` e cujo `value` fica vazio de propósito.
+PAYLOAD_SECTION_TYPES: frozenset[SectionType] = frozenset({
+    SectionType.DATA_TABLE,
+    SectionType.COMPARISON,
+    SectionType.STAT_GRID,
+    SectionType.STEP_GUIDE,
+    SectionType.TIMELINE,
+})
+
+
+class DataTablePayload(BaseModel):
+    """Tabela de dados. Alternativas nas colunas e critério nas linhas."""
+    title: str | None = None
+    columns: list[str] = Field(..., min_length=2)
+    rows: list[list[str]] = Field(..., min_length=1)
+    source: str | None = None
+    note: str | None = None
+
+    @field_validator("rows")
+    @classmethod
+    def validate_rows(cls, v: list[list[str]], info) -> list[list[str]]:
+        colunas = info.data.get("columns")
+        if not colunas:
+            return v
+        for i, linha in enumerate(v):
+            if len(linha) != len(colunas):
+                raise ValueError(
+                    f"A linha {i + 1} tem {len(linha)} célula(s) para "
+                    f"{len(colunas)} coluna(s). Tabela torta não renderiza."
+                )
+        return v
+
+
+class ComparisonSide(BaseModel):
+    """Um lado do comparativo."""
+    header: str = Field(..., min_length=2)
+    items: list[str] = Field(..., min_length=1)
+
+
+class ComparisonPayload(BaseModel):
+    """Comparativo de dois lados, com valência FIXA.
+
+    `left` é sempre o lado a evitar e `right` é sempre o recomendado. Inverter
+    carimba um certo justamente no que o texto manda descartar.
+    """
+    title: str = Field(..., min_length=3)
+    left: ComparisonSide
+    right: ComparisonSide
+    leftChip: str | None = None
+    rightChip: str | None = None
+
+
+class StatItem(BaseModel):
+    """Um número do painel, com o rótulo que o explica."""
+    value: str = Field(..., min_length=1)
+    label: str = Field(..., min_length=2)
+    sub: str | None = None
+
+
+class StatGridPayload(BaseModel):
+    """Painel de números que só fazem sentido juntos."""
+    title: str | None = None
+    stats: list[StatItem] = Field(..., min_length=2)
+    source: str | None = None
+
+
+class StepGuideStep(BaseModel):
+    """Um passo do guia, com o que se vê quando dá certo."""
+    label: str = Field(..., min_length=3)
+    detail: str | None = None
+    success: str | None = None
+    pitfall: str | None = None
+
+
+class StepGuidePayload(BaseModel):
+    """Passo a passo numerado, para processo em que a ordem importa."""
+    title: str = Field(..., min_length=3)
+    intro: str | None = None
+    steps: list[StepGuideStep] = Field(..., min_length=2)
+    outcome: str | None = None
+
+
+class TimelineEvent(BaseModel):
+    """Um marco da linha do tempo."""
+    date: str = Field(..., min_length=1)
+    label: str = Field(..., min_length=2)
+    detail: str | None = None
+    tone: Literal["past", "now", "future"] | None = None
+
+
+class TimelinePayload(BaseModel):
+    """Linha do tempo de marcos datados."""
+    title: str | None = None
+    events: list[TimelineEvent] = Field(..., min_length=2)
+
+
+#: Mapeia cada tipo com payload ao modelo que o valida.
+PAYLOAD_MODELS: dict[SectionType, type[BaseModel]] = {
+    SectionType.DATA_TABLE: DataTablePayload,
+    SectionType.COMPARISON: ComparisonPayload,
+    SectionType.STAT_GRID: StatGridPayload,
+    SectionType.STEP_GUIDE: StepGuidePayload,
+    SectionType.TIMELINE: TimelinePayload,
+}
 
 
 class CourseSection(BaseModel):
-    """Uma seção de conteúdo dentro de um step/módulo."""
+    """Uma seção de conteúdo dentro de um step/módulo.
+
+    Bloco de prosa ou de código carrega o conteúdo em `value`. Bloco visual com
+    payload carrega em `data` e deixa `value` vazio, que é como o motor da
+    landing espera. O bloco `figure` é a exceção entre os visuais: o SVG ou a
+    marcação da imagem vai no `value` e a legenda vai em `label`.
+    """
     type: SectionType
-    value: str = Field(..., min_length=1, description="Conteúdo PT-BR com acentuação")
+    value: str = Field(default="", description="Conteúdo PT-BR com acentuação")
     language: str | None = Field(default=None, description="Linguagem para blocos de código")
     label: str | None = Field(default=None, description="Label opcional")
+    data: dict | None = Field(default=None, description="Carga tipada dos blocos visuais")
+
+    @model_validator(mode="after")
+    def validate_carga(self) -> "CourseSection":
+        """Cobra a carga certa para cada tipo, e recusa bloco que sairia vazio.
+
+        O motor da landing degrada bloco sem `data` para nada, sem erro e sem
+        registro no console. É a falha mais silenciosa que ele tem, e o lugar
+        de pegá-la é aqui, na geração.
+        """
+        if self.type in PAYLOAD_SECTION_TYPES:
+            if not self.data:
+                raise ValueError(
+                    f"O bloco '{self.type.value}' precisa de `data`. Sem ele, "
+                    "a página renderiza nada e não avisa."
+                )
+            modelo = PAYLOAD_MODELS[self.type]
+            try:
+                modelo.model_validate(self.data)
+            except ValidationError as e:
+                raise ValueError(
+                    f"A carga do bloco '{self.type.value}' não bate com "
+                    f"{modelo.__name__}: {e}"
+                ) from e
+            return self
+
+        if self.type is SectionType.FIGURE:
+            if not self.value.strip():
+                raise ValueError(
+                    "O bloco 'figure' precisa do SVG ou da imagem em `value`."
+                )
+            if not (self.label or "").strip():
+                raise ValueError(
+                    "O bloco 'figure' precisa de legenda em `label`. Figura sem "
+                    "legenda não diz o que mostra."
+                )
+            return self
+
+        if not self.value.strip():
+            raise ValueError(
+                f"O bloco '{self.type.value}' precisa de conteúdo em `value`."
+            )
+        return self
 
 
 class StepDefinition(BaseModel):

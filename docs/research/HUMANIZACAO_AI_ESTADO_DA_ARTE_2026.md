@@ -199,9 +199,20 @@ A atualização introduziu **três spam policies** novas:
 
 ## 5. Técnicas Aplicáveis
 
-### 5.1 Burstiness control via prompt (custo zero, ganho mensurável)
+### 5.1 Burstiness control via prompt (REVOGADO em 11/08/2026)
 
-Instrução canônica para o redator (GPT-4o no curso-factory):
+> **REVOGADO.** A instrução abaixo entrou nos prompts em maio de 2026 e foi
+> removida em 11/08/2026 pela `DIRETRIZ_EDITORIAL.md` v3 (§4.7). Ela melhora a
+> métrica e piora o texto: a cota de frase curta por parágrafo produz staccato
+> de manchete, que os catálogos de detecção de 2026 listam como marcador tanto
+> quanto a uniformidade que ela pretendia corrigir, e texto ajustado para a
+> métrica continua distinguível por leitores humanos (Tabach,
+> [arXiv:2604.23471](https://arxiv.org/abs/2604.23471), abril de 2026). O
+> registro fica aqui como histórico da pesquisa; o que vale hoje é o
+> diagnóstico do bloco de dez frases, aplicado ao texto pronto. Ver
+> [`wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`](../../wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md).
+
+Instrução que era usada com o redator (GPT-4o no curso-factory):
 
 ```
 Varie comprimento de frase entre 4 e 35 palavras. Em CADA parágrafo,
@@ -210,7 +221,7 @@ nunca duas frases consecutivas com comprimento na mesma faixa (curta 4-10,
 média 11-22, longa 23-35).
 ```
 
-Ataca diretamente a métrica do GPTZero. Fonte prática: Jordan Gibbs — *This Prompt Fools Every AI Detector* ([Medium](https://medium.com/@jordan_gibbs/this-prompt-fools-every-ai-detector-b9ad8c97c07d)).
+Ataca diretamente a métrica do GPTZero, e esse era exatamente o problema: otimizava o detector em vez do leitor. Fonte prática original: Jordan Gibbs, *This Prompt Fools Every AI Detector* ([Medium](https://medium.com/@jordan_gibbs/this-prompt-fools-every-ai-detector-b9ad8c97c07d)).
 
 ### 5.2 Persona conditioning com few-shot real
 
@@ -316,8 +327,12 @@ Pangram + multi-pass não são para "burlar detector". São para **medir se entr
 
 Ordenados por (impacto × tração) / esforço. XS = <2h, S = 2-6h, M = 1-2d, L = 3-5d.
 
-### PR-1 — Burstiness control no prompt do redator
+### PR-1 — Burstiness control no prompt do redator (REVOGADO em 11/08/2026, ver §5.1)
 **Esforço**: XS · **Impacto**: ALTO · **Risco**: baixo (revertível em commit)
+
+> **REVOGADO.** Implementado em maio de 2026 e removido dos prompts em
+> 11/08/2026 pela `DIRETRIZ_EDITORIAL.md` v3 (§4.7). Foi a principal causa da
+> queda de qualidade dos textos gerados. Detalhe em §5.1 deste documento.
 
 Adicionar 1 seção em `src/templates/prompts/draft.md` (entre seção 21 anti-padrões e Andragogia) e idêntica em `src/templates/prompts/pt-br/draft.md`:
 
@@ -1215,3 +1230,29 @@ A métrica-norte é **AECR (AI Engine Citation Rate)** — % de queries-âncora 
 3. Manter qualidade humana real (não bypass) que justifique citação em vez de filtragem.
 
 A próxima wave (não escopo deste dossiê) deve cobrir **medição contínua de AECR** via prompts canônicos rodados semanalmente em Perplexity/ChatGPT/Claude — análogo ao já implementado em `landing-page-geo > scripts/run-prompts-weekly.mjs` para o site.
+
+---
+
+## Fontes principais da pesquisa (movidas do GUIA_ESCRITA_HUMANIZADA.md em 27/08/2026)
+
+A bibliografia abaixo estava no `GUIA_ESCRITA_HUMANIZADA.md`, que virou ponteiro para a
+fonte única de estilo (`alexandrebrt14-sys/escrita-empreendedor`). Ponteiro não repete
+lista, e apagar a bibliografia perderia o rastro de cada afirmação, então ela desce para
+este documento de pesquisa, que é o lugar dela.
+
+1. TextSight, "Sentence Length Variance", 22/06/2026. https://www.textsight.ai/blog/sentence-length-variance/
+2. The Visual Communication Guy, "How Content Teams Can Build a Reliable AI Writing Review Process", 17/07/2026. https://thevisualcommunicationguy.com/2026/07/17/how-content-teams-can-build-a-reliable-ai-writing-review-process/
+3. Wikipedia, "Signs of AI writing" (catálogo vivo do WikiProject AI Cleanup, revisões ao longo de 2026). https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+4. Bloomberry, "AI Sentence DNA" (corpus com 7.622 entradas, auditado em junho de 2026). https://www.bloomberry.ai/research/ai-writing-patterns
+5. Przystalski et al., "Stylometric detection of AI-generated texts", Digital Scholarship in the Humanities, Oxford, 2026 (dispersão ~5 vs ~16). https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041
+6. Tabach, "Can Humans Detect AI?", arXiv, 25/04/2026 (evasão de detector não engana leitor). https://arxiv.org/abs/2604.23471
+7. TechCrunch, "Substack's new tool tells you who's been writing their newsletters with AI", 22/07/2026. https://techcrunch.com/2026/07/22/substacks-new-tool-tells-you-whos-been-writing-their-newsletters-with-ai/
+8. Envox, "Os 12 maiores vícios de linguagem de IA em 2026", 23/02/2026. https://envox.com.br/marketing-de-conteudo/vicios-linguagem-ia-2026-exemplos-reais/agencia-de-marketing-digital/trafego-pago/vendas/
+9. Meio & Mensagem, "Como são as políticas e diretrizes de IA das redações", 05/01/2026. https://www.meioemensagem.com.br/midia/como-sao-as-politicas-e-diretrizes-de-ia-das-redacoes
+10. CBL, "Manual de Boas Práticas de IA" do setor editorial brasileiro, 14/05/2026. https://cbl.org.br/2026/05/cbl-lanca-manual-de-boas-praticas-de-ia-para-orientar-editoras-brasileiras-no-uso-etico-da-inteligencia-artificial/
+11. Google Search Central, "Optimizing your website for generative AI features", maio de 2026. https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
+12. Martinez, "Critical Survey of Generative Engine Optimization (2023-2026)", arXiv, 15/07/2026. https://arxiv.org/abs/2607.14035
+13. "From Citation Selection to Citation Absorption", arXiv, 28/04/2026 (evidência extraível como fator de citação). https://arxiv.org/abs/2604.25707
+14. Eduardo Martins, "Manual de Redação e Estilo de O Estado de S. Paulo" (referência permanente de prosa direta brasileira). https://fasam.edu.br/wp-content/uploads/2020/07/Manual-de-Reda%C3%A7%C3%A3o-e-Estilo-Estad%C3%A3o.pdf
+
+Lacuna declarada: não existe, até julho de 2026, estudo de corpus acadêmico sobre marcadores de LLM específicos do português brasileiro; a tabela da seção 4 consolida convergência entre fontes de mercado brasileiras e os achados de corpus em inglês. Quando um estudo desses aparecer, este guia deve ser revisado contra ele.

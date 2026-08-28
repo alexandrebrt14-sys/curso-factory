@@ -80,13 +80,14 @@ The content is rendered by a `FormattedText` component that interprets specific 
 - Plain text → paragraph with `text-justify`
 
 **Required checks:**
-- **Comparative tables**: at least ONE per module. Format: rows with pipes separated by `\n`. If missing, ADD.
-- **Frequent sub-headings**: every 2–3 paragraphs there should be a sub-heading (line ending with `:`). They build visual hierarchy and ease scanning. If long blocks lack headings, BREAK them with sub-headings.
-- **Bold**: for key terms and concepts on FIRST occurrence using `**term**`. If missing, ADD.
-- **Blockquotes**: at least 1–2 per module for central insights using `> `. If missing, ADD.
-- **Format alternation**: never more than 3 consecutive paragraphs without a visual element (table, list, blockquote, or sub-heading). If you find monotonous blocks, BREAK them with visual elements.
+- **Visual weight (count it, do not estimate it)**: no paragraph above 1,200 characters, at least three visual supports per module, and at least one per 2,500 characters of prose. Tables, numbered lists of steps, and images with captions count as visual support; code blocks, blockquotes, and bold do not. When weight is missing, first convert into a piece the passage that was already a comparison, a sequence, or a set of numbers, and only then, if it is still missing, ADD a new piece. A paragraph over the ceiling carrying two ideas gets split by idea; carrying only one, the surplus becomes a piece. Never cut reasoning to fit the ceiling, because prose chopped into scannable fragments is the very defect section 3.5 orders you to remove.
+- **Markup of the pieces**: every table needs a separator row, the same number of cells in every row, and one line of text per table row, never packed into a single line. Every image needs a filled-in caption in the bracketed text, because a figure with no caption is rejected. Malformed markup falls back to prose and loses the credit: FIX it.
+- **Sub-headings**: they enter when the subject changes, with text that announces what the next part actually covers. There is no quota per number of paragraphs. If the module carries a sub-heading every two paragraphs, the reasoning was sliced before it finished: MERGE the blocks that deal with the same subject.
+- **Bold**: for key terms and concepts on FIRST occurrence using `**term**`. If missing, ADD. If bold appears out of habit on ordinary words, REMOVE it, because emphasis in excess cancels emphasis.
+- **Blockquotes**: 1–2 per module for central insights using `> `. If missing, ADD; if there are more than three, convert the surplus into prose.
+- **Balance between prose and structure**: prose carries reasoning; tables, checklists, and numbered lists carry comparison, verification, and sequence. Convert into prose the lists whose items stand in a relationship of cause to each other, and the strings of "bold term: explanation". Convert into a table or a checklist the paragraphs that are enumerating comparable criteria or verifiable steps.
 - **Lists with `-- `**: confirm they use `-- ` (two hyphens), NEVER `- ` (single hyphen).
-- **Paragraphs**: max 5 lines each, one central idea per paragraph. Break long paragraphs.
+- **Paragraphs**: one central idea each, developed until the idea reaches its end. Break the ten-line block that covers two subjects; join the run of one-sentence paragraphs that slices a single line of reasoning.
 - **FORBIDDEN**: emojis anywhere in the content
 
 ### 3.5. Anti-"AI tells" audit (Humanizer 2.6.2) — NEW LAYER
@@ -115,12 +116,49 @@ Sweep the text and CORRECT each occurrence of the 21 patterns of artificial writ
 20. Excessive nominalization ("implementation", "utilization", "operationalization") → use the verb
 21. Absence of authorial voice in genres that require an opinion → add a clear analytical angle
 
+### 3.55. Banned structures, rhythm, and narrative (`DIRETRIZ_EDITORIAL.md`)
+
+Normative source: `DIRETRIZ_EDITORIAL.md` at the repository root, sections 3, 4, 5, and 6. Correct actively:
+
+**Banned structures and punctuation:**
+- The em dash in prose, anywhere in the body of the text, tables, blockquotes, and exercises included. This is a house rule of this repository. Rewrite with a comma, a colon, parentheses, or two sentences. In a title or a section heading it is tolerated. The en dash stays only in numeric ranges.
+- Fabricated scarcity ("limited spots", "for a limited time", "secure yours now", "don't miss out", "unique opportunity") and the empty invitation ("learn more", "click here", "unlock the power of", "transform"). Replace with an action verb carrying a visualizable object, or cut.
+- More than one analogy per module. Keep the one that belongs to the central concept and convert the others into a one-sentence definition placed right beside the term.
+- The negate-to-affirm construction ("this isn't X, it's Y", "it's not just X, it's Y", "X alone won't do, you need Y", "more than X, it's Y"). Tolerate one occurrence per module at most and rewrite the rest as direct assertions.
+- Mechanical rule of three: triads of adjectives, benefits, or examples deployed as rhythm. Cut to two or expand to the real number of items.
+- The mirror conclusion that restates the opening without adding a consequence, and the pseudo-profound closer. Replace with the concrete consequence or the next step.
+- Title case in headings: house convention is sentence case, capitalizing the first word and proper nouns only. The Oxford comma is standard American usage and stays; do not remove it.
+- Vocabulary tics of AI-generated English: "delve into", "a testament to", "tapestry", "in the realm of", "navigate the complexities of", "ever-evolving landscape", "utilize" where "use" works, "leverage" as a verb where "use" works.
+
+**Rhythm:** take blocks of ten sentences and compare the longest with the shortest. A gap under 15 words points to machine uniformity and calls for a rewrite of that passage, letting the content govern the length. The opposite defect gets fixed too: a run of short filler sentences, one per paragraph, is headline staccato and must be merged into periods that hold up the reasoning. Never apply a short-sentence quota or programmed alternation.
+
+**Narrative:** check whether the module opens on a concrete situation with explicit tension (rather than on a definition or a generic scenario), whether the promise of the opening is paid off in the body, whether a case runs through the argument, and whether the synthesis returns to that case showing what changed. If the opening is generic, REWRITE it using the strongest data point or case already present in the module; if the synthesis merely repeats what was said, REWRITE it as consequence and next step. Do not invent a case: if the material is not there, mark `[FALTA EVIDÊNCIA: real case to open the module]`.
+
+### 3.56. Evidence and arc locks (verifiable one by one)
+
+These locks are verification, not impression. Go through all of them and report the result.
+
+**Evidence:**
+- Every percent sign triggers four checks inside the same sentence: origin, date, method, and denominator. If any one of them is missing, mark `[FALTA EVIDÊNCIA: ...]` in place of the figure or shrink the claim to what is known. A small base gets counted in units, because with no denominator "grew 300%" can mean three clients.
+- Every invented example carries a label, including each output of a calculation or a simulation.
+- Every case presented as real has a name and a source in `{context}`. With no source, it either becomes a scenario labeled hypothetical or it goes.
+- Open markers ([FALTA EVIDÊNCIA] and [PREENCHER-HUMANO] combined) do not go above five in the module. Beyond that, REJECT: the piece is asking for reporting, not for review.
+- Blocks that assert a result, no more numerous than the dated proofs available. When there is more claim than proof, shrink the surplus claims to the size of what the research supports.
+- Identifiers verified before being cited: section number, document code, file name, paper ID. A wrong identifier propagates on its own into every derivative and onto the public page.
+
+**Arc:**
+- The opening installs situation and tension WITHOUT postponing the promise. If the answer is buried under a long scene, move the promise up.
+- The anchor case is a single one: it appears in the opening, returns in the body, and closes at the end. Three loose cases, one per section, become one in review.
+- The closing returns to that case instead of summarizing.
+- No ask for data, for a sign-up, or for money appears before the first proof. An ask that comes before the proof reads as a demand, and the fix is to move the block.
+- Loose-paragraph test on the sentences that carry proof, limit, and price: read the sentence in isolation, without the surrounding text, and ask whether it holds up. Audience, condition, and exception have to travel inside the same sentence, because a "does not work for X" clipped without the "only" reaches the reader as "works".
+
 ### 3.6. Flagging missing substance (Humanizer 2.6.2)
 
 Inviolable rule: **humanizing is not inventing**.
 
-- If the text carries a claim without evidence (data, source, case) and the research in `{context}` does not support it, DO NOT invent a plausible figure. Mark it with `[MISSING EVIDENCE: <description>]` and report it in the final block
-- If you find `[MISSING EVIDENCE: ...]` markers from the writer, report them in the "Pending evidence" final block instead of silently deleting
+- If the text carries a claim without evidence (data, source, case) and the research in `{context}` does not support it, DO NOT invent a plausible figure. Mark it with `[FALTA EVIDÊNCIA: <description>]` and report it in the final block
+- If you find `[FALTA EVIDÊNCIA: ...]` or `[PREENCHER-HUMANO: ...]` markers from the writer, report them in the "Pending evidence" final block instead of silently deleting
 - Never turn "the market understands" into "67% of companies, according to McKinsey" unless the figure exists in `{context}`
 - Reject the module if there are 3+ substantive claims without evidence that you cannot fix
 
@@ -164,10 +202,13 @@ Spelling/idiom corrections: [number]
 Editorial corrections: [number]
 Formatting corrections: [number]
 Tables added: [number]
+Visual weight: [paragraphs above 1,200 characters in the draft received / visual supports per module after the review]
 Exercises corrected/added: [number]
 Clichés removed: [number]
 Anti-AI patterns corrected (1-21): [count by category]
-Pending evidence: [list of unresolved [MISSING EVIDENCE: ...] markers]
+Evidence locks: [percentages missing the 4 checks, cases with no label, open markers (total), unverified identifiers]
+Arc locks: [postponed promise, multiple anchor cases, closing that summarizes, ask before proof, sentences failing the loose-paragraph test]
+Pending evidence: [list of unresolved [FALTA EVIDÊNCIA: ...] markers]
 Top adjustments: [list the 5 most relevant changes]
 Approved for publication: yes/no
 Reason (if not approved): ...

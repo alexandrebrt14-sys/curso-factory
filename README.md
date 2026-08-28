@@ -315,6 +315,8 @@ Cada módulo inclui obrigatoriamente:
 - **Blocos de citação (>)** para insights centrais e conceitos memoráveis
 - **Exercícios** com progressão de complexidade (Taxonomia de Bloom), contexto profissional real e critérios de avaliação
 
+O gerador não produz só prosa e código: o contrato de seções emite seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), e o parser promove tabela em Markdown, lista numerada de passos e imagem com legenda a partir do texto do modelo. A régua de peso visual (camada `visual_density` do `config/quality_rules.yaml`) é cobrada em `TsxGenerator.render_page`, antes da renderização: módulo que reprova levanta `VisualDensityError` e o curso não vira arquivo. Regras e payloads em [docs/DOUTRINA_VISUAL_CURSOS.md](docs/DOUTRINA_VISUAL_CURSOS.md).
+
 ### Expressões Proibidas
 
 O pipeline detecta e bloqueia automaticamente:
@@ -450,7 +452,7 @@ curso-factory/
 ├── README.md
 ├── config/
 │   ├── courses.yaml          # Definição dos cursos a criar
-│   └── quality_rules.yaml    # Regras de qualidade e validação
+│   └── quality_rules.yaml    # Regras de qualidade e validação (inclui visual_density)
 ├── src/
 │   ├── __init__.py
 │   ├── config.py             # Configurações globais
@@ -487,11 +489,13 @@ curso-factory/
 │       ├── content_checker.py # Tabelas, exercícios, Bloom, andragogia, clichês
 │       ├── html_validator.py  # Tags, acessibilidade, semântica
 │       ├── link_checker.py    # Acentos em URLs, links internos
+│       ├── visual_density.py  # Peso visual por módulo (camada visual_density do YAML)
 │       └── quality_gate.py    # Gate unificado de 5 camadas com auto-fix
 ├── tests/
 │   ├── fixtures/sample_course.json
 │   └── test_generators.py
 ├── docs/
+│   ├── DOUTRINA_VISUAL_CURSOS.md # Peso visual: tetos, seis tipos de bloco, quatro lugares
 │   └── FINOPS.md             # Documentação de custos e budget guard
 └── output/
     ├── drafts/               # Rascunhos em progresso
@@ -510,6 +514,7 @@ curso-factory/
 | [docs/GEO_REDACAO_CHECKLIST_2026.md](docs/GEO_REDACAO_CHECKLIST_2026.md) | **Como escrever conteúdo para o maior ganho em GEO.** Rubrica empírica de 13 técnicas com lift de citação medido, mapeada para módulos de curso; é o que o `content_checker.py` valida por contagem (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule). |
 | [docs/GEO_KNOWLEDGE_BASE_2026_V3.md](docs/GEO_KNOWLEDGE_BASE_2026_V3.md) | Estado da arte de GEO 20-mai a 03-jun-2026: AutoGEO (GEO/GEU Score), earned media 84%, Selection×Absorption, super-geo 4 tiers, conceitos 51-63, papers Q2 2026. |
 | [docs/GEO_EARNED_MEDIA_2026.md](docs/GEO_EARNED_MEDIA_2026.md) | Por que earned media domina a citação por IA (84% vs paid 0,3%); framework EMGE e KPIs K-EM. |
+| [docs/DOUTRINA_VISUAL_CURSOS.md](docs/DOUTRINA_VISUAL_CURSOS.md) | **Antes de gerar curso.** Os três tetos de peso visual, os seis tipos de bloco que o gerador emite, o que o parser promove sozinho e os quatro lugares que precisam mudar juntos ao criar um tipo novo. |
 | [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
 | [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
 
