@@ -103,11 +103,17 @@ def test_anti_cliche_heavy():
 
 
 def test_anti_cliche_one_offence():
-    """1 cliche custa 25 pontos."""
+    """1 cliche custa 25 pontos, e trecho que casa duas expressoes so custa uma.
+
+    "Em um mundo cada vez mais" contem o conectivo de enchimento "cada vez
+    mais", e as duas expressoes existem na fonte de estilo. Sem a poda de
+    substring em _check_cliches o mesmo trecho seria cobrado duas vezes e o
+    score cairia para 50.
+    """
     text = "Em um mundo cada vez mais digital, GEO eh essencial."
     score, errs = _score_anti_cliche(text)
     assert score == 75
-    assert len(errs) == 1
+    assert errs == ["cliche proibido: 'em um mundo cada vez mais'"] or len(errs) == 1
 
 
 def test_bloom_clean():
