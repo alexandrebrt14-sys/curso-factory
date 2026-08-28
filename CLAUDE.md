@@ -76,7 +76,10 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 - [`docs/research/geo-wave-julho-22b-2026/GEO_WAVE_JULHO_22B_2026_CANONICAL.md`](docs/research/geo-wave-julho-22b-2026/GEO_WAVE_JULHO_22B_2026_CANONICAL.md) — **doc canônico delta** (22-jul): INFRAESTRUTURA de GEO — crawlers, controle de acesso e atribuição, aterrado em docs oficiais acessadas em 22-jul-2026. Núcleo: (a) **matriz de crawlers por finalidade** (§2.1: treino=GPTBot/ClaudeBot/Google-Extended-token; busca=OAI-SearchBot/Claude-SearchBot/PerplexityBot; ação de usuário=ChatGPT-User/Claude-User/Perplexity-User, e estes dois últimos podem ignorar robots.txt por doc oficial); default Brasil GEO = liberar tudo, matriz restritiva só p/ conteúdo sensível, com linha EXPLÍCITA de Google-Extended; (b) **§7 REVOGA do corpus** o claim "bloquear Google-Extended remove de AIO" — AIO/AI Mode usam o Googlebot NORMAL (doc oficial); exposição em AIO gerencia-se com nosnippet/max-snippet/noindex; (c) **GA4**: canal default "AI Assistants" (medium ai-assistant; EXCLUI AIO/AI Mode que seguem em Organic Search; Perplexity ausente da lista em 22-jul) + custom channel group com regex ANCORADA (§4.1) + convenção utm_medium=ai-assistant; (d) **dark traffic**: ~70,6% das visitas de IA chegam sem referrer [vendor Loamly] → GA4 é o PISO do canal, declarar em todo report; (e) **crawl-to-referral** como métrica de troca justa (Anthropic ~70.900:1 em jun/2025; painel vivo radar.cloudflare.com/ai-insights prevalece); (f) Cloudflare: Content Signals Policy, AI Crawl Control, e POLÍTICA ANUNCIADA de bloqueio default Training/Agent em páginas com anúncios (15-set-2026, novos domínios CF); (g) **claims machine-readable com validade** (§6, novo padrão). **§5.3 = aplicação neste repo** (aula candidata "O encanamento do GEO"; atualizar template robots.txt de docs/templates/seo-geo-2026/ para a matriz por finalidade).
 - [`docs/research/geo-wave-julho-22c-2026/GEO_WAVE_JULHO_22C_2026_CANONICAL.md`](docs/research/geo-wave-julho-22c-2026/GEO_WAVE_JULHO_22C_2026_CANONICAL.md) — **doc canônico delta** (22-jul): BRASIL + regulatório + segurança agêntica. Núcleo: (a) **Brasil primeira linha**: Modo IA pt-BR desde 08-set-2025 (primária Google BR); UCP/checkout no AI Mode reportado desde 19-mai-2026 [imprensa; primária pendente]; 3º maior usuário de ChatGPT [vendor via secundária]; Datafolha 93% usam IA MAS inclui IA embutida (não equivale a busca por IA); delegação de compra a agentes ainda 15%; (b) **mapa imprensa×IA**: Estadão×Google (dez/25), Folha×Google, Folha+UOL×OpenAI (25-mai-26); frente ANJ+Abert+Aner; CADE em fase avançada [classe processual a confirmar] — efeito dos acordos sobre citação é HIPÓTESE testável, não fato; (c) **regulatório com vetos**: PL 2338 NÃO aprovado (nunca citar como lei; reavaliar trimestral); CONAR = corresponsabilidade AUTORREGULATÓRIA por conteúdo de IA desde 01-jun-2026; LGPD já rege dados em pipelines; sandbox ANPD não é salvo-conduto; "OWASP LLM Top 10 2026" NÃO existe (vigente = 2025); (d) **segurança agêntica** (§6): prompt injection indireta demonstrada (Comet/Atlas, PoC) E observada in the wild (Unit 42) — checklist "agent-friendly sem virar vetor" (§6.2, 5 itens); Web Bot Auth/Signed Agents = padrão EMERGENTE draft (sinal positivo, nunca bloqueio único); (e) claims machine-readable (§9). **§8.3 = aplicação neste repo** (aulas "GEO no Brasil" e "Agent-ready sem virar vetor"; reviewer ganha os 2 vetos do §7: PL 2338 não é lei, OWASP 2026 não existe).
 
-Citar `§X.Y` dos KBs/INCREMENT/WAVE ao tomar decisões. **Em conflito de fato datado, prevalece a wave mais recente nos itens explicitamente marcados como correção: Julho (§7 — Adobe×Semrush, conversão por vertical) > Junho 19 (§7 — schema, llms.txt, "GEO = camada técnica separada") > 15B (§8); fora desses itens, o corpus anterior segue valendo.** Atualizar trimestralmente (próxima: agosto/2026).
+**Wave Agosto 2026 (27-08-2026)** — adiciona aos anteriores e em parte **CORRIGE**; 10 rodadas em 5 provedores com web ao vivo (Perplexity `sonar-pro` ×6 — as 4 `sonar-deep-research` em paralelo deram ReadTimeout aos 25 min —, Gemini 3.1 Pro grounding ×2, OpenAI `gpt-5.5` web_search, xAI `grok-4.6` via Agent Tools API) + doublecheck Claude (5 arXiv de jul–ago na página do arXiv, 30 URLs com sentinela):
+- [`docs/research/geo-wave-agosto-2026/GEO_WAVE_AGOSTO_2026_CANONICAL.md`](docs/research/geo-wave-agosto-2026/GEO_WAVE_AGOSTO_2026_CANONICAL.md) — **doc canônico delta** 22-jul → 27-ago: FRAMEWORKS DE EXECUÇÃO, KPIs, REPORT e motores. Núcleo: (a) **o motor escolhe onde buscar antes de buscar** — 16–17% das fan-out queries do ChatGPT com `site:` desde 08-ago [Promptwatch/Willison]; Reddit 12% → 3% no ChatGPT Search [Similarweb 23-ago]; (b) **Google, em doc oficial, ignora `llms.txt`/markup especial e não exige chunking**; Mueller 24-ago: "nothing really special"; fan-out pages para manipular = scaled content abuse; **Preferred Sources (20-ago)** com badge em AIO/AI Mode; goto URLs (26-ago) quebram séries de scraping; **NÃO existe core update de agosto** (só spam 18–20-ago); (c) **ChatGPT Ads no Brasil (11-ago, OpenAI)** + Similarweb AI Ads → report separa orgânico | citação IA | referral | **pago em IA** | conversão (§5.3); (d) **volume de prompt não existe**: Ahrefs "AI adjusted volume" (17-ago, só proxy após 31-ago); Rand 12-ago: análise de citação engana; (e) **Cloudflare 15-set**: Training e Agent bloqueados por default em páginas com ads de domínios novos; (f) **corpus**: GEO-Flag `2608.16824` (detector F1 0,944; 8,90% das páginas recuperadas são GEO-otimizadas, 16,36% em 2026 → anti-padrões 1/5 viram risco mensurável), `2608.13956` (diversidade de documentos > duplicata/paráfrase, experimento controlado), `2606.00898` v2 (métrica de alucinação mede cobertura do grafo), reranker por rubrica `2608.03527`; (g) **framework de execução em 10 etapas** com cadência e papéis (§4) e **"GEO URL Ledger"** de 10 blocos (§5.4) — Conductor Pages Report (23-jul), Semrush ROI direto/assistido/autodeclarado/modelado (27-jul), Profound Index Summer 2026 (1,9 bi conversas; liderança é local em 24/30 indústrias); (h) vendors: Ahrefs 38% overlap AIO×top-10 (era 76%), CTR −58% com AIO, 5,3% do top é 100% IA. **§8 CORRIGE**: `llms.txt` rebaixado a "opcional, nunca entregável/KPI"; AI Mode 1 bi MAU × 0,13% das visitas são medidas diferentes (não compor); Reddit sai dos exemplos; xAI `chat/completions`+`search_parameters` está morto (410 → `/v1/responses`+`x_search`). Raw em [`raw/`](docs/research/geo-wave-agosto-2026/raw/). **§9.3 = aplicação neste repo** (aulas "O motor escolhe antes de buscar" e "O que o Google disse que ignora"; template de report §5.4 como exercício; aula GEO-Flag com os 5 anti-padrões; reviewer ganha 4 vetos: core update de agosto, volume de prompt sem rótulo, Reddit estável, `llms.txt` entregável; `writer.py` com bloco de evidência diversa).
+
+Citar `§X.Y` dos KBs/INCREMENT/WAVE ao tomar decisões. **Em conflito de fato datado, prevalece a wave mais recente nos itens explicitamente marcados como correção: Agosto (§8 — `llms.txt` rebaixado, AI Mode 1 bi MAU × 0,13% visitas não se compõem, Reddit fora dos exemplos, core update de agosto inexistente, API xAI) > Julho (§7 — Adobe×Semrush, conversão por vertical) > Junho 19 (§7 — schema, llms.txt, "GEO = camada técnica separada") > 15B (§8); fora desses itens, o corpus anterior segue valendo.** Atualizar trimestralmente (próxima: agosto/2026).
 
 
 ## 2026-06-03 — Citabilidade GEO operacional + KB V3 (rubrica de redação que vira gate)
@@ -122,6 +125,9 @@ Mudanças aplicadas datadas de abril/2026 — refactors (multi-tenant, 5 waves),
 ### Frontend — layout, UX, animação, contraste (LEIA ANTES de mexer em template visual)
 Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GERADOR, corrija sempre no TEMPLATE para que todo curso gerado herde a prática. Cobre: layout/UX/navegabilidade de conteúdo longo, régua de stacks premium 2026, **REGRA inviolável de contraste WCAG AA nos dois temas** (dark/light; spans inline; `pre` com fundo escuro fixo), **parágrafos justificados** (`text-justify`), **animação à prova de falha** (nunca esconder dependendo de JS; CSS `fill:both`; `prefers-reduced-motion`), **auditoria da SAÍDA renderizada** (dois temas, transições mortas, cache-bust, iterar até zerar) e catálogo de **erros frequentes** (inclui acentuação em geração longa). Defeito no template multiplica por todos os cursos — pegue cedo.
 
+### Peso visual do curso gerado (LEIA ANTES de gerar curso)
+Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**, com a forma curta e normativa na §11.1 da `DIRETRIZ_EDITORIAL.md`. Cobra três limites verificáveis por máquina: nenhum parágrafo acima de 1.200 caracteres, ao menos três blocos visuais por módulo e ao menos um bloco visual a cada 2.500 caracteres de prosa. **O que mudou no gerador:** o contrato de geração passou a emitir seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), declarados sempre nos mesmos quatro lugares (`src/models.py`, `src/schemas/course.schema.json`, `src/templates/page.tsx.j2` e o filtro `js_json` de `src/generators/tsx_generator.py`); o parser promove sozinho tabela, lista numerada de passos e imagem com legenda; e a camada `visual_density` do `config/quality_rules.yaml` deixou de ser declarativa e é cobrada dentro de `TsxGenerator.render_page`. Curso que nasce como coluna de texto **não chega a virar arquivo**: a cobrança levanta `VisualDensityError` antes da renderização. Curso legado atravessa com `cobrar_peso_visual=False`, com os achados só no log.
+
 ### Idioma
 - TODO texto de curso DEVE ser em Português do Brasil com acentuação completa
 - NUNCA: "nao", "voce", "producao" — SEMPRE: "não", "você", "produção"
@@ -158,11 +164,14 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 
 ## Padrão Editorial — Regras de Qualidade
 
+Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/2026) e o anexo [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md). Em conflito, a diretriz prevalece sobre o resumo desta seção.
+
 ### Estilo HSM/HBR/MIT Sloan
 - Tom analítico, direto, orientado por dados, sem jargão vazio
-- Frases curtas. Parágrafos de 2-3 frases (máximo 5 linhas). Sem floreios
-- Dados e estatísticas para sustentar argumentos — nunca afirmar sem evidência
+- Uma ideia central por parágrafo, desenvolvida até a ideia terminar. O ritmo vem do conteúdo: período longo para raciocínio com causa e ressalva, frase curta quando houver o que enfatizar. PROIBIDA qualquer cota de ritmo (frase curta por parágrafo, alternância programada, teto fixo de linhas), que produz staccato de manchete
+- Dados e estatísticas para sustentar argumentos, nunca afirmar sem evidência
 - Evitar superlativos sem evidência ("o melhor", "revolucionário")
+- Narrativa obrigatória: abrir em situação concreta com tensão explícita, conduzir por um caso nomeado, cumprir a promessa da abertura e fechar retomando esse caso (diretriz §3)
 
 ### Andragogia (6 Princípios de Knowles) — OBRIGATÓRIO
 1. Necessidade de saber — POR QUE antes do COMO
@@ -179,11 +188,11 @@ Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GER
 ### Formatação Obrigatória por Módulo
 - Ao menos 1 tabela comparativa (formato markdown com pipes)
 - Ao menos 3 exercícios com contexto profissional e progressão Bloom
-- Sub-headings (linha terminando com `:`) a cada 2-3 parágrafos
+- Sub-headings (linha terminando com `:`) quando o assunto muda, sem cota por número de parágrafos
 - Negrito em termos-chave na primeira ocorrência usando `**termo**`
-- Blockquotes (`> `) para insights centrais — ao menos 1-2 por módulo
+- Blockquotes (`> `) para insights centrais, 1-2 por módulo
 - Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen)
-- Nunca mais de 3 parágrafos seguidos sem elemento visual
+- Estrutura entra quando organiza comparação, sequência ou verificação (tabela, matriz de decisão, checklist, passos). Lista cujos itens têm relação de causa entre si vira prosa: prosa carrega raciocínio
 - 2.500-4.000 palavras por módulo
 
 ### Padrão de Layout (FormattedText — UX Microsoft Learn + Salesforce Trailhead)
@@ -280,7 +289,8 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 ## Estrutura de Arquivos
 
 - config/courses.yaml — definição dos cursos
-- config/quality_rules.yaml — regras de qualidade
+- config/quality_rules.yaml — regras de qualidade (inclui a camada `visual_density`, cobrada em runtime)
+- docs/DOUTRINA_VISUAL_CURSOS.md — doutrina de peso visual: tetos, os seis tipos de bloco e os quatro lugares que mudam juntos
 - src/agents/ — um agente por LLM (carrega prompt de templates/prompts/)
 - src/templates/prompts/ — prompts externos de alta densidade (.md)
 - src/templates/ — templates Jinja2 para TSX (NUNCA heredoc)
@@ -325,35 +335,16 @@ python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 
 **Para outro cliente:** consulte `config/clients/<id>/client.yaml` → seção `author:` e `voice_guard.canonical:`. O voice guard bloqueia textos que violem o naming canônico do cliente ativo.
 
-## Padrão editorial — escrita humanizada (17/07/2026)
+## Padrão editorial obrigatório
 
-Todo conteúdo de leitura humana produzido neste repo (artigo, curso, página, post,
-e-mail, relatório, parecer, resposta ao usuário) segue o padrão editorial global do
-Alexandre. Qualidade vence velocidade; profundidade proporcional ao problema;
-escrever como especialista sênior conversando com outro profissional experiente.
-Fonte de verdade completa: `docs/ESTILO_EDITORIAL.md` do repo GEO-Pesquisador
-(clone local em `C:/Sandyboxclaude/GEO-Pesquisador`).
+Antes de produzir qualquer texto de leitura humana neste repositório (documentação, cursos, páginas, relatórios, descrições de PR, mensagens longas de commit), leia e aplique [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) na raiz (versão 4, 11/08/2026) e consulte o anexo prático [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md), com exemplos antes e depois, heurísticas mensuráveis e fontes. Esta é a fonte única do padrão editorial do repositório: os prompts do pipeline (`src/templates/prompts/`) e o resumo da seção "Padrão Editorial" acima se subordinam a ela, e a duplicação de camadas editoriais divergentes foi o que degradou a qualidade entre julho e agosto de 2026 (ver `wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`).
 
-Proibidos como padrão recorrente (uso pontual e consciente é tolerado):
+Antes de qualquer regra de evitação vem o piso de substância (diretriz §2.1), porque os gates automáticos deste repo medem forma e nenhum deles mede argumento: texto raso e uniforme passa em todos. Toda peça precisa ter tese identificável, evidência ligada à tese, ganho de informação, critério de decisão explícito onde houver alternativas, arco de leitura e consequência executável para o leitor. Aprovação no gate não é aprovação editorial, e em conflito entre proibição e piso de substância o piso vence.
 
-- Antítese em série: "não se trata de X, trata-se de Y", "não é apenas X, é Y",
-  "não basta X, é preciso Y", "mais do que X, Y". Afirmar direto o que a evidência
-  sustenta.
-- Conectivos batidos repetidos: "além disso", "por outro lado", "nesse contexto",
-  "vale destacar", "é importante ressaltar", "nesse sentido", "por fim".
-- Parágrafos vizinhos abrindo com a mesma construção sintática; blocos com ritmo
-  idêntico; excesso de paralelismo; perguntas retóricas em série; conclusões
-  idênticas fechando tópicos sucessivos.
-- Travessão e hífen como recurso estilístico no conteúdo final: preferir vírgula,
-  dois-pontos ou ponto.
-- Clichês, frases genéricas que serviriam para qualquer assunto, tom promocional,
-  superlativo sem número ao lado, adjetivo decorativo, negrito por hábito.
+Antes da primeira frase vem a prova (diretriz §2.2). Levante o material de evidência, e ele define o tamanho da peça: o número de blocos que afirmam resultado é menor ou igual ao número de provas datadas disponíveis hoje. Faltando prova, tente as quatro saídas nesta ordem (pesquisar a origem, reduzir a afirmação ao que se sabe, restringir o uso, segurar a publicação) antes de usar marcador. `[FALTA EVIDÊNCIA: ...]` é lacuna que pesquisa resolve; `[PREENCHER-HUMANO: ...]` é o que só o autor humano tem. Teto de cinco marcadores abertos por documento, agora verificado pelo `content_checker.py`.
 
-Obrigatório: linha de raciocínio lógica; cada parágrafo acrescenta uma ideia nova;
-alternar períodos curtos, médios e longos; recomendação sempre acompanhada do
-porquê; conceito técnico coberto com contexto, motivação, funcionamento,
-limitações e critérios de decisão quando relevantes; material educacional abre
-pelo problema e fecha com síntese prática. Antes de entregar, reler procurando
-esses padrões e reescrever o que soar texto de máquina. Sub-agentes que geram
-copy recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md`
-carimbado no prompt.
+Promessa e tensão são escritas antes do esqueleto (§3.1), o esqueleto segue a ordem do gênero (§3.2), o pedido é um só por peça com as quatro peças da fórmula (§3.6), e toda porcentagem dispara quatro conferências na mesma frase: origem, data, método e denominador (§13).
+
+O essencial, em uma passada: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; storytelling obrigatório em conteúdo longo (abertura em situação, tensão antes da solução, caso condutor, promessa cumprida, fechamento com callback, mostrar em vez de qualificar); ritmo nascido do sentido, com o teste do bloco de dez frases servindo de diagnóstico depois de escrever e nunca de cota durante a escrita; proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); tabela, matriz de decisão e checklist usados sempre que houver comparação, escolha ou passo verificável, e prosa sempre que houver raciocínio encadeado; dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta.
+
+Sub-agentes que geram copy longa recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md` carimbado no prompt. Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.

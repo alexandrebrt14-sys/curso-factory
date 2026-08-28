@@ -1,5 +1,18 @@
-# curso-factory �� Regras de Qualidade
+# curso-factory — Regras de Qualidade
 # Validação automática de 5 camadas antes do deploy
+#
+# LIDO EM RUNTIME desde 11/08/2026 por src/validators/rules_loader.py.
+# Até essa data o arquivo era decorativo: nenhum código o abria, e as listas
+# aqui divergiam em silêncio das constantes hardcoded nos validadores.
+# Agora mudar uma lista aqui MUDA O COMPORTAMENTO DO GATE — acrescentar uma
+# expressão em forbidden_expressions passa a reprovar conteúdo no próximo run.
+# Chaves consumidas hoje:
+#   validation.forbidden_expressions.expressions  -> _check_cliches
+#   validation.anti_invencao.require_source_for_percentages
+#   validation.anti_invencao.fail_if_unresolved_markers_above
+#   validation.visual_density.*                  -> check_visual_density
+# As demais seções seguem descritivas; o valor espelhado em código está
+# anotado por comentário na chave correspondente.
 
 validation:
   # Camada 1: Acentuação PT-BR
@@ -21,28 +34,130 @@ validation:
       - Markdown links
 
   # Camada 2: Qualidade de conteúdo
+  #
+  # A UNIDADE DE MEDIDA É A AULA desde 27/08/2026. Antes era o módulo, com
+  # 2.500-4.000 palavras, e o resultado eram cursos rasos: o gerador enchia a
+  # cota com abrangência em vez de explicar uma ideia por inteiro. A régua nova
+  # vem do tipo D ("aula/trilha") da tabela única de tetos da fonte de estilo
+  # (alexandrebrt14-sys/escrita-empreendedor, MOLDES_DE_PAGINA.md seções 2, 3-D
+  # e 6).
+  #
+  # OS NÚMEROS DE EXTENSÃO DA AULA NÃO ESTÃO AQUI. Eles vêm de
+  # config/lexicos.json (espelho gerado da fonte, bloco `tetos.D`), lido em
+  # runtime por src/validators/lexicos_loader.py. Repetir o número aqui criaria
+  # a segunda cópia que o PLANO_DE_MIGRACAO.md proíbe. Para referência humana,
+  # hoje `tetos.D` diz: piso 900 · alvo 1.200-2.400 · aviso 2.400 · erro 3.600
+  # palavras; 2 a 4 H2; até 2 H3 por H2; até 3 figuras; parágrafo 15-45
+  # palavras. Se este comentário divergir do JSON, o JSON vence.
+  #
+  # As chaves abaixo são o que é específico do curso-factory e não existe na
+  # fonte. Cada uma é lida em runtime por content_checker.py.
   content_quality:
     enabled: true
-    min_modules_per_course: 8
-    max_modules_per_course: 16
-    min_steps_per_module: 3
-    max_steps_per_module: 8
-    min_words_per_module: 2500
-    max_words_per_module: 4000
-    min_headings_per_module: 5
-    required_sections_per_module:
-      - objetivos_aprendizagem
-      - fundamentacao_conceitual
-      - estudo_de_caso
-      - tabela_comparativa
-      - exercicios_praticos  # mínimo 3
-      - sintese_executiva
-    max_reading_time_per_module_minutes: 25
-    min_tables_per_module: 1
-    min_blockquotes_per_module: 1
-    min_exercises_per_module: 3
-    min_bold_terms_per_module: 3
-    max_paragraph_lines: 5
+    # Trilha = 4 a 6 aulas (MOLDES_DE_PAGINA.md seção 6), 30-60 min.
+    min_lessons_per_trail: 4
+    max_lessons_per_trail: 6
+    min_trails_per_course: 5
+    max_trails_per_course: 8
+    # Compatibilidade com o pipeline atual, que ainda entrega "módulo": um
+    # módulo equivale a uma trilha, ou seja, 4 a 6 aulas. O checador multiplica
+    # os tetos da aula por essa faixa quando recebe unidade="modulo", de modo
+    # que 4x1.200 a 6x2.400 = 4.800-14.400 palavras. Ver o docstring de
+    # content_checker.check_content.
+    lessons_per_module: [4, 6]
+    # Um exercício por aula ("faça agora", 5-15 min). Era "mínimo 3 por
+    # módulo", que produzia bateria de exercício sem conceito explicado.
+    min_exercises_per_lesson: 1
+    # Uma fonte datada por trilha, no rodapé — não por aula, e nunca dentro da
+    # frase. Era "3+ fontes por módulo".
+    min_sources_per_trail: 1
+    # Uma cápsula de resposta por trilha. Era "18-75 palavras por seção".
+    min_capsules_per_trail: 1
+    # Tabela e figura não têm piso: entram só quando substituem texto. O teto
+    # de 3 por aula é `tetos.D.figuras_max` em config/lexicos.json.
+    # Estatística também não tem piso: entra quando responde à pergunta do
+    # exemplo. Blockquote e "termo em negrito" deixaram de ser obrigatórios.
+    min_bold_terms_per_lesson: 3
+    max_reading_time_per_lesson_minutes: 20
+
+  # Camada 2b: Densidade visual (DIRETRIZ_EDITORIAL.md §11.1 e
+  # docs/DOUTRINA_VISUAL_CURSOS.md). Instalada em 17/08/2026, depois de o curso
+  # motor-de-crescimento-ia ir ao ar com 114 blocos de prosa acima de 1.200
+  # caracteres e nenhuma figura, aprovado por todos os portões da casa porque
+  # nenhum deles mede peso de bloco.
+  #
+  # LIDA EM RUNTIME desde 17/08/2026 por
+  # src/validators/visual_density.py::check_visual_density, que mede a lista de
+  # CourseSection de cada módulo. Até essa data a seção era declarativa e quem
+  # cobrava era só o portão da landing (node scripts/gate-peso-visual.mjs <slug>).
+  # Mudar qualquer número aqui MUDA O VEREDITO no próximo run: nenhum dos três
+  # limites existe como constante em código, e tests/test_visual_density.py
+  # prova isso trocando a configuração e conferindo que o resultado acompanha.
+  # Chaves consumidas: enabled, required_for_new_course, max_paragraph_chars,
+  # min_visual_blocks_per_module, chars_per_visual_block, visual_block_types e
+  # non_visual_types. Seção ausente ou enabled: false não derruba o pipeline:
+  # o checador devolve um aviso dizendo que a densidade não foi cobrada.
+  visual_density:
+    enabled: true
+    # Obrigatória e integral para curso novo. Para o acervo já publicado a régua
+    # entra por linha de base congelada: a dívida registrada só pode diminuir.
+    # Em código: check_visual_density(..., curso_novo=False) rebaixa todo achado
+    # a aviso, então o legado aparece contado no relatório sem bloquear.
+    required_for_new_course: true
+    # Teto do PARÁGRAFO, não do bloco: um bloco de prosa com três parágrafos
+    # separados por linha em branco responde por cada um deles isoladamente.
+    # 1.200 é o que cabe num celular de 390 pontos sem rolagem interna.
+    max_paragraph_chars: 1200
+    # ATENÇÃO À UNIDADE: este piso é POR MÓDULO, e módulo equivale a 4-6
+    # aulas. O teto editorial é por AULA e vale 3 (tetos.D.figuras_max em
+    # config/lexicos.json), então um módulo cheio pode ter até 18 peças. Os
+    # dois convivem: 3 é o mínimo para o módulo inteiro não nascer paredão,
+    # 3 por aula é o máximo para a peça não virar enfeite. Desde 27/08/2026 a
+    # obrigação editorial é o TETO; este piso permanece só como rede do motor
+    # de renderização da landing.
+    min_visual_blocks_per_module: 3
+    # O piso acima só vale para módulo que é capítulo de verdade. Abaixo deste
+    # tanto de prosa o módulo é abertura, encerramento ou trecho de apoio, e
+    # cobrar três peças ali produz enfeite, não leitura. A densidade continua
+    # valendo em qualquer tamanho, e é ela que pega o módulo longo. O portão
+    # gate-peso-visual.mjs do landing-page-geo usa o mesmo corte.
+    min_prose_chars_for_floor: 800
+    # Um bloco visual a cada 2.500 caracteres de prosa do módulo. Módulo curto
+    # com 3 figuras passa; módulo de 20 mil caracteres com 3 figuras não.
+    chars_per_visual_block: 2500
+    # Tipos que CONTAM como bloco visual. O checador usa a UNIÃO desta lista com
+    # VISUAL_SECTION_TYPES de src/models.py, que é o que o gerador sabe emitir
+    # hoje (figure, dataTable, comparison, statGrid, stepGuide, timeline). Os
+    # demais nomes abaixo só o motor da landing desenha; ficam listados para dar
+    # crédito a curso montado lá. Ilustração e diagrama quebram parede
+    # de verdade; estrutura organiza o que já era comparável ou sequencial;
+    # o terceiro grupo divide conteúdo longo sem perder profundidade.
+    visual_block_types:
+      - figure
+      - dataTable
+      - comparison
+      - matrix
+      - statGrid
+      - timeline
+      - flow
+      - checklist
+      - glossary
+      - accordion
+      - template
+      - useCase
+      - tabs
+      - slides
+      - tipCard
+      - stepGuide
+      - codeDownload
+    # Aparato, não respiro: NÃO contam como bloco visual e também ficam fora do
+    # denominador de prosa da regra de densidade. sourceNote é registro
+    # de procedência em corpo reduzido e não conta nem como paredão nem como
+    # alívio; quem mede pelo DOM filtra pela cadeia de ancestrais.
+    non_visual_types:
+      - code
+      - prompt
+      - sourceNote
 
   # Padrão editorial HSM/HBR/MIT Sloan
   editorial_style:
@@ -101,30 +216,34 @@ validation:
     min_principles_present: 4  # Mínimo 4 de 6 para aprovação
     fail_if_missing: 3  # Bloqueia se 3+ ausentes
 
-  # Clichês e expressões proibidas
+  # Clichês e expressões proibidas — SÓ O QUE A FONTE NÃO COBRE.
+  # A lista viva tem três origens, unidas em runtime por
+  # content_checker._forbidden_expressions(): (1) config/lexicos.json, o
+  # espelho gerado da fonte de estilo (clichê de máquina, adjetivo vazio,
+  # atribuição vaga, escassez fabricada, conectivo de enchimento);
+  # (2) a lista abaixo, com o que é específico do curso-factory; (3) o
+  # fallback residual do módulo. Em 27/08/2026 saíram daqui as 21 entradas
+  # que a fonte já trazia ("nos dias de hoje", "especialistas apontam",
+  # "clique aqui"...): elas continuam sendo checadas, agora pela fonte.
+  # Duas cópias da mesma lista divergem em silêncio, que foi o defeito de
+  # 11/08/2026. Não acrescente aqui expressão que já esteja em lexicos.json.
   forbidden_expressions:
     enabled: true
     fail_on_found: true
     expressions:
-      - "nos dias de hoje"
       - "é fundamental que"
       - "não é segredo que"
       - "o futuro é agora"
-      - "em um mundo cada vez mais"
       - "vamos explorar"
       - "como sabemos"
-      - "é importante ressaltar"
       - "diante desse cenário"
-      - "nesse contexto"
       - "vale a pena destacar"
-      - "em última análise"
       - "grosso modo"
       - "vamos aprender"
       - "agora você vai entender"
       - "como todos sabem"
       - "desde os primórdios"
       - "desde tempos imemoriais"
-      # Humanizador 2.6.2 — padrões de cara de IA
       - "marco importante"
       - "papel crucial"
       - "momento decisivo"
@@ -132,34 +251,32 @@ validation:
       - "em um contexto em constante evolução"
       - "solução inovadora"
       - "experiência fluida"
-      - "tecnologia de ponta"
       - "abordagem poderosa"
       - "ambiente dinâmico"
-      - "especialistas apontam"
-      - "estudos indicam"
-      - "o mercado entende"
-      - "muitos acreditam"
       - "análises sugerem"
-      - "cabe ressaltar"
       - "é importante observar"
       - "não se trata apenas de"
       - "a verdadeira questão é"
-      - "o que realmente importa"
       - "no fim, tudo se resume a"
       - "o futuro é promissor"
       - "abre caminho para novas possibilidades"
       - "representa um passo importante"
-      - "game changer"
       - "atua como"
       - "se posiciona como"
       - "cumpre o papel de"
+      - "descubra o poder"
+      - "saiba mais"
 
   # Anti-invenção (Humanizador 2.6.2) — humanizar não é inventar
   anti_invencao:
     enabled: true
     allow_marker: "[FALTA EVIDÊNCIA:"  # Redator pode marcar lacunas para o revisor
+    # LIDO EM RUNTIME — content_checker.py::check_content (erro bloqueante).
+    # Também conta "[PREENCHER-HUMANO:". Default no código: 5.
     fail_if_unresolved_markers_above: 5  # Mais que 5 marcadores sobrando = reprovar
     ban_vague_attribution: true  # "especialistas apontam" sem citação = erro
+    # LIDO EM RUNTIME — content_checker.py::_check_percentages_have_source
+    # (aviso não-bloqueante, teto de 5 por documento). Default no código: true.
     require_source_for_percentages: true  # Todo "%" deve ter fonte próxima
 
   # Camada 3: Links
