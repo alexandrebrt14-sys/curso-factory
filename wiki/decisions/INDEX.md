@@ -10,6 +10,10 @@ detalhe vive no arquivo de cada decisão. Mantenha curto — ele entra no contex
 - [ADR-001 — Adoção de LLM Wiki](ADR-001-adopcao-llm-wiki.md) — por que e como a base de conhecimento gerada por LLM · `decision`
 - [ADR-002 — Sync automático courses↔wiki](ADR-002-sync-automatico-courses-wiki.md) — pipeline de sincronização entre cursos e wiki · `decision`
 
+## Decisões editoriais
+
+- [Diretriz editorial v3: narrativa sim, cota de ritmo não](diretriz-editorial-v3-narrativa-sem-cota.md) — por que cota mecânica de frase curta e de formatação derrubou a qualidade · `mistake`
+
 ## Histórico
 
 - [CLAUDE-CHANGELOG](CLAUDE-CHANGELOG.md) — log datado de mudanças aplicadas, extraído do `CLAUDE.md` para mantê-lo enxuto
