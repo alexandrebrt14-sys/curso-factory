@@ -1,0 +1,458 @@
+{
+  "versao": "1.0.0",
+  "limiares": {
+    "fraseMaxPalavras": 28,
+    "fraseMedia": [
+      14,
+      18
+    ],
+    "paragrafoPiso": 15,
+    "paragrafoAlvo": [
+      20,
+      45
+    ],
+    "paragrafoAviso": 80,
+    "paragrafoErro": 130,
+    "glosaJanelaCaracteres": 140,
+    "glosaMaxPalavras": 12,
+    "listaMaxItens": 7,
+    "h3MaxPorH2": 3,
+    "cabecalhosPorMil": [
+      10,
+      15
+    ],
+    "h1MaxPalavras": 12,
+    "svgRotuloMinPx": 14
+  },
+  "tetos": {
+    "A": {
+      "nome": "artigo",
+      "palavras": {
+        "piso": 1200,
+        "alvo": [
+          1500,
+          3000
+        ],
+        "aviso": 3000,
+        "erro": 4000
+      },
+      "h2": [
+        5,
+        8
+      ],
+      "h2_a_cada_palavras": [
+        300,
+        500
+      ],
+      "h3_por_h2": 3,
+      "h4": "proibido",
+      "botoes": 8,
+      "acordeoes": 3,
+      "oculto_pct": {
+        "aviso": 25,
+        "erro": 40
+      },
+      "figuras_a_cada_palavras": [
+        500,
+        800
+      ],
+      "capsula": 1
+    },
+    "B": {
+      "nome": "hub",
+      "palavras": {
+        "piso": 150,
+        "alvo": [
+          150,
+          500
+        ],
+        "aviso": 500,
+        "erro": 1000
+      },
+      "h2": [
+        0,
+        0
+      ],
+      "h3_por_h2": 0,
+      "h4": "proibido",
+      "botoes": 0,
+      "acordeoes": 0,
+      "oculto_pct": {
+        "aviso": 0,
+        "erro": 0
+      },
+      "figuras_a_cada_palavras": null,
+      "figuras_max": 0,
+      "capsula": 0
+    },
+    "C": {
+      "nome": "ferramenta",
+      "palavras": {
+        "piso": 800,
+        "alvo": [
+          800,
+          2000
+        ],
+        "aviso": 2000,
+        "erro": 3000
+      },
+      "h2": [
+        5,
+        5
+      ],
+      "h3_por_h2": 0,
+      "h4": "proibido",
+      "botoes": null,
+      "botoes_por_card": 3,
+      "acordeoes": 3,
+      "oculto_pct": {
+        "aviso": 25,
+        "erro": 40
+      },
+      "figuras_a_cada_palavras": null,
+      "figuras_max": 1,
+      "capsula": 1
+    },
+    "D": {
+      "nome": "aula",
+      "palavras": {
+        "piso": 900,
+        "alvo": [
+          1200,
+          2400
+        ],
+        "aviso": 2400,
+        "erro": 3600
+      },
+      "h2": [
+        2,
+        4
+      ],
+      "h2_a_cada_palavras": [
+        400,
+        800
+      ],
+      "h3_por_h2": 2,
+      "h4": "raro",
+      "botoes": 2,
+      "acordeoes": 0,
+      "oculto_pct": {
+        "aviso": 0,
+        "erro": 0
+      },
+      "figuras_a_cada_palavras": null,
+      "figuras_max": 3,
+      "paragrafo": [
+        15,
+        45
+      ],
+      "capsula": 0
+    },
+    "E": {
+      "nome": "landing",
+      "palavras": {
+        "piso": 300,
+        "alvo": [
+          400,
+          1200
+        ],
+        "aviso": 1500,
+        "erro": 2500
+      },
+      "h2": [
+        7,
+        9
+      ],
+      "h3_por_h2": 0,
+      "h4": "proibido",
+      "botoes": 1,
+      "acordeoes": 0,
+      "oculto_pct": {
+        "aviso": 0,
+        "erro": 0
+      },
+      "figuras_a_cada_palavras": null,
+      "figuras_max": null,
+      "capsula": 1
+    }
+  },
+  "jargao": {
+    "gatilho mental": "o motivo que faz alguém responder na hora, como promoção que só vale hoje",
+    "funil": "o caminho do cliente, de \"ouvi falar\" até \"paguei\"",
+    "lead": "pessoa que deixou contato e ainda não comprou",
+    "conversão": "quando o interessado vira cliente pagante",
+    "CRM": "a agenda de clientes, com o histórico de cada conversa",
+    "automação": "mensagem que sai sozinha, no horário certo, sem você digitar",
+    "remarketing": "anúncio que segue quem visitou e não comprou",
+    "landing page": "página de uma coisa só, feita para o cliente decidir",
+    "CTA": "o botão ou frase que pede a ação, como \"chame no WhatsApp\"",
+    "copy": "o texto do anúncio ou da mensagem",
+    "ticket médio": "quanto cada cliente gasta, em média, por compra",
+    "CAC": "quanto custa trazer um cliente novo, somando anúncio e trabalho",
+    "LTV": "quanto um cliente deixa no caixa ao longo do tempo com você",
+    "churn": "clientes que param de comprar em um período",
+    "taxa de resposta": "de cada 100 mensagens, quantas foram respondidas",
+    "engajamento": "curtidas, comentários e respostas que um post recebe",
+    "alcance": "quantas pessoas diferentes viram o post",
+    "impressão": "cada vez que o anúncio aparece na tela de alguém",
+    "CPC": "quanto você paga por cada clique no anúncio",
+    "CPM": "quanto você paga por mil vezes que o anúncio aparece",
+    "ROAS": "quanto volta em venda para cada real gasto em anúncio",
+    "SEO": "fazer o Google mostrar o seu negócio quando alguém procura",
+    "GEO": "fazer o ChatGPT e o Google citarem o seu negócio na resposta",
+    "palavra-chave": "o que o cliente digita na busca, como \"oficina perto de mim\"",
+    "pixel": "um código no site que conta quem entrou e o que fez",
+    "UTM": "etiqueta no link que diz de onde veio o clique",
+    "opt-in": "a pessoa autorizou receber as suas mensagens",
+    "LGPD": "a lei que protege os dados do cliente e limita o que você guarda",
+    "API": "a porta por onde dois sistemas trocam informação sozinhos",
+    "webhook": "aviso automático que um sistema manda ao outro quando algo acontece",
+    "chatbot": "atendente automático que responde no WhatsApp ou no site",
+    "NPS": "nota de 0 a 10 que mede se o cliente indicaria você",
+    "onboarding": "os primeiros passos do cliente novo, guiados por você",
+    "upsell": "oferecer algo a mais na hora da compra",
+    "follow-up": "o retorno que você dá depois do primeiro contato",
+    "teleprompter": "tela que mostra o texto enquanto você grava",
+    "Story": "post de 24 horas no Instagram, em tela cheia",
+    "Reels": "vídeo curto e vertical no Instagram",
+    "KPI": "o número que você olha toda semana para saber se está indo bem",
+    "benchmark": "o número de referência do seu ramo, para comparar",
+    "ICP": "o cliente ideal: quem compra mais, reclama menos e volta",
+    "persona": "retrato do cliente típico, com rotina e problema",
+    "nutrição": "sequência de mensagens que mantém o interessado por perto",
+    "segmentação": "separar clientes em grupos para falar com cada um do jeito certo",
+    "teste A/B": "testar duas versões e ficar com a que vende mais"
+  },
+  "conectivosFuncionais": [
+    "porque",
+    "por isso",
+    "então",
+    "depois disso",
+    "mas",
+    "além disso",
+    "assim",
+    "se",
+    "quando"
+  ],
+  "conectivosDeEnchimento": [
+    "nesse sentido",
+    "neste sentido",
+    "vale ressaltar",
+    "vale destacar",
+    "cabe destacar",
+    "cabe ressaltar",
+    "dito isso",
+    "em suma",
+    "por fim",
+    "ademais",
+    "outrossim",
+    "é importante ressaltar",
+    "é importante destacar",
+    "vale lembrar",
+    "vale a pena lembrar",
+    "em última análise",
+    "no fim das contas",
+    "sendo assim",
+    "posto isso",
+    "diante disso",
+    "nesse contexto",
+    "neste contexto",
+    "com isso em mente"
+  ],
+  "antiteses": [
+    "\\bnão (se trata|é) (apenas|só|somente) de?\\b.*?\\b(é|mas|e sim)\\b",
+    "\\bnão basta\\b.*?\\b(é preciso|é necessário)\\b",
+    "\\bnão é (uma )?questão de\\b.*?\\b(é|mas)\\b",
+    "\\bnão (é|são) [^,.;:]{2,40}[:;] (é|são)\\b",
+    "\\bmenos [^,.;]{2,30} e mais\\b",
+    "\\bmais do que [^,.;]{2,40}, (é|trata-se)\\b"
+  ],
+  "adjetivosVazios": [
+    "robusto",
+    "robusta",
+    "crucial",
+    "cruciais",
+    "estratégico",
+    "estratégica",
+    "disruptivo",
+    "disruptiva",
+    "inovador",
+    "inovadora",
+    "escalável",
+    "poderoso",
+    "poderosa",
+    "incrível",
+    "fantástico",
+    "revolucionário",
+    "revolucionária",
+    "impactante",
+    "de ponta",
+    "sinérgico",
+    "holístico",
+    "holística",
+    "transformador",
+    "transformadora",
+    "game changer"
+  ],
+  "clichesDeMaquina": [
+    "a boa notícia é",
+    "em um mundo cada vez mais",
+    "no mundo de hoje",
+    "nos dias de hoje",
+    "engana-se quem pensa",
+    "o que realmente importa",
+    "tecnologia de ponta",
+    "não é segredo",
+    "vamos mergulhar",
+    "mergulhe",
+    "desbloqueie",
+    "desvende",
+    "eleve o seu",
+    "leve para o próximo nível",
+    "é aí que entra",
+    "e é aí que",
+    "a chave para",
+    "o segredo para",
+    "sem dúvida",
+    "certamente",
+    "sem sombra de dúvida",
+    "cenário atual",
+    "cada vez mais",
+    "em constante evolução",
+    "imprescindível",
+    "fundamental para o sucesso",
+    "faz toda a diferença",
+    "vale ouro"
+  ],
+  "atribuicaoVaga": [
+    "especialistas apontam",
+    "especialistas afirmam",
+    "especialistas dizem",
+    "estudos indicam",
+    "estudos mostram",
+    "estudos apontam",
+    "pesquisas mostram",
+    "pesquisas indicam",
+    "pesquisas apontam",
+    "o mercado entende",
+    "o mercado sabe",
+    "dados revelam",
+    "dados mostram",
+    "é sabido que",
+    "todo mundo sabe",
+    "muitos acreditam",
+    "dizem que"
+  ],
+  "escassezFabricada": [
+    "vagas limitadas",
+    "últimas vagas",
+    "garanta já",
+    "garanta a sua",
+    "oportunidade única",
+    "imperdível",
+    "só hoje",
+    "somente hoje",
+    "por tempo limitado",
+    "não perca",
+    "corra",
+    "antes que acabe",
+    "restam poucas",
+    "clique aqui",
+    "aproveite agora"
+  ],
+  "gerundismo": "\\b(vou|vai|vamos|vão|irei|irá|iremos|irão|posso|pode|podemos|podem|estarei|estará|estaremos|estarão)\\s+estar\\s+\\w+(ando|endo|indo)\\b",
+  "bastidorDeVerificacao": [
+    "verificamos que",
+    "verificamos em",
+    "conferimos que",
+    "checamos",
+    "após extensa pesquisa",
+    "fontes consultadas",
+    "as fontes consultadas",
+    "segundo apuração",
+    "em nossa apuração",
+    "não conseguimos confirmar",
+    "não foi possível confirmar",
+    "vale a ressalva",
+    "cabe registrar",
+    "consultamos",
+    "cruzamos os dados",
+    "levantamento próprio mostrou"
+  ],
+  "errataPublicada": [
+    "errata",
+    "correção:",
+    "corrigimos",
+    "versão anterior deste texto",
+    "havíamos publicado",
+    "publicamos anteriormente",
+    "retificamos"
+  ],
+  "rotuloDeConfianca": [
+    "autodeclarado",
+    "autodeclarada",
+    "amostra de conveniência",
+    "sem denominador",
+    "correlação, não experimento",
+    "correlação não é causa",
+    "dado não auditado",
+    "número não verificado",
+    "fonte não verificada",
+    "com ressalvas metodológicas",
+    "metodologia não divulgada",
+    "amostra pequena"
+  ],
+  "alertaRotulado": "^\\s*\\**\\s*(Atenção|Importante|Nota|Observação|Aviso|Disclaimer|Cuidado|Dica)\\s*:\\s*\\**",
+  "culpaNoLeitor": [
+    "você esqueceu",
+    "você errou",
+    "você deixou de",
+    "você não fez",
+    "você falhou",
+    "seu erro",
+    "a culpa é sua",
+    "você configurou errado",
+    "você não configurou"
+  ],
+  "aberturaEmCena": [
+    "\\b\\d{1,2}h(\\d{2})?\\b",
+    "\\b(da manhã|da tarde|da noite|de madrugada|ao meio-dia)\\b",
+    "\\b(segunda|terça|quarta|quinta|sexta)-feira\\b",
+    "\\b(sábado|domingo) (de manhã|à tarde|à noite)\\b",
+    "^(era uma vez|imagine|imagina|pense em|pensa em)\\b",
+    "\\b(acordou|abriu a porta|olhou o celular|olhou para o relógio)\\b"
+  ],
+  "legendaQueRotula": "^\\s*(figura|fig\\.|gráfico|tabela|imagem|diagrama)\\s*\\d*\\s*[:.\\-]?",
+  "acentuacaoFaltando": [
+    "voce",
+    "nao",
+    "estao",
+    "tambem",
+    "entao",
+    "alem",
+    "atencao",
+    "informacao",
+    "informacoes",
+    "conversao",
+    "acao",
+    "opcao",
+    "solucao",
+    "situacao",
+    "possivel",
+    "facil",
+    "dificil",
+    "proximo",
+    "ultimo",
+    "unico",
+    "pagina",
+    "video",
+    "rapido",
+    "medio",
+    "saude",
+    "orcamento",
+    "titulo",
+    "codigo",
+    "logica",
+    "pratica"
+  ]
+}

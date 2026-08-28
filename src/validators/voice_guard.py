@@ -44,7 +44,8 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from src.validators.content_checker import (
-    MAX_PARAGRAPH_LINES,
+    MAX_PARAGRAPH_WORDS,
+    SEP_PARAGRAFO,
     _check_bloom_objectives,
     _check_cliches,
 )
@@ -240,16 +241,20 @@ def _score_hbr_style(
             erros.append(f"disclaimer de modelo IA proibido: '{disc}'")
             score -= 25
 
+    # Teto de parágrafo em PALAVRAS, e não em linhas: contar linhas media a
+    # largura da janela de quem escreveu, não o fôlego do parágrafo. O número
+    # vem de `tetos.D.paragrafo` na fonte de estilo, via content_checker.
     long_paragraphs = 0
-    for para in text.split("\n\n"):
-        if para.strip().startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
+    for para in text.split(SEP_PARAGRAFO):
+        limpo = para.strip()
+        if limpo.startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
             continue
-        if len(para.strip().split("\n")) > MAX_PARAGRAPH_LINES:
+        if len(limpo.split()) > MAX_PARAGRAPH_WORDS:
             long_paragraphs += 1
     if long_paragraphs > 0:
         avisos.append(
-            f"{long_paragraphs} paragrafo(s) com mais de {MAX_PARAGRAPH_LINES} "
-            "linhas: verifique se algum empilha dois assuntos"
+            f"{long_paragraphs} paragrafo(s) com mais de {MAX_PARAGRAPH_WORDS} "
+            "palavras: verifique se algum empilha dois assuntos"
         )
         score -= long_paragraphs * 10
 

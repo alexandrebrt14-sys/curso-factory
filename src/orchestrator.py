@@ -282,13 +282,22 @@ class Orchestrator:
                 prompt += "Próximos módulos (ainda não escritos): " + ", ".join(next_titles) + "\n"
 
             prompt += (
-                "\nGere 2.500-4.000 palavras seguindo a estrutura obrigatória:\n"
-                "1. Abertura com Impacto (250-350 palavras)\n"
-                "2. Fundamentação Conceitual (800-1.200 palavras)\n"
-                "3. Análise de Caso (400-600 palavras)\n"
-                "4. Quadro Comparativo (tabela obrigatória)\n"
-                "5. Exercícios Práticos (mínimo 3)\n"
-                "6. Síntese Executiva (200-250 palavras)\n\n"
+                # Sem cota de palavras por parte: a cota fazia o redator
+                # encher cada bloco até o número e produzia aula rasa. A
+                # régua é a da aula inteira (tipo D da fonte de estilo) e a
+                # sequência dos blocos está no prompt de redação.
+                "\nGere de 1.200 a 2.400 palavras. Abaixo de 900 a aula é rasa: "
+                "apresenta o conceito e não o explica. Siga a sequência do molde:\n"
+                "1. Uma frase do que o aluno vai aprender\n"
+                "2. A ideia explicada com narrativa (origem, por que importa, "
+                "o que muda, erro comum)\n"
+                "3. O exemplo do negócio do aluno, contado por inteiro, com número\n"
+                "4. Faça agora: 5 a 15 minutos, etapas numeradas, dado real dele "
+                "e o resultado esperado\n"
+                "5. Resumo de 3 a 5 linhas\n\n"
+                "Cerca de 60% das palavras na parte explicativa e 40% na de "
+                "exercício. De 2 a 4 H2. Até 3 apoios visuais, e só quando "
+                "substituem texto.\n"
                 "IMPORTANTE: Português do Brasil com acentuação COMPLETA.\n"
             )
 
