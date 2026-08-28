@@ -6,6 +6,22 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
+### Alterado — A unidade de medida passa a ser a AULA, e a régua vem da fonte única (2026-08-27)
+
+Os cursos gerados saíam rasos: apresentavam o conceito e não o explicavam. A causa não era o modelo, era a régua. O gate media **módulo** com piso de 2.500 palavras e uma bateria de pisos ("3+ exercícios", "5+ estatísticas", "3+ fontes", "1+ tabela", "1+ blockquote", "3+ blocos visuais"), e o prompt dava cota de palavras por parte. Cota se cumpre com abrangência, não com explicação: o redator listava seis conceitos em vez de explicar um, e emendava exercício em cima de exercício sem narrativa no meio.
+
+A unidade agora é a **aula** do tipo D da fonte única de estilo (`alexandrebrt14-sys/escrita-empreendedor`, hash `a10ed133…`): piso 900 · alvo 1.200-2.400 · aviso 2.400 · erro 3.600 palavras; 2 a 4 H2; até 2 H3 por H2; até 3 apoios visuais; parágrafo de 15 a 45 palavras; 1 exercício por aula; 1 fonte datada e 1 cápsula por trilha; trilha de 4 a 6 aulas, 6.000-12.000 palavras, 30-60 min.
+
+- **Nenhum número da régua mora mais neste repositório.** `config/lexicos.json` é espelho gerado da fonte (`python -m escrita.cli lexicos --json`) e `src/validators/lexicos_loader.py` o lê em runtime. `content_checker` tira dali piso, alvo, aviso, erro, H2, H3 por H2, teto de visuais e faixa de parágrafo, e **interpola o valor carregado na mensagem de erro** — código, configuração e mensagem não conseguem mais divergir. As constantes `FALLBACK_*` só entram se o espelho sumir.
+- **Pisos viraram tetos.** Tabela, blockquote, estatística e fonte deixaram de ser obrigatórios: entram quando substituem texto ou respondem à pergunta do exemplo. "3+ blocos visuais" virou "até 3, e só quando substituem texto". "Mínimo 3 exercícios" virou 1, o "faça agora" de 5 a 15 minutos.
+- **Compatibilidade com "módulo".** O pipeline ainda entrega módulos, então `check_content(..., unidade="modulo")` mede a peça como 4 a 6 aulas (4.800-14.400 palavras, piso 3.600, erro 21.600). `QualityGate.check_text` usa `unidade="modulo"` por padrão para não reprovar o acervo; quando o gerador emitir aula, o chamador passa `unidade="aula"`.
+- **Parágrafo mede palavras, não linhas.** Contar linhas media a largura da janela de quem escreveu. A faixa é 15-45 palavras (`tetos.D.paragrafo`); `voice_guard` acompanha pelo mesmo import.
+- **Anti-clichê deixou de ter duas cópias.** As 21 expressões que a fonte já trazia saíram de `config/quality_rules.yaml` e as 5 que ela cobria saíram de `FORBIDDEN_CLICHES`; a união em runtime tem três origens e uma poda de substring, para que "em um mundo cada vez mais" não seja cobrado duas vezes por conter "cada vez mais".
+- **`DIRETRIZ_EDITORIAL.md` e `GUIA_ESCRITA_HUMANIZADA.md` viraram ponteiros** para a fonte, com hash e data de sincronização, guardando só o que é específico do motor de cursos. A bibliografia datada do guia desceu para `docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md`.
+- **Prompt de redação reescrito** (`src/templates/prompts/draft.md` e `pt-br/draft.md`): sequência do molde D (uma frase do que vai aprender; a ideia explicada com origem, custo, mudança e erro comum; o exemplo do negócio do aluno contado por inteiro com número; "faça agora" em etapas com o resultado esperado; resumo de 3 a 5 linhas), 1.200-2.400 palavras pedidas explicitamente, sem cota por parte.
+- **`output/` saiu do índice do Git.** Sete rascunhos gerados estavam versionados apesar de `.gitignore` já os excluir.
+
+
 ### Adicionado — Contrato de geração com bloco visual e cobrança da régua (2026-08-17, PR #67)
 
 A doutrina do PR #66 virou código. Até aqui o gerador emitia cinco tipos de bloco, todos de prosa ou código, e nenhum contava como peça visual: curso gerado pelo caminho padrão nascia reprovado na própria régua da casa.
