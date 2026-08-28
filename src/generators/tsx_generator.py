@@ -6,8 +6,10 @@ a partir de um CourseDefinition validado pelo Pydantic.
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
+from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -33,6 +35,57 @@ def _js_escape(value: str) -> str:
     )
 
 
+def _js_json(value: Any) -> str:
+    """Serializa a carga de um bloco visual como literal JavaScript no TSX.
+
+    A acentuação fica literal (`ensure_ascii=False`) porque o arquivo gerado é
+    UTF-8 e texto de leitura humana não deve virar sequência de escape. Aspas,
+    barras invertidas e quebras de linha ficam por conta do `json.dumps`. O
+    sinal de menor vira escape para que payload nenhum consiga abrir marcação
+    dentro do arquivo gerado.
+    """
+    if value is None:
+        return "undefined"
+    return json.dumps(value, ensure_ascii=False).replace("<", "\\u003c")
+
+
+def _peso_visual_obrigatorio() -> bool:
+    """Lê do YAML se a régua de peso visual reprova a geração.
+
+    Vem de `validation.visual_density.required_for_new_course`. Quando a
+    camada não existe, está desligada ou o arquivo some, devolve False: a
+    ausência de configuração não pode derrubar geração que já funcionava.
+    """
+    try:
+        from src.validators.rules_loader import validation_section
+
+        camada = validation_section("visual_density") or {}
+    except Exception:  # noqa: BLE001 - configuração ausente nunca derruba build
+        return False
+    if not camada.get("enabled", True):
+        return False
+    return bool(camada.get("required_for_new_course", False))
+
+
+class VisualDensityError(ValueError):
+    """Um ou mais módulos reprovaram na régua de peso visual.
+
+    Existe como classe própria para que quem chama consiga distinguir o curso
+    que nasceu como coluna de texto de qualquer outro erro de renderização, e
+    decidir entre consertar o conteúdo e renderizar em modo legado.
+    """
+
+    def __init__(self, achados: list[str]) -> None:
+        self.achados = achados
+        corpo = "\n".join(f"  - {a}" for a in achados)
+        super().__init__(
+            f"Peso visual reprovado em {len(achados)} ponto(s). "
+            "Nenhum curso nasce como coluna de texto:\n"
+            f"{corpo}\n"
+            "Doutrina e catálogo de peças: docs/DOUTRINA_VISUAL_CURSOS.md"
+        )
+
+
 def _pascal_case(value: str) -> str:
     """Converte kebab-case para PascalCase.
 
@@ -56,14 +109,30 @@ class TsxGenerator:
             lstrip_blocks=True,
         )
         self.env.filters["js_escape"] = _js_escape
+        self.env.filters["js_json"] = _js_json
         self.env.filters["pascal_case"] = _pascal_case
 
-    def render_page(self, course: CourseDefinition) -> str:
+    def render_page(self, course: CourseDefinition, *, cobrar_peso_visual: bool | None = None) -> str:
         """Renderiza page.tsx a partir do template page.tsx.j2.
 
         Flattena os steps e suas seções para o contexto do template.
+
+        Antes de renderizar, cobra a régua de peso visual de cada módulo. É
+        aqui que ela morde, e não numa etapa opcional depois: curso que nasce
+        como coluna de texto não chega a virar arquivo. O padrão vem de
+        `validation.visual_density.required_for_new_course` no
+        `config/quality_rules.yaml`; passe `cobrar_peso_visual=False` para
+        renderizar um curso legado sem reprovar, caso em que os achados saem
+        apenas no log.
+
+        Raises:
+            VisualDensityError: quando a cobrança está ligada e algum módulo
+                reprova. A mensagem nomeia o módulo, a regra, o número medido
+                e a peça que resolve.
         """
+        self._cobrar_peso_visual(course, cobrar_peso_visual)
         template = self.env.get_template("page.tsx.j2")
+
 
         flat_steps = []
         for step in course.steps:
@@ -79,6 +148,9 @@ class TsxGenerator:
                         "value": section.value,
                         "language": section.language or "",
                         "label": section.label or "",
+                        # Carga dos blocos visuais. Sem ela o bloco renderiza
+                        # nada e não avisa.
+                        "data": section.data,
                     }
                     for section in step.content
                 ],
@@ -118,6 +190,34 @@ class TsxGenerator:
         }
 
         return template.render(context)
+
+    def _cobrar_peso_visual(
+        self, course: CourseDefinition, cobrar: bool | None
+    ) -> None:
+        """Roda a régua de peso visual em cada módulo antes de renderizar.
+
+        Quando `cobrar` é None, a decisão vem do YAML. Achado de severidade
+        `error` reprova; `warning` sai no log e deixa passar, que é como o
+        curso legado atravessa sem virar refém.
+        """
+        from src.validators.visual_density import check_visual_density
+
+        if cobrar is None:
+            cobrar = _peso_visual_obrigatorio()
+
+        reprovas: list[str] = []
+        for step in course.steps:
+            achados = check_visual_density(
+                step.content, module_name=step.id, curso_novo=cobrar
+            )
+            for a in achados:
+                if a.tipo == "error":
+                    reprovas.append(a.mensagem)
+                else:
+                    logger.warning("peso visual (%s): %s", step.id, a.mensagem)
+
+        if reprovas:
+            raise VisualDensityError(reprovas)
 
     def render_layout(self, course: CourseDefinition) -> str:
         """Renderiza layout.tsx a partir do template layout.tsx.j2."""

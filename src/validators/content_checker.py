@@ -1,13 +1,36 @@
 """Validador de qualidade de conteúdo educacional.
 
-Verifica presença de tabelas, formatação rica, exercícios,
-princípios andragógicos, contagem de palavras e hierarquia
-de títulos — elementos obrigatórios do padrão editorial
-HSM/HBR/MIT Sloan.
+**A unidade de medida é a AULA** desde 27/08/2026. Até então era o módulo, com
+piso de 2.500 palavras e uma bateria de pisos ("3+ exercícios", "5+
+estatísticas", "1+ tabela", "1+ blockquote"). O resultado medido nos cursos
+gerados foi previsível: o redator enchia a cota com abrangência, listava o
+conceito sem explicá-lo e emendava exercício em cima de exercício. A régua nova
+vem do tipo D ("aula/trilha") da tabela única de tetos da fonte de estilo
+(`alexandrebrt14-sys/escrita-empreendedor`, `MOLDES_DE_PAGINA.md` seções 2, 3-D
+e 6):
 
-Desde 11/08/2026 as listas e limiares vêm de config/quality_rules.yaml
-(via src/validators/rules_loader.py), com fallback embutido neste módulo
-para o caso de o YAML sumir ou quebrar.
+- palavras: piso 900 · alvo 1.200-2.400 · aviso 2.400 · erro 3.600;
+- 2 a 4 H2 por aula (explicar, exemplo, fazer agora), até 2 H3 por H2;
+- até 3 apoios visuais, e só quando substituem texto;
+- parágrafo de 15 a 45 palavras;
+- 1 exercício por aula; 1 fonte datada e 1 cápsula por trilha.
+
+Nenhum desses números mora neste arquivo nem em `config/quality_rules.yaml`:
+eles vêm de `config/lexicos.json` (`tetos.D`), espelho gerado da fonte, lido por
+`src/validators/lexicos_loader.py`. As constantes `FALLBACK_*` abaixo só entram
+em ação se o espelho sumir, e existem para que uma configuração corrompida não
+desligue o gate em silêncio. A mensagem de erro interpola o valor carregado, e
+não um literal, para que código e mensagem nunca divirjam do arquivo.
+
+**Compatibilidade com "módulo".** O pipeline de geração ainda entrega uma peça
+chamada módulo. `check_content(..., unidade="modulo")` mede essa peça como um
+conjunto de 4 a 6 aulas (`content_quality.lessons_per_module` no YAML), ou seja
+4×1.200 a 6×2.400 = 4.800-14.400 palavras, com piso 4×900 = 3.600 e erro
+6×3.600 = 21.600. Os pisos de estrutura (H2, exercício) também escalam pelo
+número de aulas. O padrão do parâmetro é `"aula"`.
+
+As listas de expressão proibida e os tetos vêm da fonte; o que sobra em
+`config/quality_rules.yaml` é só o que é específico do curso-factory.
 """
 
 from __future__ import annotations
@@ -15,6 +38,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from src.validators.lexicos_loader import expressoes_vetadas, tetos_da_aula
 from src.validators.rules_loader import rules_list, validation_section
 
 
@@ -27,28 +51,110 @@ class ContentError:
     modulo: str = ""
 
 
-# Teto de linhas por parágrafo. Espelha `content_quality.max_paragraph_lines`
-# em config/quality_rules.yaml; mantenha os dois em sincronia.
-MAX_PARAGRAPH_LINES = 8
+# ─── Tetos da aula (tipo D da fonte) ──────────────────────────────────────
+#
+# Fallbacks: espelham `tetos.D` de config/lexicos.json na data acima. Só valem
+# quando o espelho não carrega.
+FALLBACK_PALAVRAS_PISO = 900
+FALLBACK_PALAVRAS_ALVO = (1200, 2400)
+FALLBACK_PALAVRAS_AVISO = 2400
+FALLBACK_PALAVRAS_ERRO = 3600
+FALLBACK_H2 = (2, 4)
+FALLBACK_H3_POR_H2 = 2
+FALLBACK_VISUAIS_MAX = 3
+FALLBACK_PARAGRAFO = (15, 45)
 
-# Clichês proibidos — FALLBACK.
-# A lista viva é `validation.forbidden_expressions.expressions` em
-# config/quality_rules.yaml, lida em runtime por `_forbidden_expressions()`.
-# Estas 18 entradas só entram em ação se o YAML sumir, quebrar ou vier vazio;
-# sem elas, uma config corrompida desligaria o anti-clichê em silêncio.
+#: Faixa de aulas por módulo, para o modo de compatibilidade.
+FALLBACK_AULAS_POR_MODULO = (4, 6)
+
+
+def _par(valor, padrao: tuple[int, int]) -> tuple[int, int]:
+    """Normaliza um par vindo do JSON (lista de 2) para tupla de inteiros."""
+    if isinstance(valor, (list, tuple)) and len(valor) == 2:
+        try:
+            return int(valor[0]), int(valor[1])
+        except (TypeError, ValueError):
+            return padrao
+    return padrao
+
+
+def _inteiro(valor, padrao: int) -> int:
+    try:
+        return int(valor)
+    except (TypeError, ValueError):
+        return padrao
+
+
+def tetos_da_unidade(unidade: str = "aula") -> dict:
+    """Devolve os tetos aplicáveis à unidade medida.
+
+    Args:
+        unidade: `"aula"` (padrão) ou `"modulo"`. No segundo caso os números da
+            aula são multiplicados pela faixa de aulas por módulo, porque o
+            pipeline atual ainda entrega módulos e medi-los com a régua de uma
+            aula reprovaria todo curso existente.
+
+    Returns:
+        Dict com `piso`, `alvo` (par), `aviso`, `erro`, `h2` (par),
+        `h3_por_h2`, `visuais_max`, `paragrafo` (par) e `exercicios_min`.
+    """
+    d = tetos_da_aula()
+    palavras = d.get("palavras") if isinstance(d.get("palavras"), dict) else {}
+
+    piso = _inteiro(palavras.get("piso"), FALLBACK_PALAVRAS_PISO)
+    alvo = _par(palavras.get("alvo"), FALLBACK_PALAVRAS_ALVO)
+    aviso = _inteiro(palavras.get("aviso"), FALLBACK_PALAVRAS_AVISO)
+    erro = _inteiro(palavras.get("erro"), FALLBACK_PALAVRAS_ERRO)
+    h2 = _par(d.get("h2"), FALLBACK_H2)
+    h3_por_h2 = _inteiro(d.get("h3_por_h2"), FALLBACK_H3_POR_H2)
+    visuais_max = _inteiro(d.get("figuras_max"), FALLBACK_VISUAIS_MAX)
+    paragrafo = _par(d.get("paragrafo"), FALLBACK_PARAGRAFO)
+
+    cq = validation_section("content_quality")
+    exercicios_min = _inteiro(cq.get("min_exercises_per_lesson"), 1)
+
+    if unidade == "modulo":
+        minimo, maximo = _par(cq.get("lessons_per_module"), FALLBACK_AULAS_POR_MODULO)
+        piso *= minimo
+        alvo = (alvo[0] * minimo, alvo[1] * maximo)
+        aviso = alvo[1]
+        erro *= maximo
+        h2 = (h2[0] * minimo, h2[1] * maximo)
+        visuais_max *= maximo
+        exercicios_min *= minimo
+
+    return {
+        "unidade": "módulo" if unidade == "modulo" else "aula",
+        "piso": piso,
+        "alvo": alvo,
+        "aviso": aviso,
+        "erro": erro,
+        "h2": h2,
+        "h3_por_h2": h3_por_h2,
+        "visuais_max": visuais_max,
+        "paragrafo": paragrafo,
+        "exercicios_min": exercicios_min,
+    }
+
+
+#: Teto de palavras por parágrafo, lido da fonte. `voice_guard` importa daqui.
+MIN_PARAGRAPH_WORDS, MAX_PARAGRAPH_WORDS = tetos_da_unidade()["paragrafo"]
+
+# Clichês proibidos — FALLBACK RESIDUAL.
+# A lista viva tem duas origens: `config/lexicos.json` (a fonte de estilo, com
+# clichê de máquina, adjetivo vazio, atribuição vaga, escassez fabricada e
+# conectivo de enchimento) e `validation.forbidden_expressions.expressions` em
+# config/quality_rules.yaml, que guarda só o que é específico deste repositório.
+# As entradas abaixo são as que nem a fonte nem o YAML cobrem por conta própria;
+# sem elas, um espelho ausente desligaria parte do anti-clichê em silêncio.
 FORBIDDEN_CLICHES = [
-    "nos dias de hoje",
     "é fundamental que",
     "não é segredo que",
     "o futuro é agora",
-    "em um mundo cada vez mais",
     "vamos explorar",
     "como sabemos",
-    "é importante ressaltar",
     "diante desse cenário",
-    "nesse contexto",
     "vale a pena destacar",
-    "em última análise",
     "grosso modo",
     "vamos aprender",
     "agora você vai entender",
@@ -93,6 +199,14 @@ def _find_tables(text: str) -> int:
     return len(separators)
 
 
+#: Separador de parágrafo em Markdown: uma linha em branco.
+SEP_PARAGRAFO = "\n\n"
+
+def _find_figures(text: str) -> int:
+    """Conta figuras Markdown (imagem com legenda) no texto."""
+    return len(re.findall(r"!\[[^\]]*\]\(", text))
+
+
 def _find_headings(text: str) -> list[tuple[int, str, str]]:
     """Encontra headings Markdown com nível e texto."""
     headings = []
@@ -128,38 +242,56 @@ def _find_exercises(text: str) -> list[str]:
 
 
 def _forbidden_expressions() -> list[str]:
-    """Une o fallback embutido às expressões declaradas no YAML.
+    """Une as três origens de expressão vetada, sem repetir nenhuma.
 
-    Dedup case-insensitive, preservando a ordem: primeiro as 18 do fallback
-    (`FORBIDDEN_CLICHES`), depois o que só existe em
-    `validation.forbidden_expressions.expressions`. Sem o YAML, devolve
-    apenas o fallback.
+    Ordem: primeiro a fonte de estilo (`config/lexicos.json`), depois o que é
+    específico deste repositório (`validation.forbidden_expressions.expressions`
+    em `config/quality_rules.yaml`), por fim o fallback residual do módulo. A
+    dedup é case-insensitive e preserva a ordem. Sem o espelho e sem o YAML,
+    sobra o fallback — reduzido, mas nunca vazio.
     """
     merged: list[str] = []
     vistos: set[str] = set()
-    for expr in [*FORBIDDEN_CLICHES, *rules_list("forbidden_expressions", "expressions")]:
-        limpo = expr.strip()
-        chave = limpo.lower()
-        if not chave or chave in vistos:
-            continue
-        vistos.add(chave)
-        merged.append(limpo)
+    origens = [
+        expressoes_vetadas(),
+        rules_list("forbidden_expressions", "expressions"),
+        FORBIDDEN_CLICHES,
+    ]
+    for origem in origens:
+        for expr in origem:
+            limpo = expr.strip()
+            chave = limpo.lower()
+            if not chave or chave in vistos:
+                continue
+            vistos.add(chave)
+            merged.append(limpo)
     return merged
 
 
 def _check_cliches(text: str) -> list[str]:
     """Encontra clichês proibidos no texto.
 
-    A lista combina o fallback do módulo com o YAML de regras, de modo que
-    acrescentar uma expressão em config/quality_rules.yaml passa a reprovar
-    conteúdo sem alterar código.
+    A lista combina a fonte de estilo, o YAML de regras e o fallback do módulo,
+    de modo que acrescentar uma expressão em `config/lexicos.json` (regerando o
+    espelho) ou em `config/quality_rules.yaml` passa a reprovar conteúdo sem
+    alterar código.
     """
     found = []
     text_lower = text.lower()
     for cliche in _forbidden_expressions():
         if cliche.lower() in text_lower:
             found.append(cliche)
-    return found
+    # Uma ocorrência, uma cobrança. Unir três listas trouxe expressões que se
+    # contêm ("em um mundo cada vez mais" contém o conectivo "cada vez mais"),
+    # e sem esta poda o mesmo trecho de texto era penalizado duas vezes pelo
+    # voice_guard, que desconta por achado. Fica a expressão mais longa, que é
+    # a que descreve melhor o defeito.
+    minusculas = [c.lower() for c in found]
+    return [
+        cliche
+        for cliche, chave in zip(found, minusculas)
+        if not any(chave != outra and chave in outra for outra in minusculas)
+    ]
 
 
 def _check_bloom_objectives(text: str) -> tuple[list[str], list[str]]:
@@ -198,26 +330,34 @@ def _check_heading_hierarchy(headings: list[tuple[int, str, str]]) -> list[str]:
 
 
 def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
-    """Encontra parágrafos acima de MAX_PARAGRAPH_LINES linhas.
+    """Encontra parágrafos fora da faixa de 15 a 45 palavras.
 
-    O limite é folgado de propósito. Parágrafo desenvolvido é requisito
-    editorial (DIRETRIZ_EDITORIAL.md, seções 2 e 6): o teto existe para pegar
-    o bloco que empilha dois assuntos, não para empurrar o texto ao formato
-    fatiado que caracteriza conteúdo de máquina.
+    A régua trocou de unidade em 27/08/2026. Contar LINHAS media a largura da
+    janela de quem escreveu, não o fôlego do parágrafo: o mesmo texto dava 4
+    linhas num editor e 9 em outro. A fonte de estilo mede palavras, e a faixa
+    do tipo D é 15 a 45 (`tetos.D.paragrafo`). Abaixo de 15 o parágrafo é
+    fragmento de texto fatiado, que é a assinatura de conteúdo de máquina;
+    acima de 45 costuma empilhar dois assuntos.
+
+    Returns:
+        Lista de (número da linha, palavras no parágrafo), só para os que estão
+        fora da faixa.
     """
-    long_paragraphs = []
-    paragraphs = text.split("\n\n")
+    fora_da_faixa: list[tuple[int, int]] = []
+    paragraphs = text.split(SEP_PARAGRAFO)
     line_num = 1
     for para in paragraphs:
-        lines = para.strip().split("\n")
-        # Ignorar blocos de código, tabelas, listas
-        if para.strip().startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
+        limpo = para.strip()
+        lines = limpo.splitlines()
+        # Ignorar blocos de código, tabelas, listas, citações e cabeçalhos
+        if limpo.startswith(("```", "|", "- ", "* ", "1.", ">", "#")):
             line_num += len(lines) + 1
             continue
-        if len(lines) > MAX_PARAGRAPH_LINES:
-            long_paragraphs.append((line_num, len(lines)))
+        palavras = len(limpo.split())
+        if palavras and not (MIN_PARAGRAPH_WORDS <= palavras <= MAX_PARAGRAPH_WORDS):
+            fora_da_faixa.append((line_num, palavras))
         line_num += len(lines) + 1
-    return long_paragraphs
+    return fora_da_faixa
 
 
 def _has_emoji(text: str) -> bool:
@@ -409,78 +549,133 @@ def _count_unresolved_markers(text: str) -> int:
     return len(_UNRESOLVED_MARKER_RE.findall(text))
 
 
-def check_content(text: str, module_name: str = "", geo_config=None) -> list[ContentError]:
-    """Valida qualidade de conteúdo educacional.
+def check_content(
+    text: str,
+    module_name: str = "",
+    geo_config=None,
+    unidade: str = "aula",
+) -> list[ContentError]:
+    """Valida qualidade de conteúdo educacional contra os tetos do molde D.
 
-    Verifica: tabelas, formatação, exercícios, andragogia,
-    contagem de palavras, hierarquia de títulos, clichês,
-    verbos de Bloom, emojis e as duas regras de anti-invenção
-    (percentual sem fonte e marcadores de apuração em aberto).
+    Args:
+        text: o Markdown da unidade a medir.
+        module_name: rótulo usado no relatório.
+        geo_config: `Geo2026Config` do cliente, opcional. Quando presente, liga
+            a camada de citabilidade GEO.
+        unidade: `"aula"` (padrão) ou `"modulo"`. Ver `tetos_da_unidade`: no
+            modo módulo os números da aula são multiplicados pela faixa de 4 a
+            6 aulas, para que o pipeline atual, que ainda entrega módulos, não
+            seja reprovado por medir a peça errada.
+
+    Verifica: extensão, número de H2 e de H3 por H2, hierarquia de títulos,
+    teto de apoios visuais, exercício aplicado, clichês, verbos de Bloom,
+    andragogia, faixa de parágrafo, emojis e as duas regras de anti-invenção.
 
     Returns:
         Lista de erros e avisos encontrados.
     """
     erros: list[ContentError] = []
-    mod = module_name or "módulo"
+    tetos = tetos_da_unidade(unidade)
+    nome_unidade = tetos["unidade"]
+    mod = module_name or nome_unidade
 
-    # 1. Contagem de palavras
+    # 1. Extensão. Piso, alvo, aviso e erro vêm de `tetos.D` na fonte.
     word_count = _count_words(text)
-    if word_count < 2500:
+    piso = tetos["piso"]
+    alvo_min, alvo_max = tetos["alvo"]
+    if word_count < piso:
         erros.append(ContentError(
             tipo="error",
             categoria="profundidade",
-            mensagem=f"Módulo com apenas {word_count} palavras (mínimo: 2.500). "
-                     f"Conteúdo insuficiente para padrão editorial HSM/HBR.",
+            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
+                     f"piso de {piso}. Abaixo do piso a peça apresenta o conceito e não o "
+                     f"explica: falta a narrativa (de onde vem a ideia, por que importa, o "
+                     f"que muda, o erro comum) ou o exemplo contado por inteiro. "
+                     f"Alvo: {alvo_min} a {alvo_max}.",
             modulo=mod,
         ))
-    elif word_count < 3000:
+    elif word_count < alvo_min:
         erros.append(ContentError(
             tipo="warning",
             categoria="profundidade",
-            mensagem=f"Módulo com {word_count} palavras (recomendado: 3.000-4.000). "
-                     f"Considere aprofundar a análise.",
+            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
+                     f"alvo de {alvo_min} a {alvo_max}. Verifique se a parte explicativa "
+                     f"(cerca de 60% das palavras) está desenvolvida.",
             modulo=mod,
         ))
-    elif word_count > 4500:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="profundidade",
-            mensagem=f"Módulo com {word_count} palavras (máximo recomendado: 4.000). "
-                     f"Considere dividir em submódulos.",
-            modulo=mod,
-        ))
-
-    # 2. Tabelas obrigatórias
-    table_count = _find_tables(text)
-    if table_count == 0:
+    elif word_count > tetos["erro"]:
         erros.append(ContentError(
             tipo="error",
-            categoria="formatação",
-            mensagem="Nenhuma tabela encontrada. "
-                     "Cada módulo DEVE ter ao menos 1 tabela comparativa.",
+            categoria="profundidade",
+            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, acima do teto "
+                     f"de {tetos['erro']}. Uma ideia por aula: divida em duas.",
             modulo=mod,
         ))
-    elif table_count < 1:
+    elif word_count > tetos["aviso"]:
         erros.append(ContentError(
             tipo="warning",
-            categoria="formatação",
-            mensagem=f"Apenas {table_count} tabela(s). Recomendado: 1-3 por módulo.",
+            categoria="profundidade",
+            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, acima do "
+                     f"alvo de {alvo_min} a {alvo_max}. Confira se não entrou uma segunda "
+                     f"ideia que merece aula própria.",
             modulo=mod,
         ))
 
-    # 3. Hierarquia de títulos
+    # 2. Apoios visuais: TETO, não piso. Tabela e figura entram só quando
+    #    substituem texto; cobrá-los como obrigação produzia enfeite.
     headings = _find_headings(text)
-    if len(headings) < 3:
+    visuais = _find_tables(text) + _find_figures(text)
+    if visuais > tetos["visuais_max"]:
         erros.append(ContentError(
-            tipo="error",
+            tipo="warning",
             categoria="formatação",
-            mensagem=f"Apenas {len(headings)} subtítulos. "
-                     f"O módulo deve ter ao menos 5-7 seções semânticas (H2/H3).",
+            mensagem=f"{visuais} apoios visuais, acima do teto de {tetos['visuais_max']} "
+                     f"por {nome_unidade}. Apoio visual entra quando SUBSTITUI texto "
+                     f"(comparação, sequência, conjunto de números); acima do teto ele "
+                     f"passa a competir com a leitura.",
             modulo=mod,
         ))
 
-    hierarchy_errors = _check_heading_hierarchy(headings)
-    for err in hierarchy_errors:
+    # 3. H2 e H3: 2 a 4 H2 por aula (explicar, exemplo, fazer agora), até 2 H3
+    #    por H2. O piso antigo de "3+ headings" não dizia de que nível.
+    h2 = [h for h in headings if h[0] == 2]
+    h2_min, h2_max = tetos["h2"]
+    if len(h2) < h2_min:
+        erros.append(ContentError(
+            tipo="error",
+            categoria="formatação",
+            mensagem=f"{len(h2)} H2 na {nome_unidade}, abaixo do mínimo de {h2_min}. "
+                     f"A sequência do molde pede ao menos: explicar a ideia, exemplo do "
+                     f"negócio do aluno e 'faça agora'.",
+            modulo=mod,
+        ))
+    elif len(h2) > h2_max:
+        erros.append(ContentError(
+            tipo="warning",
+            categoria="formatação",
+            mensagem=f"{len(h2)} H2 na {nome_unidade}, acima do teto de {h2_max}. "
+                     f"Mais seções do que isso costuma indicar duas ideias na mesma peça.",
+            modulo=mod,
+        ))
+
+    h3_por_h2 = tetos["h3_por_h2"]
+    contagem_h3 = 0
+    for nivel, _titulo, _raw in headings:
+        if nivel == 2:
+            contagem_h3 = 0
+        elif nivel == 3:
+            contagem_h3 += 1
+            if contagem_h3 > h3_por_h2:
+                erros.append(ContentError(
+                    tipo="warning",
+                    categoria="formatação",
+                    mensagem=f"Mais de {h3_por_h2} H3 sob o mesmo H2. "
+                             f"Acima disso o H2 já é duas seções.",
+                    modulo=mod,
+                ))
+                break
+
+    for err in _check_heading_hierarchy(headings):
         erros.append(ContentError(
             tipo="error",
             categoria="formatação",
@@ -488,36 +683,31 @@ def check_content(text: str, module_name: str = "", geo_config=None) -> list[Con
             modulo=mod,
         ))
 
-    # 4. Blocos de citação para insights
-    blockquote_count = _find_blockquotes(text)
-    if blockquote_count == 0:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="formatação",
-            mensagem="Nenhum bloco de citação (>) encontrado. "
-                     "Use blocos de citação para insights centrais e conceitos memoráveis.",
-            modulo=mod,
-        ))
-
-    # 5. Termos em negrito
+    # 4. Termos em negrito. Único piso de formatação que sobrou, e é aviso.
+    bold_minimo = _inteiro(
+        validation_section("content_quality").get("min_bold_terms_per_lesson"), 3
+    )
     bold_count = _find_bold_terms(text)
-    if bold_count < 3:
+    if bold_count < bold_minimo:
         erros.append(ContentError(
             tipo="warning",
             categoria="formatação",
-            mensagem=f"Apenas {bold_count} termos em negrito. "
+            mensagem=f"Apenas {bold_count} termos em negrito (recomendado: {bold_minimo}). "
                      f"Destaque termos-chave e conceitos na primeira ocorrência.",
             modulo=mod,
         ))
 
-    # 6. Exercícios
+    # 5. Exercício: 1 por aula ("faça agora", 5-15 min, com etapas numeradas e
+    #    o resultado esperado). Era "mínimo 3 por módulo".
     exercises = _find_exercises(text)
-    if len(exercises) < 3:
+    minimo_ex = tetos["exercicios_min"]
+    if len(exercises) < minimo_ex:
         erros.append(ContentError(
             tipo="error",
             categoria="exercícios",
-            mensagem=f"Apenas {len(exercises)} exercício(s) detectado(s) "
-                     f"(mínimo: 3 por módulo com progressão de complexidade).",
+            mensagem=f"{len(exercises)} exercício(s) detectado(s) na {nome_unidade} "
+                     f"(mínimo: {minimo_ex}). O exercício é o 'faça agora': 5 a 15 minutos, "
+                     f"em etapas numeradas, com dado real do aluno e o resultado esperado.",
             modulo=mod,
         ))
 
@@ -598,15 +788,16 @@ def check_content(text: str, module_name: str = "", geo_config=None) -> list[Con
             modulo=mod,
         ))
 
-    # 10. Parágrafos longos
-    long_paras = _check_paragraph_length(text)
-    for line_num, line_count in long_paras[:3]:  # Limitar a 3 avisos
+    # 10. Parágrafos fora da faixa de 15 a 45 palavras (`tetos.D.paragrafo`).
+    for line_num, palavras in _check_paragraph_length(text)[:5]:
+        lado = "curto" if palavras < MIN_PARAGRAPH_WORDS else "longo"
         erros.append(ContentError(
             tipo="warning",
             categoria="formatação",
-            mensagem=f"Parágrafo com {line_count} linhas próximo à linha {line_num} "
-                     f"(acima de {MAX_PARAGRAPH_LINES}): verifique se ele trata de "
-                     f"mais de um assunto. Se tratar de um só, mantenha.",
+            mensagem=f"Parágrafo {lado} com {palavras} palavras próximo à linha {line_num} "
+                     f"(faixa: {MIN_PARAGRAPH_WORDS} a {MAX_PARAGRAPH_WORDS}). "
+                     f"Parágrafo curto demais fatia o raciocínio; longo demais costuma "
+                     f"empilhar dois assuntos.",
             modulo=mod,
         ))
 

@@ -6,6 +6,38 @@ Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas d
 
 ## [Unreleased]
 
+### Alterado — A unidade de medida passa a ser a AULA, e a régua vem da fonte única (2026-08-27)
+
+Os cursos gerados saíam rasos: apresentavam o conceito e não o explicavam. A causa não era o modelo, era a régua. O gate media **módulo** com piso de 2.500 palavras e uma bateria de pisos ("3+ exercícios", "5+ estatísticas", "3+ fontes", "1+ tabela", "1+ blockquote", "3+ blocos visuais"), e o prompt dava cota de palavras por parte. Cota se cumpre com abrangência, não com explicação: o redator listava seis conceitos em vez de explicar um, e emendava exercício em cima de exercício sem narrativa no meio.
+
+A unidade agora é a **aula** do tipo D da fonte única de estilo (`alexandrebrt14-sys/escrita-empreendedor`, hash `a10ed133…`): piso 900 · alvo 1.200-2.400 · aviso 2.400 · erro 3.600 palavras; 2 a 4 H2; até 2 H3 por H2; até 3 apoios visuais; parágrafo de 15 a 45 palavras; 1 exercício por aula; 1 fonte datada e 1 cápsula por trilha; trilha de 4 a 6 aulas, 6.000-12.000 palavras, 30-60 min.
+
+- **Nenhum número da régua mora mais neste repositório.** `config/lexicos.json` é espelho gerado da fonte (`python -m escrita.cli lexicos --json`) e `src/validators/lexicos_loader.py` o lê em runtime. `content_checker` tira dali piso, alvo, aviso, erro, H2, H3 por H2, teto de visuais e faixa de parágrafo, e **interpola o valor carregado na mensagem de erro** — código, configuração e mensagem não conseguem mais divergir. As constantes `FALLBACK_*` só entram se o espelho sumir.
+- **Pisos viraram tetos.** Tabela, blockquote, estatística e fonte deixaram de ser obrigatórios: entram quando substituem texto ou respondem à pergunta do exemplo. "3+ blocos visuais" virou "até 3, e só quando substituem texto". "Mínimo 3 exercícios" virou 1, o "faça agora" de 5 a 15 minutos.
+- **Compatibilidade com "módulo".** O pipeline ainda entrega módulos, então `check_content(..., unidade="modulo")` mede a peça como 4 a 6 aulas (4.800-14.400 palavras, piso 3.600, erro 21.600). `QualityGate.check_text` usa `unidade="modulo"` por padrão para não reprovar o acervo; quando o gerador emitir aula, o chamador passa `unidade="aula"`.
+- **Parágrafo mede palavras, não linhas.** Contar linhas media a largura da janela de quem escreveu. A faixa é 15-45 palavras (`tetos.D.paragrafo`); `voice_guard` acompanha pelo mesmo import.
+- **Anti-clichê deixou de ter duas cópias.** As 21 expressões que a fonte já trazia saíram de `config/quality_rules.yaml` e as 5 que ela cobria saíram de `FORBIDDEN_CLICHES`; a união em runtime tem três origens e uma poda de substring, para que "em um mundo cada vez mais" não seja cobrado duas vezes por conter "cada vez mais".
+- **`DIRETRIZ_EDITORIAL.md` e `GUIA_ESCRITA_HUMANIZADA.md` viraram ponteiros** para a fonte, com hash e data de sincronização, guardando só o que é específico do motor de cursos. A bibliografia datada do guia desceu para `docs/research/HUMANIZACAO_AI_ESTADO_DA_ARTE_2026.md`.
+- **Prompt de redação reescrito** (`src/templates/prompts/draft.md` e `pt-br/draft.md`): sequência do molde D (uma frase do que vai aprender; a ideia explicada com origem, custo, mudança e erro comum; o exemplo do negócio do aluno contado por inteiro com número; "faça agora" em etapas com o resultado esperado; resumo de 3 a 5 linhas), 1.200-2.400 palavras pedidas explicitamente, sem cota por parte.
+- **`output/` saiu do índice do Git.** Sete rascunhos gerados estavam versionados apesar de `.gitignore` já os excluir.
+
+
+### Adicionado — Contrato de geração com bloco visual e cobrança da régua (2026-08-17, PR #67)
+
+A doutrina do PR #66 virou código. Até aqui o gerador emitia cinco tipos de bloco, todos de prosa ou código, e nenhum contava como peça visual: curso gerado pelo caminho padrão nascia reprovado na própria régua da casa.
+
+- **Seis tipos visuais no contrato:** `figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide` e `timeline`, exatamente os que o portão `gate-peso-visual.mjs` da landing conta. `figure` leva a imagem em `value` e a legenda em `label`; os outros cinco levam a estrutura em `data`. O modelo recusa bloco que sairia vazio (payload ausente, linha de tabela com tamanho diferente do cabeçalho, figura sem legenda), porque o motor da landing degrada bloco sem carga para nada, sem erro e sem console.
+- **Quatro lugares que mudam sempre juntos** ao criar ou alterar tipo: `src/models.py` (enum e conjuntos `VISUAL_SECTION_TYPES`/`PAYLOAD_SECTION_TYPES`), `src/schemas/course.schema.json` (mesmo enum, com regra condicional de payload por tipo), `src/templates/page.tsx.j2` (o `switch (section.type)`) e o filtro `js_json` de `src/generators/tsx_generator.py` (serialização da carga). Mexer em um só produz bloco que o validador aceita e a página não desenha, ou o contrário.
+- **Promoção automática no parser:** tabela em Markdown vira `dataTable`, lista numerada de passos vira `stepGuide` sob critério conservador, imagem com legenda vira `figure`. Carga que não bate mantém o conteúdo como `text` em vez de deixar a exceção subir. `comparison`, `statGrid` e `timeline` **não** são promovidos, por decisão: nenhuma construção de Markdown os sinaliza sem ambiguidade, e promover errado é pior que não promover. Entram por autoria explícita.
+- **`visual_density` deixou de ser declarativa.** `src/validators/visual_density.py` lê a camada do `config/quality_rules.yaml` e `TsxGenerator.render_page` a cobra antes de renderizar: módulo reprovado levanta `VisualDensityError` e o curso não chega a virar arquivo. Nenhum dos três limites existe como constante em código. Legado passa com `cobrar_peso_visual=False`, que rebaixa todo achado a aviso no log.
+- **`content_checker.MAX_PARAGRAPH_LINES` passou a ler o YAML.** Era constante com um comentário pedindo sincronia manual, e o número já tinha subido de 5 para 8 no arquivo sem o código saber. `voice_guard.py` herda o valor pelo mesmo import.
+- **Dois defeitos consertados de raspão:** o prompt do redator mandava formatar tabela como **uma única linha**, o que impedia qualquer promoção a `dataTable`; e a expressão que reconhece cerca de código não casava em arquivo com quebra CRLF.
+
+### Adicionado — Doutrina visual dos cursos gerados (2026-08-17, PR #66)
+
+- **[`docs/DOUTRINA_VISUAL_CURSOS.md`](docs/DOUTRINA_VISUAL_CURSOS.md):** três limites verificáveis por máquina para todo curso novo: nenhum parágrafo acima de 1.200 caracteres (medida de tela, o que cabe num celular de 390 pontos sem rolagem interna), ao menos três blocos visuais por módulo e ao menos um bloco visual a cada 2.500 caracteres de prosa. O documento registra o caso que motivou a régua (`motor-de-crescimento-ia` publicado com 114 blocos de prosa acima do teto, o maior com 3.492 caracteres, e nenhuma figura, aprovado por todos os portões existentes) e a varredura do acervo, em que 26 dos 52 cursos medidos não tinham um único bloco visual.
+- **`DIRETRIZ_EDITORIAL.md` §11.1:** forma curta e normativa da doutrina, para quem lê a diretriz e não o documento longo.
+
 ### Corrigido / Qualidade — Diretriz editorial v4: prova antes da escrita, promessa antes do esqueleto, config que finalmente é lida (2026-08-11)
 
 Segunda rodada do mesmo dia, com a doutrina completa do curador aplicada de ponta a ponta e um achado de governança que explica parte do problema original.

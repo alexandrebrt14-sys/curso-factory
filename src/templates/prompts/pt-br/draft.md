@@ -1,4 +1,4 @@
-# Prompt: redação de módulo (GPT-4o)
+# Prompt: redação de aula (GPT-4o)
 
 ## Contexto
 
@@ -24,7 +24,7 @@ Só depois de as quatro falharem entra o marcador, e ele vai no lugar do DADO, n
 - `[FALTA EVIDÊNCIA: <o que precisa ser buscado>]` para lacuna que pesquisa resolve. O revisor (Claude) trata na etapa seguinte.
 - `[PREENCHER-HUMANO: <o que falta>]` para o que só o autor humano tem: caso vivido, número proprietário, posição de negócio.
 
-Teto de CINCO marcadores abertos por módulo. Acima disso o módulo não está pronto para revisão, está pedindo apuração, e o quality gate reprova.
+Teto de CINCO marcadores abertos por aula. Acima disso a aula não está pronta para revisão, está pedindo apuração, e o quality gate reprova.
 
 **Regra de proporção (inviolável):** o número de blocos que afirmam resultado é menor ou igual ao número de provas datadas disponíveis em `{context}`. Módulo com doze afirmações de resultado e duas provas está declarando que dez delas são adjetivo. Conte antes de escrever.
 
@@ -64,7 +64,7 @@ Antes de entregar, varra o texto eliminando estes sinais:
 
 Regra prática: ao final de cada seção, releia perguntando "isso poderia ter saído de qualquer gerador de conteúdo corporativo?". Se sim, reescreva com concretude, agente explícito e dado específico, ou marque `[FALTA EVIDÊNCIA]`.
 
-## Piso de substância: o que o módulo precisa TER
+## Piso de substância: o que a aula precisa TER
 
 Este prompt lista muita coisa a evitar, e as regras de evitação têm um furo conhecido: módulo curto, uniforme e sem argumento não viola nenhuma delas e mesmo assim não ensina. Os validadores automáticos do repositório medem forma (acento, clichê, contagem, marcação) e não conseguem medir substância. Antes de aplicar qualquer proibição, garanta os seis itens abaixo (`DIRETRIZ_EDITORIAL.md`, seção 2.1):
 
@@ -170,115 +170,184 @@ Aplique rigorosamente os seis princípios da aprendizagem de adultos em CADA mó
 5. **Orientação para problemas**: organize o conteúdo em torno de problemas reais, não de taxonomias abstratas. Comece com o problema, depois apresente a solução. Nunca comece um tópico com "A definição de X é...".
 6. **Motivação intrínseca**: conecte o aprendizado com crescimento profissional, autonomia e domínio. Mostre como o conhecimento diferencia o profissional no mercado.
 
-## Estrutura obrigatória do módulo
+## Estrutura obrigatória da aula
 
-### 1. Abertura com Impacto (250-350 palavras)
+A unidade que você escreve é a **AULA**, não o módulo. Uma aula ensina **UMA ideia**, explicada
+por inteiro, e termina com o aluno tendo feito alguma coisa. Ela tem duas partes com peso
+parecido: a **explicativa** (blocos 1 a 3, cerca de 60% das palavras) e a **de exercício**
+(blocos 4 e 5, cerca de 40%).
 
-- Comece com um dado surpreendente, um estudo de caso real ou uma pergunta provocativa (estilo HBR)
-- Apresente o problema central que o módulo resolve, com dados concretos
-- Conecte com o módulo anterior mostrando a progressão lógica (exceto módulo 1)
-- Encerre com os **Objetivos de Aprendizagem** em formato de lista numerada, usando EXCLUSIVAMENTE verbos de ação da Taxonomia de Bloom:
+**Extensão: escreva de 1.200 a 2.400 palavras por aula.** Abaixo de 900 palavras a aula é rasa:
+ela apresenta o conceito e não o explica, que é exatamente o defeito medido nos cursos gerados
+até agosto de 2026. Acima de 3.600 palavras a aula carrega uma segunda ideia e precisa virar
+duas. Não há cota de palavras por bloco: distribua conforme o assunto pede, respeitando a
+proporção de 60/40 entre explicar e fazer.
 
-**Verbos OBRIGATÓRIOS** (níveis superiores):
-- Analisar, comparar, diferenciar, diagnosticar, categorizar (Análise)
-- Avaliar, justificar, priorizar, recomendar, defender (Avaliação)
-- Criar, projetar, formular, propor, desenvolver (Criação)
-- Aplicar, implementar, executar, demonstrar, calcular (Aplicação)
+**Cabeçalhos: de 2 a 4 H2 na aula**, um a cada 400-800 palavras, e no máximo 2 H3 sob cada H2.
+Os H2 correspondem aos blocos 2, 3 e 4 abaixo. Os blocos 1 e 5 não levam cabeçalho próprio.
 
-**Verbos PROIBIDOS** (níveis inferiores, superficiais demais):
-- Entender, conhecer, saber, compreender, lembrar, memorizar, listar, descrever, identificar
+### 1. O que o aluno vai aprender (1 frase)
 
-Exemplo correto:
-> **Objetivos de Aprendizagem**
-> 1. Diagnosticar gargalos de performance em pipelines de dados usando métricas de latência e throughput
-> 2. Avaliar trade-offs entre consistência eventual e forte em arquiteturas distribuídas
-> 3. Projetar um plano de migração incremental com rollback automatizado
+Uma frase, no topo, sem cabeçalho: o que ele vai saber fazer no fim desta aula. Nada de lista de
+objetivos, nada de "pré-requisitos", nada de "o que você vai aprender" em bloco fixo — esses
+vivem no nível da TRILHA, uma vez, não em cada aula.
 
-### 2. Fundamentação Conceitual (800-1.200 palavras)
+Se a trilha pedir objetivos formais, use verbos de ação da Taxonomia de Bloom (níveis 3 a 6):
 
-Desenvolva cada conceito com profundidade analítica:
+**Verbos OBRIGATÓRIOS**: analisar, comparar, diferenciar, diagnosticar, categorizar (Análise);
+avaliar, justificar, priorizar, recomendar, defender (Avaliação); criar, projetar, formular,
+propor, desenvolver (Criação); aplicar, implementar, executar, demonstrar, calcular (Aplicação).
 
-- **Estrutura progressiva**: do fundamento teórico à aplicação prática
-- **Evidências e dados**: cite pesquisas, estatísticas ou estudos de caso para cada afirmação relevante. Nunca afirme sem evidência.
-- **Comparações estratégicas**: use tabelas comparativas para contrastar abordagens, ferramentas ou metodologias
-- **Analogias sofisticadas**: conecte conceitos novos com domínios que o profissional já domina
-- **Destaque de conceitos-chave**: use blocos de citação (>) para insights fundamentais
+**Verbos PROIBIDOS** (níveis inferiores): entender, conhecer, saber, compreender, lembrar,
+memorizar, listar, descrever, identificar.
 
-Formato obrigatório para conceitos-chave:
+### 2. A ideia explicada, com narrativa (H2 próprio)
 
-> **Conceito central:** [descrição concisa e memorável do conceito, em no máximo 2 frases]
+Este é o bloco que faltava nos cursos rasos. Explique UMA ideia contando quatro coisas, nesta
+ordem, em prosa corrida e não em tópicos:
 
-- **Alertas e armadilhas**: sinalize erros comuns com prefixo em negrito: **Armadilha comum:**
+1. **De onde a ideia vem.** Quem a formulou, em que contexto e qual problema ela resolvia. Uma
+   ideia sem origem é um jargão que o aluno decora e não usa.
+2. **Por que ela importa para o dono do negócio.** O custo concreto de não saber isso, na
+   operação dele, com número quando houver.
+3. **O que muda quando ele aplica.** O estado antes e o estado depois, descritos por
+   comportamento observável, não por adjetivo.
+4. **O erro mais comum de quem ignora.** O jeito errado que parece certo, e por que parece.
+
+Nunca abra com "A definição de X é". Comece pelo problema, chegue à ideia. Use analogia com um
+domínio que o aluno já domina, no máximo uma por aula. Marque a armadilha com **Armadilha
+comum:** em negrito.
 
 Exemplo de profundidade esperada:
 
 **ERRADO** (superficial, genérico):
-"A inteligência artificial está transformando o mercado. Empresas que adotam IA conseguem melhores resultados."
+"A inteligência artificial está transformando o mercado. Empresas que adotam IA conseguem
+melhores resultados."
 
-**CORRETO** (profundo, evidenciado, analítico):
-"Segundo o McKinsey Global Institute (2025), empresas que integram IA generativa em processos operacionais reportam redução média de 23% no tempo de ciclo de decisão. Contudo, 67% das implementações falham por falta de alinhamento entre capacidade técnica e maturidade organizacional, o que Davenport e Ronanki classificam como 'gap de absorção cognitiva' em seu estudo publicado na HBR."
+**CORRETO** (com origem, custo, mudança e erro):
+"A ideia de medir o tempo de ciclo de decisão vem da produção enxuta, onde ninguém conseguia
+melhorar o que não conseguia cronometrar. No comércio, ela aparece quando o dono demora três
+dias para decidir se repõe um produto e perde a venda no segundo. O que muda ao aplicá-la é
+banal de descrever: a decisão passa a ter um prazo escrito e um dado que a dispara. **Armadilha
+comum:** encurtar o prazo sem definir o dado, o que troca decisão lenta por decisão apressada."
 
-### 3. Análise de Caso ou Demonstração Prática (400-600 palavras)
+### 3. O exemplo do negócio do aluno, contado por inteiro (H2 próprio)
 
-- Apresente um **estudo de caso real** (empresa, projeto ou cenário verificável) ou uma demonstração técnica detalhada
-- Estruture SEMPRE com: **Contexto** → **Desafio** → **Abordagem** → **Resultado** → **Lições Aprendidas**
-- Se o tema envolver código, comandos ou fórmulas, apresente em blocos de código bem comentados
-- Inclua uma **tabela de decisão** ou **framework de análise** quando aplicável
+Um exemplo só, do tipo de negócio do aluno, contado do começo ao fim: quem é, o que estava
+acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois. **Com número.** Número
+inventado é proibido pela regra anti-invenção; se você não tem o número real, use um valor
+declaradamente ilustrativo e diga que é ("suponha um faturamento de R$ 40 mil no mês").
 
-### 4. Quadro Comparativo ou Síntese Visual (OBRIGATÓRIO)
+Meio exemplo não serve. Se o exemplo não couber por inteiro, ele é grande demais e a aula
+escolheu o caso errado. Não empilhe três casos curtos: um contado inteiro ensina mais que três
+mencionados.
 
-Inclua ao menos UMA tabela estruturada por módulo. Exemplos de formato:
+### 4. Peso visual da aula (TETO, com número)
 
-**Tabela comparativa:**
+**Até 3 apoios visuais por aula, e só quando substituem texto.** Este é um TETO, não um piso.
+Até agosto de 2026 a regra era "pelo menos três blocos visuais por módulo", e o resultado foi
+figura de cota: peça inserida para cumprir número, que não explicava nada. Aula sem nenhum apoio
+visual passa; aula com peça decorativa, não.
 
-| Critério | Opção A | Opção B | Opção C |
-|----------|---------|---------|---------|
-| Custo    | ...     | ...     | ...     |
-| Escala   | ...     | ...     | ...     |
-| Curva de aprendizado | ... | ... | ... |
+Um limite continua sendo piso, e é de renderização: **nenhum parágrafo acima de 1.200
+caracteres**, que é o que cabe num celular de 390 pontos sem rolagem dentro do próprio
+parágrafo. O teto de 1.200 não é cota de brevidade: um parágrafo de 1.100 caracteres que
+desenvolve um raciocínio até o fim vale mais que quatro de 200 que fatiam o mesmo raciocínio.
+Quando um parágrafo estourar, veja primeiro se ele carrega duas ideias — se carregar, separe
+pela ideia. Se carregar uma só, o excedente costuma ser comparação, sequência ou conjunto de
+números disfarçado de prosa: **um trecho de prosa que passa de 2.500 caracteres sem alívio é o
+sinal mais confiável de que existe uma peça escondida ali dentro.** Promova o trecho a peça, em
+vez de acrescentar peça nova.
 
-**Framework de decisão:**
+Em palavras, o parágrafo fica entre 15 e 45. Abaixo de 15 o texto está fatiado, que é a
+assinatura de conteúdo de máquina.
 
-| Situação | Recomendação | Justificativa |
-|----------|--------------|---------------|
-| ...      | ...          | ...           |
+**Qual peça para qual problema.** A escolha não é de gosto: cada defeito de leitura tem a peça
+que o resolve.
 
-**Matriz antes/depois:**
+| O que trava o leitor | A peça | O que ela precisa ter |
+| --- | --- | --- |
+| Alternativas com critérios | tabela | alternativas nas colunas, critérios nas linhas |
+| Processo em que a ordem importa | lista numerada de passos | um verbo por passo e o resultado observável dele |
+| Números que só fazem sentido juntos | tabela curta de números | uma linha por número, com a origem na própria linha |
+| Fontes que discordam | tabela de três colunas | régua, número e origem, uma linha por fonte |
+| Conceito abstrato sem âncora | imagem com legenda | legenda que afirma o que a figura mostra |
 
-| Dimensão | Antes | Depois | Impacto |
-|----------|-------|--------|---------|
-| ...      | ...   | ...    | ...     |
+Não contam como apoio visual: bloco de código, blockquote e parágrafo em negrito.
 
-### 5. Exercícios Práticos (mínimo 3, progressão de complexidade)
+**Como escrever cada peça em Markdown.** O conversor promove a marcação abaixo a bloco visual;
+marcação torta volta a ser prosa e não recebe crédito.
 
-Para CADA exercício, inclua TODOS os campos abaixo:
+Tabela: linha de cabeçalho, linha de separação logo abaixo e o MESMO número de células em todas
+as linhas. Cada linha ocupa uma linha de texto por linha da tabela, nunca tudo grudado numa
+linha só.
 
-- **Título descritivo** (nunca "Exercício 1", "Exercício 2")
-- **Nível Bloom**: Aplicação / Análise / Avaliação / Criação
-- **Contexto profissional**: situe o exercício num cenário de trabalho real com dados concretos
-- **Enunciado claro** com dados suficientes para resolução
-- **Critérios de excelência**: o que define uma resposta excelente vs. adequada vs. insuficiente
+```
+| Critério | Ferramenta A | Ferramenta B |
+| --- | --- | --- |
+| Custo mensal | R$ 1.200 | R$ 3.400 |
+| Prazo de implantação | 2 semanas | 6 semanas |
+```
+
+Lista numerada de passos: numeração contínua começando em 1, verbo no imperativo abrindo cada
+passo e o resultado observável no mesmo item.
+
+```
+1. Abra o relatório de origem e filtre os últimos 90 dias. O painel lista as campanhas com sessão registrada.
+2. Marque as campanhas sem etiqueta de origem. A contagem de órfãs aparece no rodapé.
+3. Corrija a etiqueta da campanha de maior volume e recarregue. A campanha sai da lista de órfãs.
+```
+
+Imagem com legenda: a legenda vai no texto entre colchetes e não pode ficar vazia, porque figura
+sem legenda é recusada. Ela afirma o que a figura mostra, e não o que ela é.
+
+```
+![O dado de origem do clique ao cadastro, com o ponto em que a etiqueta se perde](fluxo-origem.svg)
+```
+
+### 5. Faça agora (H2 próprio, 5 a 15 minutos)
+
+**Um exercício por aula.** Não três. A bateria de exercícios era a régua antiga e produzia
+prática sem conceito explicado.
+
+O exercício é um "faça agora", executável em 5 a 15 minutos, com estes campos:
+
+- **Título descritivo** (nunca "Exercício 1")
+- **Nível Bloom**: Aplicação, Análise, Avaliação ou Criação
+- **Etapas numeradas**, cada uma com um verbo no imperativo e um campo para o **dado real do
+  negócio dele** (não um dado fictício do enunciado)
+- **O resultado esperado**: o que ele deve estar vendo na tela ou no papel quando acertar. Sem
+  isso o aluno não sabe se terminou.
 - **Dica estratégica**: uma orientação que guie sem entregar a resposta
 
 Exemplo:
 
-> **Diagnóstico de Maturidade em Dados**
+> **Meça o tempo de ciclo da sua decisão de reposição**
 > **Nível:** Análise
-> **Contexto:** Você é o novo gestor de dados de uma rede varejista com 120 lojas. O CEO quer implementar precificação dinâmica com IA, mas a equipe atual trabalha com planilhas e relatórios manuais.
-> **Enunciado:** Elabore um diagnóstico de maturidade de dados com 5 dimensões, classifique o estágio atual da empresa em cada uma e proponha o roadmap de 6 meses para viabilizar a precificação dinâmica.
-> **Critérios de excelência:** O diagnóstico deve incluir métricas mensuráveis por dimensão, o roadmap deve ter marcos quinzenais com entregáveis concretos, e a proposta deve considerar restrições orçamentárias e de capacitação da equipe.
-> **Dica estratégica:** Comece mapeando os fluxos de dados existentes antes de propor novos, porque a maturidade se constrói sobre o que já funciona.
+> 1. Abra as três últimas compras de reposição que você fez e anote a data em que percebeu a
+>    falta e a data em que o pedido saiu. Você terá três pares de datas.
+> 2. Calcule a diferença em dias de cada par e escreva a maior das três.
+> 3. Escreva ao lado qual dado te avisou da falta em cada caso, ou "nenhum" se foi memória.
+> **Resultado esperado:** uma linha com três números e três origens. Se alguma origem for
+> "nenhum", você achou onde a decisão trava.
+> **Dica estratégica:** não comece criando um relatório novo; use o que já existe, porque a
+> maturidade se constrói sobre o que já funciona.
 
-### 6. Síntese Executiva e Conexão (200-250 palavras)
+### 6. Resumo (3 a 5 linhas)
 
-Abra a síntese pelo **callback**: retome o caso condutor ou a tensão da abertura e mostre o estado mudado depois do que o módulo ensinou. Resumir o que o aluno acabou de ler está proibido, porque desperdiça a segunda posição mais lida do texto.
+Três a cinco linhas, sem cabeçalho, retomando a ideia da aula pelo caso condutor: o estado
+mudado depois do que ela ensinou. Resumir o que o aluno acabou de ler está proibido — isso
+desperdiça a segunda posição mais lida do texto.
 
-- **Síntese prática**: o que a pessoa faz na segunda-feira, com qual dos artefatos entregues e sob qual critério de pronto
-- **Checklist de aplicação imediata**: 3-5 ações executáveis, cada uma com o critério que diz se ficou pronta
-- **Ponte para o próximo módulo**: mostre como o conhecimento adquirido será expandido ou aplicado
-- **Referências recomendadas**: sugira 2-3 leituras/recursos complementares reais (artigos, livros, ferramentas) com autor e ano
+Feche com **uma** ponte para a próxima aula. Um pedido por aula, com quatro peças: verbo de
+ação, valor concreto, tempo ou esforço, risco removido. Verbos que servem, no imperativo e com
+objeto visualizável: abra, escreva, liste, marque, escolha, corte, anote, confira, publique,
+troque, preencha, calcule. Não existe "descubra o poder", "transforme", "não perca" nem "saiba
+mais".
 
-**Um pedido por módulo.** Se houver chamada para ação, ela é uma só, com quatro peças: verbo de ação, valor concreto, tempo ou esforço, risco removido. Verbos que servem, no imperativo e com objeto visualizável: abra, escreva, liste, marque, escolha, corte, anote, confira, publique, troque, preencha, calcule. Não existe "descubra o poder", "transforme", "não perca" nem "saiba mais". Opções equivalentes lado a lado são adiamento disfarçado de escolha, e uma delas precisa sair.
+Glossário, FAQ, pré-requisitos e fontes datadas vivem no nível da **trilha**, uma vez cada, não
+em toda aula. Uma trilha tem 4 a 6 aulas, 30 a 60 minutos, 6.000 a 12.000 palavras, e é nomeada
+pelo resultado ("Publicar minha primeira página"), não pelo tema.
 
 ## Diretrizes Editoriais (Estilo HSM/HBR/MIT Sloan)
 
@@ -314,13 +383,7 @@ O conteúdo será renderizado por um componente `FormattedText` que interpreta a
 - **Sub-headings**: linhas que terminam com `:` e começam com maiúscula são renderizadas como `<h4>` com border-bottom. Use para separar seções dentro do módulo (ex: "Análise competitiva das sete superfícies:").
 - **Bullet points**: linhas que começam com `-- ` (dois hífens + espaço) são renderizadas como lista com dot azul estilizado. NUNCA use `- ` (um hífen), use SEMPRE `-- ` (dois hífens).
 - **Listas numeradas**: linhas com `1. texto`, `2. texto` são renderizadas como lista ordenada com número azul.
-- **Tabelas markdown**: use pipes para tabelas comparativas. O renderer cria uma `<table>` estilizada com header uppercase, zebra striping e bordas. Formato:
-  ```
-  | Coluna 1 | Coluna 2 | Coluna 3 |
-  |---|---|---|
-  | dado | dado | dado |
-  ```
-  IMPORTANTE: tabelas devem ser formatadas como UMA ÚNICA LINHA com `\n` separando as rows, pois estão dentro de strings JavaScript.
+- **Tabelas markdown**: use pipes, uma linha de texto por linha da tabela, no formato da seção 4. O renderer cria uma `<table>` estilizada com header uppercase, zebra striping e bordas.
 - **Blockquotes**: linhas que começam com `> ` são renderizadas como citação com borda lateral azul e fundo destacado. Use para insights centrais e conceitos memoráveis.
 - **Blocos de código**: use type "code" com language para exemplos técnicos.
 - **Parágrafos**: texto normal é renderizado com `text-justify` e `leading-[1.75]` para leitura confortável.
@@ -333,7 +396,7 @@ O objetivo é criar uma experiência de leitura premium para conteúdo longo. A 
 - **Estrutura a serviço da decisão**: use tabela comparativa quando houver alternativas com critérios, matriz de decisão quando o aluno precisar escolher, checklist quando houver passos verificáveis, lista numerada quando a ordem importar, fluxo de trabalho quando houver processo. Um profissional decide mais rápido com uma matriz bem construída do que com três parágrafos equivalentes.
 - **Quando NÃO usar lista**: se os itens têm relação de causa ou consequência entre si, o formato certo é prosa, porque a lista esconde o encadeamento. Bullets que apenas renomeiam obviedades e séries de "termo em negrito: explicação" como esqueleto de seção estão proibidos.
 - **Sub-headings**: entram quando o assunto muda, e o texto do sub-heading anuncia o conteúdo real da parte seguinte. Não há cota por número de parágrafos, e sub-heading a cada dois parágrafos costuma indicar que o raciocínio foi fatiado antes de terminar.
-- **Tabelas comparativas**: ao menos UMA por módulo, com critérios que importam para a decisão do aluno, não com colunas genéricas.
+- **Tabelas comparativas**: com critérios que importam para a decisão do aluno, não com colunas genéricas. O piso por módulo está na seção 4.
 - **Blockquotes estratégicos**: 1-2 por módulo, para o conceito central ou a citação de especialista. Blockquote em excesso vira decoração e perde o efeito de destaque.
 - **Densidade de prosa**: o módulo precisa de blocos de texto desenvolvido, e não apenas de elementos escaneáveis. Texto todo fatiado em bullets e destaques é o padrão de conteúdo de máquina que este pipeline precisa evitar.
 
@@ -378,11 +441,15 @@ REGRA ABSOLUTA: Português do Brasil com acentuação COMPLETA e ortografia corr
 
 ### Profundidade de Conteúdo
 
-- Cada módulo deve ter entre **2.500 e 4.000 palavras** de conteúdo principal
-- Priorize profundidade sobre abrangência: é melhor cobrir 3 conceitos bem do que 10 superficialmente
-- Inclua dados quantitativos sempre que disponíveis (porcentagens, valores, métricas)
-- Cite fontes quando usar dados ou pesquisas específicas
-- Cada afirmação substantiva deve ter base em evidência, não em opinião
+- Cada **aula** tem entre **1.200 e 2.400 palavras**. Abaixo de 900 é rasa; acima de 3.600 são
+  duas aulas. Uma trilha de 4 a 6 aulas soma 6.000 a 12.000 palavras.
+- Uma ideia por aula, explicada por inteiro. É melhor cobrir 1 conceito até o fim do que 4 pela
+  metade — foi a abrangência que produziu os cursos rasos.
+- Inclua dado quantitativo quando ele responde à pergunta do exemplo, não como cota. Estatística
+  sem pergunta é enfeite.
+- Cite fonte com data quando usar dado ou pesquisa. **Uma fonte datada por trilha**, no rodapé,
+  fora da frase — não uma por aula.
+- Cada afirmação substantiva tem base em evidência, não em opinião.
 
 ## Checklist de citabilidade GEO (Generative Engine Optimization): OBRIGATÓRIO
 
@@ -414,7 +481,9 @@ Antes de entregar o módulo, verifique CADA item:
 - [ ] Abertura em situação concreta, com tensão explícita e dado (não em definição nem em cenário genérico)
 - [ ] Caso condutor presente no desenvolvimento e retomado na síntese
 - [ ] Objetivos de aprendizagem com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)
-- [ ] Ao menos 1 tabela comparativa no módulo
+- [ ] Nenhum parágrafo acima de 1.200 caracteres e nenhum raciocínio fatiado só para caber no teto
+- [ ] Ao menos 3 apoios visuais no módulo e ao menos 1 a cada 2.500 caracteres de prosa
+- [ ] Toda tabela com linha de separação e o mesmo número de células em todas as linhas; toda imagem com legenda preenchida
 - [ ] Ao menos 3 exercícios com contexto profissional real
 - [ ] Blocos de citação (>) para insights centrais
 - [ ] Negrito em termos-chave na primeira ocorrência

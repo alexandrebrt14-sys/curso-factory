@@ -96,11 +96,20 @@ class QualityGate:
         text: str,
         curso_id: str = "unknown",
         module_name: str = "",
+        unidade: str = "modulo",
     ) -> GateResult:
         """Valida texto puro (Markdown) com todas as verificações.
 
         Executa: acentuação, conteúdo, links.
         Se auto_fix=True, corrige acentos automaticamente.
+
+        Args:
+            unidade: `"aula"` ou `"modulo"`. O padrão é `"modulo"` porque o
+                pipeline de geração ainda entrega módulos, e medi-los com a
+                régua de uma aula (piso 900, erro 3.600) reprovaria todo o
+                acervo. Quando o gerador passar a emitir aula, o chamador
+                passa `unidade="aula"` e a régua fica a do molde D sem
+                multiplicador. Ver `content_checker.tetos_da_unidade`.
         """
         result = GateResult()
 
@@ -135,7 +144,9 @@ class QualityGate:
         #    quando o cliente liga geo_2026 no client.yaml — ver
         #    docs/GEO_REDACAO_CHECKLIST_2026.md)
         geo_config = getattr(self.client, "geo", None)
-        content_errors = check_content(working_text, module_name, geo_config=geo_config)
+        content_errors = check_content(
+            working_text, module_name, geo_config=geo_config, unidade=unidade
+        )
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
 
@@ -220,9 +231,10 @@ class QualityGate:
         html: str,
         curso_id: str = "unknown",
         module_name: str = "",
+        unidade: str = "modulo",
     ) -> GateResult:
         """Valida HTML completo com todas as verificações."""
-        result = self.check_text(html, curso_id, module_name)
+        result = self.check_text(html, curso_id, module_name, unidade=unidade)
 
         # 4. Verificação de HTML
         html_errors = validate_html(html)

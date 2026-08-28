@@ -248,7 +248,10 @@ def test_tsx_render_isolates_clients_no_leaks():
     course = sb.build("curso-acme", yaml_d, md, {}, client=acme)
 
     gen = TsxGenerator()
-    page = gen.render_page(course)
+    # Este teste mede vazamento de dados entre clientes, e não peso visual. O
+    # curso mínimo aqui existe só para exercitar a interpolação do template, e
+    # cobrar a régua de peso visual dele mediria a coisa errada.
+    page = gen.render_page(course, cobrar_peso_visual=False)
     layout = gen.render_layout(course)
 
     # Nenhum dado do cliente default pode vazar

@@ -243,19 +243,24 @@ def test_cliche_so_do_yaml_e_detectado() -> None:
     """
     from src.validators.content_checker import FORBIDDEN_CLICHES
 
-    assert "especialistas apontam" not in FORBIDDEN_CLICHES
+    assert "especialistas apontam" not in FORBIDDEN_CLICHES  # vem da fonte, nao do fallback
     assert "especialistas apontam" in _check_cliches(
         "Especialistas apontam que o mercado vai dobrar."
     )
     assert "clique aqui" in _check_cliches("Para conhecer o metodo, clique aqui.")
 
 
-def test_cliche_usa_fallback_quando_yaml_nao_carrega(yaml_de_regras_ausente) -> None:
-    """Regressao: sem YAML, _check_cliches continua checando as 18 do modulo."""
+def test_cliche_usa_fonte_quando_yaml_nao_carrega(yaml_de_regras_ausente) -> None:
+    """Sem o YAML do repo, a fonte de estilo sustenta o anti-cliche sozinha.
+
+    Ate 27/08/2026 este teste afirmava o contrario: sem YAML, "especialistas
+    apontam" deixava de ser checado, porque a unica outra origem eram as 18
+    entradas hardcoded. Com config/lexicos.json (espelho gerado da fonte) a
+    cobertura deixou de depender do YAML do repositorio, que hoje guarda so o
+    que e especifico do curso-factory.
+    """
     assert _check_cliches("Nos dias de hoje tudo mudou.") == ["nos dias de hoje"]
-    # A expressao que so existe no YAML deixa de ser detectada — comportamento
-    # esperado do fallback, e nao uma falha.
-    assert _check_cliches("Especialistas apontam que sim.") == []
+    assert _check_cliches("Especialistas apontam que sim.") == ["especialistas apontam"]
 
 
 # ─── anti-invencao: percentual sem fonte ─────────────────────────────

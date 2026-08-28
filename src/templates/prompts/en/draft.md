@@ -214,29 +214,52 @@ Expected depth example:
 - If the topic involves code, commands, or formulas, present them in well-commented code blocks
 - Include a **decision table** or **analytical framework** when applicable
 
-### 4. Comparative Frame or Visual Synthesis (MANDATORY)
+### 4. Visual weight of the module (MANDATORY, with numbers)
 
-Include at least ONE structured table per module. Example formats:
+Three limits apply to every module, and the converter measures all three:
 
-**Comparative table:**
+1. **No paragraph above 1,200 characters.** That is what fits on a 390-point-wide phone without scrolling inside the paragraph itself. Above it, the reader loses track of where they were when they come back from the scroll.
+2. **At least three visual supports.**
+3. **At least one visual support per 2,500 characters of prose.** A module with 7,500 characters of prose needs three; with 12,500, five.
 
-| Criterion | Option A | Option B | Option C |
-|-----------|----------|----------|----------|
-| Cost      | …        | …        | …        |
-| Scale     | …        | …        | …        |
-| Learning curve | …  | …        | …        |
+The 1,200 ceiling is not a brevity quota. A 1,100-character paragraph that carries a line of reasoning to its end is worth more than four 200-character ones slicing that same reasoning, and prose chopped into scannable fragments is already banned in the rhythm and layout sections. When a paragraph breaks the ceiling, first check whether it carries two ideas: if it does, split it by idea. If it carries only one, the surplus is usually a comparison, a sequence, or a set of numbers disguised as prose, and it becomes a visual support.
 
-**Decision framework:**
+**Which piece for which problem.** The choice is not a matter of taste: each reading defect has the piece that fixes it.
 
-| Situation | Recommendation | Rationale |
-|-----------|----------------|-----------|
-| …         | …              | …         |
+| What stalls the reader | The piece | What it must carry |
+| --- | --- | --- |
+| Alternatives with criteria | table | alternatives in the columns, criteria in the rows |
+| A process where order matters | numbered list of steps | one verb per step and its observable result |
+| Numbers that only mean something together | short table of numbers | one row per number, with its origin on the same row |
+| Sources that disagree | three-column table | measure, number, and origin, one row per source |
+| An abstract concept with no anchor | image with a caption | a caption stating what the figure shows |
 
-**Before/after matrix:**
+These do NOT count as visual support: code blocks, blockquotes, and bolded paragraphs.
 
-| Dimension | Before | After | Impact |
-|-----------|--------|-------|--------|
-| …         | …      | …     | …      |
+**How to write each piece in Markdown.** The converter promotes the markup below into a visual block; malformed markup falls back to prose and earns no credit.
+
+Table: a header row, a separator row right under it, and the SAME number of cells in every row. Each row occupies its own line of text, never packed into a single line.
+
+```
+| Criterion | Tool A | Tool B |
+| --- | --- | --- |
+| Monthly cost | $1,200 | $3,400 |
+| Time to deploy | 2 weeks | 6 weeks |
+```
+
+Numbered list of steps: continuous numbering starting at 1, an imperative verb opening each step, and the observable result inside the same item.
+
+```
+1. Open the source report and filter the last 90 days. The panel lists every campaign with a recorded session.
+2. Flag the campaigns with no source tag. The orphan count shows in the footer.
+3. Fix the tag on the highest-volume campaign and reload. That campaign leaves the orphan list.
+```
+
+Image with a caption: the caption goes in the bracketed text and cannot be empty, because a figure with no caption is rejected. It states what the figure shows, not what it is.
+
+```
+![The source signal from click to customer record, with the point where the tag is lost](source-flow.svg)
+```
 
 ### 5. Practical Exercises (minimum 3, complexity progression)
 
@@ -303,13 +326,7 @@ The content will be rendered by a `FormattedText` component that interprets the 
 - **Sub-headings**: lines ending with `:` and starting with a capital letter render as `<h4>` with a border-bottom. Use them to separate sections within a module (e.g., "Competitive analysis of the seven surfaces:").
 - **Bullet points**: lines starting with `-- ` (two hyphens + space) render as a list with a styled blue dot. NEVER use `- ` (single hyphen); ALWAYS use `-- `.
 - **Numbered lists**: lines like `1. text`, `2. text` render as ordered lists with a blue number.
-- **Markdown tables**: use pipes for comparative tables. The renderer creates a styled `<table>` with uppercase header, zebra striping, and borders. Format:
-  ```
-  | Column 1 | Column 2 | Column 3 |
-  |---|---|---|
-  | data | data | data |
-  ```
-  IMPORTANT: tables must be formatted as a SINGLE LINE with `\n` separating rows, since they live inside JavaScript strings.
+- **Markdown tables**: use pipes, one line of text per table row, in the format given in section 4. The renderer creates a styled `<table>` with uppercase header, zebra striping, and borders.
 - **Blockquotes**: lines starting with `> ` render as a quote with a blue side border and highlighted background. Use for central insights and memorable concepts.
 - **Code blocks**: use type "code" with a `language` for technical examples.
 - **Paragraphs**: regular text renders with `text-justify` and `leading-[1.75]` for comfortable reading.
@@ -322,7 +339,7 @@ The goal is a premium reading experience for long-form content. The rule that go
 - **Structure in service of the decision**: use a comparative table when there are alternatives with criteria, a decision matrix when the learner has to choose, a checklist when there are verifiable steps, a numbered list when order matters, a workflow when there is a process. A professional decides faster with one well-built matrix than with three equivalent paragraphs.
 - **When NOT to use a list**: if the items stand in a relationship of cause or consequence to each other, the right format is prose, because a list hides the chain. Bullets that merely rename the obvious, and strings of "bold term: explanation" used as a section skeleton, are forbidden.
 - **Sub-headings**: they enter when the subject changes, and the sub-heading text announces what the next part actually covers. There is no quota per number of paragraphs, and a sub-heading every two paragraphs usually means the reasoning was sliced before it finished.
-- **Comparative tables**: at least ONE per module, built on criteria that matter to the learner's decision, not on generic columns.
+- **Comparative tables**: built on criteria that matter to the learner's decision, not on generic columns. The per-module floor is in section 4.
 - **Strategic blockquotes**: 1–2 per module, for the central concept or an expert quotation. Blockquotes in excess turn into decoration and lose the effect of a highlight.
 - **Prose density**: the module needs blocks of developed text, not only scannable elements. Text sliced entirely into bullets and highlights is the machine-content pattern this pipeline has to avoid.
 
@@ -380,7 +397,9 @@ Before delivering the module, verify EACH item:
 - [ ] Opening set in a concrete situation, with explicit tension and data (not a definition, not a generic scenario)
 - [ ] Anchor case present through the development and picked up again in the synthesis
 - [ ] Learning objectives with Bloom verbs at level 3+ (apply, analyze, evaluate, create)
-- [ ] At least 1 comparative table in the module
+- [ ] No paragraph above 1,200 characters, and no reasoning sliced up merely to fit the ceiling
+- [ ] At least 3 visual supports in the module, and at least 1 per 2,500 characters of prose
+- [ ] Every table with a separator row and the same number of cells in every row; every image with a filled-in caption
 - [ ] At least 3 exercises with real professional context
 - [ ] Blockquotes (>) for central insights
 - [ ] Bold on key terms on first occurrence
