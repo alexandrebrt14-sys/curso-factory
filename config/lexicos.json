@@ -1,5 +1,5 @@
 {
-  "versao": "1.3.1",
+  "versao": "1.4.0",
   "limiares": {
     "fraseMaxPalavras": 28,
     "fraseToleranciaPalavras": 60,
@@ -21,6 +21,8 @@
     "glosaJanelaCaracteres": 140,
     "glosaMaxPalavras": 12,
     "listaMaxItens": 10,
+    "itemDeListaMaxPalavras": 40,
+    "h2VizinhosSobreposicao": 0.5,
     "h3MaxPorH2": 6,
     "h3SoAcimaDePalavras": 350,
     "cabecalhosPorMil": [
@@ -311,6 +313,7 @@
     "para começar,",
     "para entender melhor,"
   ],
+  "verbosDeAcao": "\\b(hoje|agora|amanhã|abra|escreva|liste|marque|escolha|corte|anote|confira|publique|troque|preencha|calcule|responda|mande|envie|ligue|ative|copie|adapte|grave|teste|comece|separe|compare|conte|meça|ajuste|use|monte|crie|gere|clique|baixe|peça|pergunte|cadastre|configure|instale|revise|salve|imprima|faça)\\b",
   "antiteses": [
     "\\bnão (se trata|é) (apenas|só|somente) de?\\b.*?\\b(é|mas|e sim)\\b",
     "\\bnão basta\\b.*?\\b(é preciso|é necessário)\\b",

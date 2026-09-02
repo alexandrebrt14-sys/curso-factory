@@ -87,6 +87,9 @@ class PipelineResult:
         #: Por etapa, quantas chamadas cada "provedor/modelo" de fato atendeu.
         #: É o que diz se a etapa rodou no modelo declarado ou em fallback.
         self.provedores: dict[str, dict[str, int]] = {}
+        #: Veredito do quality gate por aula, gravado ao fim do pipeline:
+        #: `{titulo: {"aprovado": bool, "erros": [...], "avisos": n}}`.
+        self.gate: dict[str, dict[str, Any]] = {}
         self.sucesso: bool = False
 
     def to_dict(self) -> dict[str, Any]:
@@ -97,8 +100,16 @@ class PipelineResult:
             "erros": self.erros,
             "avisos": self.avisos,
             "provedores": self.provedores,
+            "gate": self.gate,
             "sucesso": self.sucesso,
         }
+
+    @property
+    def gate_aprovado(self) -> bool | None:
+        """True se toda aula passou, False se alguma reprovou, None se o gate não rodou."""
+        if not self.gate:
+            return None
+        return all(v.get("aprovado") for v in self.gate.values())
 
 
 def dividir_em_unidades(texto: str) -> list[tuple[str, str]]:
@@ -362,6 +373,9 @@ class Orchestrator:
         else:
             result.sucesso = True
 
+        if result.sucesso:
+            self._quality_gate(course, result)
+
         self._save_result(course.id, result)
         cp = self._checkpoint_path(course.id)
         if result.sucesso and cp.exists():
@@ -555,6 +569,51 @@ class Orchestrator:
         if relatorios:
             result.etapas["review_report"] = "\n\n".join(relatorios)
         return "\n\n".join(revisadas)
+
+    # ── quality gate ao fim do pipeline ─────────────────────────────────
+
+    def _quality_gate(self, course: Course, result: PipelineResult) -> None:
+        """Roda o quality gate aula a aula sobre o texto final e grava o veredito.
+
+        Só relata: o pipeline não reprova por causa do gate, porque o veredito
+        vai para `result.gate` e para a etapa `gate_report`, e é o operador
+        quem decide o que corrigir. Até 02/09/2026 (wave 2) o gate só rodava
+        se alguém lembrasse de chamar `python cli.py validate` depois.
+        """
+        from src.validators.quality_gate import QualityGate
+
+        final = result.etapas.get("review") or result.etapas.get("draft") or ""
+        if not final.strip():
+            return
+        try:
+            gate = QualityGate(client=self.client_context, auto_fix=False)
+        except Exception as exc:  # pragma: no cover - dependência ausente
+            logger.warning("Quality gate indisponível: %s", exc)
+            return
+        linhas: list[str] = []
+        for titulo, bloco in dividir_em_unidades(final):
+            rotulo = titulo or "unidade"
+            try:
+                r = gate.check_text(bloco, curso_id=course.id, module_name=rotulo, unidade="aula")
+            except Exception as exc:
+                logger.warning("Quality gate falhou em '%s': %s", rotulo, exc)
+                result.gate[rotulo] = {"aprovado": None, "erros": [f"gate falhou: {exc}"], "avisos": 0}
+                continue
+            result.gate[rotulo] = {
+                "aprovado": bool(r.aprovado),
+                "erros": list(r.erros),
+                "avisos": len(r.avisos),
+                "voice_guard_score": r.voice_guard_score,
+            }
+            linhas.append(f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)")
+            for e in r.erros:
+                linhas.append(f"      - {e}")
+        aprovadas = sum(1 for v in result.gate.values() if v.get("aprovado"))
+        cabecalho = f"Quality gate: {aprovadas} de {len(result.gate)} aula(s) aprovada(s)"
+        result.etapas["gate_report"] = cabecalho + "\n" + "\n".join(linhas)
+        if aprovadas < len(result.gate):
+            result.avisos.append(f"{cabecalho}; veja etapas.gate_report antes de publicar.")
+        logger.info(cabecalho)
 
     # ── contextos auxiliares ────────────────────────────────────────────
 
