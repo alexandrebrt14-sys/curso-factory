@@ -51,6 +51,8 @@ from src.config import (
     OUTPUT_DIR,
     REVIEW_ANALYSIS_CHARS,
     REVIEW_MIN_RATIO,
+    TRAIL_LESSONS_CHARS,
+    TRAIL_RESEARCH_CHARS,
 )
 from src.cost_tracker import CostTracker
 from src.models import Course, Module
@@ -64,6 +66,11 @@ DRAFTS_DIR = OUTPUT_DIR / "drafts"
 
 #: Cabeçalho que abre cada aula no rascunho montado.
 AULA_H1_RE = re.compile(r"^#\s+Aula\s+(\d+)\.(\d+)\s*[:.\-]\s*(.+?)\s*$", re.MULTILINE)
+#: Cabeçalho do fechamento da trilha (objetivos, pré-requisitos, glossário,
+#: FAQ e fontes), emitido uma vez por módulo, depois da última aula.
+TRILHA_H1_RE = re.compile(r"^#\s+Trilha\s+(\d+)\s*[:.\-]\s*(.+?)\s*$", re.MULTILINE)
+#: Qualquer unidade do rascunho novo: aula ou fechamento da trilha.
+UNIDADE_H1_RE = re.compile(r"^#\s+(?:Aula\s+\d+\.\d+|Trilha\s+\d+)\s*[:.\-]", re.MULTILINE)
 #: Cabeçalho de módulo dos rascunhos antigos (antes de 02/09/2026).
 MODULO_H1_RE = re.compile(r"^#\s+M[óo]dulo\s+\d+\s*[:.\-]", re.MULTILINE)
 #: Marcador de módulo que o orquestrador emite antes da primeira aula de cada módulo.
@@ -120,7 +127,7 @@ def dividir_em_unidades(texto: str) -> list[tuple[str, str]]:
     unidade inclui o próprio cabeçalho, para que o revisor o veja e devolva.
     """
     texto = texto.replace("\r\n", "\n")
-    padrao = AULA_H1_RE if AULA_H1_RE.search(texto) else MODULO_H1_RE
+    padrao = UNIDADE_H1_RE if AULA_H1_RE.search(texto) else MODULO_H1_RE
     inicios = [m.start() for m in padrao.finditer(texto)]
     if not inicios:
         return [("", texto.strip())] if texto.strip() else []
@@ -502,6 +509,7 @@ class Orchestrator:
             logger.info("Módulo %d/%d '%s': %d aula(s) planejada(s)",
                         i, len(modulos), modulo.titulo, len(aulas))
             partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
+            partes_do_modulo: list[str] = []
             for j in range(len(aulas)):
                 pode, motivo = self._pode_chamar(self.writer.provider, course.id)
                 if not pode:
@@ -510,9 +518,59 @@ class Orchestrator:
                 logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
                 aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
                 partes.append(aula_md)
+                partes_do_modulo.append(aula_md)
                 logger.info("Aula %d.%d gerada: %d palavras", i, j + 1, _contar_palavras(aula_md))
+            pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+            if not pode:
+                logger.warning("%s antes do fechamento da trilha %d. Parando draft.", motivo, i)
+                return "\n\n".join(partes)
+            trilha_md = self._close_trail(course, modulo, i, aulas, partes_do_modulo, research_context)
+            if trilha_md:
+                partes.append(trilha_md)
+                logger.info("Trilha %d fechada: %d palavras", i, _contar_palavras(trilha_md))
 
         return "\n\n".join(partes)
+
+    def _close_trail(
+        self,
+        course: Course,
+        modulo: Module,
+        numero_modulo: int,
+        aulas: list[dict[str, str]],
+        aulas_md: list[str],
+        research_context: str,
+    ) -> str:
+        """Escreve o que vive no nível da trilha, uma vez, depois das aulas.
+
+        O molde D manda objetivos, pré-requisitos, glossário, FAQ e fontes
+        para o nível da trilha, e até a wave 5 (02/09/2026) o pipeline não os
+        gerava em lugar nenhum. Sai como `# Trilha n: título`, unidade própria
+        que a revisão pula e o gate mede sem a régua da aula.
+        """
+        from src.agents.base import _safe_substitute
+        from src.agents.lang_resolver import resolve_prompt_path
+
+        if not aulas_md:
+            return ""
+        try:
+            template = resolve_prompt_path("trail.md", self.writer.language).read_text(encoding="utf-8")
+        except FileNotFoundError:
+            logger.warning("Prompt trail.md ausente; a trilha %d fica sem fechamento", numero_modulo)
+            return ""
+        lessons = "\n\n".join(aulas_md)[:TRAIL_LESSONS_CHARS]
+        prompt = _safe_substitute(template, {
+            "course_name": course.titulo,
+            "course_level": course.nivel.value,
+            "module_number": str(numero_modulo),
+            "module_title": modulo.titulo,
+            "module_description": modulo.descricao or "conforme pesquisa",
+            "lesson_titles": "; ".join(f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas)),
+            "lessons": lessons,
+            "context": research_context[:TRAIL_RESEARCH_CHARS],
+        })
+        texto = self.client.call(self.writer.provider, prompt, model=self.writer.model).strip()
+        texto = TRILHA_H1_RE.sub("", texto, count=1).strip() if TRILHA_H1_RE.match(texto) else texto
+        return f"# Trilha {numero_modulo}: {modulo.titulo}\n\n{texto}"
 
     # ── review: uma aula por chamada, texto de volta ────────────────────
 
@@ -535,6 +593,12 @@ class Orchestrator:
         relatorios: list[str] = []
 
         for k, (titulo, texto) in enumerate(unidades, 1):
+            if titulo.startswith("Trilha "):
+                # O fechamento da trilha não é aula: o prompt de revisão cobra
+                # exercício e exemplo, e reescrever glossário e fontes cria
+                # risco de invenção. Passa como saiu do writer.
+                revisadas.append(texto)
+                continue
             pode, motivo = self._pode_chamar(self.reviewer.provider, course.id)
             if not pode:
                 aviso = f"{motivo} na revisão da unidade {k}; as seguintes ficam sem revisão."
@@ -594,7 +658,7 @@ class Orchestrator:
         for titulo, bloco in dividir_em_unidades(final):
             rotulo = titulo or "unidade"
             try:
-                r = gate.check_text(bloco, curso_id=course.id, module_name=rotulo, unidade="aula")
+                r = gate.check_text(bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False)
             except Exception as exc:
                 logger.warning("Quality gate falhou em '%s': %s", rotulo, exc)
                 result.gate[rotulo] = {"aprovado": None, "erros": [f"gate falhou: {exc}"], "avisos": 0}
@@ -608,8 +672,27 @@ class Orchestrator:
             linhas.append(f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)")
             for e in r.erros:
                 linhas.append(f"      - {e}")
+        # Camada GEO (fontes, estatísticas, citação, cápsula) sobre o curso
+        # inteiro: meta do conjunto, não de cada aula.
+        geo_config = getattr(self.client_context, "geo", None)
+        if geo_config is not None:
+            try:
+                geo_achados = gate.check_geo(final, "curso", geo_config)
+            except Exception as exc:
+                logger.warning("Camada GEO falhou: %s", exc)
+                geo_achados = []
+            erros_geo = [a.mensagem for a in geo_achados if a.tipo == "error"]
+            result.gate["curso"] = {
+                "aprovado": not erros_geo,
+                "erros": erros_geo,
+                "avisos": sum(1 for a in geo_achados if a.tipo == "warning"),
+            }
+            linhas.append(f"{'OK  ' if not erros_geo else 'FAIL'} curso (GEO): {len(erros_geo)} erro(s), "
+                          f"{result.gate['curso']['avisos']} aviso(s)")
+            for e in erros_geo:
+                linhas.append(f"      - {e}")
         aprovadas = sum(1 for v in result.gate.values() if v.get("aprovado"))
-        cabecalho = f"Quality gate: {aprovadas} de {len(result.gate)} aula(s) aprovada(s)"
+        cabecalho = f"Quality gate: {aprovadas} de {len(result.gate)} unidade(s) aprovada(s)"
         result.etapas["gate_report"] = cabecalho + "\n" + "\n".join(linhas)
         if aprovadas < len(result.gate):
             result.avisos.append(f"{cabecalho}; veja etapas.gate_report antes de publicar.")

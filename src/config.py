@@ -51,6 +51,10 @@ REVIEW_ANALYSIS_CHARS: int = int(os.getenv("REVIEW_ANALYSIS_CHARS", "3000"))
 # Revisão que devolve menos que esta fração das palavras recebidas é
 # comentário, não revisão: o rascunho original é mantido.
 REVIEW_MIN_RATIO: float = float(os.getenv("REVIEW_MIN_RATIO", "0.6"))
+# Fechamento da trilha (wave 5): as aulas do módulo e a pesquisa que viajam no
+# prompt que escreve objetivos, pré-requisitos, glossário, FAQ e fontes.
+TRAIL_LESSONS_CHARS: int = int(os.getenv("TRAIL_LESSONS_CHARS", "60000"))
+TRAIL_RESEARCH_CHARS: int = int(os.getenv("TRAIL_RESEARCH_CHARS", "20000"))
 
 # --- Budget per course (AAA quality) ---
 CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5.00"))

@@ -46,6 +46,14 @@ class _ClienteFalso:
         if provider == "perplexity":
             return "PESQUISA " + ("dado relevante. " * 800)
         if provider == "openai":
+            if "AULAS DA TRILHA" in prompt or "TRACK LESSONS" in prompt:
+                return (
+                    "## O que você vai saber fazer\n\nMedir o tempo de resposta do seu WhatsApp.\n\n"
+                    "## Antes de começar\n\nTer o WhatsApp Business instalado.\n\n"
+                    "## Glossário\n\n**taxa de resposta**: de cada 100 mensagens, quantas foram respondidas.\n\n"
+                    "## Perguntas frequentes\n\n**Preciso de chatbot?**\n\nNão. Comece pela saudação automática.\n\n"
+                    "## Fontes\n\nOctadesk, CX Trends, maio de 2025.\n"
+                )
             if "Planeje de" in prompt:
                 return (
                     "1. Por que o cliente some | A ideia de tempo de resposta\n"
@@ -271,8 +279,8 @@ def test_procedencia_registra_o_modelo_que_atendeu_cada_etapa(tmp_path, monkeypa
     assert resultado.sucesso, resultado.erros
     assert set(resultado.provedores) == {"research", "draft", "analyze", "classify", "review"}
     assert resultado.provedores["research"] == {"perplexity/modelo-perplexity": 1}
-    # 2 planejamentos + 6 aulas no writer
-    assert resultado.provedores["draft"] == {"openai/modelo-openai": 8}
+    # 2 planejamentos + 6 aulas + 2 fechamentos de trilha no writer
+    assert resultado.provedores["draft"] == {"openai/modelo-openai": 10}
     assert resultado.provedores["review"] == {"anthropic/modelo-anthropic": 6}
     assert not [a for a in resultado.avisos if "fallback" in a]
     assert resultado.to_dict()["provedores"]["classify"] == {"google/modelo-google": 1}
@@ -284,7 +292,7 @@ def test_fallback_aparece_no_resultado_como_aviso(tmp_path, monkeypatch) -> None
     resultado = orq.run(_curso())
 
     assert resultado.sucesso, resultado.erros
-    assert resultado.provedores["draft"] == {"anthropic/modelo-anthropic": 8}
+    assert resultado.provedores["draft"] == {"anthropic/modelo-anthropic": 10}
     assert resultado.provedores["research"] == {"google/modelo-google": 1}
     avisos = [a for a in resultado.avisos if "rodou em fallback" in a]
     assert len(avisos) == 2
@@ -297,11 +305,16 @@ def test_quality_gate_roda_ao_fim_e_grava_veredito_por_aula(tmp_path, monkeypatc
     resultado = orq.run(_curso())
 
     assert resultado.sucesso, resultado.erros
-    assert len(resultado.gate) == 6
-    assert set(resultado.gate) == {t for t, _ in dividir_em_unidades(resultado.etapas["review"])}
-    for veredito in resultado.gate.values():
+    unidades = {t for t, _ in dividir_em_unidades(resultado.etapas["review"])}
+    # 6 aulas + 2 fechamentos de trilha, mais a camada GEO do curso inteiro.
+    assert len(unidades) == 8
+    assert set(resultado.gate) == unidades | {"curso"}
+    for nome, veredito in resultado.gate.items():
         assert veredito["aprovado"] in (True, False)
         assert isinstance(veredito["erros"], list)
+        if nome != "curso":
+            # A camada GEO não é cobrada por aula (fontes vivem na trilha).
+            assert not any("[geo]" in e for e in veredito["erros"]), nome
     assert resultado.etapas["gate_report"].startswith("Quality gate: ")
     assert resultado.gate_aprovado in (True, False)
     if resultado.gate_aprovado is False:
@@ -318,7 +331,8 @@ def test_gate_nao_roda_quando_o_pipeline_falha(tmp_path, monkeypatch) -> None:
 
 
 def test_orcamento_da_sessao_interrompe_com_motivo(tmp_path, monkeypatch) -> None:
-    # 1 chamada de pesquisa (0,01) + 2 planejamentos + 6 aulas = 0,09; a análise não cabe.
+    # pesquisa (0,01) + planejamento e fechamento do módulo 1 + 6 aulas = 0,09;
+    # o fechamento da trilha 2 e a análise não cabem.
     orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso(teto_sessao=0.09))
     resultado = orq.run(_curso())
 
@@ -326,6 +340,41 @@ def test_orcamento_da_sessao_interrompe_com_motivo(tmp_path, monkeypatch) -> Non
     assert "research" in resultado.etapas and "draft" in resultado.etapas
     assert "analyze" not in resultado.etapas
     assert any("orçamento da sessão esgotado" in e and "'analyze'" in e for e in resultado.erros)
+
+
+def test_fechamento_da_trilha_vem_depois_das_aulas_e_nao_passa_pela_revisao(tmp_path, monkeypatch) -> None:
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
+    resultado = orq.run(_curso())
+
+    assert resultado.sucesso, resultado.erros
+    draft = resultado.etapas["draft"]
+    titulos = [t for t, _ in dividir_em_unidades(draft)]
+    assert titulos == [
+        "Aula 1.1: Por que o cliente some", "Aula 1.2: Como responder em cinco minutos",
+        "Aula 1.3: Faça agora com o seu WhatsApp", "Trilha 1: Resposta rápida",
+        "Aula 2.1: Por que o cliente some", "Aula 2.2: Como responder em cinco minutos",
+        "Aula 2.3: Faça agora com o seu WhatsApp", "Trilha 2: Mensagem que traz de volta",
+    ]
+    trilha = dict(dividir_em_unidades(draft))["Trilha 1: Resposta rápida"]
+    for secao in ("## O que você vai saber fazer", "## Glossário", "## Perguntas frequentes", "## Fontes"):
+        assert secao in trilha
+    # O prompt da trilha recebe as aulas do módulo e os títulos na ordem.
+    prompt_trilha = next(p for prov, p in cliente.chamadas if prov == "openai" and "AULAS DA TRILHA" in p)
+    assert "1.1 Por que o cliente some; 1.2 Como responder" in prompt_trilha
+    assert "# Aula 1.3:" in prompt_trilha and "# Aula 2.1:" not in prompt_trilha
+    # A revisão pula as trilhas (6 aulas revisadas, não 8) e o texto revisado as preserva.
+    assert len([p for prov, p in cliente.chamadas if prov == "anthropic"]) == 6
+    assert "# Trilha 2: Mensagem que traz de volta" in resultado.etapas["review"]
+    # O gate não aplica a régua da aula ao fechamento da trilha.
+    assert "Trilha 1: Resposta rápida" in resultado.gate
+    assert not any("exercício" in e for e in resultado.gate["Trilha 1: Resposta rápida"]["erros"])
+
+
+def test_parser_trata_a_trilha_como_bloco_proprio() -> None:
+    md = "# Aula 1.1: Primeira\n\n## Por que\n\ntexto\n\n# Trilha 1: Módulo\n\n## Glossário\n\n**x**: y"
+    blocos = extract_module_blocks(md)
+    assert [t for t, _ in blocos] == ["Aula 1.1: Primeira", "Trilha 1: Módulo"]
+    assert [t for t, _ in dividir_em_unidades(md)] == ["Aula 1.1: Primeira", "Trilha 1: Módulo"]
 
 
 def test_parser_trata_cada_aula_como_unidade() -> None:

@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-02 — Cinco waves incrementais depois do teste ponta a ponta
+
+- Wave 1: orçamento decidido por curso e por sessão (`CostTracker.pode_chamar`), com o
+  motivo no resultado; `PipelineResult.provedores` registra qual provedor/modelo atendeu cada
+  etapa e fallback majoritário vira aviso.
+- Wave 2: o quality gate roda ao fim do pipeline, aula a aula, e grava `gate` e `gate_report`.
+- Wave 5: fechamento da trilha (`# Trilha n: título`, prompt `trail.md` em pt-br, en e es)
+  com objetivos, pré-requisitos, glossário, FAQ e fontes, uma vez por módulo; a revisão pula a
+  trilha e o gate não aplica a ela a régua da aula; a camada GEO passa a ser cobrada sobre o
+  curso inteiro (`QualityGate.check_geo`), não por aula.
+- Espelho `config/lexicos.json` e ponteiro na fonte 1.4.0 (waves 3 e 4 vivem nos repositórios
+  de escrita).
+
 ## 2026-09-02 — Geração por aula, prompts enxutos e insumo correto por etapa
 
 - `src/orchestrator.py`: o writer escreve UMA aula por chamada (planejamento das aulas do
