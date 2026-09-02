@@ -21,6 +21,8 @@ Relacionadas: [[diretriz-editorial-v3-narrativa-sem-cota]], [[ADR-002-sync-autom
 
 ## Linha do tempo (append-only, ordem reversa)
 
+- **2026-09-02 (noite)** — [waves 1, 2 e 5] Orçamento por curso e sessão com motivo, procedência do modelo por etapa, quality gate ao fim do pipeline e fechamento da trilha (`# Trilha n:`) com a camada GEO cobrada sobre o curso inteiro. Origem: teste ponta a ponta do mesmo dia (curso real de 6 aulas, US$ 2,14; três provedores em fallback; revisão cortada pelo teto diário; camada GEO reprovando toda aula do molde novo).
+
 - **2026-09-02** — [criação] Auditoria dos três repositórios de escrita (curso-factory,
   Escrita-Empresarial, escrita-empreendedor) por texto truncado, confuso e subdividido. Medido
   em 12 drafts de `output/drafts/`: (1) as etapas eram encadeadas pela saída da anterior, então

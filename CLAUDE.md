@@ -200,7 +200,11 @@ Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/202
   e dica. Sem bateria de exercícios
 - Apoio visual é TETO (até `figuras_max` por aula), só quando substitui texto. Sem piso de
   tabela, blockquote, negrito ou figura
-- Objetivos, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha
+- Objetivos, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha: o
+  pipeline os escreve UMA vez por módulo, depois da última aula, como `# Trilha n: título`
+  (`Orchestrator._close_trail`, prompt `trail.md`); a revisão pula essa unidade e o gate não
+  aplica a ela a régua da aula. A camada GEO (fontes, estatísticas, citação, cápsula) é cobrada
+  sobre o curso inteiro, nunca por aula
 - Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen), no conteúdo renderizado pelo `FormattedText`
 
 ### Padrão de Layout (FormattedText — UX Microsoft Learn + Salesforce Trailhead)
@@ -243,6 +247,8 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 - Rastreamento de blocos de código (```) para não alterar código
 
 ### Camada 2: Conteúdo (content_checker.py)
+- Roda ao fim do pipeline, aula a aula, e grava `PipelineResult.gate` e a etapa `gate_report`
+  (reprovação vira aviso, não falha); `python cli.py validate` continua servindo para rascunhos
 - Medida por AULA quando o texto traz `# Aula i.j:` (`QualityGate._check_content_por_unidade`);
   texto sem esse cabeçalho é medido inteiro na unidade pedida (`unidade="modulo"` multiplica a
   régua da aula por 4 a 6)
