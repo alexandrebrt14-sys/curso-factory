@@ -15,7 +15,8 @@ providers:
     pricing:
       input: 0.002
       output: 0.008
-    fallback: "google"
+    # Cadeia de fallback (wave 6): pesquisa cai no Gemini, depois no Claude.
+    fallback_chain: [google, anthropic]
     protocol: "openai_compat"
 
   openai:
@@ -25,7 +26,8 @@ providers:
     pricing:
       input: 0.005
       output: 0.015
-    fallback: "anthropic"
+    # Cadeia de fallback (wave 6), na ordem do task_routing.writing do geo-orchestrator.
+    fallback_chain: [anthropic, google, perplexity]
     protocol: "openai_compat"
 
   google:
@@ -38,7 +40,8 @@ providers:
     pricing:
       input: 0.002
       output: 0.012
-    fallback: "openai"
+    # Cadeia de fallback (wave 6): análise e classificação caem no Claude, depois na OpenAI.
+    fallback_chain: [anthropic, openai]
     protocol: "google"
 
   groq:
@@ -49,7 +52,7 @@ providers:
     pricing:
       input: 0.0001
       output: 0.0002
-    fallback: "openai"
+    fallback_chain: [google, anthropic, openai]
     protocol: "openai_compat"
 
   anthropic:
@@ -60,5 +63,6 @@ providers:
     pricing:
       input: 0.003
       output: 0.015
-    fallback: "openai"
+    # Cadeia de fallback (wave 6): revisão cai no Gemini, depois na OpenAI.
+    fallback_chain: [google, openai]
     protocol: "anthropic"

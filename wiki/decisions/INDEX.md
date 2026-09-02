@@ -7,6 +7,7 @@ detalhe vive no arquivo de cada decisão. Mantenha curto — ele entra no contex
 
 ## Decisões (ADRs)
 
+- [Cliente LLM resiliente](cliente-llm-resiliente.md) — cota morta na sessão, cadeia completa de fallback, extração tolerante a bloco de raciocínio · `decision`
 - [ADR-001 — Adoção de LLM Wiki](ADR-001-adopcao-llm-wiki.md) — por que e como a base de conhecimento gerada por LLM · `decision`
 - [ADR-002 — Sync automático courses↔wiki](ADR-002-sync-automatico-courses-wiki.md) — pipeline de sincronização entre cursos e wiki · `decision`
 

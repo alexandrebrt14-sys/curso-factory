@@ -154,7 +154,7 @@ Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**. Desde 27/08/2026 a obr
 4. Gemini (3.7-flash) → classificação, tags e metadados, a partir do rascunho (a Groq saiu do parque do geo-orchestrator em 2026-07-08)
 5. Claude (sonnet-5) → revisão final UMA aula por chamada, devolvendo o texto inteiro; revisão que encolhe o texto é descartada e o rascunho fica ($5 max/curso)
 
-Os modelos seguem o `catalog/model_catalog.yaml` do geo-orchestrator (v4.6, task_routing: research, writing, analysis, classification, review); mudar modelo é mudar `config/providers.yaml` e o agente, nunca hardcode em prompt. Cada etapa recebe o RASCUNHO (não a saída da etapa anterior). Até 02/09/2026 a revisão recebia o JSON da classificação e devolvia um relatório no lugar do curso; ver `wiki/decisions/geracao-por-aula-e-insumo-correto.md`.
+O cliente LLM (`src/llm_client.py`) classifica toda falha (cota, chave, modelo, rate limit, transitório, formato) e reage por classe: cota e modelo morto tiram o provedor da sessão sem retry; o fallback é a cadeia `fallback_chain` de `config/providers.yaml`; HTTP 200 sem texto não abre circuito. Detalhe em `wiki/decisions/cliente-llm-resiliente.md`. Os modelos seguem o `catalog/model_catalog.yaml` do geo-orchestrator (v4.6, task_routing: research, writing, analysis, classification, review); mudar modelo é mudar `config/providers.yaml` e o agente, nunca hardcode em prompt. Cada etapa recebe o RASCUNHO (não a saída da etapa anterior). Até 02/09/2026 a revisão recebia o JSON da classificação e devolvia um relatório no lugar do curso; ver `wiki/decisions/geracao-por-aula-e-insumo-correto.md`.
 
 ### Prompts Externos (IMPORTANTE)
 - Os prompts dos 5 agentes ficam em `src/templates/prompts/*.md`

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-02 — Wave 6: cliente LLM resiliente
+
+- `src/llm_client.py` redesenhado: taxonomia de erro (cota, chave, modelo, rate limit,
+  transitório, pedido rejeitado, formato), extração de texto tolerante a bloco de raciocínio e a
+  saída truncada nos três protocolos, provedor morto na sessão na primeira resposta de cota,
+  cadeia completa de fallback por provedor (`fallback_chain` em `config/providers.yaml`),
+  erro de formato sem abrir circuito, `FallbackExhaustedError` com o histórico.
+- O planejamento de aulas deixa de mascarar falha de provedor como "aula única".
+- Registro em `wiki/decisions/cliente-llm-resiliente.md`.
+
 ## 2026-09-02 — Cinco waves incrementais depois do teste ponta a ponta
 
 - Wave 1: orçamento decidido por curso e por sessão (`CostTracker.pode_chamar`), com o

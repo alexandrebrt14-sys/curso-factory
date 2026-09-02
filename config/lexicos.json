@@ -1,5 +1,5 @@
 {
-  "versao": "1.4.0",
+  "versao": "1.4.1",
   "limiares": {
     "fraseMaxPalavras": 28,
     "fraseToleranciaPalavras": 60,
