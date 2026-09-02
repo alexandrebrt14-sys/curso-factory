@@ -111,11 +111,11 @@ O pipeline executa em **waves paralelas**: pesquisa e redação podem rodar em p
 
 | Etapa | Provider | Modelo | Papel | Por que este LLM |
 |-------|----------|--------|-------|-------------------|
-| **1. RESEARCH** | Perplexity | sonar-pro | Coleta dados atualizados, fontes, tendências 2026 | Único LLM com acesso a web em tempo real e citações |
-| **2. DRAFT** | OpenAI | gpt-4o | Redige módulos com padrão editorial HSM/HBR/MIT Sloan | Melhor redator longo em PT-BR, consistência de tom |
-| **3. ANALYZE** | Google | gemini-2.5-pro | Revisa qualidade pedagógica, andragogia, formatação, acentuação | Análise profunda e estruturada com alto contexto |
-| **4. CLASSIFY** | Groq | llama-3.3-70b | Classifica nível, tags, pré-requisitos, duração estimada | Latência ultra-baixa para classificação rápida |
-| **5. REVIEW** | Anthropic | claude-opus-4-6 | Revisão final: acentuação PT-BR, qualidade editorial, formatação | Melhor em instruções complexas e revisão crítica |
+| **1. RESEARCH** | Perplexity | sonar-deep-research | Coleta dados atualizados, fontes, tendências 2026 | Único LLM com acesso a web em tempo real e citações |
+| **2. DRAFT** | OpenAI | gpt-5.5 | Redige módulos com padrão editorial HSM/HBR/MIT Sloan | Melhor redator longo em PT-BR, consistência de tom |
+| **3. ANALYZE** | Google | gemini-3.1-pro-preview | Revisa qualidade pedagógica, andragogia, formatação, acentuação | Análise profunda e estruturada com alto contexto |
+| **4. CLASSIFY** | Google | gemini-3.7-flash | Classifica nível, tags, pré-requisitos, duração estimada | Latência ultra-baixa para classificação rápida |
+| **5. REVIEW** | Anthropic | claude-sonnet-5 | Revisão final: acentuação PT-BR, qualidade editorial, formatação | Melhor em instruções complexas e revisão crítica |
 
 ### Prompts externos de alta densidade
 
@@ -350,11 +350,11 @@ O pipeline possui 4 barreiras contra palavras sem acento:
 
 | Provider | Modelo | Custo/1M tokens (input) | Custo/1M tokens (output) | Limite diário | Papel |
 |----------|--------|-------------------------|--------------------------|---------------|-------|
-| Perplexity | sonar-pro | US$ 3,00 | US$ 15,00 | US$ 5,00 | Pesquisa |
-| OpenAI | gpt-4o | US$ 2,50 | US$ 10,00 | US$ 8,00 | Redação |
-| Google | gemini-2.5-pro | US$ 1,25 | US$ 10,00 | US$ 5,00 | Análise |
-| Groq | llama-3.3-70b | US$ 0,59 | US$ 0,79 | US$ 1,00 | Classificação |
-| Anthropic | claude-opus-4-6 | US$ 15,00 | US$ 75,00 | US$ 8,00 | Revisão |
+| Perplexity | sonar-deep-research | US$ 2,00 | US$ 8,00 | US$ 5,00 | Pesquisa |
+| OpenAI | gpt-5.5 | US$ 5,00 | US$ 15,00 | US$ 8,00 | Redação |
+| Google | gemini-3.1-pro-preview | US$ 2,00 | US$ 12,00 | US$ 5,00 | Análise |
+| Google | gemini-3.7-flash | US$ 1,50 | US$ 7,50 | US$ 1,00 | Classificação |
+| Anthropic | claude-sonnet-5 | US$ 3,00 | US$ 15,00 | US$ 8,00 | Revisão |
 
 ### Mecanismos de controle
 

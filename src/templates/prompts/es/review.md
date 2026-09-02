@@ -41,7 +41,7 @@ por el contexto. Nunca acentúes URL, slug, código, variable o atributo HTML.
   dos puntos se vuelven prosa o desaparecen. Las secciones que tratan el mismo asunto se
   funden.
 - Un ejercicio, con título que dice qué produce, pasos numerados con verbo en imperativo y
-  campo para el dato real del alumno, resultado esperado y consejo. Una batería de ejercicios
+  campo para el dato real del alumno, resultado esperado y "si te trabas". Una batería de ejercicios
   se vuelve uno.
 - Cierre de 3 a 5 líneas por el ejemplo, con un puente hacia la siguiente lección. El cierre
   que resume lo leído se reescribe como consecuencia.

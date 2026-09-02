@@ -63,7 +63,7 @@ EDUCACAO_DIR: Path = LANDING_PAGE_DIR / "src" / "app" / "educacao"
 CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
 
 # --- Modelo Claude (AAA = Opus) ---
-CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-opus-4-6")
+CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
 
 
 def load_courses() -> list[dict[str, Any]]:

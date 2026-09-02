@@ -1,8 +1,8 @@
 {
-  "versao": "1.3.0",
+  "versao": "1.3.1",
   "limiares": {
     "fraseMaxPalavras": 28,
-    "fraseToleranciaPalavras": 50,
+    "fraseToleranciaPalavras": 60,
     "fraseToleradaMaxFracao": 0.15,
     "fraseMedia": [
       12,

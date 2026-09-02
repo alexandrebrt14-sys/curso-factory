@@ -9,17 +9,19 @@
 providers:
   perplexity:
     endpoint: "https://api.perplexity.ai/chat/completions"
-    default_model: "sonar-pro"
+    # Catálogo do geo-orchestrator v4.6 (task_routing.research): sonar-deep-research.
+    default_model: "sonar-deep-research"
     # Preço por 1K tokens (input, output) em USD
     pricing:
-      input: 0.001
-      output: 0.001
+      input: 0.002
+      output: 0.008
     fallback: "google"
     protocol: "openai_compat"
 
   openai:
     endpoint: "https://api.openai.com/v1/chat/completions"
-    default_model: "gpt-4o"
+    # Catálogo v4.6 (task_routing.writing): gpt-5.5.
+    default_model: "gpt-5.5"
     pricing:
       input: 0.005
       output: 0.015
@@ -29,16 +31,21 @@ providers:
   google:
     # {model} é substituído pelo nome do modelo antes da chamada
     endpoint: "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-    default_model: "gemini-2.5-pro"
+    # Catálogo v4.6 (task_routing.analysis): gemini-3.1-pro-preview. A classificação usa
+    # gemini-3.7-flash (task_routing.classification), definido no agente; o preço abaixo é
+    # o do pro, então o custo da classificação fica superestimado no relatório.
+    default_model: "gemini-3.1-pro-preview"
     pricing:
-      input: 0.00025
-      output: 0.0005
+      input: 0.002
+      output: 0.012
     fallback: "openai"
     protocol: "google"
 
   groq:
     endpoint: "https://api.groq.com/openai/v1/chat/completions"
-    default_model: "llama-3.3-70b-versatile"
+    # Provider fora do parque do geo-orchestrator desde 2026-07-08 (Sprint 16). Fica só
+    # como fallback opcional; nenhum agente o usa como primário.
+    default_model: "openai/gpt-oss-120b"
     pricing:
       input: 0.0001
       output: 0.0002
@@ -47,9 +54,11 @@ providers:
 
   anthropic:
     endpoint: "https://api.anthropic.com/v1/messages"
-    default_model: "claude-opus-4-6"
+    # Catálogo v4.6 (task_routing.review): claude-sonnet-5. Opus e Fable ficam para
+    # critical_review, que este pipeline não roda.
+    default_model: "claude-sonnet-5"
     pricing:
-      input: 0.015
-      output: 0.075
+      input: 0.003
+      output: 0.015
     fallback: "openai"
     protocol: "anthropic"

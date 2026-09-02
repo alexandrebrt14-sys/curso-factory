@@ -61,7 +61,7 @@ com número. Meio exemplo não serve; três exemplos curtos também não.
 **H2 3: faça agora.** Um exercício de 5 a 15 minutos, com estes campos: título que diz o que
 ele vai produzir (nunca "Exercício 1"); etapas numeradas, cada uma com um verbo no imperativo e
 um campo para o dado real do negócio dele; **Resultado esperado:** o que ele deve estar vendo
-na tela ou no papel quando acertar; **Dica:** uma orientação que guia sem entregar a resposta.
+na tela ou no papel quando acertar; **Se travar:** uma saída que destrava sem entregar a resposta.
 O exercício fica entre um quarto e um terço das palavras da aula.
 
 **Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
@@ -122,7 +122,7 @@ numerada começando em 1; imagem no formato `![legenda que afirma um fato](arqui
 3. {h2_min} a {h2_max} H2; H3 só em H2 longo; nenhum H4.
 4. Extensão entre {palavras_alvo_min} e {palavras_alvo_max} palavras; exercício entre um quarto
    e um terço delas.
-5. Exercício com título, etapas numeradas com dado real do aluno, resultado esperado e dica.
+5. Exercício com título, etapas numeradas com dado real do aluno, resultado esperado e "se travar".
 6. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
 7. Parágrafos de {paragrafo_min} a {paragrafo_max} palavras; frases até 28.
 8. Até {figuras_max} apoios visuais, todos substituindo texto.

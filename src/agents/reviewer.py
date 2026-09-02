@@ -16,7 +16,7 @@ class Reviewer(Agent):
 
     nome = "reviewer"
     provider = "anthropic"
-    model = "claude-opus-4-6"
+    model = "claude-sonnet-5"
     prompt_file = "review.md"
 
     # Fallback inline caso o arquivo externo não exista

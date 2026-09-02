@@ -232,10 +232,15 @@ def _find_exercises(text: str) -> list[str]:
         r"(?:###?\s+)?(?:Atividade|atividade)\s*(?:\d+|:|\s*—)",
         r"\*\*(?:Exercício|Atividade|Desafio|Prática)\b[^*]*\*\*",
         r"(?:###?\s+)?\*\*(?:Nível\s+Bloom|Nível):",
+        # Molde da aula (02/09/2026): o exercício é o H2 "Faça agora", com o
+        # campo "Resultado esperado". Medido no E2E do mesmo dia: seis aulas
+        # com o exercício completo reprovavam por "0 exercício(s)".
+        r"^#{2,4}\s+Fa[çc]a agora\b",
+        r"\*\*Resultado esperado\s*:",
     ]
     exercicios = []
     for pattern in patterns:
-        exercicios.extend(re.findall(pattern, text))
+        exercicios.extend(re.findall(pattern, text, flags=re.MULTILINE | re.IGNORECASE))
     return exercicios
 
 
@@ -266,6 +271,15 @@ def _forbidden_expressions() -> list[str]:
     return merged
 
 
+#: Trecho curto entre aspas retas ou curvas: menção de uma expressão.
+_MENCAO_RE = re.compile(r"[\"“„”']([^\"“„”'\n]{2,80})[\"“„”']")
+
+
+def _sem_mencoes(text: str) -> str:
+    """Apaga o que está entre aspas, para o gate não punir a menção de um vício."""
+    return _MENCAO_RE.sub(" ", text)
+
+
 def _check_cliches(text: str) -> list[str]:
     """Encontra clichês proibidos no texto.
 
@@ -275,7 +289,10 @@ def _check_cliches(text: str) -> list[str]:
     alterar código.
     """
     found = []
-    text_lower = text.lower()
+    # Expressão entre aspas é menção, não uso: a aula que ensina a NÃO
+    # escrever "últimas vagas" precisa poder citar "últimas vagas". Medido
+    # no E2E de 02/09/2026 (aula sobre gatilhos reprovada por ensinar o veto).
+    text_lower = _sem_mencoes(text).lower()
     for cliche in _forbidden_expressions():
         if cliche.lower() in text_lower:
             found.append(cliche)
@@ -298,11 +315,14 @@ def _check_bloom_objectives(text: str) -> tuple[list[str], list[str]]:
     Returns:
         Tupla com (verbos_proibidos_encontrados, verbos_aceitos_encontrados).
     """
-    # Procurar seção de objetivos
+    # Procurar a SEÇÃO de objetivos: cabeçalho ou rótulo em negrito abrindo a
+    # linha. Até 02/09/2026 a busca casava a palavra "objetivo" em qualquer
+    # frase ("o objetivo da mensagem é...") e lia "entender" no parágrafo
+    # seguinte como verbo de Bloom de um objetivo que não existia.
     obj_match = re.search(
-        r"(?:Objetivos?\s+de\s+Aprendizagem|OBJETIVOS?)[\s\S]*?(?=\n##|\n\*\*[A-Z]|\Z)",
+        r"^(?:#{1,6}\s*|\*\*)\s*Objetivos?(?:\s+de\s+Aprendizagem)?\b[\s\S]*?(?=\n##|\n\*\*[A-Z]|\Z)",
         text,
-        re.IGNORECASE,
+        re.IGNORECASE | re.MULTILINE,
     )
     if not obj_match:
         return [], []
