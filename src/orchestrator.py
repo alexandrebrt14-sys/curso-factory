@@ -436,11 +436,10 @@ class Orchestrator:
             f"1. Título da aula em até 10 palavras | a ideia única da aula em uma frase\n\n"
             f"--- DADOS DA PESQUISA ---\n{research_context[:12000]}"
         )
-        try:
-            resposta = self.client.call(self.writer.provider, prompt, model=self.writer.model)
-        except Exception as exc:  # pragma: no cover - rede
-            logger.warning("Planejamento de aulas falhou (%s); módulo vira aula única", exc)
-            return [{"titulo": modulo.titulo, "ideia": modulo.descricao}]
+        # Falha de provedor sobe ao pipeline como erro da etapa: mascarar como
+        # "aula única" só adiava o mesmo erro para a primeira aula (E2E de
+        # 02/09/2026). O que vira aula única é plano ilegível, não provedor morto.
+        resposta = self.client.call(self.writer.provider, prompt, model=self.writer.model)
 
         aulas: list[dict[str, str]] = []
         for linha in resposta.splitlines():

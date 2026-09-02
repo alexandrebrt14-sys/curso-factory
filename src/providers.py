@@ -26,6 +26,9 @@ class ProviderConfig:
     price_output: float
     fallback: str | None
     protocol: str  # "openai_compat" | "anthropic" | "google"
+    #: Cadeia completa de fallback, na ordem (wave 6). Quando o YAML só traz
+    #: `fallback`, a cadeia é esse único salto.
+    fallback_chain: tuple[str, ...] = ()
 
 
 def _load() -> dict[str, ProviderConfig]:
@@ -39,14 +42,16 @@ def _load() -> dict[str, ProviderConfig]:
     out: dict[str, ProviderConfig] = {}
     for name, cfg in providers_raw.items():
         pricing = cfg.get("pricing", {})
+        cadeia = cfg.get("fallback_chain") or ([cfg["fallback"]] if cfg.get("fallback") else [])
         out[name] = ProviderConfig(
             name=name,
             endpoint=cfg["endpoint"],
             default_model=cfg.get("default_model", ""),
             price_input=float(pricing.get("input", 0.0)),
             price_output=float(pricing.get("output", 0.0)),
-            fallback=cfg.get("fallback") or None,
+            fallback=(cadeia[0] if cadeia else None),
             protocol=cfg.get("protocol", "openai_compat"),
+            fallback_chain=tuple(p for p in cadeia if p and p != name),
         )
     return out
 
@@ -79,4 +84,9 @@ ENDPOINTS: dict[str, str] = {
 
 FALLBACK_MAP: dict[str, str] = {
     name: cfg.fallback for name, cfg in PROVIDERS.items() if cfg.fallback
+}
+
+#: Cadeia completa por provedor, na ordem em que o cliente tenta (wave 6).
+FALLBACK_CHAINS: dict[str, tuple[str, ...]] = {
+    name: cfg.fallback_chain for name, cfg in PROVIDERS.items()
 }

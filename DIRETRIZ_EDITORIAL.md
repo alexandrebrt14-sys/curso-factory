@@ -1,7 +1,7 @@
 # Diretriz editorial deste repositório (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: e566bdc8dd3b63a81d42ab56da18ebec727eff6e12a8c53345c175ff84f15565
+hash-fonte: b02fa07c1e9c856f6c227bb610b9012b7c347c5e651b2bc734f94ef20d878253
 sincronizado-em: 2026-09-02
 
 A régua de escrita, os moldes de página, a tabela de tetos, o perfil do leitor e o glossário
