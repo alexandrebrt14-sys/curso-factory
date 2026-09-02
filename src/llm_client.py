@@ -48,7 +48,14 @@ from src.cost_tracker import CostTracker
 # Pricing, endpoints, modelos padrão e cadeias de fallback vêm de
 # config/providers.yaml via src.providers. Os dicts são re-exportados para
 # compatibilidade com imports externos.
-from src.providers import DEFAULT_MODELS, ENDPOINTS, FALLBACK_CHAINS, FALLBACK_MAP, PRICING
+from src.providers import (
+    DEFAULT_MODELS,
+    ENDPOINTS,
+    FALLBACK_CHAINS,
+    FALLBACK_MAP,
+    MAX_TOKENS_BY_PROVIDER,
+    PRICING,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -433,7 +440,9 @@ class LLMClient:
         """Executa a chamada HTTP real, traduzindo falhas na taxonomia."""
         api_key = get_api_key(provider)
         model = kwargs.get("model", DEFAULT_MODELS.get(provider, ""))
-        max_tokens = kwargs.get("max_tokens", MAX_TOKENS_PER_CALL)
+        # Teto de saída: o do chamador, senão o do provedor (providers.yaml),
+        # senão o global. Modelo que raciocina dentro do teto precisa de folga.
+        max_tokens = kwargs.get("max_tokens") or MAX_TOKENS_BY_PROVIDER.get(provider) or MAX_TOKENS_PER_CALL
         try:
             if provider == "anthropic":
                 return self._call_anthropic(api_key, model, prompt, max_tokens)

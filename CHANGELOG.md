@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-02 — Wave 7: ajustes do segundo teste real
+
+- Teto de saída por provedor (`max_tokens` em `config/providers.yaml`): 32k na Anthropic, porque
+  o claude-sonnet-5 raciocina dentro do teto e três revisões devolveram só bloco de raciocínio
+  em 16.384.
+- O checker reconhece o exercício pela estrutura (H2 com título próprio e três ou mais passos
+  numerados) e "resultado esperado" em prosa; o rodapé "Fontes" da trilha conta na camada GEO.
+
 ## 2026-09-02 — Wave 6: cliente LLM resiliente
 
 - `src/llm_client.py` redesenhado: taxonomia de erro (cota, chave, modelo, rate limit,

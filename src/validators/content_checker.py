@@ -236,12 +236,30 @@ def _find_exercises(text: str) -> list[str]:
         # campo "Resultado esperado". Medido no E2E do mesmo dia: seis aulas
         # com o exercício completo reprovavam por "0 exercício(s)".
         r"^#{2,4}\s+Fa[çc]a agora\b",
-        r"\*\*Resultado esperado\s*:",
+        # "Resultado esperado" em negrito ou em prosa ("O resultado esperado é
+        # que você tenha..."): o teste real de 02/09 mostrou o redator variando.
+        r"\bresultado esperado\b",
     ]
     exercicios = []
     for pattern in patterns:
         exercicios.extend(re.findall(pattern, text, flags=re.MULTILINE | re.IGNORECASE))
+    if not exercicios and _tem_passo_a_passo_sob_h2(text):
+        # Exercício reconhecido pela estrutura: um H2 com título próprio
+        # ("Crie três etiquetas para agrupar os contatos") seguido de três
+        # ou mais passos numerados. O molde pede o título que diz o que o
+        # aluno produz, então o nome "Faça agora" não é obrigatório.
+        exercicios.append("passo a passo sob H2")
     return exercicios
+
+
+#: Três ou mais itens numerados em sequência (1., 2., 3.), com linhas em branco ou não.
+_PASSOS_RE = re.compile(r"^\s*1[.)]\s.+(?:\n(?!\s*2[.)]).*)*\n\s*2[.)]\s.+(?:\n(?!\s*3[.)]).*)*\n\s*3[.)]\s", re.MULTILINE)
+
+
+def _tem_passo_a_passo_sob_h2(text: str) -> bool:
+    """Verdadeiro se alguma seção H2 traz três ou mais passos numerados."""
+    secoes = re.split(r"^##\s+", text, flags=re.MULTILINE)
+    return any(_PASSOS_RE.search(s) for s in secoes[1:])
 
 
 def _forbidden_expressions() -> list[str]:
@@ -424,6 +442,13 @@ def _count_cite_sources(text: str) -> int:
     )
     # Links markdown para fontes externas (http/https)
     signals += len(re.findall(r"\[[^\]]+\]\(https?://", clean))
+    # Rodapé de fontes da trilha (molde D: "1 fonte datada por trilha, no
+    # rodapé"): cada linha da seção "Fontes" com ano conta uma fonte. Sem
+    # isto, a camada GEO acusava "0 fontes" num curso com rodapé de fontes.
+    for m in re.finditer(r"^##\s+Fontes\b[^\n]*\n([\s\S]*?)(?=^#|\Z)", text, flags=re.MULTILINE):
+        for linha in m.group(1).splitlines():
+            if re.search(r"\b(?:19|20)\d{2}\b", linha):
+                signals += 1
     return signals
 
 

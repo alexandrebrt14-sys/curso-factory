@@ -29,6 +29,8 @@ class ProviderConfig:
     #: Cadeia completa de fallback, na ordem (wave 6). Quando o YAML só traz
     #: `fallback`, a cadeia é esse único salto.
     fallback_chain: tuple[str, ...] = ()
+    #: Teto de saída por provedor (catálogo do geo-orchestrator); 0 = usar MAX_TOKENS_PER_CALL.
+    max_tokens: int = 0
 
 
 def _load() -> dict[str, ProviderConfig]:
@@ -52,6 +54,7 @@ def _load() -> dict[str, ProviderConfig]:
             fallback=(cadeia[0] if cadeia else None),
             protocol=cfg.get("protocol", "openai_compat"),
             fallback_chain=tuple(p for p in cadeia if p and p != name),
+            max_tokens=int(cfg.get("max_tokens", 0) or 0),
         )
     return out
 
@@ -84,6 +87,11 @@ ENDPOINTS: dict[str, str] = {
 
 FALLBACK_MAP: dict[str, str] = {
     name: cfg.fallback for name, cfg in PROVIDERS.items() if cfg.fallback
+}
+
+#: Teto de saída por provedor (0 = padrão global).
+MAX_TOKENS_BY_PROVIDER: dict[str, int] = {
+    name: cfg.max_tokens for name, cfg in PROVIDERS.items()
 }
 
 #: Cadeia completa por provedor, na ordem em que o cliente tenta (wave 6).
