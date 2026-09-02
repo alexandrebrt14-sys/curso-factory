@@ -11,6 +11,7 @@ providers:
     endpoint: "https://api.perplexity.ai/chat/completions"
     # Catálogo do geo-orchestrator v4.6 (task_routing.research): sonar-deep-research.
     default_model: "sonar-deep-research"
+    max_tokens: 32000
     # Preço por 1K tokens (input, output) em USD
     pricing:
       input: 0.002
@@ -23,6 +24,7 @@ providers:
     endpoint: "https://api.openai.com/v1/chat/completions"
     # Catálogo v4.6 (task_routing.writing): gpt-5.5.
     default_model: "gpt-5.5"
+    max_tokens: 32768
     pricing:
       input: 0.005
       output: 0.015
@@ -37,6 +39,7 @@ providers:
     # gemini-3.7-flash (task_routing.classification), definido no agente; o preço abaixo é
     # o do pro, então o custo da classificação fica superestimado no relatório.
     default_model: "gemini-3.1-pro-preview"
+    max_tokens: 65536
     pricing:
       input: 0.002
       output: 0.012
@@ -49,6 +52,7 @@ providers:
     # Provider fora do parque do geo-orchestrator desde 2026-07-08 (Sprint 16). Fica só
     # como fallback opcional; nenhum agente o usa como primário.
     default_model: "openai/gpt-oss-120b"
+    max_tokens: 16384
     pricing:
       input: 0.0001
       output: 0.0002
@@ -59,7 +63,10 @@ providers:
     endpoint: "https://api.anthropic.com/v1/messages"
     # Catálogo v4.6 (task_routing.review): claude-sonnet-5. Opus e Fable ficam para
     # critical_review, que este pipeline não roda.
+    # 32k, não 16k: o claude-sonnet-5 raciocina dentro do teto de saída e três
+    # revisões do teste real de 02/09 devolveram só bloco de raciocínio em 16.384.
     default_model: "claude-sonnet-5"
+    max_tokens: 32000
     pricing:
       input: 0.003
       output: 0.015
