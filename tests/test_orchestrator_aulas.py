@@ -207,7 +207,8 @@ def test_pipeline_entrega_o_rascunho_a_analise_classificacao_e_revisao(orquestra
     assert "Texto revisado" in revisado and "REVISÃO CONCLUÍDA" not in revisado
     assert len(revisado.split()) >= len(draft.split()) * 0.9
     assert "REVISÃO CONCLUÍDA" in resultado.etapas["review_report"]
-    assert resultado.to_dict()["avisos"] == []
+    # O único aviso admissível é o do quality gate (wave 2), que só relata.
+    assert not [a for a in resultado.to_dict()["avisos"] if "Quality gate" not in a]
 
 
 def test_revisao_que_encolhe_mantem_o_rascunho_e_avisa(orquestrador) -> None:
@@ -289,6 +290,31 @@ def test_fallback_aparece_no_resultado_como_aviso(tmp_path, monkeypatch) -> None
     assert len(avisos) == 2
     assert any("'draft'" in a and "declarada em openai" in a for a in avisos)
     assert any("'research'" in a and "declarada em perplexity" in a for a in avisos)
+
+
+def test_quality_gate_roda_ao_fim_e_grava_veredito_por_aula(tmp_path, monkeypatch) -> None:
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
+    resultado = orq.run(_curso())
+
+    assert resultado.sucesso, resultado.erros
+    assert len(resultado.gate) == 6
+    assert set(resultado.gate) == {t for t, _ in dividir_em_unidades(resultado.etapas["review"])}
+    for veredito in resultado.gate.values():
+        assert veredito["aprovado"] in (True, False)
+        assert isinstance(veredito["erros"], list)
+    assert resultado.etapas["gate_report"].startswith("Quality gate: ")
+    assert resultado.gate_aprovado in (True, False)
+    if resultado.gate_aprovado is False:
+        assert any("Quality gate" in a for a in resultado.avisos)
+    assert resultado.to_dict()["gate"] == resultado.gate
+
+
+def test_gate_nao_roda_quando_o_pipeline_falha(tmp_path, monkeypatch) -> None:
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso(teto_sessao=0.09))
+    resultado = orq.run(_curso())
+    assert not resultado.sucesso
+    assert resultado.gate == {} and resultado.gate_aprovado is None
+    assert "gate_report" not in resultado.etapas
 
 
 def test_orcamento_da_sessao_interrompe_com_motivo(tmp_path, monkeypatch) -> None:
