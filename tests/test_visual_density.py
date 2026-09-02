@@ -22,7 +22,6 @@ from src.models import CourseSection, SectionType
 from src.validators import rules_loader
 from src.validators.visual_density import CATEGORIA, check_visual_density
 
-
 # ─── Fábricas de blocos ──────────────────────────────────────────────
 
 def bloco_texto(texto: str) -> CourseSection:
@@ -373,7 +372,7 @@ def test_o_corte_sai_do_yaml(tmp_path, monkeypatch) -> None:
 
 # ─── 7. A costura: a régua morde na geração ──────────────────────────
 
-def _curso_de_prova(secoes: list) -> "object":
+def _curso_de_prova(secoes: list) -> object:
     """Monta um CourseDefinition mínimo em volta das seções dadas."""
     from src.models import CourseDefinition
 

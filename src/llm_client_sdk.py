@@ -32,14 +32,13 @@ Diferencas deliberadas vs legado (documentadas, nao acidentais):
 from __future__ import annotations
 
 import logging
-
-from src.config import MAX_TOKENS_PER_CALL
 import os
 import sys
 from pathlib import Path
 from typing import Any
 
 from src.cache import Cache
+from src.config import MAX_TOKENS_PER_CALL
 from src.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
@@ -101,7 +100,7 @@ class SDKLLMClient:
     def close(self) -> None:
         """No-op: o SDK fecha o ConnectionPool por chamada (licao F3)."""
 
-    def __enter__(self) -> "SDKLLMClient":
+    def __enter__(self) -> SDKLLMClient:
         return self
 
     def __exit__(self, *exc: object) -> None:

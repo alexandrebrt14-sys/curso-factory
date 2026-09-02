@@ -247,7 +247,7 @@ class CourseSection(BaseModel):
     data: dict | None = Field(default=None, description="Carga tipada dos blocos visuais")
 
     @model_validator(mode="after")
-    def validate_carga(self) -> "CourseSection":
+    def validate_carga(self) -> CourseSection:
         """Cobra a carga certa para cada tipo, e recusa bloco que sairia vazio.
 
         O motor da landing degrada bloco sem `data` para nada, sem erro e sem

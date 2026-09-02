@@ -35,9 +35,10 @@ from __future__ import annotations
 import json
 import logging
 import re
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from src.agents.analyzer import Analyzer
 from src.agents.classifier import Classifier
@@ -52,7 +53,6 @@ from src.config import (
     REVIEW_MIN_RATIO,
 )
 from src.cost_tracker import CostTracker
-from src.llm_client import LLMClient
 from src.models import Course, Module
 
 if TYPE_CHECKING:

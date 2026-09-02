@@ -287,7 +287,7 @@ def _check_cliches(text: str) -> list[str]:
     minusculas = [c.lower() for c in found]
     return [
         cliche
-        for cliche, chave in zip(found, minusculas)
+        for cliche, chave in zip(found, minusculas, strict=True)
         if not any(chave != outra and chave in outra for outra in minusculas)
     ]
 
