@@ -38,6 +38,7 @@ from pathlib import Path
 from typing import Any
 
 from src.cache import Cache
+from src.config import MAX_TOKENS_PER_CALL
 from src.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
@@ -99,7 +100,7 @@ class SDKLLMClient:
     def close(self) -> None:
         """No-op: o SDK fecha o ConnectionPool por chamada (licao F3)."""
 
-    def __enter__(self) -> "SDKLLMClient":
+    def __enter__(self) -> SDKLLMClient:
         return self
 
     def __exit__(self, *exc: object) -> None:
@@ -119,7 +120,7 @@ class SDKLLMClient:
                     "SDK backend ignora kwarg %r=%r (governado pelo orquestrador)",
                     ignored, kwargs.pop(ignored),
                 )
-        max_tokens = int(kwargs.pop("max_tokens", 4096))
+        max_tokens = int(kwargs.pop("max_tokens", MAX_TOKENS_PER_CALL))
         if kwargs:
             logger.debug("SDK backend: kwargs nao mapeados ignorados: %s", sorted(kwargs))
 

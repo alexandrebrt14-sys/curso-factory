@@ -92,7 +92,7 @@ Evaluate the content against Knowles's 6 principles:
 - Do exercises use real professional contexts (not generic hypotheticals)?
 - Is there a complexity progression (Bloom's taxonomy: apply → analyze → evaluate → create)?
 - Are evaluation criteria clear and measurable?
-- At least 3 exercises per module?
+- One executable exercise per lesson (5 to 15 minutes, real data, expected result)?
 
 ### 7. English usage and consistency
 

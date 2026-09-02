@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-09-02 — Geração por aula, prompts enxutos e insumo correto por etapa
+
+- `src/orchestrator.py`: o writer escreve UMA aula por chamada (planejamento das aulas do
+  módulo em chamada curta; etapas do YAML viram aulas), com a pesquisa inteira (era 3.000
+  caracteres); análise, classificação e revisão recebem o RASCUNHO (a revisão recebia o JSON da
+  classificação e devolvia relatório no lugar do curso); a revisão é aula a aula e descarta
+  resposta que encolhe o texto abaixo de 60%, mantendo o rascunho com aviso.
+- `src/config.py`: `DRAFT_RESEARCH_CONTEXT_CHARS`, `CLASSIFY_CONTEXT_CHARS`,
+  `REVIEW_ANALYSIS_CHARS`, `REVIEW_MIN_RATIO`. `src/llm_client_sdk.py`: teto de saída padrão
+  passa de 4.096 para `MAX_TOKENS_PER_CALL`.
+- Prompts `draft.md`, `review.md` e `analyze.md` (raiz, pt-br, en, es) reescritos, enxutos,
+  com o molde da aula e os tetos como variáveis do `config/lexicos.json`; saem as cotas de
+  3 exercícios, 3 apoios visuais por módulo, 5 estatísticas, blockquote, negrito, H4 e cápsula
+  por H2.
+- Parser e conversor: `# Aula i.j:` é a unidade; a revisão só substitui o rascunho quando é
+  texto. `content_checker`: sem piso de negrito, Bloom só com seção de objetivos, andragogia
+  só avisa; `QualityGate` mede aula a aula.
+- `config/quality_rules.yaml`, `CLAUDE.md`, `README.md`, `docs/ARCHITECTURE.md` sem as
+  contradições da régua antiga (2.500-4.000 palavras, 3 exercícios, 1 tabela).
+- Ponteiro `DIRETRIZ_EDITORIAL.md` e espelho `config/lexicos.json` sincronizados com a fonte
+  1.3.0 (tetos ampliados: aula piso 700, alvo 900 a 1.800).
+
 Histórico de mudanças relevantes do curso-factory. Formato baseado em [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) e versionamento [SemVer](https://semver.org/lang/pt-BR/).
 
 Histórico narrativo de cada onda em [[Refactor-2026-04-29]] e demais páginas da [Wiki](https://github.com/alexandrebrt14-sys/curso-factory/wiki).

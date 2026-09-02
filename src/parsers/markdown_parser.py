@@ -43,6 +43,8 @@ from src.models import CourseSection, SectionType
 # Regex compartilhados
 H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
+#: Cabeçalho de aula emitido pelo orquestrador (`# Aula 2.3: título`).
+AULA_H1_RE = re.compile(r"^#\s+Aula\s+\d+\.\d+\s*[:.\-]", re.MULTILINE)
 CODE_FENCE_RE = re.compile(r"```([a-zA-Z0-9_+-]*)\n(.*?)```", re.DOTALL)
 
 # Prefixos de blockquote especiais (DICA/AVISO/CHECKPOINT) para schema_builder
@@ -138,16 +140,24 @@ def _sem_acentos_minusculo(valor: str) -> str:
 
 
 def extract_module_blocks(markdown: str) -> list[tuple[str, str]]:
-    """Splita markdown em blocos por heading nível 1 ou 2.
+    """Splita markdown em blocos por unidade.
 
-    Preferência: H2 (padrão dos drafts). Fallback: H1. Sem headings, retorna
-    o markdown inteiro como 1 único módulo.
+    Desde 02/09/2026 o pipeline gera aula a aula e cada aula abre com
+    `# Aula i.j: título` (H1), usando H2 para as próprias seções. Quando esse
+    cabeçalho existe, a unidade é a aula: o bloco vai do H1 ao próximo H1, e
+    os H2 ficam dentro dele. Rascunho antigo (módulo com seis H2) continua
+    partido por H2, como antes. Fallback: H1. Sem headings, retorna o
+    markdown inteiro como 1 único módulo.
     """
     markdown = _normalizar_quebras(markdown)
     if not markdown.strip():
         return []
 
-    primary_re = H2_RE if H2_RE.search(markdown) else H1_RE
+    if AULA_H1_RE.search(markdown):
+        markdown = re.sub(r"^<!--\s*M[óo]dulo[^\n]*-->[ \t]*$", "", markdown, flags=re.MULTILINE)
+        primary_re = H1_RE
+    else:
+        primary_re = H2_RE if H2_RE.search(markdown) else H1_RE
     matches = list(primary_re.finditer(markdown))
 
     if not matches:

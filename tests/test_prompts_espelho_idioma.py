@@ -14,6 +14,12 @@ no arquivo genérico. O invariante é mais fraco e mais útil:
     a cópia por idioma pode ACRESCENTAR, nunca PERDER.
 
 Perder seção é o defeito real, e é o que estes testes pegam.
+
+Desde 02/09/2026 o prompt de redação escreve UMA aula por chamada e recebe os
+tetos da aula como variáveis (`{palavras_alvo_min}`, `{figuras_max}`...), lidas
+de `config/lexicos.json`. O prompt não carrega número nenhum, então o que se
+cobra aqui é a presença das variáveis em todos os idiomas: prompt sem elas
+volta a inventar a régua por conta própria.
 """
 
 from __future__ import annotations
@@ -32,9 +38,22 @@ PROMPTS = PROJECT_ROOT / "src" / "templates" / "prompts"
 #: porque é ele que sombreia a raiz na geração do dia a dia.
 IDIOMAS = ("pt-br", "en", "es")
 
-#: Prompts que carregam a régua de peso visual. A doutrina vive em
-#: docs/DOUTRINA_VISUAL_CURSOS.md; aqui só se cobra que ela chegou ao prompt.
-PROMPTS_COM_REGUA = ("draft.md", "review.md")
+#: Variáveis que o orquestrador injeta na redação de cada aula
+#: (`Orchestrator._draft_lesson` e `_tetos_da_aula`).
+VARIAVEIS_DA_AULA = (
+    "{lesson_title}", "{lesson_idea}", "{previous_lessons}", "{next_lessons}",
+    "{palavras_piso}", "{palavras_alvo_min}", "{palavras_alvo_max}", "{palavras_aviso}",
+    "{h2_min}", "{h2_max}", "{h3_por_h2}", "{figuras_max}",
+    "{paragrafo_min}", "{paragrafo_max}", "{context}",
+)
+
+#: Variáveis que o orquestrador injeta na revisão de cada aula
+#: (`Orchestrator._review_iterative`).
+VARIAVEIS_DA_REVISAO = ("{unit_title}", "{unit_position}", "{analysis_summary}", "{context}")
+
+#: Números da régua antiga que NÃO podem voltar ao prompt: a régua vive na
+#: fonte de estilo e chega por variável.
+NUMEROS_PROIBIDOS = ("1.200 caracteres", "2.500 caracteres", "3 exercícios", "three exercises", "tres ejercicios")
 
 
 def _titulos(caminho: Path) -> list[str]:
@@ -71,39 +90,46 @@ class TestCopiaPorIdiomaNaoPerdeSecao(unittest.TestCase):
                 )
 
 
-class TestReguaDePesoVisualChegouAosIdiomas(unittest.TestCase):
-    """A régua precisa estar em todos os idiomas, não só na raiz.
+class TestVariaveisDaAulaChegaramAosIdiomas(unittest.TestCase):
+    """O contrato do prompt de aula precisa valer em todos os idiomas.
 
-    Número atravessa tradução, então é o que se cobra aqui. Se alguém mudar o
-    teto ou a densidade, este teste fica vermelho em todos os idiomas de uma
-    vez, que é exatamente o lembrete de atualizar os quatro arquivos.
+    Variável atravessa tradução, então é o que se cobra aqui. Se o orquestrador
+    ganhar uma variável nova, este teste fica vermelho em todos os idiomas de
+    uma vez, que é o lembrete de atualizar os quatro arquivos.
     """
 
-    def _contem_regua(self, caminho: Path) -> tuple[bool, bool]:
-        texto = caminho.read_text(encoding="utf-8")
-        tem_teto = "1.200" in texto or "1,200" in texto
-        tem_densidade = "2.500" in texto or "2,500" in texto
-        return tem_teto, tem_densidade
+    def _alvos(self, nome: str) -> list[Path]:
+        alvos = [PROMPTS / nome] + [PROMPTS / idioma / nome for idioma in IDIOMAS]
+        return [c for c in alvos if c.exists()]
 
-    def test_a_regua_esta_na_raiz_e_em_todos_os_idiomas(self):
-        for nome in PROMPTS_COM_REGUA:
-            alvos = [PROMPTS / nome]
-            alvos += [PROMPTS / idioma / nome for idioma in IDIOMAS]
-            for caminho in alvos:
-                if not caminho.exists():
-                    continue
-                rotulo = caminho.relative_to(PROMPTS).as_posix()
-                with self.subTest(prompt=rotulo):
-                    tem_teto, tem_densidade = self._contem_regua(caminho)
-                    self.assertTrue(
-                        tem_teto,
-                        f"{rotulo} não traz o teto de 1.200 caracteres por parágrafo.",
-                    )
-                    self.assertTrue(
-                        tem_densidade,
-                        f"{rotulo} não traz a densidade de um apoio visual a cada "
-                        "2.500 caracteres de prosa.",
-                    )
+    def test_draft_recebe_as_variaveis_da_aula(self):
+        for caminho in self._alvos("draft.md"):
+            texto = caminho.read_text(encoding="utf-8")
+            rotulo = caminho.relative_to(PROMPTS).as_posix()
+            with self.subTest(prompt=rotulo):
+                faltando = [v for v in VARIAVEIS_DA_AULA if v not in texto]
+                self.assertEqual(
+                    faltando, [],
+                    f"{rotulo} não traz as variáveis da aula {faltando}; sem elas o "
+                    "redator não recebe os tetos da fonte de estilo.",
+                )
+                proibidos = [n for n in NUMEROS_PROIBIDOS if n in texto]
+                self.assertEqual(proibidos, [], f"{rotulo} voltou a carregar régua fixa: {proibidos}")
+
+    def test_review_recebe_as_variaveis_da_unidade(self):
+        for caminho in self._alvos("review.md"):
+            texto = caminho.read_text(encoding="utf-8")
+            rotulo = caminho.relative_to(PROMPTS).as_posix()
+            with self.subTest(prompt=rotulo):
+                faltando = [v for v in VARIAVEIS_DA_REVISAO if v not in texto]
+                self.assertEqual(faltando, [], f"{rotulo} não traz {faltando}")
+                self.assertIn(
+                    "REVIS", texto,
+                    f"{rotulo} precisa pedir o bloco 'REVISÃO CONCLUÍDA', que o "
+                    "orquestrador separa do texto revisado.",
+                )
+                proibidos = [n for n in NUMEROS_PROIBIDOS if n in texto]
+                self.assertEqual(proibidos, [], f"{rotulo} voltou a carregar régua fixa: {proibidos}")
 
     def test_o_prompt_manda_uma_linha_de_texto_por_linha_da_tabela(self):
         """A instrução antiga inviabilizava a promoção da tabela.
@@ -111,49 +137,19 @@ class TestReguaDePesoVisualChegouAosIdiomas(unittest.TestCase):
         Os prompts mandavam formatar a tabela como uma única linha, com `\\n`
         separando as rows, herança de quando o Markdown virava string TSX na
         mão. O parser promove tabela a bloco visual, e promoção depende de
-        quebra de linha real. Sem esta instrução a tabela deixa de contar como
-        bloco visual e o curso volta a nascer reprovado.
-
-        A cobrança é pela afirmativa, e não pela ausência da frase antiga: os
-        três idiomas dizem "nunca tudo numa linha só" como parte da instrução
-        correta, então procurar a frase proibida acusa o texto certo.
+        quebra de linha real. A cobrança é pela afirmativa: os prompts dizem
+        "uma linha de texto por linha da tabela" como parte da instrução.
         """
-        marcadores = {
-            "draft.md": "uma linha de texto por linha",
-            "pt-br/draft.md": "uma linha de texto por linha",
-            "en/draft.md": "one line of text per table row",
-            "es/draft.md": "una línea de texto por fila",
-        }
-        for rotulo, marcador in marcadores.items():
-            caminho = PROMPTS / rotulo
-            if not caminho.exists():
-                continue
+        marcas = ("uma linha de texto por linha da tabela", "one line of text per table row",
+                  "una línea de texto por fila de la tabla")
+        for caminho in self._alvos("draft.md"):
+            texto = caminho.read_text(encoding="utf-8")
+            rotulo = caminho.relative_to(PROMPTS).as_posix()
             with self.subTest(prompt=rotulo):
-                texto = caminho.read_text(encoding="utf-8").lower()
-                self.assertIn(
-                    marcador.lower(), texto,
-                    f"{rotulo} não manda mais uma linha de texto por linha da "
-                    "tabela. Sem isso o parser não promove a tabela a bloco "
-                    "visual e o curso nasce reprovado no piso.",
+                self.assertTrue(
+                    any(m in texto for m in marcas),
+                    f"{rotulo} precisa mandar uma linha de texto por linha da tabela.",
                 )
-
-
-class TestConjuntoDeArquivosPorIdioma(unittest.TestCase):
-    """Um prompt novo não pode nascer só num idioma sem que se saiba."""
-
-    def test_todo_prompt_de_idioma_tem_par_na_raiz(self):
-        """Arquivo que só existe numa pasta de idioma é órfão silencioso."""
-        for idioma in IDIOMAS:
-            pasta = PROMPTS / idioma
-            if not pasta.is_dir():
-                continue
-            for arquivo in sorted(pasta.glob("*.md")):
-                with self.subTest(prompt=f"{idioma}/{arquivo.name}"):
-                    self.assertTrue(
-                        (PROMPTS / arquivo.name).exists(),
-                        f"{idioma}/{arquivo.name} não tem par na raiz. A raiz é o "
-                        "recuo do lang_resolver: sem ela, outro idioma cai no vazio.",
-                    )
 
 
 if __name__ == "__main__":

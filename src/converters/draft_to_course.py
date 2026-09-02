@@ -114,16 +114,49 @@ def _build_steps(
     return steps
 
 
+#: Revisão com menos que esta fração das palavras do rascunho é relatório,
+#: não texto revisado. Medido em 02/09/2026 em 12 drafts de output/drafts/:
+#: a etapa review devolvia 80 a 1.300 palavras para rascunhos de 1.400 a
+#: 17.400, e o conversor a preferia por ser "mais polida".
+REVIEW_MIN_RATIO = 0.6
+
+
+def _texto_da_etapa(etapas: dict, key: str) -> str:
+    value = etapas.get(key)
+    if isinstance(value, str) and value.strip():
+        return value
+    if isinstance(value, dict):
+        content = value.get("content") or value.get("text") or value.get("output")
+        if isinstance(content, str) and content.strip():
+            return content
+    return ""
+
+
 def _extract_review_or_draft_text(etapas: dict) -> str:
-    """Pega o texto principal: prefere review (mais polido), senao draft."""
-    for key in ("review", "draft", "analyze", "research"):
-        value = etapas.get(key)
-        if isinstance(value, str) and value.strip():
-            return value
-        if isinstance(value, dict):
-            content = value.get("content") or value.get("text") or value.get("output")
-            if isinstance(content, str) and content.strip():
-                return content
+    """Pega o texto principal: review quando ela é o texto de fato, senão draft.
+
+    A revisão só substitui o rascunho quando carrega ao menos 60% das palavras
+    dele. Abaixo disso ela é comentário sobre o curso, e publicar comentário
+    no lugar de curso foi o defeito medido nos drafts de março e abril de 2026.
+    """
+    review = _texto_da_etapa(etapas, "review")
+    draft = _texto_da_etapa(etapas, "draft")
+    if review and draft:
+        if len(review.split()) >= len(draft.split()) * REVIEW_MIN_RATIO:
+            return review
+        logger.warning(
+            "etapa review com %d palavras para um draft de %d: usando o draft",
+            len(review.split()), len(draft.split()),
+        )
+        return draft
+    if review:
+        return review
+    if draft:
+        return draft
+    for key in ("analyze", "research"):
+        texto = _texto_da_etapa(etapas, key)
+        if texto:
+            return texto
     return ""
 
 

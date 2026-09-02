@@ -108,8 +108,8 @@ class TestSDKAdapter:
             c.call("cohere", "oi")
 
     def test_local_cache_hit_skips_sdk(self, tmp_path):
-        from src.llm_client_sdk import SDKLLMClient
         from src.cache import Cache
+        from src.llm_client_sdk import SDKLLMClient
         cache = Cache(ttl=3600)
         cache._dir = tmp_path  # isola do cache real em disco
         c = SDKLLMClient(cache=cache)

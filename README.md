@@ -61,7 +61,7 @@ Scripts Python que fazem `str.replace()` ou regex para inserir conteúdo em pont
 
 ### 5. Falta de validação de qualidade de conteúdo
 
-Sem validação, módulos podem ser publicados sem tabelas, sem exercícios, sem princípios andragógicos ou com clichês proibidos. O **content_checker.py** valida automaticamente: presença de tabelas, contagem de palavras (2.500-4.000), hierarquia de títulos, blocos de citação, exercícios (mínimo 3), verbos de Bloom, princípios de Knowles e clichês proibidos.
+Sem validação, aulas podem ser publicadas rasas, sem exercício ou com clichês proibidos. O **content_checker.py** mede cada aula contra a régua da fonte de estilo (`config/lexicos.json`, `tetos.D`): extensão, H2 e H3 por H2, teto de apoios visuais, faixa de parágrafo, um exercício por aula, hierarquia de títulos, verbos de Bloom, marcadores de evidência e clichês proibidos.
 
 ### 6. Agentes falhando por API
 
@@ -204,7 +204,7 @@ O quality gate é a barreira final antes da publicação. Camadas 1-4 são bloqu
 
 | Verificação | Critério | Tipo |
 |-------------|----------|------|
-| Contagem de palavras | 2.500-4.000 por módulo | Bloqueante |
+| Contagem de palavras por aula | faixa de `tetos.D` em `config/lexicos.json` | Bloqueante abaixo do piso e acima do erro |
 | Tabelas | Mínimo 1 por módulo | Bloqueante |
 | Subtítulos | Mínimo 5-7 seções (H2/H3) | Bloqueante |
 | Hierarquia de títulos | Sem pulos (H2→H4 proibido) | Bloqueante |

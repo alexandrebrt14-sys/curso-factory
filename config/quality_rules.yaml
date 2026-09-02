@@ -68,17 +68,14 @@ validation:
     # Um exercício por aula ("faça agora", 5-15 min). Era "mínimo 3 por
     # módulo", que produzia bateria de exercício sem conceito explicado.
     min_exercises_per_lesson: 1
-    # Uma fonte datada por trilha, no rodapé — não por aula, e nunca dentro da
-    # frase. Era "3+ fontes por módulo".
+    # Uma fonte datada por trilha, no rodapé, e uma cápsula por trilha.
     min_sources_per_trail: 1
-    # Uma cápsula de resposta por trilha. Era "18-75 palavras por seção".
     min_capsules_per_trail: 1
-    # Tabela e figura não têm piso: entram só quando substituem texto. O teto
-    # de 3 por aula é `tetos.D.figuras_max` em config/lexicos.json.
-    # Estatística também não tem piso: entra quando responde à pergunta do
-    # exemplo. Blockquote e "termo em negrito" deixaram de ser obrigatórios.
-    min_bold_terms_per_lesson: 3
-    max_reading_time_per_lesson_minutes: 20
+    # Tabela, figura, blockquote e negrito não têm piso desde 02/09/2026:
+    # cobrar "3 termos em negrito" produzia destaque por cota, e destaque em
+    # excesso anula o destaque. A chave abaixo só age se for maior que zero.
+    min_bold_terms_per_lesson: 0
+    max_reading_time_per_lesson_minutes: 15
 
   # Camada 2b: Densidade visual (DIRETRIZ_EDITORIAL.md §11.1 e
   # docs/DOUTRINA_VISUAL_CURSOS.md). Instalada em 17/08/2026, depois de o curso
@@ -159,14 +156,20 @@ validation:
       - prompt
       - sourceNote
 
-  # Padrão editorial HSM/HBR/MIT Sloan
+  # Padrão editorial. A régua de prosa da AULA é a de linguagem simples da
+  # fonte de estilo (escrita-empreendedor: leitor leigo, celular). HBR, MIT
+  # Sloan e HSM seguem como referência de rigor de evidência e de estrutura
+  # "resposta primeiro", não de registro.
   editorial_style:
     reference_publications:
+      - "escrita-empreendedor (linguagem simples, jornalismo de serviço)"
       - "Harvard Business Review"
       - "MIT Sloan Management Review"
       - "HSM Management"
     tone: "analitico_propositivo"
-    require_tables_per_module: 1
+    # Sem piso de tabela desde 02/09/2026: tabela entra quando substitui
+    # texto (comparação com critérios), nunca por cota.
+    require_tables_per_module: 0
     require_bloom_verbs_in_objectives: true
     bloom_accepted_levels: [3, 4, 5, 6]  # Aplicar, Analisar, Avaliar, Criar
     bloom_forbidden_verbs:
@@ -214,7 +217,9 @@ validation:
       - orientacao_a_problemas
       - motivacao_intrinseca
     min_principles_present: 4  # Mínimo 4 de 6 para aprovação
-    fail_if_missing: 3  # Bloqueia se 3+ ausentes
+    # Desde 02/09/2026 a andragogia só avisa: os marcadores são lexicais e
+    # reprovavam aula que aplicava Knowles com outras palavras.
+    fail_if_missing: 0
 
   # Clichês e expressões proibidas — SÓ O QUE A FONTE NÃO COBRE.
   # A lista viva tem três origens, unidas em runtime por
