@@ -144,8 +144,8 @@ class QualityGate:
         #    quando o cliente liga geo_2026 no client.yaml — ver
         #    docs/GEO_REDACAO_CHECKLIST_2026.md)
         geo_config = getattr(self.client, "geo", None)
-        content_errors = check_content(
-            working_text, module_name, geo_config=geo_config, unidade=unidade
+        content_errors = self._check_content_por_unidade(
+            working_text, module_name, geo_config, unidade
         )
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
@@ -225,6 +225,25 @@ class QualityGate:
             result.disclosure_ok,
         )
         return result
+
+    @staticmethod
+    def _check_content_por_unidade(text: str, module_name: str, geo_config, unidade: str):
+        """Mede aula a aula quando o texto vem montado pelo orquestrador.
+
+        O rascunho gerado desde 02/09/2026 traz `# Aula i.j: título` abrindo
+        cada aula. Nesse caso a régua da aula (molde D) vale para cada bloco,
+        sem o multiplicador de módulo, e o rótulo do achado carrega o título da
+        aula. Texto sem esse cabeçalho é medido inteiro, na unidade pedida.
+        """
+        from src.orchestrator import AULA_H1_RE, dividir_em_unidades
+
+        if not AULA_H1_RE.search(text):
+            return check_content(text, module_name, geo_config=geo_config, unidade=unidade)
+        achados = []
+        for titulo, bloco in dividir_em_unidades(text):
+            rotulo = f"{module_name} / {titulo}" if module_name else titulo
+            achados.extend(check_content(bloco, rotulo, geo_config=geo_config, unidade="aula"))
+        return achados
 
     def check_html(
         self,

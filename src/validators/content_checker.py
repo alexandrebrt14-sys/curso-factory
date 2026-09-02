@@ -9,10 +9,8 @@ vem do tipo D ("aula/trilha") da tabela única de tetos da fonte de estilo
 (`alexandrebrt14-sys/escrita-empreendedor`, `MOLDES_DE_PAGINA.md` seções 2, 3-D
 e 6):
 
-- palavras: piso 900 · alvo 1.200-2.400 · aviso 2.400 · erro 3.600;
-- 2 a 4 H2 por aula (explicar, exemplo, fazer agora), até 2 H3 por H2;
-- até 3 apoios visuais, e só quando substituem texto;
-- parágrafo de 15 a 45 palavras;
+- palavras, H2, H3 por H2, apoios visuais e parágrafo: os números vivem em
+  `tetos.D` de `config/lexicos.json` (a fonte é a única cópia);
 - 1 exercício por aula; 1 fonte datada e 1 cápsula por trilha.
 
 Nenhum desses números mora neste arquivo nem em `config/quality_rules.yaml`:
@@ -683,19 +681,22 @@ def check_content(
             modulo=mod,
         ))
 
-    # 4. Termos em negrito. Único piso de formatação que sobrou, e é aviso.
+    # 4. Negrito deixou de ter piso em 02/09/2026: cobrar "3 termos em
+    #    negrito" produzia destaque por cota, e destaque em excesso anula o
+    #    destaque. A chave `min_bold_terms_per_lesson` só age se estiver
+    #    presente no YAML com valor acima de zero.
     bold_minimo = _inteiro(
-        validation_section("content_quality").get("min_bold_terms_per_lesson"), 3
+        validation_section("content_quality").get("min_bold_terms_per_lesson"), 0
     )
-    bold_count = _find_bold_terms(text)
-    if bold_count < bold_minimo:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="formatação",
-            mensagem=f"Apenas {bold_count} termos em negrito (recomendado: {bold_minimo}). "
-                     f"Destaque termos-chave e conceitos na primeira ocorrência.",
-            modulo=mod,
-        ))
+    if bold_minimo > 0:
+        bold_count = _find_bold_terms(text)
+        if bold_count < bold_minimo:
+            erros.append(ContentError(
+                tipo="warning",
+                categoria="formatação",
+                mensagem=f"Apenas {bold_count} termos em negrito (recomendado: {bold_minimo}).",
+                modulo=mod,
+            ))
 
     # 5. Exercício: 1 por aula ("faça agora", 5-15 min, com etapas numeradas e
     #    o resultado esperado). Era "mínimo 3 por módulo".
@@ -732,13 +733,10 @@ def check_content(
                      f"Use verbos de níveis 3-6: analisar, avaliar, criar, aplicar.",
             modulo=mod,
         ))
-    if not bloom_aceitos and not bloom_proibidos:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="andragogia",
-            mensagem="Seção de Objetivos de Aprendizagem não encontrada ou sem verbos de Bloom.",
-            modulo=mod,
-        ))
+    # Objetivos de aprendizagem vivem no nível da trilha (molde D, bloco 1:
+    # "uma frase do que vai aprender", sem lista de objetivos por aula). Aula
+    # sem seção de objetivos é o esperado, então não há aviso por ausência;
+    # a checagem de verbos só age quando a seção existe.
 
     # 9. Indicadores de andragogia
     text_lower = text.lower()
@@ -770,16 +768,11 @@ def check_content(
         if not any(m in text_lower for m in markers):
             missing_principles.append(principle.replace("_", " "))
 
-    if len(missing_principles) >= 3:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="andragogia",
-            mensagem=f"Princípios andragógicos ausentes ({len(missing_principles)}): "
-                     f"{', '.join(missing_principles)}. "
-                     f"O conteúdo deve aplicar os 6 princípios de Knowles.",
-            modulo=mod,
-        ))
-    elif missing_principles:
+    # Desde 02/09/2026 a andragogia nunca reprova: os marcadores são
+    # lexicais ("se você já", "na sua rotina") e uma aula que aplica Knowles
+    # com outras palavras reprovava por não usar a fórmula. O revisor humano
+    # e o analyzer (Gemini) medem o princípio; o gate só aponta.
+    if missing_principles:
         erros.append(ContentError(
             tipo="warning",
             categoria="andragogia",

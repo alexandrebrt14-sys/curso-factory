@@ -32,6 +32,8 @@ Diferencas deliberadas vs legado (documentadas, nao acidentais):
 from __future__ import annotations
 
 import logging
+
+from src.config import MAX_TOKENS_PER_CALL
 import os
 import sys
 from pathlib import Path
@@ -119,7 +121,7 @@ class SDKLLMClient:
                     "SDK backend ignora kwarg %r=%r (governado pelo orquestrador)",
                     ignored, kwargs.pop(ignored),
                 )
-        max_tokens = int(kwargs.pop("max_tokens", 4096))
+        max_tokens = int(kwargs.pop("max_tokens", MAX_TOKENS_PER_CALL))
         if kwargs:
             logger.debug("SDK backend: kwargs nao mapeados ignorados: %s", sorted(kwargs))
 

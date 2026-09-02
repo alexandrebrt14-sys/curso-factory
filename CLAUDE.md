@@ -126,7 +126,7 @@ Mudanças aplicadas datadas de abril/2026 — refactors (multi-tenant, 5 waves),
 Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GERADOR, corrija sempre no TEMPLATE para que todo curso gerado herde a prática. Cobre: layout/UX/navegabilidade de conteúdo longo, régua de stacks premium 2026, **REGRA inviolável de contraste WCAG AA nos dois temas** (dark/light; spans inline; `pre` com fundo escuro fixo), **parágrafos justificados** (`text-justify`), **animação à prova de falha** (nunca esconder dependendo de JS; CSS `fill:both`; `prefers-reduced-motion`), **auditoria da SAÍDA renderizada** (dois temas, transições mortas, cache-bust, iterar até zerar) e catálogo de **erros frequentes** (inclui acentuação em geração longa). Defeito no template multiplica por todos os cursos — pegue cedo.
 
 ### Peso visual do curso gerado (LEIA ANTES de gerar curso)
-Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**, com a forma curta e normativa na §11.1 da `DIRETRIZ_EDITORIAL.md`. Cobra três limites verificáveis por máquina: nenhum parágrafo acima de 1.200 caracteres, ao menos três blocos visuais por módulo e ao menos um bloco visual a cada 2.500 caracteres de prosa. **O que mudou no gerador:** o contrato de geração passou a emitir seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), declarados sempre nos mesmos quatro lugares (`src/models.py`, `src/schemas/course.schema.json`, `src/templates/page.tsx.j2` e o filtro `js_json` de `src/generators/tsx_generator.py`); o parser promove sozinho tabela, lista numerada de passos e imagem com legenda; e a camada `visual_density` do `config/quality_rules.yaml` deixou de ser declarativa e é cobrada dentro de `TsxGenerator.render_page`. Curso que nasce como coluna de texto **não chega a virar arquivo**: a cobrança levanta `VisualDensityError` antes da renderização. Curso legado atravessa com `cobrar_peso_visual=False`, com os achados só no log.
+Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**. Desde 27/08/2026 a obrigação editorial é o TETO de apoios visuais por aula (`tetos.D.figuras_max` em `config/lexicos.json`), e só quando a peça substitui texto; o piso por módulo e o teto de 1.200 caracteres por parágrafo seguem como rede do motor de renderização da landing (`config/quality_rules.yaml > validation.visual_density`), não como régua de escrita. **O que mudou no gerador:** o contrato de geração passou a emitir seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), declarados sempre nos mesmos quatro lugares (`src/models.py`, `src/schemas/course.schema.json`, `src/templates/page.tsx.j2` e o filtro `js_json` de `src/generators/tsx_generator.py`); o parser promove sozinho tabela, lista numerada de passos e imagem com legenda; e a camada `visual_density` do `config/quality_rules.yaml` deixou de ser declarativa e é cobrada dentro de `TsxGenerator.render_page`. Curso que nasce como coluna de texto **não chega a virar arquivo**: a cobrança levanta `VisualDensityError` antes da renderização. Curso legado atravessa com `cobrar_peso_visual=False`, com os achados só no log.
 
 ### Idioma
 - TODO texto de curso DEVE ser em Português do Brasil com acentuação completa
@@ -149,10 +149,12 @@ Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**, com a forma curta e no
 
 5 LLMs com papéis fixos — NÃO interpretar como sub-agentes do Claude Code:
 1. Perplexity (sonar-pro) → pesquisa, fundamentação acadêmica e análise competitiva
-2. GPT-4o → redação de módulos com padrão editorial HSM/HBR/MIT Sloan e andragogia
-3. Gemini (2.5-pro) → análise de qualidade pedagógica e andragógica em 7 dimensões
-4. Groq (Llama 3.3) → classificação, tags e metadados
-5. Claude (opus-4-6) → revisão final com correção ativa: acentuação PT-BR, qualidade editorial, formatação ($5 max/curso)
+2. GPT-4o → planeja as aulas de cada módulo e redige UMA aula por chamada, em linguagem simples (fonte de estilo escrita-empreendedor), com a pesquisa inteira
+3. Gemini (2.5-pro) → análise pedagógica do rascunho inteiro, aula a aula, em 7 dimensões
+4. Groq (Llama 3.3) → classificação, tags e metadados, a partir do rascunho
+5. Claude (opus-4-6) → revisão final UMA aula por chamada, devolvendo o texto inteiro; revisão que encolhe o texto é descartada e o rascunho fica ($5 max/curso)
+
+Cada etapa recebe o RASCUNHO (não a saída da etapa anterior). Até 02/09/2026 a revisão recebia o JSON da classificação e devolvia um relatório no lugar do curso; ver `wiki/decisions/geracao-por-aula-e-insumo-correto.md`.
 
 ### Prompts Externos (IMPORTANTE)
 - Os prompts dos 5 agentes ficam em `src/templates/prompts/*.md`
@@ -185,15 +187,21 @@ Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/202
 - ACEITOS (nível 3-6): analisar, comparar, diagnosticar, avaliar, justificar, criar, projetar, aplicar, implementar
 - PROIBIDOS (nível 1-2): entender, conhecer, saber, compreender, lembrar, memorizar, listar, descrever, identificar
 
-### Formatação Obrigatória por Módulo
-- Ao menos 1 tabela comparativa (formato markdown com pipes)
-- Ao menos 3 exercícios com contexto profissional e progressão Bloom
-- Sub-headings (linha terminando com `:`) quando o assunto muda, sem cota por número de parágrafos
-- Negrito em termos-chave na primeira ocorrência usando `**termo**`
-- Blockquotes (`> `) para insights centrais, 1-2 por módulo
-- Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen)
-- Estrutura entra quando organiza comparação, sequência ou verificação (tabela, matriz de decisão, checklist, passos). Lista cujos itens têm relação de causa entre si vira prosa: prosa carrega raciocínio
-- 2.500-4.000 palavras por módulo
+### Molde da aula (unidade de geração desde 02/09/2026)
+- A unidade que o pipeline escreve, revisa e mede é a AULA, uma por chamada de LLM
+  (`Orchestrator._draft_lesson`), com a pesquisa inteira no prompt
+- Os números da aula (palavras, H2, H3 por H2, figuras, parágrafo) vêm de `config/lexicos.json`,
+  espelho da fonte de estilo `escrita-empreendedor`, e entram no prompt como variáveis
+  (`{palavras_alvo_min}`, `{figuras_max}`...). NUNCA repita número de régua em prompt ou doc
+- Abertura de 2 ou 3 frases dizendo o que o aluno vai conseguir fazer; 2 a 4 H2 (o normal são
+  três: por que a ideia muda o resultado; como fica no seu negócio; faça agora); H3 só em H2
+  acima de 350 palavras; nada de H4 nem subtítulo por linha terminada em dois-pontos
+- Um exercício por aula, com título, etapas numeradas com dado real do aluno, resultado esperado
+  e dica. Sem bateria de exercícios
+- Apoio visual é TETO (até `figuras_max` por aula), só quando substitui texto. Sem piso de
+  tabela, blockquote, negrito ou figura
+- Objetivos, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha
+- Bullets com `-- ` (dois hífens), NUNCA `- ` (um hífen), no conteúdo renderizado pelo `FormattedText`
 
 ### Padrão de Layout (FormattedText — UX Microsoft Learn + Salesforce Trailhead)
 O template `page.tsx.j2` inclui um componente `FormattedText` que renderiza:
@@ -235,16 +243,15 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
 - Rastreamento de blocos de código (```) para não alterar código
 
 ### Camada 2: Conteúdo (content_checker.py)
-- Contagem de palavras (2.500-4.000)
-- Presença de tabelas (mínimo 1 por módulo)
-- Hierarquia de títulos sem pulos
-- Blocos de citação para insights
-- Exercícios (mínimo 3)
-- Clichês proibidos (18 expressões)
-- Verbos de Bloom nos objetivos
-- Princípios andragógicos (5 indicadores)
-- Parágrafos longos (máximo 5 linhas)
-- Emojis (proibidos)
+- Medida por AULA quando o texto traz `# Aula i.j:` (`QualityGate._check_content_por_unidade`);
+  texto sem esse cabeçalho é medido inteiro na unidade pedida (`unidade="modulo"` multiplica a
+  régua da aula por 4 a 6)
+- Extensão, H2, H3 por H2, teto de apoios visuais e faixa de parágrafo: números de `tetos.D` em
+  `config/lexicos.json`
+- Um exercício por aula (erro se faltar); hierarquia de títulos sem pulos
+- Clichês proibidos: união de `lexicos.json`, `quality_rules.yaml` e fallback do módulo
+- Verbos de Bloom só quando existe seção de objetivos; andragogia só avisa
+- Emojis proibidos; teto de marcadores `[FALTA EVIDÊNCIA]`; percentual sem fonte avisa
 
 ### Camada 3: Links (link_checker.py)
 - Acentos em URLs = ERRO CRÍTICO (incidente 2026-03-27: 55 hrefs corrompidos)

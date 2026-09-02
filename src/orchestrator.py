@@ -1,30 +1,59 @@
 """Orquestrador do pipeline de criação de cursos em 5 etapas.
 
 Etapas:
-1. Research (Perplexity) — busca dados atualizados sobre o tema
-2. Draft (GPT-4o) — gera conteúdo dos módulos
-3. Analyze (Gemini) — revisa qualidade e coerência
-4. Classify (Groq) — classifica nível, tags, pré-requisitos
-5. Review (Claude) — revisão final com foco em acentuação PT-BR
+1. Research (Perplexity): busca dados atualizados sobre o tema
+2. Draft (GPT-4o): gera o conteúdo, UMA AULA POR CHAMADA
+3. Analyze (Gemini): revisa qualidade e coerência do rascunho
+4. Classify (Groq): classifica nível, tags, pré-requisitos a partir do rascunho
+5. Review (Claude): revisão final, UMA AULA POR CHAMADA, devolvendo o texto
+
+Três defeitos corrigidos em 02/09/2026, todos medidos nos drafts de
+`output/drafts/`:
+
+- **Insumo errado.** As etapas eram encadeadas pela saída da anterior: a
+  classificação recebia o JSON da análise e a revisão recebia o JSON da
+  classificação. O revisor nunca via o curso e devolvia um relatório de
+  ~1.000 palavras ("aguardando conteúdo completo dos módulos"), que o
+  conversor preferia ao rascunho. Agora cada etapa recebe o rascunho.
+- **Unidade grande demais por chamada.** O writer recebia um módulo inteiro
+  (4 a 6 aulas) para escrever numa única resposta, com teto de 16.384 tokens
+  de saída, e só 3.000 caracteres da pesquisa. Saía truncado e raso. Agora a
+  unidade de geração é a aula, com a pesquisa inteira no prompt.
+- **Revisão em bloco.** O revisor recebia o curso inteiro e não tinha como
+  devolver 15 mil palavras revisadas em 16 mil tokens. Agora revisa aula a
+  aula, e uma resposta que encolhe o texto (comentário no lugar do conteúdo)
+  é descartada em favor do rascunho, com aviso no resultado.
+
+Formato do rascunho montado: cada aula começa com `# Aula i.j: título` (H1)
+e usa H2 para as próprias seções, como manda o molde D da fonte de estilo.
+O parser (`src/parsers/markdown_parser.py`) reconhece esse H1 como fronteira
+de unidade.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import re
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 from src.agents.analyzer import Analyzer
 from src.agents.classifier import Classifier
 from src.agents.researcher import Researcher
 from src.agents.reviewer import Reviewer
 from src.agents.writer import Writer
-from src.config import OUTPUT_DIR
+from src.config import (
+    CLASSIFY_CONTEXT_CHARS,
+    DRAFT_RESEARCH_CONTEXT_CHARS,
+    OUTPUT_DIR,
+    REVIEW_ANALYSIS_CHARS,
+    REVIEW_MIN_RATIO,
+)
 from src.cost_tracker import CostTracker
 from src.llm_client import LLMClient
-from src.models import Course
+from src.models import Course, Module
 
 if TYPE_CHECKING:
     from src.clients.context import ClientContext
@@ -32,6 +61,19 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 DRAFTS_DIR = OUTPUT_DIR / "drafts"
+
+#: Cabeçalho que abre cada aula no rascunho montado.
+AULA_H1_RE = re.compile(r"^#\s+Aula\s+(\d+)\.(\d+)\s*[:.\-]\s*(.+?)\s*$", re.MULTILINE)
+#: Cabeçalho de módulo dos rascunhos antigos (antes de 02/09/2026).
+MODULO_H1_RE = re.compile(r"^#\s+M[óo]dulo\s+\d+\s*[:.\-]", re.MULTILINE)
+#: Marcador de módulo que o orquestrador emite antes da primeira aula de cada módulo.
+MODULO_COMENTARIO_RE = re.compile(r"<!--\s*M[óo]dulo[^\n]*-->\s*$")
+#: Bloco de relatório que o revisor anexa ao fim do texto revisado.
+RELATORIO_REVISAO_RE = re.compile(
+    r"\n-{3,}\s*\n\s*REVIS[ÃA]O CONCLU[ÍI]DA[\s\S]*$", re.IGNORECASE
+)
+#: Linha de plano de aulas: `1. Título | ideia em uma frase`.
+PLANO_LINHA_RE = re.compile(r"^\s*(\d{1,2})[.)]\s*(.+?)(?:\s*\|\s*(.+?))?\s*$")
 
 
 class PipelineResult:
@@ -41,6 +83,7 @@ class PipelineResult:
         self.course_id = course_id
         self.etapas: dict[str, str] = {}
         self.erros: list[str] = []
+        self.avisos: list[str] = []
         self.sucesso: bool = False
 
     def to_dict(self) -> dict[str, Any]:
@@ -49,8 +92,53 @@ class PipelineResult:
             "timestamp": datetime.now(UTC).isoformat(),
             "etapas": self.etapas,
             "erros": self.erros,
+            "avisos": self.avisos,
             "sucesso": self.sucesso,
         }
+
+
+def dividir_em_unidades(texto: str) -> list[tuple[str, str]]:
+    """Divide o rascunho montado em (título, texto) por aula.
+
+    Reconhece `# Aula i.j: título`; para rascunho antigo, `# Módulo n:`. Sem
+    nenhum dos dois, devolve o texto inteiro como uma unidade. O texto de cada
+    unidade inclui o próprio cabeçalho, para que o revisor o veja e devolva.
+    """
+    texto = texto.replace("\r\n", "\n")
+    padrao = AULA_H1_RE if AULA_H1_RE.search(texto) else MODULO_H1_RE
+    inicios = [m.start() for m in padrao.finditer(texto)]
+    if not inicios:
+        return [("", texto.strip())] if texto.strip() else []
+    # O marcador `<!-- Módulo i: ... -->` que antecede uma aula viaja com ela,
+    # para que o texto revisado continue idêntico em estrutura ao rascunho.
+    ajustados: list[int] = []
+    for ini in inicios:
+        antes = texto[:ini].rstrip()
+        m = MODULO_COMENTARIO_RE.search(antes)
+        ajustados.append(m.start() if m and not texto[m.end():ini].strip() else ini)
+    unidades: list[tuple[str, str]] = []
+    for k, ini in enumerate(ajustados):
+        fim = ajustados[k + 1] if k + 1 < len(ajustados) else len(texto)
+        bloco = texto[ini:fim].strip().rstrip("-").strip()
+        titulo = ""
+        for linha in bloco.splitlines():
+            if linha.startswith("# "):
+                titulo = linha[2:].strip()
+                break
+        unidades.append((titulo, bloco))
+    return unidades
+
+
+def separar_relatorio_de_revisao(saida: str) -> tuple[str, str]:
+    """Separa o texto revisado do bloco `REVISÃO CONCLUÍDA` que o fecha."""
+    m = RELATORIO_REVISAO_RE.search(saida)
+    if not m:
+        return saida.strip(), ""
+    return saida[: m.start()].strip(), saida[m.start():].strip().strip("-").strip()
+
+
+def _contar_palavras(texto: str) -> int:
+    return len(texto.split())
 
 
 class Orchestrator:
@@ -66,7 +154,7 @@ class Orchestrator:
             from src.clients import load_client
             client_context = load_client("default")
         self.client_context = client_context
-        # B-019/D8: factory decide o backend — legado (default) ou
+        # B-019/D8: factory decide o backend: legado (default) ou
         # geo_orchestrator_sdk via CURSO_FACTORY_LLM_BACKEND=sdk (herda
         # timeout por task_type, fallback chain e FinOps do orquestrador).
         from src.llm_client import make_llm_client
@@ -77,10 +165,12 @@ class Orchestrator:
         self.classifier = Classifier(self.client)
         self.reviewer = Reviewer(self.client)
 
+    # ── checkpoint ──────────────────────────────────────────────────────
+
     def _checkpoint_path(self, course_id: str) -> Path:
         return DRAFTS_DIR / f"{course_id}_checkpoint.json"
 
-    def _save_checkpoint(self, course_id: str, result: PipelineResult, context: str) -> None:
+    def _save_checkpoint(self, course_id: str, result: PipelineResult, context: str = "") -> None:
         """Salva checkpoint incremental após cada etapa concluída."""
         data = result.to_dict()
         data["_context"] = context
@@ -98,149 +188,128 @@ class Orchestrator:
             data = json.load(f)
         result = PipelineResult(course_id)
         result.etapas = data.get("etapas", {})
+        result.avisos = list(data.get("avisos", []))
         result.erros = []  # Limpa erros anteriores para retry
         context = data.get("_context", "")
         logger.info("Checkpoint carregado: %d etapas concluídas anteriormente", len(result.etapas))
         return result, context
 
-    def _build_template_vars(self, nome: str, course: Course, context: str) -> dict:
-        """Return the named template variables required by each step's .md prompt.
+    # ── tetos da aula, lidos da fonte de estilo ─────────────────────────
 
-        Each external prompt template uses specific named placeholders instead of
-        the generic {context} variable.  This method maps step names to their
-        expected variable sets so the orchestrator can forward them to execute().
+    @staticmethod
+    def _tetos_da_aula() -> dict[str, str]:
+        """Números do molde D como variáveis de template, todos em string.
 
-        Args:
-            nome: Pipeline step name ('research', 'analyze', 'classify', etc.).
-            course: The Course object being processed.
-            context: The accumulated pipeline context at this point in the run.
-
-        Returns:
-            Dict of keyword arguments to pass to agent.execute().
+        Vêm de `config/lexicos.json` (espelho da fonte de estilo) via
+        `content_checker.tetos_da_unidade("aula")`. O prompt de redação não
+        carrega número nenhum: quem muda a régua na fonte muda o prompt.
         """
-        if nome == "research":
-            # research.md: {course_name}, {course_description}, {target_modules}
-            modulos_list = ""
-            if course.modulos:
-                lines = [f"  - {m.titulo}: {m.descricao}" for m in course.modulos]
-                modulos_list = "\n".join(lines)
-            else:
-                modulos_list = "A definir conforme pesquisa"
-            return {
-                "course_name": course.titulo,
-                "course_description": course.descricao or f"Curso completo sobre {course.titulo}",
-                "target_modules": modulos_list,
-            }
+        from src.validators.content_checker import tetos_da_unidade
 
-        if nome == "analyze":
-            # analyze.md: {course_name}, {draft_content}
-            return {
-                "course_name": course.titulo,
-                "draft_content": context,
-            }
+        t = tetos_da_unidade("aula")
+        alvo_min, alvo_max = t["alvo"]
+        h2_min, h2_max = t["h2"]
+        par_min, par_max = t["paragrafo"]
+        return {
+            "palavras_piso": str(t["piso"]),
+            "palavras_alvo_min": str(alvo_min),
+            "palavras_alvo_max": str(alvo_max),
+            "palavras_aviso": str(t["aviso"]),
+            "palavras_erro": str(t["erro"]),
+            "h2_min": str(h2_min),
+            "h2_max": str(h2_max),
+            "h3_por_h2": str(t["h3_por_h2"]),
+            "figuras_max": str(t["visuais_max"]),
+            "paragrafo_min": str(par_min),
+            "paragrafo_max": str(par_max),
+            "minutos_alvo": str(max(5, round(alvo_max / 180))),
+        }
 
-        if nome == "classify":
-            # classify.md: {course_name}, {content}
-            return {
-                "course_name": course.titulo,
-                "content": context,
-            }
+    # ── etapas ──────────────────────────────────────────────────────────
 
-        # draft.md and review.md use {context} only — no extra vars needed.
-        return {}
+    def _step_research(self, course: Course) -> str:
+        return self.researcher.execute(
+            self._build_research_context(course),
+            **self._research_vars(course),
+        )
+
+    def _step_draft(self, course: Course, research: str) -> str:
+        return self._draft_modules_iterative(course, research)
+
+    def _step_analyze(self, course: Course, draft: str) -> str:
+        return self.analyzer.execute(
+            draft, course_name=course.titulo, draft_content=draft
+        )
+
+    def _step_classify(self, course: Course, draft: str) -> str:
+        conteudo = draft[:CLASSIFY_CONTEXT_CHARS]
+        return self.classifier.execute(
+            conteudo, course_name=course.titulo, content=conteudo
+        )
+
+    def _step_review(
+        self, course: Course, draft: str, analysis: str, result: PipelineResult
+    ) -> str:
+        return self._review_iterative(course, draft, analysis, result)
 
     def run(self, course: Course) -> PipelineResult:
         """Executa o pipeline completo para um curso, com resume de checkpoint."""
         DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
 
-        # Achado F32 — propaga course_id para todas as chamadas LLM, fazendo
-        # com que o cost_tracker registre cada call sob o curso correto
-        # (antes ficava com course_id="" tornando impossivel rastrear
-        # custo por curso).
+        # Achado F32: propaga course_id para todas as chamadas LLM, fazendo
+        # com que o cost_tracker registre cada call sob o curso correto.
         self.client.set_course_context(course.id)
 
-        # Tenta carregar checkpoint para resume
         checkpoint = self._load_checkpoint(course.id)
         if checkpoint:
-            result, context = checkpoint
+            result, _ = checkpoint
             logger.info("Retomando pipeline de checkpoint com etapas: %s", list(result.etapas.keys()))
         else:
             result = PipelineResult(course.id)
-            context = ""
 
-        etapas = [
-            ("research", self.researcher, self._build_research_context(course)),
-            ("draft", self.writer, None),  # Draft handled specially below
-            ("analyze", self.analyzer, None),
-            ("classify", self.classifier, None),
-            ("review", self.reviewer, None),
+        etapas: list[tuple[str, str, Callable[[], str]]] = [
+            ("research", self.researcher.provider,
+             lambda: self._step_research(course)),
+            ("draft", self.writer.provider,
+             lambda: self._step_draft(course, result.etapas.get("research", ""))),
+            ("analyze", self.analyzer.provider,
+             lambda: self._step_analyze(course, result.etapas.get("draft", ""))),
+            ("classify", self.classifier.provider,
+             lambda: self._step_classify(course, result.etapas.get("draft", ""))),
+            ("review", self.reviewer.provider,
+             lambda: self._step_review(
+                 course, result.etapas.get("draft", ""),
+                 result.etapas.get("analyze", ""), result,
+             )),
         ]
 
-        for nome, agente, ctx_inicial in etapas:
-            # Pula etapas já concluídas (resume)
+        for nome, provider, executar in etapas:
             if nome in result.etapas:
-                context = result.etapas[nome]
                 logger.info("Etapa '%s' já concluída (checkpoint), pulando", nome)
                 continue
 
-            # Verifica orçamento antes de cada etapa
-            if self.cost_tracker.is_over_budget(agente.provider):
-                msg = f"Orçamento excedido para {agente.provider}. Pipeline interrompido na etapa '{nome}'."
+            if self.cost_tracker.is_over_budget(provider):
+                msg = f"Orçamento excedido para {provider}. Pipeline interrompido na etapa '{nome}'."
                 logger.error(msg)
                 result.erros.append(msg)
                 break
 
-            logger.info("Iniciando etapa: %s (provider: %s)", nome, agente.provider)
-
-            # ── Draft: gerar módulo a módulo para obter conteúdo completo ──
-            if nome == "draft" and course.modulos and len(course.modulos) > 1:
-                try:
-                    all_modules = self._draft_modules_iterative(course, context)
-                    result.etapas[nome] = all_modules
-                    context = all_modules
-                    logger.info("Etapa 'draft' concluída: %d módulos gerados", len(course.modulos))
-                    self._save_checkpoint(course.id, result, context)
-                    continue
-                except Exception as exc:
-                    msg = f"Erro na etapa 'draft' (iterativo): {exc}"
-                    logger.error(msg)
-                    result.erros.append(msg)
-                    self._save_checkpoint(course.id, result, context)
-                    break
-
-            # Se a etapa tem contexto inicial E há contexto do pipeline anterior, combina ambos
-            if ctx_inicial and context:
-                prompt_context = ctx_inicial + "\n\n--- CONTEXTO ANTERIOR DO PIPELINE ---\n" + context
-            elif ctx_inicial:
-                prompt_context = ctx_inicial
-            else:
-                prompt_context = context
-
-            # Build named template vars so external .md templates receive their
-            # expected placeholders (course_name, draft_content, content, etc.)
-            # instead of leaving them unfilled in the sent prompt.
-            template_vars = self._build_template_vars(nome, course, context)
-
+            logger.info("Iniciando etapa: %s (provider: %s)", nome, provider)
             try:
-                output = agente.execute(prompt_context, **template_vars)
-                result.etapas[nome] = output
-                context = output
-                logger.info("Etapa '%s' concluída com sucesso", nome)
-                # Salva checkpoint após cada etapa
-                self._save_checkpoint(course.id, result, context)
+                saida = executar()
+                result.etapas[nome] = saida
+                logger.info("Etapa '%s' concluída (%d palavras)", nome, _contar_palavras(saida))
+                self._save_checkpoint(course.id, result, saida)
             except Exception as exc:
                 msg = f"Erro na etapa '{nome}': {exc}"
                 logger.error(msg)
                 result.erros.append(msg)
-                # Salva checkpoint mesmo com erro para preservar etapas anteriores
-                self._save_checkpoint(course.id, result, context)
+                self._save_checkpoint(course.id, result)
                 break
         else:
             result.sucesso = True
 
-        # Salva resultado final
         self._save_result(course.id, result)
-        # Remove checkpoint se pipeline concluiu com sucesso
         cp = self._checkpoint_path(course.id)
         if result.sucesso and cp.exists():
             cp.unlink()
@@ -251,68 +320,208 @@ class Orchestrator:
         logger.info(self.cost_tracker.report())
         return result
 
-    def _draft_modules_iterative(self, course: Course, research_context: str) -> str:
-        """Gera conteúdo módulo a módulo para garantir profundidade.
+    # ── draft: uma aula por chamada ─────────────────────────────────────
 
-        Em vez de pedir todos os módulos numa única call (que gera apenas 1),
-        chama o writer N vezes — uma para cada módulo — passando o contexto
-        de pesquisa e os módulos anteriores como referência.
+    def _aulas_por_modulo(self) -> tuple[int, int]:
+        from src.validators.content_checker import FALLBACK_AULAS_POR_MODULO, _par
+        from src.validators.rules_loader import validation_section
+
+        cq = validation_section("content_quality")
+        return _par(cq.get("lessons_per_module"), FALLBACK_AULAS_POR_MODULO)
+
+    def _plan_lessons(
+        self, course: Course, modulo: Module, numero: int, research_context: str
+    ) -> list[dict[str, str]]:
+        """Devolve a lista de aulas do módulo: `[{"titulo", "ideia"}, ...]`.
+
+        Se o módulo já vem com etapas definidas no YAML, elas são as aulas.
+        Senão, uma chamada curta ao writer planeja de N a M aulas (faixa de
+        `content_quality.lessons_per_module`), uma ideia por aula. Se o plano
+        não puder ser lido, o módulo inteiro vira uma aula única, para que o
+        pipeline nunca pare por causa do planejamento.
         """
-        all_output: list[str] = []
+        if modulo.etapas:
+            return [
+                {"titulo": e.titulo, "ideia": e.conteudo.strip() or modulo.descricao}
+                for e in modulo.etapas
+            ]
 
-        for i, modulo in enumerate(course.modulos, 1):
-            logger.info("Draft módulo %d/%d: %s", i, len(course.modulos), modulo.titulo)
+        minimo, maximo = self._aulas_por_modulo()
+        prompt = (
+            f"Você planeja as aulas de um curso em português do Brasil, com "
+            f"acentuação completa.\n\n"
+            f"Curso: {course.titulo}\nNível: {course.nivel.value}\n"
+            f"Módulo {numero}: {modulo.titulo}\n"
+            f"Descrição do módulo: {modulo.descricao or 'conforme pesquisa'}\n\n"
+            f"Planeje de {minimo} a {maximo} aulas para este módulo. Cada aula "
+            f"ensina UMA ideia, explicada por inteiro, e termina com o aluno "
+            f"fazendo algo com um dado do próprio negócio. As aulas se "
+            f"encadeiam: a seguinte usa o que a anterior deixou pronto.\n\n"
+            f"Responda SOMENTE com uma linha por aula, neste formato, sem "
+            f"comentário antes ou depois:\n"
+            f"1. Título da aula em até 10 palavras | a ideia única da aula em uma frase\n\n"
+            f"--- DADOS DA PESQUISA ---\n{research_context[:12000]}"
+        )
+        try:
+            resposta = self.client.call(self.writer.provider, prompt, model=self.writer.model)
+        except Exception as exc:  # pragma: no cover - rede
+            logger.warning("Planejamento de aulas falhou (%s); módulo vira aula única", exc)
+            return [{"titulo": modulo.titulo, "ideia": modulo.descricao}]
 
-            # Contexto específico para este módulo
-            prev_titles = [m.titulo for m in course.modulos[:i - 1]]
-            next_titles = [m.titulo for m in course.modulos[i:]]
+        aulas: list[dict[str, str]] = []
+        for linha in resposta.splitlines():
+            m = PLANO_LINHA_RE.match(linha)
+            if not m:
+                continue
+            titulo = m.group(2).strip().strip("*").strip()
+            ideia = (m.group(3) or "").strip()
+            if titulo:
+                aulas.append({"titulo": titulo, "ideia": ideia})
+        if not aulas:
+            logger.warning("Plano de aulas ilegível para o módulo %d; aula única", numero)
+            return [{"titulo": modulo.titulo, "ideia": modulo.descricao}]
+        return aulas[:maximo]
 
-            prompt = (
-                f"INSTRUÇÃO: Gere o conteúdo COMPLETO do Módulo {i} abaixo.\n"
-                f"Este é o módulo {i} de {len(course.modulos)} do curso '{course.titulo}'.\n"
-                f"Nível: {course.nivel.value}\n\n"
-                f"MÓDULO A GERAR:\n"
-                f"  Título: {modulo.titulo}\n"
-                f"  Conteúdo esperado: {modulo.descricao or 'conforme pesquisa'}\n\n"
-            )
+    def _draft_lesson(
+        self,
+        course: Course,
+        modulo: Module,
+        numero_modulo: int,
+        aulas: list[dict[str, str]],
+        indice: int,
+        research_context: str,
+    ) -> str:
+        """Escreve UMA aula, com a pesquisa inteira e o mapa das aulas vizinhas."""
+        aula = aulas[indice]
+        anteriores = [f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[:indice])]
+        seguintes = [f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[indice + 1:], indice + 1)]
+        variaveis = {
+            "course_name": course.titulo,
+            "course_level": course.nivel.value,
+            "module_number": str(numero_modulo),
+            "module_title": modulo.titulo,
+            "module_description": modulo.descricao or "conforme pesquisa",
+            "lesson_number": f"{numero_modulo}.{indice + 1}",
+            "lesson_title": aula["titulo"],
+            "lesson_idea": aula.get("ideia") or "a ideia central desta aula, explicada por inteiro",
+            "lesson_position": f"aula {indice + 1} de {len(aulas)} do módulo {numero_modulo}",
+            "previous_lessons": "; ".join(anteriores) or "nenhuma (esta abre o módulo)",
+            "next_lessons": "; ".join(seguintes) or "nenhuma (esta fecha o módulo)",
+            **self._tetos_da_aula(),
+        }
+        contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
+        texto = self.writer.execute(contexto, **variaveis).strip()
+        # Garante o cabeçalho da aula na primeira linha, e um só.
+        texto = AULA_H1_RE.sub("", texto, count=1).strip() if AULA_H1_RE.match(texto) else texto
+        texto = re.sub(r"^#\s+(?!#)", "## ", texto, count=1) if texto.startswith("# ") else texto
+        return f"# Aula {numero_modulo}.{indice + 1}: {aula['titulo']}\n\n{texto}"
 
-            if prev_titles:
-                prompt += "Módulos anteriores (já escritos): " + ", ".join(prev_titles) + "\n"
-            if next_titles:
-                prompt += "Próximos módulos (ainda não escritos): " + ", ".join(next_titles) + "\n"
+    def _draft_modules_iterative(self, course: Course, research_context: str) -> str:
+        """Gera o curso aula a aula.
 
-            prompt += (
-                # Sem cota de palavras por parte: a cota fazia o redator
-                # encher cada bloco até o número e produzia aula rasa. A
-                # régua é a da aula inteira (tipo D da fonte de estilo) e a
-                # sequência dos blocos está no prompt de redação.
-                "\nGere de 1.200 a 2.400 palavras. Abaixo de 900 a aula é rasa: "
-                "apresenta o conceito e não o explica. Siga a sequência do molde:\n"
-                "1. Uma frase do que o aluno vai aprender\n"
-                "2. A ideia explicada com narrativa (origem, por que importa, "
-                "o que muda, erro comum)\n"
-                "3. O exemplo do negócio do aluno, contado por inteiro, com número\n"
-                "4. Faça agora: 5 a 15 minutos, etapas numeradas, dado real dele "
-                "e o resultado esperado\n"
-                "5. Resumo de 3 a 5 linhas\n\n"
-                "Cerca de 60% das palavras na parte explicativa e 40% na de "
-                "exercício. De 2 a 4 H2. Até 3 apoios visuais, e só quando "
-                "substituem texto.\n"
-                "IMPORTANTE: Português do Brasil com acentuação COMPLETA.\n"
-            )
+        Para cada módulo: planeja as aulas (ou usa as etapas do YAML), depois
+        escreve cada aula numa chamada própria, com a pesquisa inteira. Curso
+        sem módulos declarados vira um módulo com o título do curso.
+        """
+        modulos = course.modulos or [Module(titulo=course.titulo, descricao=course.descricao, ordem=1)]
+        partes: list[str] = []
 
-            if research_context:
-                prompt += "\n--- DADOS DA PESQUISA ---\n" + research_context[:3000]
-
+        for i, modulo in enumerate(modulos, 1):
             if self.cost_tracker.is_over_budget(self.writer.provider):
-                logger.warning("Orçamento excedido no módulo %d. Parando draft.", i)
+                logger.warning("Orçamento excedido antes do módulo %d. Parando draft.", i)
                 break
+            aulas = self._plan_lessons(course, modulo, i, research_context)
+            logger.info("Módulo %d/%d '%s': %d aula(s) planejada(s)",
+                        i, len(modulos), modulo.titulo, len(aulas))
+            partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
+            for j in range(len(aulas)):
+                if self.cost_tracker.is_over_budget(self.writer.provider):
+                    logger.warning("Orçamento excedido na aula %d.%d. Parando draft.", i, j + 1)
+                    return "\n\n".join(partes)
+                logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
+                aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
+                partes.append(aula_md)
+                logger.info("Aula %d.%d gerada: %d palavras", i, j + 1, _contar_palavras(aula_md))
 
-            output = self.writer.execute(prompt)
-            all_output.append(f"# Módulo {i}: {modulo.titulo}\n\n{output}")
-            logger.info("Módulo %d gerado: %d palavras", i, len(output.split()))
+        return "\n\n".join(partes)
 
-        return "\n\n---\n\n".join(all_output)
+    # ── review: uma aula por chamada, texto de volta ────────────────────
+
+    def _review_iterative(
+        self, course: Course, draft: str, analysis: str, result: PipelineResult
+    ) -> str:
+        """Revisa unidade a unidade e devolve o texto revisado inteiro.
+
+        A saída de cada chamada é separada em texto e relatório. Se o texto
+        devolvido tiver menos que `REVIEW_MIN_RATIO` das palavras da unidade
+        recebida, a resposta é comentário e não revisão: a unidade original
+        fica, e o resultado ganha um aviso. Os relatórios vão para
+        `etapas["review_report"]`.
+        """
+        unidades = dividir_em_unidades(draft)
+        if not unidades:
+            return ""
+        resumo_analise = (analysis or "")[:REVIEW_ANALYSIS_CHARS]
+        revisadas: list[str] = []
+        relatorios: list[str] = []
+
+        for k, (titulo, texto) in enumerate(unidades, 1):
+            if self.cost_tracker.is_over_budget(self.reviewer.provider):
+                aviso = f"Orçamento excedido na revisão da unidade {k}; as seguintes ficam sem revisão."
+                logger.warning(aviso)
+                result.avisos.append(aviso)
+                revisadas.extend(t for _, t in unidades[k - 1:])
+                break
+            logger.info("Revisão %d/%d: %s", k, len(unidades), titulo or "(unidade sem título)")
+            saida = self.reviewer.execute(
+                texto,
+                course_name=course.titulo,
+                unit_title=titulo or f"unidade {k}",
+                unit_position=f"{k} de {len(unidades)}",
+                analysis_summary=resumo_analise,
+            )
+            texto_revisado, relatorio = separar_relatorio_de_revisao(saida)
+            if relatorio:
+                relatorios.append(f"[{titulo or k}] {relatorio}")
+            originais, devolvidas = _contar_palavras(texto), _contar_palavras(texto_revisado)
+            if originais and devolvidas < originais * REVIEW_MIN_RATIO:
+                aviso = (
+                    f"Revisão da unidade '{titulo or k}' devolveu {devolvidas} palavras para "
+                    f"{originais} recebidas (abaixo de {REVIEW_MIN_RATIO:.0%}); "
+                    f"o rascunho original foi mantido."
+                )
+                logger.warning(aviso)
+                result.avisos.append(aviso)
+                revisadas.append(texto)
+                continue
+            revisadas.append(texto_revisado)
+
+        if relatorios:
+            result.etapas["review_report"] = "\n\n".join(relatorios)
+        return "\n\n".join(revisadas)
+
+    # ── contextos auxiliares ────────────────────────────────────────────
+
+    def _research_vars(self, course: Course) -> dict[str, str]:
+        if course.modulos:
+            modulos_list = "\n".join(f"  - {m.titulo}: {m.descricao}" for m in course.modulos)
+        else:
+            modulos_list = "A definir conforme pesquisa"
+        return {
+            "course_name": course.titulo,
+            "course_description": course.descricao or f"Curso completo sobre {course.titulo}",
+            "target_modules": modulos_list,
+        }
+
+    def _build_template_vars(self, nome: str, course: Course, context: str) -> dict:
+        """Compatibilidade: variáveis nomeadas por etapa (uso externo e testes)."""
+        if nome == "research":
+            return self._research_vars(course)
+        if nome == "analyze":
+            return {"course_name": course.titulo, "draft_content": context}
+        if nome == "classify":
+            return {"course_name": course.titulo, "content": context}
+        return {}
 
     def _build_research_context(self, course: Course) -> str:
         """Monta o contexto inicial para a etapa de pesquisa."""

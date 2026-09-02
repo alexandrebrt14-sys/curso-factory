@@ -65,7 +65,7 @@ Referencia normativa de las dos dimensiones anteriores: `DIRETRIZ_EDITORIAL.md`,
 - ¿Hay una jerarquía clara de títulos (H2 > H3 > H4)?
 - ¿Los términos clave están en negrita en la primera aparición?
 - ¿Hay bloques de cita para insights centrales?
-- ¿Cada módulo tiene al menos una tabla?
+- ¿Las tablas y figuras sustituyen texto (sin cuota)?
 
 ### 4. Conformidad Andragógica
 
@@ -92,7 +92,7 @@ Evalúa el contenido según los 6 principios de Knowles:
 - ¿Los ejercicios usan contextos profesionales reales (no hipotéticos genéricos)?
 - ¿Hay progresión de complejidad (Taxonomía de Bloom: aplicar → analizar → evaluar → crear)?
 - ¿Los criterios de evaluación son claros y medibles?
-- ¿Al menos 3 ejercicios por módulo?
+- ¿Un ejercicio ejecutable por lección (5 a 15 minutos, dato real, resultado esperado)?
 
 ### 7. Acentuación ES y uso de `ñ`
 

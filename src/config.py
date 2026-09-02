@@ -34,6 +34,20 @@ DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", 
 SESSION_BUDGET_TOTAL: float = float(os.getenv("SESSION_BUDGET_TOTAL", "5.00"))
 MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "16384"))
 
+# --- Tamanho dos insumos por etapa (caracteres) ---
+# A geração é por AULA desde 02/09/2026: cada chamada do writer recebe a
+# pesquisa inteira até este teto (antes eram 3.000 caracteres, que deixavam o
+# redator sem dado e produziam aula rasa). 40 mil caracteres cabem com folga
+# no contexto do GPT-4o (128 mil tokens).
+DRAFT_RESEARCH_CONTEXT_CHARS: int = int(os.getenv("DRAFT_RESEARCH_CONTEXT_CHARS", "40000"))
+# A classificação (Groq, 128 mil tokens de contexto) não precisa do curso inteiro.
+CLASSIFY_CONTEXT_CHARS: int = int(os.getenv("CLASSIFY_CONTEXT_CHARS", "60000"))
+# Trecho do relatório da análise (Gemini) que acompanha cada aula na revisão.
+REVIEW_ANALYSIS_CHARS: int = int(os.getenv("REVIEW_ANALYSIS_CHARS", "3000"))
+# Revisão que devolve menos que esta fração das palavras recebidas é
+# comentário, não revisão: o rascunho original é mantido.
+REVIEW_MIN_RATIO: float = float(os.getenv("REVIEW_MIN_RATIO", "0.6"))
+
 # --- Budget per course (AAA quality) ---
 CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5.00"))
 TOTAL_BUDGET_PER_COURSE: float = float(os.getenv("TOTAL_BUDGET_PER_COURSE", "10.00"))

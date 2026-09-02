@@ -12,6 +12,7 @@ detalhe vive no arquivo de cada decisão. Mantenha curto — ele entra no contex
 
 ## Decisões editoriais
 
+- [Geração por aula e insumo correto por etapa](geracao-por-aula-e-insumo-correto.md) — a revisão nunca via o curso e o writer recebia 3.000 caracteres de pesquisa; a unidade virou a aula · `mistake`
 - [Diretriz editorial v3: narrativa sim, cota de ritmo não](diretriz-editorial-v3-narrativa-sem-cota.md) — por que cota mecânica de frase curta e de formatação derrubou a qualidade · `mistake`
 
 ## Histórico

@@ -6,9 +6,10 @@ a viver em dois lugares outra vez. O que se cobra aqui é o vínculo, não o val
 se `config/lexicos.json` mudar (porque a fonte mudou e o espelho foi regerado),
 os testes acompanham sozinhos.
 
-O único valor literal afirmado é o do documento de plano — 900 de piso, 1.200 a
-2.400 de alvo — e ele é afirmado UMA vez, contra o espelho, para que um espelho
-regerado errado (por exemplo com os tetos do artigo, tipo A) fique vermelho.
+O único valor literal afirmado é o da fonte 1.3.0 (02/09/2026): 700 de piso, 900 a
+1.800 de alvo, aviso 2.400, erro 3.600. Ele é afirmado UMA vez, contra o espelho,
+para que um espelho regerado errado (por exemplo com os tetos do artigo, tipo A)
+fique vermelho.
 """
 
 from __future__ import annotations
@@ -66,17 +67,18 @@ class TestEspelhoDaFonte(unittest.TestCase):
         self.assertIn("D", dados["tetos"])
         self.assertEqual(dados["tetos"]["D"]["nome"], "aula")
 
-    def test_o_tipo_d_traz_a_regua_de_27_08_2026(self):
-        """Único ponto onde os números literais do plano são afirmados."""
+    def test_o_tipo_d_traz_a_regua_de_02_09_2026(self):
+        """Único ponto onde os números literais da fonte são afirmados."""
         d = tetos_da_aula()
-        self.assertEqual(d["palavras"]["piso"], 900)
-        self.assertEqual(list(d["palavras"]["alvo"]), [1200, 2400])
+        self.assertEqual(d["palavras"]["piso"], 700)
+        self.assertEqual(list(d["palavras"]["alvo"]), [900, 1800])
         self.assertEqual(d["palavras"]["aviso"], 2400)
         self.assertEqual(d["palavras"]["erro"], 3600)
         self.assertEqual(list(d["h2"]), [2, 4])
-        self.assertEqual(d["h3_por_h2"], 2)
+        self.assertEqual(d["h3_por_h2"], 1)
+        self.assertEqual(d["h4"], "proibido")
         self.assertEqual(d["figuras_max"], 3)
-        self.assertEqual(list(d["paragrafo"]), [15, 45])
+        self.assertEqual(list(d["paragrafo"]), [20, 80])
 
     def test_a_fonte_alimenta_as_expressoes_vetadas(self):
         vetadas = {e.lower() for e in expressoes_vetadas()}
@@ -102,8 +104,8 @@ class TestTetosDaUnidade(unittest.TestCase):
         self.assertEqual(modulo["piso"], aula["piso"] * 4)
         self.assertEqual(modulo["alvo"], (aula["alvo"][0] * 4, aula["alvo"][1] * 6))
         self.assertEqual(modulo["erro"], aula["erro"] * 6)
-        # A faixa do módulo é a que consta do PLANO_DE_MIGRACAO: 4.800-14.400.
-        self.assertEqual(modulo["alvo"], (4800, 14400))
+        # 4 aulas no alvo mínimo a 6 aulas no alvo máximo da fonte 1.3.0.
+        self.assertEqual(modulo["alvo"], (3600, 10800))
 
 
 class TestExtensaoDaAula(unittest.TestCase):
@@ -114,10 +116,10 @@ class TestExtensaoDaAula(unittest.TestCase):
         bloqueantes = _categorias(erros, "profundidade", "error")
         self.assertEqual(len(bloqueantes), 1)
         self.assertIn("abaixo do piso", bloqueantes[0])
-        self.assertIn("900", bloqueantes[0])
+        self.assertIn("700", bloqueantes[0])
 
     def test_entre_o_piso_e_o_alvo_avisa(self):
-        erros = check_content(_aula(1000), "aula")
+        erros = check_content(_aula(800), "aula")
         self.assertEqual(_categorias(erros, "profundidade", "error"), [])
         self.assertEqual(len(_categorias(erros, "profundidade", "warning")), 1)
 

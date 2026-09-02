@@ -1,50 +1,61 @@
 {
-  "versao": "1.0.0",
+  "versao": "1.3.0",
   "limiares": {
     "fraseMaxPalavras": 28,
+    "fraseToleranciaPalavras": 50,
+    "fraseToleradaMaxFracao": 0.15,
     "fraseMedia": [
-      14,
-      18
+      12,
+      22
     ],
     "paragrafoPiso": 15,
+    "paragrafoFragmentoMaxFracao": 0.3,
     "paragrafoAlvo": [
       20,
-      45
+      60
     ],
-    "paragrafoAviso": 80,
-    "paragrafoErro": 130,
+    "paragrafoAviso": 90,
+    "paragrafoTeto": 150,
+    "paragrafoErro": 250,
+    "frasesPorParagrafoMax": 6,
     "glosaJanelaCaracteres": 140,
     "glosaMaxPalavras": 12,
-    "listaMaxItens": 7,
-    "h3MaxPorH2": 3,
+    "listaMaxItens": 10,
+    "h3MaxPorH2": 6,
+    "h3SoAcimaDePalavras": 350,
     "cabecalhosPorMil": [
-      10,
-      15
+      14,
+      20
     ],
     "h1MaxPalavras": 12,
+    "capsulaPalavras": [
+      25,
+      60
+    ],
+    "semVisualAcimaDePalavras": 800,
     "svgRotuloMinPx": 14
   },
   "tetos": {
     "A": {
       "nome": "artigo",
       "palavras": {
-        "piso": 1200,
+        "piso": 500,
         "alvo": [
-          1500,
-          3000
+          700,
+          2200
         ],
         "aviso": 3000,
-        "erro": 4000
+        "erro": 4500
       },
       "h2": [
-        5,
-        8
+        3,
+        9
       ],
       "h2_a_cada_palavras": [
-        300,
-        500
+        250,
+        700
       ],
-      "h3_por_h2": 3,
+      "h3_por_h2": 6,
       "h4": "proibido",
       "botoes": 8,
       "acordeoes": 3,
@@ -53,20 +64,20 @@
         "erro": 40
       },
       "figuras_a_cada_palavras": [
-        500,
-        800
+        400,
+        1000
       ],
       "capsula": 1
     },
     "B": {
       "nome": "hub",
       "palavras": {
-        "piso": 150,
+        "piso": 60,
         "alvo": [
-          150,
+          100,
           500
         ],
-        "aviso": 500,
+        "aviso": 700,
         "erro": 1000
       },
       "h2": [
@@ -88,16 +99,16 @@
     "C": {
       "nome": "ferramenta",
       "palavras": {
-        "piso": 800,
+        "piso": 400,
         "alvo": [
-          800,
+          500,
           2000
         ],
-        "aviso": 2000,
-        "erro": 3000
+        "aviso": 2500,
+        "erro": 3500
       },
       "h2": [
-        5,
+        3,
         5
       ],
       "h3_por_h2": 0,
@@ -116,10 +127,10 @@
     "D": {
       "nome": "aula",
       "palavras": {
-        "piso": 900,
+        "piso": 700,
         "alvo": [
-          1200,
-          2400
+          900,
+          1800
         ],
         "aviso": 2400,
         "erro": 3600
@@ -129,11 +140,11 @@
         4
       ],
       "h2_a_cada_palavras": [
-        400,
+        250,
         800
       ],
-      "h3_por_h2": 2,
-      "h4": "raro",
+      "h3_por_h2": 1,
+      "h4": "proibido",
       "botoes": 2,
       "acordeoes": 0,
       "oculto_pct": {
@@ -143,24 +154,24 @@
       "figuras_a_cada_palavras": null,
       "figuras_max": 3,
       "paragrafo": [
-        15,
-        45
+        20,
+        80
       ],
       "capsula": 0
     },
     "E": {
       "nome": "landing",
       "palavras": {
-        "piso": 300,
+        "piso": 250,
         "alvo": [
           400,
-          1200
+          1400
         ],
-        "aviso": 1500,
-        "erro": 2500
+        "aviso": 1800,
+        "erro": 3000
       },
       "h2": [
-        7,
+        5,
         9
       ],
       "h3_por_h2": 0,
@@ -234,6 +245,20 @@
     "se",
     "quando"
   ],
+  "conectivosDeTransicao": [
+    "por fim",
+    "em resumo",
+    "em suma",
+    "por outro lado",
+    "dessa forma",
+    "desse modo",
+    "no entanto",
+    "portanto",
+    "em seguida",
+    "além disso",
+    "por isso"
+  ],
+  "conectivoRepetidoLimite": 3,
   "conectivosDeEnchimento": [
     "nesse sentido",
     "neste sentido",
@@ -242,8 +267,6 @@
     "cabe destacar",
     "cabe ressaltar",
     "dito isso",
-    "em suma",
-    "por fim",
     "ademais",
     "outrossim",
     "é importante ressaltar",
@@ -258,6 +281,35 @@
     "nesse contexto",
     "neste contexto",
     "com isso em mente"
+  ],
+  "preambulo": [
+    "antes de começar",
+    "antes de mais nada",
+    "antes de tudo",
+    "primeiramente",
+    "neste artigo",
+    "neste guia",
+    "nesta página",
+    "neste texto",
+    "nesta aula",
+    "neste módulo",
+    "neste conteúdo",
+    "nesta seção",
+    "nesta etapa",
+    "vamos entender",
+    "vamos ver",
+    "vamos falar",
+    "vamos conhecer",
+    "agora que você já",
+    "agora que já",
+    "como vimos",
+    "como já vimos",
+    "a seguir, veremos",
+    "veremos a seguir",
+    "a seguir você",
+    "é importante contextualizar",
+    "para começar,",
+    "para entender melhor,"
   ],
   "antiteses": [
     "\\bnão (se trata|é) (apenas|só|somente) de?\\b.*?\\b(é|mas|e sim)\\b",
@@ -402,7 +454,8 @@
     "metodologia não divulgada",
     "amostra pequena"
   ],
-  "alertaRotulado": "^\\s*\\**\\s*(Atenção|Importante|Nota|Observação|Aviso|Disclaimer|Cuidado|Dica)\\s*:\\s*\\**",
+  "alertaRotulado": "^\\s*\\**\\s*(Atenção|Importante|Nota|Observação|Aviso|Disclaimer|Cuidado)\\s*:\\s*\\**",
+  "rotuloDeDica": "^\\s*\\**\\s*Dica\\s*:\\s*\\**",
   "culpaNoLeitor": [
     "você esqueceu",
     "você errou",
@@ -419,7 +472,7 @@
     "\\b(da manhã|da tarde|da noite|de madrugada|ao meio-dia)\\b",
     "\\b(segunda|terça|quarta|quinta|sexta)-feira\\b",
     "\\b(sábado|domingo) (de manhã|à tarde|à noite)\\b",
-    "^(era uma vez|imagine|imagina|pense em|pensa em)\\b",
+    "^(era uma vez)\\b",
     "\\b(acordou|abriu a porta|olhou o celular|olhou para o relógio)\\b"
   ],
   "legendaQueRotula": "^\\s*(figura|fig\\.|gráfico|tabela|imagem|diagrama)\\s*\\d*\\s*[:.\\-]?",
