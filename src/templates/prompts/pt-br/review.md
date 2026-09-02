@@ -42,7 +42,7 @@ acentue URL, slug, código, variável ou atributo HTML.
   faça agora). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
   dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
 - Um exercício, com título que diz o que ele produz, etapas numeradas com verbo no imperativo e
-  campo para o dado real do aluno, resultado esperado e dica. Bateria de exercícios vira um.
+  campo para o dado real do aluno, resultado esperado e "se travar". Bateria de exercícios vira um.
 - Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula. Fecho que resume o que
   foi lido é reescrito como consequência.
 - Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).

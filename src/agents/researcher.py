@@ -16,7 +16,7 @@ class Researcher(Agent):
 
     nome = "researcher"
     provider = "perplexity"
-    model = "sonar-pro"
+    model = "sonar-deep-research"
     prompt_file = "research.md"
 
     # Fallback inline caso o arquivo externo não exista

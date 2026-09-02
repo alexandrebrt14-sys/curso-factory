@@ -15,8 +15,8 @@ class Classifier(Agent):
     """Agente Groq para classificação de metadados do curso."""
 
     nome = "classifier"
-    provider = "groq"
-    model = "llama-3.3-70b-versatile"
+    provider = "google"
+    model = "gemini-3.7-flash"
     prompt_file = "classify.md"
 
     # Fallback inline caso o arquivo externo não exista

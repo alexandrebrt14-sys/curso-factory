@@ -64,7 +64,7 @@ either.
 **H2 3: do it now.** One exercise of 5 to 15 minutes, with these fields: a title that says
 what they will produce (never "Exercise 1"); numbered steps, each with an imperative verb and a
 field for real data from their business; **Expected result:** what they should be seeing on
-screen or on paper when they get it right; **Tip:** one guidance that steers without giving the
+screen or on paper when they get it right; **If stuck:** one way out that unblocks without giving the
 answer away. The exercise takes between a quarter and a third of the lesson's words.
 
 **Closing, no heading, in 3 to 5 lines.** What changed in their business after this lesson,
@@ -128,7 +128,7 @@ in the form `![caption that states a fact](file.svg)`.
 3. {h2_min} to {h2_max} H2; H3 only in a long H2; no H4.
 4. Length between {palavras_alvo_min} and {palavras_alvo_max} words; exercise between a
    quarter and a third of them.
-5. Exercise with title, numbered steps with the student's real data, expected result and tip.
+5. Exercise with title, numbered steps with the student's real data, expected result and "if stuck".
 6. No number without origin in the research; at most 3 `[MISSING EVIDENCE]` markers.
 7. Paragraphs of {paragrafo_min} to {paragrafo_max} words; sentences up to 28.
 8. Up to {figuras_max} visual supports, all replacing text.

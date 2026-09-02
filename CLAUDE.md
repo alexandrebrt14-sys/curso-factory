@@ -148,13 +148,13 @@ Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**. Desde 27/08/2026 a obr
 ## Arquitetura do Pipeline
 
 5 LLMs com papéis fixos — NÃO interpretar como sub-agentes do Claude Code:
-1. Perplexity (sonar-pro) → pesquisa, fundamentação acadêmica e análise competitiva
-2. GPT-4o → planeja as aulas de cada módulo e redige UMA aula por chamada, em linguagem simples (fonte de estilo escrita-empreendedor), com a pesquisa inteira
-3. Gemini (2.5-pro) → análise pedagógica do rascunho inteiro, aula a aula, em 7 dimensões
-4. Groq (Llama 3.3) → classificação, tags e metadados, a partir do rascunho
-5. Claude (opus-4-6) → revisão final UMA aula por chamada, devolvendo o texto inteiro; revisão que encolhe o texto é descartada e o rascunho fica ($5 max/curso)
+1. Perplexity (sonar-deep-research) → pesquisa, fundamentação acadêmica e análise competitiva
+2. GPT-5.5 → planeja as aulas de cada módulo e redige UMA aula por chamada, em linguagem simples (fonte de estilo escrita-empreendedor), com a pesquisa inteira
+3. Gemini (3.1-pro-preview) → análise pedagógica do rascunho inteiro, aula a aula, em 7 dimensões
+4. Gemini (3.7-flash) → classificação, tags e metadados, a partir do rascunho (a Groq saiu do parque do geo-orchestrator em 2026-07-08)
+5. Claude (sonnet-5) → revisão final UMA aula por chamada, devolvendo o texto inteiro; revisão que encolhe o texto é descartada e o rascunho fica ($5 max/curso)
 
-Cada etapa recebe o RASCUNHO (não a saída da etapa anterior). Até 02/09/2026 a revisão recebia o JSON da classificação e devolvia um relatório no lugar do curso; ver `wiki/decisions/geracao-por-aula-e-insumo-correto.md`.
+Os modelos seguem o `catalog/model_catalog.yaml` do geo-orchestrator (v4.6, task_routing: research, writing, analysis, classification, review); mudar modelo é mudar `config/providers.yaml` e o agente, nunca hardcode em prompt. Cada etapa recebe o RASCUNHO (não a saída da etapa anterior). Até 02/09/2026 a revisão recebia o JSON da classificação e devolvia um relatório no lugar do curso; ver `wiki/decisions/geracao-por-aula-e-insumo-correto.md`.
 
 ### Prompts Externos (IMPORTANTE)
 - Os prompts dos 5 agentes ficam em `src/templates/prompts/*.md`

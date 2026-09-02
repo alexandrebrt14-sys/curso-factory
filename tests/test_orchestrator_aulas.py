@@ -57,9 +57,11 @@ class _ClienteFalso:
                 "**Resultado esperado:** uma resposta enviada em menos de cinco minutos."
             )
         if provider == "google":
+            # O mesmo provider atende a análise (gemini pro) e a classificação
+            # (gemini flash) desde o alinhamento ao catálogo do geo-orchestrator.
+            if "Classificações obrigatórias" in prompt or "classificar" in prompt:
+                return '{"nivel": "iniciante", "tags": ["whatsapp"]}'
             return '{"score": 80, "aprovado": true, "melhorias_prioritarias": ["nada"]}'
-        if provider == "groq":
-            return '{"nivel": "iniciante", "tags": ["whatsapp"]}'
         if provider == "anthropic":
             texto = prompt.split("--- AULA PARA REVISÃO ---", 1)[-1].strip()
             if self.revisao_encolhe:
@@ -151,8 +153,8 @@ def test_pipeline_entrega_o_rascunho_a_analise_classificacao_e_revisao(orquestra
 
     assert resultado.sucesso, resultado.erros
     draft = resultado.etapas["draft"]
-    prompt_analise = next(p for prov, p in cliente.chamadas if prov == "google")
-    prompt_classificacao = next(p for prov, p in cliente.chamadas if prov == "groq")
+    prompt_analise = next(p for prov, p in cliente.chamadas if prov == "google" and "classificar" not in p)
+    prompt_classificacao = next(p for prov, p in cliente.chamadas if prov == "google" and "classificar" in p)
     prompts_revisao = [p for prov, p in cliente.chamadas if prov == "anthropic"]
 
     assert "# Aula 1.1:" in prompt_analise and "# Aula 2.3:" in prompt_analise

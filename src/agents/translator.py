@@ -30,7 +30,7 @@ class Translator(Agent):
 
     nome = "translator"
     provider = "anthropic"
-    model = "claude-opus-4-6"
+    model = "claude-sonnet-5"
     prompt_file = "translate.md"
 
     # Fallback inline mínimo, caso o arquivo .md não exista.

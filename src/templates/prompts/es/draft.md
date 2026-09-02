@@ -63,7 +63,7 @@ número. Medio ejemplo no sirve; tres ejemplos cortos tampoco.
 **H2 3: hazlo ahora.** Un ejercicio de 5 a 15 minutos, con estos campos: título que dice qué
 va a producir (nunca "Ejercicio 1"); pasos numerados, cada uno con un verbo en imperativo y un
 campo para el dato real de su negocio; **Resultado esperado:** qué debe estar viendo en la
-pantalla o en el papel cuando acierte; **Consejo:** una orientación que guía sin entregar la
+pantalla o en el papel cuando acierte; **Si te trabas:** una salida que destraba sin entregar la
 respuesta. El ejercicio ocupa entre un cuarto y un tercio de las palabras de la lección.
 
 **Cierre, sin encabezado, en 3 a 5 líneas.** Qué cambió en su negocio después de esta lección,
@@ -126,7 +126,7 @@ que empieza en 1; imagen en el formato `![leyenda que afirma un hecho](archivo.s
 4. Extensión entre {palavras_alvo_min} y {palavras_alvo_max} palabras; ejercicio entre un
    cuarto y un tercio de ellas.
 5. Ejercicio con título, pasos numerados con dato real del alumno, resultado esperado y
-   consejo.
+   "si te trabas".
 6. Ningún número sin origen en la investigación; como máximo 3 marcadores `[FALTA EVIDENCIA]`.
 7. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta 28.
 8. Hasta {figuras_max} apoyos visuales, todos sustituyendo texto.

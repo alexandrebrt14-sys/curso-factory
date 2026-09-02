@@ -16,7 +16,7 @@ class Writer(Agent):
 
     nome = "writer"
     provider = "openai"
-    model = "gpt-4o"
+    model = "gpt-5.5"
     prompt_file = "draft.md"
 
     # Fallback inline caso o arquivo externo não exista

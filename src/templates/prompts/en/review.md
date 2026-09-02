@@ -41,7 +41,7 @@ decided by context. Never add accents to URLs, slugs, code, variables or HTML at
   do it now). H3 only in an H2 above 350 words. H4 and subheadings made of a line ending in a
   colon become prose or disappear. Sections that deal with the same subject merge.
 - One exercise, with a title that says what it produces, numbered steps with imperative verbs
-  and a field for the student's real data, expected result and tip. A battery of exercises
+  and a field for the student's real data, expected result and "if stuck". A battery of exercises
   becomes one.
 - Closing of 3 to 5 lines through the example, with one bridge to the next lesson. A closing
   that summarizes what was read is rewritten as consequence.
