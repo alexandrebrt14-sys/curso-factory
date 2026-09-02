@@ -84,6 +84,9 @@ class PipelineResult:
         self.etapas: dict[str, str] = {}
         self.erros: list[str] = []
         self.avisos: list[str] = []
+        #: Por etapa, quantas chamadas cada "provedor/modelo" de fato atendeu.
+        #: É o que diz se a etapa rodou no modelo declarado ou em fallback.
+        self.provedores: dict[str, dict[str, int]] = {}
         self.sucesso: bool = False
 
     def to_dict(self) -> dict[str, Any]:
@@ -93,6 +96,7 @@ class PipelineResult:
             "etapas": self.etapas,
             "erros": self.erros,
             "avisos": self.avisos,
+            "provedores": self.provedores,
             "sucesso": self.sucesso,
         }
 
@@ -189,10 +193,55 @@ class Orchestrator:
         result = PipelineResult(course_id)
         result.etapas = data.get("etapas", {})
         result.avisos = list(data.get("avisos", []))
+        result.provedores = dict(data.get("provedores", {}))
         result.erros = []  # Limpa erros anteriores para retry
         context = data.get("_context", "")
         logger.info("Checkpoint carregado: %d etapas concluídas anteriormente", len(result.etapas))
         return result, context
+
+    # ── orçamento e procedência ─────────────────────────────────────────
+
+    def _pode_chamar(self, provider: str, course_id: str = "") -> tuple[bool, str]:
+        """Orçamento por curso e por sessão (`CostTracker.pode_chamar`).
+
+        Rastreador sem esse método (dublês antigos) cai no `is_over_budget`.
+        """
+        pode = getattr(self.cost_tracker, "pode_chamar", None)
+        if pode is None:
+            if self.cost_tracker.is_over_budget(provider):
+                return False, f"orçamento excedido para {provider}"
+            return True, ""
+        return pode(provider, course_id)
+
+    def _marca(self) -> int:
+        indice = getattr(self.cost_tracker, "indice_atual", None)
+        return indice() if indice else -1
+
+    def _procedencia(self, marca: int, course_id: str) -> dict[str, int]:
+        """`{"provedor/modelo": chamadas}` registrados desde a marca."""
+        if marca < 0:
+            return {}
+        entradas = self.cost_tracker.entradas_desde(marca, course_id)
+        usados: dict[str, int] = {}
+        for e in entradas:
+            chave = f"{e.get('provider')}/{e.get('model')}"
+            usados[chave] = usados.get(chave, 0) + 1
+        return usados
+
+    def _registrar_procedencia(
+        self, result: PipelineResult, nome: str, provider_declarado: str, usados: dict[str, int]
+    ) -> None:
+        if not usados:
+            return
+        result.provedores[nome] = usados
+        fora = {k: n for k, n in usados.items() if not k.startswith(provider_declarado + "/")}
+        if fora and sum(fora.values()) * 2 >= sum(usados.values()):
+            aviso = (
+                f"Etapa '{nome}' rodou em fallback: declarada em {provider_declarado}, "
+                f"atendida por {', '.join(f'{k} ({n})' for k, n in usados.items())}."
+            )
+            logger.warning(aviso)
+            result.avisos.append(aviso)
 
     # ── tetos da aula, lidos da fonte de estilo ─────────────────────────
 
@@ -288,22 +337,26 @@ class Orchestrator:
                 logger.info("Etapa '%s' já concluída (checkpoint), pulando", nome)
                 continue
 
-            if self.cost_tracker.is_over_budget(provider):
-                msg = f"Orçamento excedido para {provider}. Pipeline interrompido na etapa '{nome}'."
+            pode, motivo = self._pode_chamar(provider, course.id)
+            if not pode:
+                msg = f"{motivo}. Pipeline interrompido na etapa '{nome}'."
                 logger.error(msg)
                 result.erros.append(msg)
                 break
 
             logger.info("Iniciando etapa: %s (provider: %s)", nome, provider)
+            marca = self._marca()
             try:
                 saida = executar()
                 result.etapas[nome] = saida
+                self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
                 logger.info("Etapa '%s' concluída (%d palavras)", nome, _contar_palavras(saida))
                 self._save_checkpoint(course.id, result, saida)
             except Exception as exc:
                 msg = f"Erro na etapa '{nome}': {exc}"
                 logger.error(msg)
                 result.erros.append(msg)
+                self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
                 self._save_checkpoint(course.id, result)
                 break
         else:
@@ -427,16 +480,18 @@ class Orchestrator:
         partes: list[str] = []
 
         for i, modulo in enumerate(modulos, 1):
-            if self.cost_tracker.is_over_budget(self.writer.provider):
-                logger.warning("Orçamento excedido antes do módulo %d. Parando draft.", i)
+            pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+            if not pode:
+                logger.warning("%s antes do módulo %d. Parando draft.", motivo, i)
                 break
             aulas = self._plan_lessons(course, modulo, i, research_context)
             logger.info("Módulo %d/%d '%s': %d aula(s) planejada(s)",
                         i, len(modulos), modulo.titulo, len(aulas))
             partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
             for j in range(len(aulas)):
-                if self.cost_tracker.is_over_budget(self.writer.provider):
-                    logger.warning("Orçamento excedido na aula %d.%d. Parando draft.", i, j + 1)
+                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                if not pode:
+                    logger.warning("%s na aula %d.%d. Parando draft.", motivo, i, j + 1)
                     return "\n\n".join(partes)
                 logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
                 aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
@@ -466,8 +521,9 @@ class Orchestrator:
         relatorios: list[str] = []
 
         for k, (titulo, texto) in enumerate(unidades, 1):
-            if self.cost_tracker.is_over_budget(self.reviewer.provider):
-                aviso = f"Orçamento excedido na revisão da unidade {k}; as seguintes ficam sem revisão."
+            pode, motivo = self._pode_chamar(self.reviewer.provider, course.id)
+            if not pode:
+                aviso = f"{motivo} na revisão da unidade {k}; as seguintes ficam sem revisão."
                 logger.warning(aviso)
                 result.avisos.append(aviso)
                 revisadas.extend(t for _, t in unidades[k - 1:])

@@ -29,12 +29,20 @@ class _ClienteFalso:
     def __init__(self) -> None:
         self.chamadas: list[tuple[str, str]] = []
         self.revisao_encolhe = False
+        self.course_id = ""
+        #: Rastreador que recebe uma entrada por chamada, como o cliente real.
+        self.tracker = None
+        #: Simula a cadeia de fallback: provider declarado -> provider que atendeu.
+        self.fallback: dict[str, str] = {}
 
     def set_course_context(self, course_id: str) -> None:
         self.course_id = course_id
 
     def call(self, provider: str, prompt: str, **kwargs) -> str:
         self.chamadas.append((provider, prompt))
+        if self.tracker is not None:
+            atendeu = self.fallback.get(provider, provider)
+            self.tracker.track(atendeu, 100, 100, f"modelo-{atendeu}", 0.01, course_id=self.course_id)
         if provider == "perplexity":
             return "PESQUISA " + ("dado relevante. " * 800)
         if provider == "openai":
@@ -74,8 +82,39 @@ class _ClienteFalso:
 
 
 class _CostTrackerFalso:
+    """Dublê antigo: só `is_over_budget`. Prova que o orquestrador ainda o aceita."""
+
     def is_over_budget(self, provider: str) -> bool:
         return False
+
+    def report(self) -> str:
+        return "sem custo"
+
+
+class _LedgerFalso:
+    """Dublê novo: ledger em memória com a API de orçamento e procedência."""
+
+    def __init__(self, teto_sessao: float = 100.0) -> None:
+        self.entradas: list[dict] = []
+        self.teto_sessao = teto_sessao
+
+    def track(self, provider, tokens_in, tokens_out, model, custo_usd, course_id="") -> None:
+        self.entradas.append({"provider": provider, "model": model, "custo_usd": custo_usd, "course_id": course_id})
+
+    def pode_chamar(self, provider: str, course_id: str = "") -> tuple[bool, str]:
+        total = sum(e["custo_usd"] for e in self.entradas)
+        if total >= self.teto_sessao:
+            return False, f"orçamento da sessão esgotado (USD {total:.2f})"
+        return True, ""
+
+    def is_over_budget(self, provider: str) -> bool:
+        return not self.pode_chamar(provider)[0]
+
+    def indice_atual(self) -> int:
+        return len(self.entradas)
+
+    def entradas_desde(self, indice: int, course_id: str = "") -> list[dict]:
+        return [e for e in self.entradas[indice:] if not course_id or e["course_id"] == course_id]
 
     def report(self) -> str:
         return "sem custo"
@@ -208,6 +247,59 @@ def test_conversor_prefere_rascunho_quando_a_revisao_e_comentario() -> None:
     assert _extract_review_or_draft_text(etapas) == draft
     revisao_inteira = draft.replace("palavra", "revista")
     assert _extract_review_or_draft_text({"draft": draft, "review": revisao_inteira}) == revisao_inteira
+
+
+def _orquestrador_com_ledger(tmp_path, monkeypatch, ledger):
+    import src.orchestrator as mod
+
+    monkeypatch.setattr(mod, "DRAFTS_DIR", tmp_path)
+    cliente = _ClienteFalso()
+    cliente.tracker = ledger
+    monkeypatch.setattr("src.llm_client.make_llm_client", lambda tracker: cliente)
+    orq = Orchestrator(cost_tracker=ledger)
+    orq.client = cliente
+    for agente in (orq.researcher, orq.writer, orq.analyzer, orq.classifier, orq.reviewer):
+        agente.client = cliente
+    return orq, cliente
+
+
+def test_procedencia_registra_o_modelo_que_atendeu_cada_etapa(tmp_path, monkeypatch) -> None:
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
+    resultado = orq.run(_curso())
+
+    assert resultado.sucesso, resultado.erros
+    assert set(resultado.provedores) == {"research", "draft", "analyze", "classify", "review"}
+    assert resultado.provedores["research"] == {"perplexity/modelo-perplexity": 1}
+    # 2 planejamentos + 6 aulas no writer
+    assert resultado.provedores["draft"] == {"openai/modelo-openai": 8}
+    assert resultado.provedores["review"] == {"anthropic/modelo-anthropic": 6}
+    assert not [a for a in resultado.avisos if "fallback" in a]
+    assert resultado.to_dict()["provedores"]["classify"] == {"google/modelo-google": 1}
+
+
+def test_fallback_aparece_no_resultado_como_aviso(tmp_path, monkeypatch) -> None:
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
+    cliente.fallback = {"openai": "anthropic", "perplexity": "google"}
+    resultado = orq.run(_curso())
+
+    assert resultado.sucesso, resultado.erros
+    assert resultado.provedores["draft"] == {"anthropic/modelo-anthropic": 8}
+    assert resultado.provedores["research"] == {"google/modelo-google": 1}
+    avisos = [a for a in resultado.avisos if "rodou em fallback" in a]
+    assert len(avisos) == 2
+    assert any("'draft'" in a and "declarada em openai" in a for a in avisos)
+    assert any("'research'" in a and "declarada em perplexity" in a for a in avisos)
+
+
+def test_orcamento_da_sessao_interrompe_com_motivo(tmp_path, monkeypatch) -> None:
+    # 1 chamada de pesquisa (0,01) + 2 planejamentos + 6 aulas = 0,09; a análise não cabe.
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso(teto_sessao=0.09))
+    resultado = orq.run(_curso())
+
+    assert not resultado.sucesso
+    assert "research" in resultado.etapas and "draft" in resultado.etapas
+    assert "analyze" not in resultado.etapas
+    assert any("orçamento da sessão esgotado" in e and "'analyze'" in e for e in resultado.erros)
 
 
 def test_parser_trata_cada_aula_como_unidade() -> None:

@@ -30,7 +30,11 @@ GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 PERPLEXITY_API_KEY: str = os.getenv("PERPLEXITY_API_KEY", "")
 
 # --- Limites FinOps (em USD) ---
-DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", "2.00"))
+# Teto diário por provedor. Só o relatório e `is_over_budget` o usam; o
+# orquestrador decide por curso e por sessão (`CostTracker.pode_chamar`),
+# porque o teto diário do provedor sobrevivente cortava o pipeline quando a
+# cadeia de fallback concentrava as chamadas nele (E2E de 02/09/2026).
+DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", "5.00"))
 SESSION_BUDGET_TOTAL: float = float(os.getenv("SESSION_BUDGET_TOTAL", "5.00"))
 MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "16384"))
 
