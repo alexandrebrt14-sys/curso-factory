@@ -54,7 +54,8 @@ viñetas: de dónde viene (quién la formuló y qué problema resolvía), qué c
 operación (con número cuando la investigación lo tenga), qué cambia cuando la aplica
 (comportamiento observable, antes y después) y el error más común de quien la ignora, marcado
 como **Trampa común:**. Empieza por el problema y llega a la idea; nunca abras con "la
-definición de X es". Como máximo una analogía.
+definición de X es". Una analogía del día a día del ramo del alumno ayuda; dos, si la
+segunda explica lo que la primera no explicó.
 
 **H2 2: cómo queda en tu negocio.** UN ejemplo del rubro del alumno, contado de principio a
 fin: quién es, qué estaba pasando, qué hizo la persona paso a paso, qué pasó después, con
@@ -64,7 +65,8 @@ número. Medio ejemplo no sirve; tres ejemplos cortos tampoco.
 va a producir (nunca "Ejercicio 1"); pasos numerados, cada uno con un verbo en imperativo y un
 campo para el dato real de su negocio; **Resultado esperado:** qué debe estar viendo en la
 pantalla o en el papel cuando acierte; **Si te trabas:** una salida que destraba sin entregar la
-respuesta. El ejercicio ocupa entre un cuarto y un tercio de las palabras de la lección.
+respuesta. El ejercicio suele ocupar entre un cuarto y un tercio de la lección; el tamaño
+correcto es el que el alumno necesita para hacerlo, no una cuota.
 
 **Cierre, sin encabezado, en 3 a 5 líneas.** Qué cambió en su negocio después de esta lección,
 dicho por el ejemplo del H2 2, y un único puente hacia la siguiente lección (verbo en imperativo
@@ -99,7 +101,27 @@ Marcado que reconoce el conversor: tabla con fila de encabezado, fila separadora
 número de celdas en todas las filas, una línea de texto por fila de la tabla; lista numerada
 que empieza en 1; imagen en el formato `![leyenda que afirma un hecho](archivo.svg)`.
 
+## Libertad de forma
+
+El molde de arriba fija lo que la lección necesita tener, no cómo decirlo. Analogía del día a
+día del ramo del alumno, escena de dos frases dentro del H2 2, contraste entre la forma antigua
+y la nueva, la pregunta que él haría en voz alta, humor ligero, primera persona cuando habla la
+empresa: usa lo que acorte el camino hasta que él lo haga. Dos lecciones del mismo curso pueden
+tener ritmo distinto. Lo que reprueba es el vicio (cliché, escasez fabricada, culpa al alumno),
+nunca la figura.
+
 ## Lo que nunca entra
+
+- Bastidor: cualquier frase sobre la propia lección, la regla que seguiste, la verificación que
+  hiciste o el método de la estimación ("esta lección fue", "los datos fueron verificados",
+  "según nuestra metodología", "estimación calculada", "nota del revisor"). El alumno recibe el
+  hecho y el paso.
+- Rótulo de la investigación ([Alta], [Media], [Baja], "nivel de confianza"): te sirve para
+  elegir el dato; en la lección el número entra limpio o no entra.
+- Aviso legal genérico ("consulte a un abogado", "conforme a la legislación vigente", "de
+  acuerdo con la ley de protección de datos", "exención de responsabilidad"). La ley entra solo
+  cuando cambia la decisión del alumno, y entra con número: qué ley, qué artículo, qué plazo,
+  qué valor.
 
 - Antítesis que niega para afirmar ("no es X, es Y", "no se trata de X", "más que X, Y").
 - Tríada como ritmo (tres adjetivos, tres ejemplos, tres beneficios por costumbre).

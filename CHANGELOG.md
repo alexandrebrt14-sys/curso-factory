@@ -1,5 +1,18 @@
 # Changelog
 
+## 03/09/2026: bastidor fora da aula, lei como fato, forma livre
+
+- `content_checker` passa a reprovar bastidor no texto (a aula falando de si, da regra seguida,
+  da verificação feita ou do método da estimativa), rótulo de pesquisa vazado ([Alta]/[Média]/
+  [Baixa]), comentário HTML solto e relatório de revisão dentro da aula; avisa aviso legal
+  genérico com o conserto. As famílias vêm do espelho da fonte 1.5.0 (`bastidorDeVerificacao`,
+  `rotuloDeConfianca`, `metalinguagemDeProcesso`, `metalinguagemRx`, `muletaLegal`).
+- `separar_relatorio_de_revisao` aceita o marcador em inglês e espanhol; os prompts `en` e `es`
+  deixam de carregar "REVISÃO CONCLUÍDA" em português.
+- Prompts de redação nos três idiomas ganham "Liberdade de forma" e perdem o teto de uma
+  analogia e a cota do exercício; o revisor não deixa nota dentro da aula.
+- Cliente padrão: `disclosure.enabled: false` e `geo_2026.min_quotations: 0`.
+
 ## 2026-09-02 — Wave 7: ajustes do segundo teste real
 
 - Teto de saída por provedor (`max_tokens` em `config/providers.yaml`): 32k na Anthropic, porque

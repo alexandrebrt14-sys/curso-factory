@@ -92,7 +92,10 @@ esteja na pesquisa.
 ## Formato de saída
 
 Primeiro o texto INTEGRAL da aula revisada, em Markdown, começando pelo mesmo cabeçalho
-`# Aula ...` que você recebeu. Depois, separado por uma linha com três hífens, o relatório:
+`# Aula ...` que você recebeu. Dentro da aula, nenhuma nota sua: sem marca de alteração, sem
+comentário HTML, sem frase sobre o que corrigiu, sem rótulo de confiança, sem aviso legal
+genérico. Tudo isso vai só no relatório. Depois, separado por uma linha com três hífens, o
+relatório:
 
 ```
 ---

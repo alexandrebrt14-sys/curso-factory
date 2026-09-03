@@ -111,6 +111,58 @@ def tetos_da_aula() -> dict[str, Any]:
     return aula if isinstance(aula, dict) else {}
 
 
+#: Famílias da fonte que denunciam bastidor: o texto falando de si, da regra
+#: seguida, da checagem feita ou do método da estimativa. Desde 03/09/2026 são
+#: erro no checker; até então o prompt proibia e nenhum código conferia.
+CHAVES_DE_BASTIDOR = (
+    "bastidorDeVerificacao",
+    "rotuloDeConfianca",
+    "metalinguagemDeProcesso",
+)
+
+
+def _lista(chave: str) -> list[str]:
+    bruto = carregar_lexicos().get(chave)
+    if not isinstance(bruto, list):
+        return []
+    saida: list[str] = []
+    vistos: set[str] = set()
+    for item in bruto:
+        if isinstance(item, str) and item.strip() and item.strip().lower() not in vistos:
+            vistos.add(item.strip().lower())
+            saida.append(item.strip())
+    return saida
+
+
+def expressoes_de_bastidor() -> list[str]:
+    """União das famílias de bastidor da fonte. Vazia se o espelho não carregar."""
+    saida: list[str] = []
+    vistos: set[str] = set()
+    for chave in CHAVES_DE_BASTIDOR:
+        for item in _lista(chave):
+            if item.lower() not in vistos:
+                vistos.add(item.lower())
+                saida.append(item)
+    return saida
+
+
+def regex_de_metalinguagem() -> str:
+    """Padrão de autorreferência da fonte (`metalinguagemRx`), ou vazio."""
+    rx = carregar_lexicos().get("metalinguagemRx")
+    return rx if isinstance(rx, str) and rx.strip() else ""
+
+
+def regex_de_autoapresentacao() -> str:
+    """Padrão da página que se apresenta em vez de responder (`autoapresentacaoRx`)."""
+    rx = carregar_lexicos().get("autoapresentacaoRx")
+    return rx if isinstance(rx, str) and rx.strip() else ""
+
+
+def expressoes_de_muleta_legal() -> list[str]:
+    """Aviso legal genérico que a fonte manda trocar por fato com número."""
+    return _lista("muletaLegal")
+
+
 def expressoes_vetadas() -> list[str]:
     """Une as listas de expressão proibida da fonte, deduplicadas.
 

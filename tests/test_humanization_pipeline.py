@@ -166,6 +166,10 @@ def test_disclosure_desabilitado_passa_sempre(monkeypatch) -> None:
 def test_disclosure_block_if_missing_false_emite_aviso() -> None:
     """block_if_missing=False → aprovado=True mas avisos populados."""
     client = load_client("default")
+    # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
+    client.disclosure = DisclosureConfig(
+        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+    )
     # Configuracao default tem block_if_missing=False
     assert client.disclosure.block_if_missing is False
     r = disclosure_check("Texto sem disclosure algum.", client=client)
@@ -189,6 +193,10 @@ def test_disclosure_block_if_missing_true_bloqueia() -> None:
 def test_disclosure_detecta_bloco_canonico() -> None:
     """Texto com bloco padrao + autor + norma passa."""
     client = load_client("default")
+    # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
+    client.disclosure = DisclosureConfig(
+        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+    )
     client.disclosure.block_if_missing = True
     bloco = build_disclosure_block(client)
     r = disclosure_check(bloco, client=client)
@@ -199,6 +207,10 @@ def test_disclosure_detecta_bloco_canonico() -> None:
 
 def test_build_disclosure_block_inclui_autor() -> None:
     client = load_client("default")
+    # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
+    client.disclosure = DisclosureConfig(
+        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+    )
     block = build_disclosure_block(client)
     assert client.author.name in block
     assert "PL 2338" in block or "pl 2338" in block.lower()

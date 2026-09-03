@@ -77,7 +77,8 @@ MODULO_H1_RE = re.compile(r"^#\s+M[óo]dulo\s+\d+\s*[:.\-]", re.MULTILINE)
 MODULO_COMENTARIO_RE = re.compile(r"<!--\s*M[óo]dulo[^\n]*-->\s*$")
 #: Bloco de relatório que o revisor anexa ao fim do texto revisado.
 RELATORIO_REVISAO_RE = re.compile(
-    r"\n-{3,}\s*\n\s*REVIS[ÃA]O CONCLU[ÍI]DA[\s\S]*$", re.IGNORECASE
+    r"\n-{3,}\s*\n\s*(?:REVIS[ÃA]O CONCLU[ÍI]DA|REVIEW COMPLETE|REVISI[ÓO]N CONCLUIDA)[\s\S]*$",
+    re.IGNORECASE,
 )
 #: Linha de plano de aulas: `1. Título | ideia em uma frase`.
 PLANO_LINHA_RE = re.compile(r"^\s*(\d{1,2})[.)]\s*(.+?)(?:\s*\|\s*(.+?))?\s*$")

@@ -92,11 +92,14 @@ según McKinsey" sin que el número esté en la investigación.
 ## Formato de salida
 
 Primero el texto ÍNTEGRO de la lección revisada, en Markdown, empezando por el mismo encabezado
-`# Aula ...` que recibiste. Después, separado por una línea con tres guiones, el informe:
+`# Aula ...` que recibiste. Dentro de la lección, ninguna nota tuya: sin marcas de cambio, sin
+comentario HTML, sin frase sobre lo que corregiste, sin rótulo de confianza, sin aviso legal
+genérico. Todo eso va solo en el informe. Después, separado por una línea con tres guiones, el
+informe:
 
 ```
 ---
-REVISÃO CONCLUÍDA
+REVISIÓN CONCLUIDA
 Palabras recibidas / devueltas: [n] / [n]
 Correcciones de acentuación: [n]
 Correcciones de estructura (apertura, H2/H3, ejercicio, cierre): [n]
