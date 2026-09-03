@@ -145,3 +145,4 @@ não criados. Cada onda fecha 1+ ou justifica.
 - `[[clients/_template]]`
 - `[[overview/cobertura-por-vertical]]`
 - `[[overview/gaps-criticos-q3-2026]]`
+- [Bastidor fora da aula, lei como fato, forma livre (03/09/2026)](decisions/bastidor-fora-da-aula-20260903.md)

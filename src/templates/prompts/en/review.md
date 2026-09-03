@@ -91,11 +91,13 @@ is in the research.
 ## Output format
 
 First the FULL text of the reviewed lesson, in Markdown, starting with the same `# Aula ...`
-heading you received. Then, separated by a line with three hyphens, the report:
+heading you received. Inside the lesson, no note of yours: no change marks, no HTML comment,
+no sentence about what you fixed, no confidence label, no generic legal disclaimer. All of
+that goes only in the report. Then, separated by a line with three hyphens, the report:
 
 ```
 ---
-REVISÃO CONCLUÍDA
+REVIEW COMPLETE
 Words received / returned: [n] / [n]
 Spelling corrections: [n]
 Structure corrections (opening, H2/H3, exercise, closing): [n]

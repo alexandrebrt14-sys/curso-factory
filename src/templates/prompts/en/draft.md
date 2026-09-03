@@ -54,7 +54,8 @@ where it comes from (who formulated it and what problem it solved), what it cost
 it in their operation (with a number when the research has one), what changes when they apply
 it (observable behavior, before and after) and the most common mistake of those who ignore it,
 marked as **Common trap:**. Start from the problem and arrive at the idea; never open with
-"the definition of X is". At most one analogy.
+"the definition of X is". One analogy from the student's trade helps; two, if the second
+explains what the first did not.
 
 **H2 2: how it looks in your business.** ONE example from the student's trade, told from
 beginning to end: who it is, what was happening, what the person did step by step, what
@@ -65,7 +66,8 @@ either.
 what they will produce (never "Exercise 1"); numbered steps, each with an imperative verb and a
 field for real data from their business; **Expected result:** what they should be seeing on
 screen or on paper when they get it right; **If stuck:** one way out that unblocks without giving the
-answer away. The exercise takes between a quarter and a third of the lesson's words.
+answer away. The exercise usually takes between a quarter and a third of the lesson; the right
+size is what the student needs to do it, not a quota.
 
 **Closing, no heading, in 3 to 5 lines.** What changed in their business after this lesson,
 told through the example from H2 2, and a single bridge to the next lesson (imperative verb
@@ -101,7 +103,27 @@ Markup the converter recognizes: a table with a header row, a separator row and 
 of cells in every row, one line of text per table row; a numbered list starting at 1; an image
 in the form `![caption that states a fact](file.svg)`.
 
+## Freedom of form
+
+The mold above fixes what the lesson must contain, not how to say it. An analogy from the
+student's trade, a two-sentence scene inside H2 2, a contrast between the old way and the new,
+the question the student would ask out loud, light humor, first person when the company speaks:
+use whatever shortens the path to the student doing it. Two lessons in the same course may have
+different rhythms. What fails is the vice (cliché, fabricated scarcity, blaming the student),
+never the figure.
+
 ## What never goes in
+
+- Backstage: any sentence about the lesson itself, the rule you followed, the verification you
+  did or the method behind an estimate ("this lesson was", "the data was verified", "according
+  to our methodology", "calculated estimate", "reviewer's note"). The student gets the fact
+  and the step.
+- Research labels ([High], [Medium], [Low], "confidence level"): they help you choose the data;
+  in the lesson the number enters clean or not at all.
+- Generic legal disclaimers ("consult a lawyer", "according to current legislation", "in
+  compliance with data protection law", "disclaimer"). Law enters only when it changes the
+  student's decision, and it enters with a number: which law, which article, which deadline,
+  which amount.
 
 - Antithesis that denies to affirm ("it is not X, it is Y", "it is not about X", "more than X,
   Y").

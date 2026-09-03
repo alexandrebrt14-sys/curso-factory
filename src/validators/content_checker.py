@@ -36,7 +36,14 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from src.validators.lexicos_loader import expressoes_vetadas, tetos_da_aula
+from src.validators.lexicos_loader import (
+    expressoes_de_bastidor,
+    expressoes_de_muleta_legal,
+    expressoes_vetadas,
+    regex_de_autoapresentacao,
+    regex_de_metalinguagem,
+    tetos_da_aula,
+)
 from src.validators.rules_loader import rules_list, validation_section
 
 
@@ -296,6 +303,72 @@ _MENCAO_RE = re.compile(r"[\"“„”']([^\"“„”'\n]{2,80})[\"“„”']"
 def _sem_mencoes(text: str) -> str:
     """Apaga o que está entre aspas, para o gate não punir a menção de um vício."""
     return _MENCAO_RE.sub(" ", text)
+
+
+# --- Bastidor fora da aula (03/09/2026) -------------------------------------
+# O aluno recebe o fato e o passo. O que o redator fez para chegar lá (técnica,
+# regra seguida, verificação, método da estimativa), o rótulo de confiança que a
+# pesquisa carrega e o relatório do revisor não entram no texto publicado.
+#: Fallback mínimo quando o espelho da fonte não carrega.
+_BASTIDOR_FALLBACK = (
+    "verificamos que", "fontes consultadas", "esta aula foi", "este texto foi",
+    "segundo nossa metodologia", "estimativa calculada", "nota do revisor",
+)
+_MULETA_LEGAL_FALLBACK = (
+    "consulte um advogado", "conforme a legislação vigente", "de acordo com a lgpd",
+    "não constitui aconselhamento", "isenção de responsabilidade",
+)
+#: Rótulo de confiança que o prompt de pesquisa põe em cada dado ([Alta], [Média],
+#: [Baixa]) e que só serve ao redator decidir o que usar; na aula é vazamento.
+_ROTULO_PESQUISA_RE = re.compile(r"\[(?:Alta|M[ée]dia|Baixa)\]|N[íi]vel de confian[çc]a\s*:", re.I)
+#: Comentário HTML que não é o marcador de módulo do orquestrador.
+_COMENTARIO_SOLTO_RE = re.compile(r"<!--(?!\s*M[óo]dulo\b)[\s\S]*?-->")
+#: Relatório do revisor que escapou da separação (marcador em qualquer idioma).
+_RELATORIO_VAZADO_RE = re.compile(
+    r"REVIS[ÃA]O CONCLU[ÍI]DA|REVIEW COMPLETE|REVISI[ÓO]N CONCLUIDA|"
+    r"Aprovado para publica[çc][ãa]o\s*:|Approved for publication\s*:|Aprobado para publicaci[óo]n\s*:",
+    re.I,
+)
+
+
+def _ocorrencias(text: str, expressoes) -> list[str]:
+    baixo = text.lower()
+    return [e for e in expressoes
+            if re.search(r"(?<!\w)" + re.escape(e.lower()) + r"(?!\w)", baixo)]
+
+
+def _check_bastidor(text: str) -> list[str]:
+    """Expressões e construções em que a aula fala de si ou do próprio processo."""
+    corpo = _sem_mencoes(text)
+    lista = expressoes_de_bastidor() or list(_BASTIDOR_FALLBACK)
+    achados = _ocorrencias(corpo, lista)
+    padrao = regex_de_metalinguagem()
+    if padrao:
+        try:
+            for m in re.finditer(padrao, corpo, flags=re.I):
+                trecho = m.group(0).strip()
+                if trecho.lower() not in {a.lower() for a in achados}:
+                    achados.append(trecho)
+        except re.error:
+            pass
+    return achados
+
+
+def _check_autoapresentacao(text: str) -> list[str]:
+    """A aula que se apresenta em vez de responder ("esta aula explica como...")."""
+    padrao = regex_de_autoapresentacao()
+    if not padrao:
+        return []
+    try:
+        return [m.group(0).strip() for m in re.finditer(padrao, _sem_mencoes(text), flags=re.I)]
+    except re.error:
+        return []
+
+
+def _check_muleta_legal(text: str) -> list[str]:
+    """Aviso legal genérico: lei entra como fato com número ou não entra."""
+    lista = expressoes_de_muleta_legal() or list(_MULETA_LEGAL_FALLBACK)
+    return _ocorrencias(_sem_mencoes(text), lista)
 
 
 def _check_cliches(text: str) -> list[str]:
@@ -845,6 +918,75 @@ def check_content(
             tipo="error",
             categoria="editorial",
             mensagem="Emojis detectados no conteúdo. Proibido em conteúdo educacional.",
+            modulo=mod,
+        ))
+
+    # 11a. Bastidor fora da aula (erro): a aula não fala de si, da regra seguida,
+    #      da verificação feita nem do método da estimativa. O prompt já proibia
+    #      desde 08/2026; até 03/09/2026 nenhum código conferia.
+    for trecho in _check_bastidor(text)[:8]:
+        erros.append(ContentError(
+            tipo="error",
+            categoria="editorial",
+            mensagem=f"Bastidor no texto: '{trecho}'. O aluno recebe o fato e o passo; "
+                     f"técnica, regra seguida, verificação e método da estimativa ficam "
+                     f"fora da aula. Apague a frase inteira, sem substituto.",
+            modulo=mod,
+        ))
+
+    # 11b. Rótulo de confiança da pesquisa vazado na aula (erro).
+    m_rot = _ROTULO_PESQUISA_RE.search(text)
+    if m_rot:
+        erros.append(ContentError(
+            tipo="error",
+            categoria="editorial",
+            mensagem=f"Rótulo da pesquisa vazou para a aula: '{m_rot.group(0)}'. "
+                     f"[Alta]/[Média]/[Baixa] servem ao redator para escolher o dado; "
+                     f"na aula o número entra limpo ou não entra.",
+            modulo=mod,
+        ))
+
+    # 11c. Comentário HTML solto (erro): só o marcador de módulo do orquestrador.
+    m_com = _COMENTARIO_SOLTO_RE.search(text)
+    if m_com:
+        erros.append(ContentError(
+            tipo="error",
+            categoria="editorial",
+            mensagem=f"Comentário de bastidor na aula: '{m_com.group(0)[:60]}'. "
+                     f"Nota de redator ou de revisor não vai para o texto publicado.",
+            modulo=mod,
+        ))
+
+    # 11d. Relatório do revisor vazado (erro): a separação falhou ou o marcador
+    #      veio em outro idioma; publicado, vira nota de bastidor no fim da aula.
+    m_rel = _RELATORIO_VAZADO_RE.search(text)
+    if m_rel:
+        erros.append(ContentError(
+            tipo="error",
+            categoria="editorial",
+            mensagem=f"Relatório de revisão dentro da aula: '{m_rel.group(0)}'. "
+                     f"O relatório fica no registro da etapa, nunca no texto publicado.",
+            modulo=mod,
+        ))
+
+    # 11d2. Autoapresentação (aviso): a aula se apresenta em vez de responder.
+    for trecho in _check_autoapresentacao(text)[:3]:
+        erros.append(ContentError(
+            tipo="warning",
+            categoria="editorial",
+            mensagem=f"A aula se apresenta em vez de responder: '{trecho}'. Troque a frase "
+                     f"pelo que ela anuncia.",
+            modulo=mod,
+        ))
+
+    # 11e. Muleta legal (aviso): lei entra como fato com número quando muda a
+    #      decisão do aluno; aviso genérico manda o aluno embora sem resposta.
+    for trecho in _check_muleta_legal(text)[:5]:
+        erros.append(ContentError(
+            tipo="warning",
+            categoria="editorial",
+            mensagem=f"Aviso legal genérico: '{trecho}'. Se a lei muda a decisão, entre com "
+                     f"o número (lei, artigo, prazo, valor); se não muda, corte a frase.",
             modulo=mod,
         ))
 

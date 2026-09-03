@@ -52,7 +52,8 @@ tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa
 disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
 (comportamento observável, antes e depois) e o erro mais comum de quem ignora, marcado como
 **Armadilha comum:**. Comece pelo problema e chegue à ideia; nunca abra com "a definição de X
-é". No máximo uma analogia.
+é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+primeira não explicou.
 
 **H2 2: como fica no seu negócio.** UM exemplo do ramo do aluno, contado do começo ao fim:
 quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois,
@@ -62,7 +63,8 @@ com número. Meio exemplo não serve; três exemplos curtos também não.
 ele vai produzir (nunca "Exercício 1"); etapas numeradas, cada uma com um verbo no imperativo e
 um campo para o dado real do negócio dele; **Resultado esperado:** o que ele deve estar vendo
 na tela ou no papel quando acertar; **Se travar:** uma saída que destrava sem entregar a resposta.
-O exercício fica entre um quarto e um terço das palavras da aula.
+O exercício costuma ocupar entre um quarto e um terço da aula; o tamanho certo é o que o
+aluno precisa para fazer, e não uma cota.
 
 **Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
 dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
@@ -97,7 +99,24 @@ Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de s
 mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
 numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
 
+## Liberdade de forma
+
+O molde acima fixa o que a aula precisa ter, não como dizer. Analogia do cotidiano do ramo do
+aluno, cena de duas frases dentro do H2 2, contraste entre o jeito antigo e o novo, a pergunta
+que ele faria em voz alta, humor leve, primeira pessoa quando a empresa fala: use o que encurta
+o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
+vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
+
 ## O que nunca entra
+
+- Bastidor: qualquer frase sobre a própria aula, a regra que você seguiu, a verificação que
+  fez ou o método da estimativa ("esta aula foi", "os dados foram verificados", "segundo nossa
+  metodologia", "estimativa calculada", "nota do revisor"). O aluno recebe o fato e o passo.
+- Rótulo da pesquisa ([Alta], [Média], [Baixa], "nível de confiança"): serve a você para
+  escolher o dado; na aula o número entra limpo ou não entra.
+- Aviso legal genérico ("consulte um advogado", "conforme a legislação vigente", "de acordo
+  com a LGPD", "isenção de responsabilidade"). Lei entra só quando muda a decisão do aluno, e
+  entra com número: qual lei, qual artigo, qual prazo, qual valor.
 
 - Antítese que nega para afirmar ("não é X, é Y", "não se trata de X", "mais do que X, Y").
 - Tríade como ritmo (três adjetivos, três exemplos, três benefícios por hábito).
@@ -120,8 +139,8 @@ numerada começando em 1; imagem no formato `![legenda que afirma um fato](arqui
 1. A primeira frase diz o que o aluno vai conseguir fazer.
 2. Uma ideia só, explicada até o fim; o exemplo é um e vai do começo ao fim, com número.
 3. {h2_min} a {h2_max} H2; H3 só em H2 longo; nenhum H4.
-4. Extensão entre {palavras_alvo_min} e {palavras_alvo_max} palavras; exercício entre um quarto
-   e um terço delas.
+4. Extensão entre {palavras_alvo_min} e {palavras_alvo_max} palavras; o exercício tem o tamanho
+   que o aluno precisa para fazer.
 5. Exercício com título, etapas numeradas com dado real do aluno, resultado esperado e "se travar".
 6. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
 7. Parágrafos de {paragrafo_min} a {paragrafo_max} palavras; frases até 28.
@@ -131,7 +150,7 @@ numerada começando em 1; imagem no formato `![legenda que afirma um fato](arqui
 11. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
 
 Comece direto pela abertura da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
-módulo e sem comentário sobre este prompt.
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
 
 --- DADOS DA PESQUISA ---
 {context}

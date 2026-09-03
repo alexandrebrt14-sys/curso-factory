@@ -128,8 +128,11 @@ voice_guard:
 # Disclosure de IA — conformidade PL 2338/2023 (Brasil) + EEAT Google
 # Quando enabled=true, validator `disclosure_checker.py` bloqueia publicação
 # se o módulo não trouxer o bloco padronizado de rodapé.
+# 03/09/2026: desligado por padrão. O dono decidiu que aviso de IA e de lei não
+# entra na aula por regra geral; nada no pipeline gerava o bloco e o gate só
+# avisava. Ligue por cliente quando o contrato ou o edital exigir.
 disclosure:
-  enabled: true
+  enabled: false
   required_by:
     - PL_2338_2023
     - MEC_Marco_Referencial_2025
@@ -163,7 +166,8 @@ geo_2026:
   princeton_playbook_enabled: true
   min_cite_sources: 3          # fontes externas atribuídas (lift +40%, até +115% fora do top-1)
   min_statistics: 5            # dados quantitativos com fonte+ano (lift +32,8%)
-  min_quotations: 1            # citação direta de especialista nomeado (lift +42,6%)
+  min_quotations: 0            # 03/09/2026: citação direta só entra se a pesquisa trouxer a frase
+                               # literal com nome e data; cobrar uma por curso convidava a inventar
   require_answer_capsule: true # parágrafo resposta-primeiro após heading (lift 1,9×)
   schema_authority_stack_enabled: true  # @graph Article→Person→Organization→Wikidata
 
