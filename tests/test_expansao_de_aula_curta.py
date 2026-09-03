@@ -37,7 +37,7 @@ def _aula(orq, respostas: list[str]) -> tuple[str, list[str]]:
     return md, chamadas
 
 
-def test_aula_curta_ganha_uma_passada_e_fica_com_a_versao_maior(orquestrador, monkeypatch) -> None:
+def test_aula_curta_ganha_uma_passada_e_fica_com_a_versao_maior(orquestrador, monkeypatch) -> None:  # noqa: F811
     orq, _ = orquestrador
     monkeypatch.setattr(mod, "DRAFT_EXPANSAO_ABAIXO_DO_PISO", True)
     md, chamadas = _aula(orq, [CURTA, LONGA])
@@ -48,7 +48,7 @@ def test_aula_curta_ganha_uma_passada_e_fica_com_a_versao_maior(orquestrador, mo
     assert any("foi expandida" in a for a in orq._avisos_pendentes)
 
 
-def test_expansao_que_nao_cresce_mantem_o_primeiro_rascunho(orquestrador, monkeypatch) -> None:
+def test_expansao_que_nao_cresce_mantem_o_primeiro_rascunho(orquestrador, monkeypatch) -> None:  # noqa: F811
     orq, _ = orquestrador
     monkeypatch.setattr(mod, "DRAFT_EXPANSAO_ABAIXO_DO_PISO", True)
     md, chamadas = _aula(orq, [CURTA, "Nada."])
@@ -57,7 +57,7 @@ def test_expansao_que_nao_cresce_mantem_o_primeiro_rascunho(orquestrador, monkey
     assert any("não cresceu" in a for a in orq._avisos_pendentes)
 
 
-def test_aula_no_alvo_nao_ganha_segunda_chamada(orquestrador, monkeypatch) -> None:
+def test_aula_no_alvo_nao_ganha_segunda_chamada(orquestrador, monkeypatch) -> None:  # noqa: F811
     orq, _ = orquestrador
     monkeypatch.setattr(mod, "DRAFT_EXPANSAO_ABAIXO_DO_PISO", True)
     _, chamadas = _aula(orq, [LONGA])
@@ -65,7 +65,7 @@ def test_aula_no_alvo_nao_ganha_segunda_chamada(orquestrador, monkeypatch) -> No
     assert orq._avisos_pendentes == []
 
 
-def test_chave_desligada_nao_expande(orquestrador, monkeypatch) -> None:
+def test_chave_desligada_nao_expande(orquestrador, monkeypatch) -> None:  # noqa: F811
     orq, _ = orquestrador
     monkeypatch.setattr(mod, "DRAFT_EXPANSAO_ABAIXO_DO_PISO", False)
     md, chamadas = _aula(orq, [CURTA])
