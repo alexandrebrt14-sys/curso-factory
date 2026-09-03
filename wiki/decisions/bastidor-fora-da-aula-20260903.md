@@ -28,3 +28,12 @@ que os prompts em inglês e espanhol mantinham por acaso.
 
 Abertura sem cena nem personagem (é o vetor mais direto de invenção), travessão, emoji e
 vírgula de Oxford continuam fora por decisão do dono.
+
+## Passada de expansão (depois do teste real)
+
+O teste real com as regras acima aprovou 7 de 8 unidades, sem bastidor e sem aviso legal. A
+reprovação restante foi extensão: a aula 1.5 veio com 641 palavras e cinco de seis ficaram
+abaixo do alvo. O redator (claude-sonnet-5, por fallback) encurta mesmo com os números no
+prompt. Decisão: uma passada de expansão quando a aula volta abaixo do piso, com o rascunho e
+os números na mão, e a segunda versão só fica se cresceu. Custa uma chamada por aula curta
+(cerca de US$ 0,08) e é mais barato que reprovar o curso inteiro no fim.

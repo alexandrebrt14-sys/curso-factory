@@ -1,5 +1,17 @@
 # Changelog
 
+## 03/09/2026: aula abaixo do piso ganha uma passada de expansão
+
+- Teste real com as regras novas (curso de precificação para salão, 6 aulas, US$ 2,33, tudo em
+  Anthropic e Google por falta de crédito em OpenAI e Perplexity): zero bastidor, zero rótulo de
+  pesquisa, zero relatório vazado, zero aviso legal; 3 H2 e 0 H3 por aula; parágrafo médio de
+  40 a 52 palavras; 7 de 8 unidades aprovadas. A única reprovação foi a aula 1.5 com 641
+  palavras, e cinco das seis aulas vieram abaixo do alvo (640 a 898 contra 900 a 1.800).
+- `_draft_lesson` passa a medir a aula e, abaixo do piso do molde, pedir UMA reescrita com o
+  rascunho curto e os números na mão (`prompts/*/expand.md`, nos três idiomas). A segunda
+  versão só fica se cresceu; o resultado registra o aviso. `DRAFT_EXPANSAO_ABAIXO_DO_PISO=0`
+  desliga.
+
 ## 03/09/2026: bastidor fora da aula, lei como fato, forma livre
 
 - `content_checker` passa a reprovar bastidor no texto (a aula falando de si, da regra seguida,

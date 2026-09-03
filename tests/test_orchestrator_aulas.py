@@ -133,6 +133,8 @@ def orquestrador(tmp_path, monkeypatch):
     import src.orchestrator as mod
 
     monkeypatch.setattr(mod, "DRAFTS_DIR", tmp_path)
+    # A passada de expansão tem testes próprios; aqui cada aula é uma chamada.
+    monkeypatch.setattr(mod, "DRAFT_EXPANSAO_ABAIXO_DO_PISO", False)
     cliente = _ClienteFalso()
     monkeypatch.setattr("src.llm_client.make_llm_client", lambda tracker: cliente)
     orq = Orchestrator(cost_tracker=_CostTrackerFalso())
