@@ -47,6 +47,7 @@ from src.agents.reviewer import Reviewer
 from src.agents.writer import Writer
 from src.config import (
     CLASSIFY_CONTEXT_CHARS,
+    DRAFT_EXPANSAO_ABAIXO_DO_PISO,
     DRAFT_RESEARCH_CONTEXT_CHARS,
     OUTPUT_DIR,
     REVIEW_ANALYSIS_CHARS,
@@ -187,6 +188,9 @@ class Orchestrator:
         self.analyzer = Analyzer(self.client)
         self.classifier = Classifier(self.client)
         self.reviewer = Reviewer(self.client)
+        #: Avisos produzidos dentro de uma etapa (ex.: expansão de aula curta) e
+        #: entregues ao resultado quando a etapa fecha.
+        self._avisos_pendentes: list[str] = []
 
     # ── checkpoint ──────────────────────────────────────────────────────
 
@@ -368,6 +372,9 @@ class Orchestrator:
             try:
                 saida = executar()
                 result.etapas[nome] = saida
+                if self._avisos_pendentes:
+                    result.avisos.extend(self._avisos_pendentes)
+                    self._avisos_pendentes.clear()
                 self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
                 logger.info("Etapa '%s' concluída (%d palavras)", nome, _contar_palavras(saida))
                 self._save_checkpoint(course.id, result, saida)
@@ -484,11 +491,53 @@ class Orchestrator:
             **self._tetos_da_aula(),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
-        texto = self.writer.execute(contexto, **variaveis).strip()
-        # Garante o cabeçalho da aula na primeira linha, e um só.
+        texto = self._normalizar_aula(self.writer.execute(contexto, **variaveis))
+        rotulo = f"Aula {numero_modulo}.{indice + 1}"
+        palavras = _contar_palavras(texto)
+        piso = int(variaveis["palavras_piso"])
+        # Abaixo do piso a ideia foi apresentada, não explicada. Uma passada de
+        # expansão, com o rascunho curto e os números na mão, custa uma chamada e
+        # evita a reprovação no gate; a segunda versão só fica se cresceu.
+        if (
+            DRAFT_EXPANSAO_ABAIXO_DO_PISO
+            and palavras < piso
+            and self._pode_chamar(self.writer.provider, course.id)[0]
+        ):
+            logger.info("%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso)
+            nota = self._nota_de_expansao(texto, palavras, variaveis)
+            expandido = self._normalizar_aula(self.writer.execute(nota + "\n\n" + contexto, **variaveis))
+            palavras_exp = _contar_palavras(expandido)
+            if palavras_exp > palavras:
+                self._avisos_pendentes.append(
+                    f"{rotulo} veio com {palavras} palavras (piso {piso}) e foi expandida para {palavras_exp}."
+                )
+                texto = expandido
+            else:
+                self._avisos_pendentes.append(
+                    f"{rotulo} veio com {palavras} palavras (piso {piso}); a expansão não cresceu e o "
+                    f"primeiro rascunho ficou."
+                )
+        return f"# {rotulo}: {aula['titulo']}\n\n{texto}"
+
+    @staticmethod
+    def _normalizar_aula(texto: str) -> str:
+        """Tira o H1 que o redator às vezes repete e rebaixa um `# ` inicial a H2."""
+        texto = texto.strip()
         texto = AULA_H1_RE.sub("", texto, count=1).strip() if AULA_H1_RE.match(texto) else texto
-        texto = re.sub(r"^#\s+(?!#)", "## ", texto, count=1) if texto.startswith("# ") else texto
-        return f"# Aula {numero_modulo}.{indice + 1}: {aula['titulo']}\n\n{texto}"
+        return re.sub(r"^#\s+(?!#)", "## ", texto, count=1) if texto.startswith("# ") else texto
+
+    def _nota_de_expansao(self, texto: str, palavras: int, variaveis: dict[str, str]) -> str:
+        """Instrução de expansão no idioma do redator, com o rascunho curto embutido."""
+        from src.agents.lang_resolver import resolve_prompt_path
+
+        template = resolve_prompt_path("expand.md", self.writer.language).read_text(encoding="utf-8")
+        return template.format(
+            palavras_atual=str(palavras),
+            palavras_piso=variaveis["palavras_piso"],
+            palavras_alvo_min=variaveis["palavras_alvo_min"],
+            palavras_alvo_max=variaveis["palavras_alvo_max"],
+            lesson_md=texto,
+        )
 
     def _draft_modules_iterative(self, course: Course, research_context: str) -> str:
         """Gera o curso aula a aula.

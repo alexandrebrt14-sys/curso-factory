@@ -44,6 +44,13 @@ MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "16384"))
 # redator sem dado e produziam aula rasa). 40 mil caracteres cabem com folga
 # no contexto do GPT-4o (128 mil tokens).
 DRAFT_RESEARCH_CONTEXT_CHARS: int = int(os.getenv("DRAFT_RESEARCH_CONTEXT_CHARS", "40000"))
+#: Aula que volta abaixo do piso do molde ganha UMA passada de expansão, com o
+#: rascunho curto e os números na mão. Motivo (03/09/2026): no teste real, cinco
+#: de seis aulas vieram entre 640 e 900 palavras contra alvo de 900 a 1.800, e a
+#: única reprovação do curso foi a aula de 641. Desligue com 0.
+DRAFT_EXPANSAO_ABAIXO_DO_PISO: bool = (
+    os.getenv("DRAFT_EXPANSAO_ABAIXO_DO_PISO", "1").strip().lower() not in ("0", "false", "nao", "não")
+)
 # A classificação (Groq, 128 mil tokens de contexto) não precisa do curso inteiro.
 CLASSIFY_CONTEXT_CHARS: int = int(os.getenv("CLASSIFY_CONTEXT_CHARS", "60000"))
 # Trecho do relatório da análise (Gemini) que acompanha cada aula na revisão.
