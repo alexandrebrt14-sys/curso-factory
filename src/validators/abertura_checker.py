@@ -32,6 +32,12 @@ Duas superfícies são medidas:
 Menção entre aspas não conta para R5, R6 e R8: a aula que ensina a NÃO escrever
 "faça agora" precisa poder citar a expressão. R9 vale mesmo entre aspas, porque
 a proibição do dono é à menção, e não ao uso.
+
+Léxico em três camadas, somadas: os padrões deste módulo, as famílias do bloco
+`aberturaEDistracao` da fonte de estilo (espelho `config/lexicos.json`, fonte
+1.6.0 de 08/09/2026, lidas por `lexicos_loader.familias_de_abertura`) e o que
+`validation.abertura.termos` do YAML acrescentar. Nada aqui remove termo da
+fonte.
 """
 
 from __future__ import annotations
@@ -40,6 +46,7 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from src.validators.lexicos_loader import familias_de_abertura
 from src.validators.rules_loader import validation_section
 
 if TYPE_CHECKING:
@@ -164,9 +171,54 @@ _PADROES_PADRAO: dict[str, list[str]] = {
 }
 
 
+#: Famílias da fonte de estilo (bloco `aberturaEDistracao`, 1.6.0) somadas a
+#: cada chave. Lista da fonte é literal; string é expressão regular. As formas
+#: "falta evidência" de `verificacaoExplicita` ficam de fora da medição de
+#: Markdown, porque o rascunho em revisão tolera o marcador `[FALTA EVIDÊNCIA:`
+#: (camada anti-invenção); no publicado ele é barrado por
+#: `check_abertura_definicao`.
+_FAMILIAS_DA_FONTE: dict[str, tuple[str, ...]] = {
+    "R3": ("percursoAlternativo",),
+    "R5_qualquer": ("mockup", "noSeuNegocioInstrucao"),
+    "R5_rotulo": ("noSeuNegocio",),
+    "R6": ("exercicioForte", "exercicioRotulo"),
+    "R8": ("checkpointForte", "checkpointRotulo"),
+    "R9": ("verificacaoExplicita", "lgpd"),
+}
+_EXCLUIR_DA_FONTE = ("falta evidência", "falta evidencia")
+
+
+def _literal(termo: str) -> str:
+    return r"(?<!\w)" + re.escape(termo) + r"(?!\w)"
+
+
+def _termos_da_fonte(chave: str) -> list[str]:
+    familias = familias_de_abertura()
+    termos: list[str] = []
+    for nome in _FAMILIAS_DA_FONTE.get(chave, ()):
+        bruto = familias.get(nome)
+        if isinstance(bruto, list):
+            termos.extend(
+                _literal(t.strip()) for t in bruto
+                if isinstance(t, str) and t.strip() and t.strip().lower() not in _EXCLUIR_DA_FONTE
+            )
+        elif isinstance(bruto, str) and bruto.strip():
+            termos.append(bruto)
+    return termos
+
+
+def _subtitulo_max_palavras() -> int:
+    """Teto do subtítulo: a fonte (`subtituloMaxPalavras`) vence o padrão do módulo."""
+    valor = familias_de_abertura().get("subtituloMaxPalavras")
+    try:
+        return int(valor) if valor else SUBTITULO_MAX_PALAVRAS
+    except (TypeError, ValueError):
+        return SUBTITULO_MAX_PALAVRAS
+
+
 def _padroes(chave: str) -> list[re.Pattern[str]]:
-    """Padrões da regra, com o que o YAML acrescentar (`validation.abertura`)."""
-    termos = list(_PADROES_PADRAO.get(chave, []))
+    """Padrões da regra: os do módulo, mais a fonte de estilo, mais o YAML."""
+    termos = list(_PADROES_PADRAO.get(chave, [])) + _termos_da_fonte(chave)
     try:
         secao = validation_section("abertura") or {}
         extra = secao.get("termos", {}) if isinstance(secao, dict) else {}
@@ -248,10 +300,11 @@ def _check_r1(texto: str) -> list[AchadoAbertura]:
         return achados
     frases = len(_FIM_DE_FRASE_RE.findall(subtitulo)) or 1
     palavras = len(subtitulo.split())
-    if frases > 1 or palavras > SUBTITULO_MAX_PALAVRAS:
+    teto = _subtitulo_max_palavras()
+    if frases > 1 or palavras > teto:
         achados.append(AchadoAbertura(
             "R1", f"Subtítulo com {frases} frase(s) e {palavras} palavra(s); o subtítulo é UMA "
-                  f"frase de até {SUBTITULO_MAX_PALAVRAS} palavras: '{subtitulo[:60]}'.",
+                  f"frase de até {teto} palavras: '{subtitulo[:60]}'.",
         ))
 
     primeiro = blocos[1]

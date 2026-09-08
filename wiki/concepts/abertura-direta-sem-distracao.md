@@ -5,6 +5,7 @@ category: editorial
 status: stable
 created: 2026-09-08
 updated: 2026-09-08
+status_merge: "PR #83 mergeado em e55f5a9 (08/09/2026); fonte 1.6.0 ressincronizada"
 related:
   - abertura-checker
   - content-checker
@@ -90,12 +91,24 @@ Fonte: IBGE 2025.                                (fonte no rodapé da trilha, "#
   `test_template_blocos_visuais`, `test_visual_density`, `test_agentic`, dublês de
   `test_orchestrator_aulas` e `test_expansao_de_aula_curta`, fixture `sample_course.json`.
 
+## Estado (08/09/2026)
+
+- PR [#83](https://github.com/alexandrebrt14-sys/curso-factory/pull/83) **mergeado** por squash na
+  `main` em `e55f5a9` (08/09/2026); suíte na `main`: 487 verdes, `ruff` limpo.
+- Fonte de estilo 1.6.0 (escrita-empreendedor PR #9, merge `9d7c341`, sha256
+  `2fc0817a84c052e2931bfab470c822cd72b24e33ab2204d0db85433e1435c55d`) **ressincronizada**:
+  ponteiros `DIRETRIZ_EDITORIAL.md` e `GUIA_ESCRITA_HUMANIZADA.md` no hash novo,
+  `config/lexicos.json` regerado (bloco `aberturaEDistracao`; jargão sem a sigla da lei;
+  `tetos.D` igual). O [[abertura-checker]] passou a somar as famílias da fonte aos padrões
+  próprios e a ler `subtituloMaxPalavras` (25) para R1. Verificação:
+  `python -m escrita.sincronizar verificar DIRETRIZ_EDITORIAL.md` devolve "ponteiro sincronizado".
+
 ## Propagação
 
-Depois do merge do PR #9 da fonte: `python -m escrita.sincronizar verificar
-DIRETRIZ_EDITORIAL.md` (novo hash) e `python -m escrita.cli lexicos --json >
-config/lexicos.json`. Espelhos afetados: `DIRETRIZ_EDITORIAL.md`, `GUIA_ESCRITA_HUMANIZADA.md`,
-`config/lexicos.json`. Os padrões R1–R9 do [[abertura-checker]] são próprios deste repo.
+A cada nova versão da fonte: `python -m escrita.sincronizar verificar DIRETRIZ_EDITORIAL.md`
+(e o GUIA), atualizar `hash-fonte`/`sincronizado-em` nos dois ponteiros e
+`python -m escrita.cli lexicos --json > config/lexicos.json`. Os padrões próprios do
+[[abertura-checker]] continuam existindo como piso quando o espelho não traz o bloco.
 
 ## Checklist para quem escreve
 

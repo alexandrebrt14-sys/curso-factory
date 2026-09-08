@@ -1,8 +1,8 @@
 # Diretriz editorial deste repositório (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 6a38a143bf2c1c3b84ce1bb8608485a63b4b8069206c2f298351169edbbbc4ca
-sincronizado-em: 2026-09-03
+hash-fonte: 2fc0817a84c052e2931bfab470c822cd72b24e33ab2204d0db85433e1435c55d
+sincronizado-em: 2026-09-08
 
 A régua de escrita, os moldes de página, a tabela de tetos, o perfil do leitor e o glossário
 vivem na fonte acima. Este arquivo não repete nenhum número nem nenhuma lista. Quando algo aqui
@@ -40,9 +40,10 @@ três passadas, vícios de português, estruturas proibidas — passou a viver n
 
 Pedido do dono dos repositórios em 08/09/2026, literal na decisão
 `wiki/decisions/abertura-direta-sem-distracao-20260908.md`: o topo carregado dispersa o leitor
-e o card no meio compete com a leitura. Onde a fonte de estilo ainda pedir bloco de exercício
-por aula (molde D, "faça agora"), **esta seção vence** até a fonte ser regerada; o ponteiro
-registra a divergência de propósito.
+e o card no meio compete com a leitura. A fonte de estilo 1.6.0 (ponteiro acima, ressincronizado
+em 08/09/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
+`config/lexicos.json`, que o `abertura_checker` lê e soma aos padrões próprios; esta seção é o
+resumo local, e em divergência a fonte vence.
 
 - **R1. Abertura mínima obrigatória.** Toda página, artigo, aula e capítulo começa com H1
   (título), depois subtítulo em UMA frase, depois parágrafos diretos ao ponto. Nada antes nem

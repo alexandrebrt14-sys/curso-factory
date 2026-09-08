@@ -1,5 +1,17 @@
 # Changelog
 
+## 08/09/2026: ressincronização com a fonte de estilo 1.6.0
+
+- `DIRETRIZ_EDITORIAL.md` e `GUIA_ESCRITA_HUMANIZADA.md` apontam para o hash
+  `2fc0817a84c052e2931bfab470c822cd72b24e33ab2204d0db85433e1435c55d` (escrita-empreendedor
+  1.6.0, PR #9); `config/lexicos.json` regerado (bloco novo `aberturaEDistracao`; o jargão
+  perde a sigla da lei de dados; `tetos.D` inalterado).
+- `abertura_checker` passa a somar as famílias da fonte (`percursoAlternativo`, `mockup`,
+  `noSeuNegocio*`, `exercicio*`, `checkpoint*`, `verificacaoExplicita`, `lgpd`) aos padrões
+  próprios e a ler `subtituloMaxPalavras` (25) para R1; `lexicos_loader.familias_de_abertura`.
+  "falta evidência" fica fora da medição de Markdown (o marcador é tolerado no rascunho e
+  barrado na publicação).
+
 ## 08/09/2026: abertura direta e sem distração (R1 a R9)
 
 Pedido do dono: o topo carregado dispersa o leitor e o card no meio compete com a leitura.

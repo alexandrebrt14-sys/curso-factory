@@ -81,8 +81,15 @@ except AberturaError as e:
 
 ## Como estender os léxicos
 
-Padrões padrão em `_PADROES_PADRAO` (chaves `R3`, `R5_qualquer`, `R5_rotulo`, `R6`, `R8`,
-`R9`). A configuração **acrescenta** em `config/quality_rules.yaml`:
+Três camadas somadas, nenhuma remove a outra: (1) `_PADROES_PADRAO` do módulo (chaves `R3`,
+`R5_qualquer`, `R5_rotulo`, `R6`, `R8`, `R9`); (2) desde a ressincronização com a fonte 1.6.0
+(08/09/2026), o bloco `aberturaEDistracao` de `config/lexicos.json` lido por
+`lexicos_loader.familias_de_abertura` (`percursoAlternativo`→R3, `mockup` e
+`noSeuNegocioInstrucao`→R5 em qualquer linha, `noSeuNegocio`→R5 em rótulo, `exercicioForte` e
+`exercicioRotulo`→R6, `checkpointForte` e `checkpointRotulo`→R8, `verificacaoExplicita` e
+`lgpd`→R9; `subtituloMaxPalavras` vira o teto de R1); lista da fonte é literal, string é regex;
+"falta evidência" fica fora da medição de Markdown porque o rascunho tolera o marcador; (3) a
+configuração, que **acrescenta** em `config/quality_rules.yaml`:
 
 ```yaml
 validation:
@@ -102,7 +109,7 @@ código. Desligar tudo: `enabled: false` (não recomendado; o dono pediu a regra
 
 ## Testes
 
-`tests/test_abertura_sem_distracao.py` (58 casos): as nove regras no Markdown, no
+`tests/test_abertura_sem_distracao.py` (64 casos, seis deles sobre o vínculo com a fonte 1.6.0): as nove regras no Markdown, no
 `CourseDefinition` e no TSX gerado. Testes antigos invertidos por esta decisão estão listados
 em [[abertura-direta-sem-distracao]].
 
