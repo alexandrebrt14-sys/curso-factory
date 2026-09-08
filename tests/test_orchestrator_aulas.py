@@ -136,12 +136,11 @@ class _LedgerFalso:
 def orquestrador(tmp_path, monkeypatch):
     import src.orchestrator as mod
 
-    monkeypatch.setattr(mod, "DRAFTS_DIR", tmp_path)
     # A passada de expansão tem testes próprios; aqui cada aula é uma chamada.
     monkeypatch.setattr(mod, "DRAFT_EXPANSAO_ABAIXO_DO_PISO", False)
     cliente = _ClienteFalso()
     monkeypatch.setattr("src.llm_client.make_llm_client", lambda tracker: cliente)
-    orq = Orchestrator(cost_tracker=_CostTrackerFalso())
+    orq = Orchestrator(cost_tracker=_CostTrackerFalso(), drafts_dir=tmp_path)
     orq.client = cliente
     for agente in (orq.researcher, orq.writer, orq.analyzer, orq.classifier, orq.reviewer):
         agente.client = cliente
@@ -279,13 +278,11 @@ def test_conversor_prefere_rascunho_quando_a_revisao_e_comentario() -> None:
 
 
 def _orquestrador_com_ledger(tmp_path, monkeypatch, ledger):
-    import src.orchestrator as mod
 
-    monkeypatch.setattr(mod, "DRAFTS_DIR", tmp_path)
     cliente = _ClienteFalso()
     cliente.tracker = ledger
     monkeypatch.setattr("src.llm_client.make_llm_client", lambda tracker: cliente)
-    orq = Orchestrator(cost_tracker=ledger)
+    orq = Orchestrator(cost_tracker=ledger, drafts_dir=tmp_path)
     orq.client = cliente
     for agente in (orq.researcher, orq.writer, orq.analyzer, orq.classifier, orq.reviewer):
         agente.client = cliente

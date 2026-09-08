@@ -1,14 +1,16 @@
 """Rastreamento de custos em tempo real para chamadas LLM.
 
-Mantém log JSON em output/costs.json e oferece métodos para
-consultar totais diários, por sessão e verificar orçamento.
+Mantém o ledger em ``output/costs.json`` (lista de entradas) e oferece
+consultas por dia, por sessão e por curso, além da decisão de orçamento
+(:meth:`CostTracker.pode_chamar`) que o orquestrador consulta antes de cada
+chamada paga.
 """
 
 from __future__ import annotations
 
-import json
 import logging
-from datetime import UTC, date, datetime
+from collections.abc import Callable
+from datetime import UTC, datetime
 
 from src.config import (
     CLAUDE_BUDGET_PER_COURSE,
@@ -17,10 +19,13 @@ from src.config import (
     SESSION_BUDGET_TOTAL,
     TOTAL_BUDGET_PER_COURSE,
 )
+from src.fsutil import read_json_or_none, write_json_atomic
 
 logger = logging.getLogger(__name__)
 
 COSTS_FILE = OUTPUT_DIR / "costs.json"
+
+Entry = dict
 
 
 class CostTracker:
@@ -28,24 +33,31 @@ class CostTracker:
 
     def __init__(self, session_id: str | None = None) -> None:
         self.session_id = session_id or datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-        self._entries: list[dict] = []
+        self._entries: list[Entry] = []
         self._load()
 
+    # ------------------------------------------------------------------ I/O
     def _load(self) -> None:
-        """Carrega entradas existentes do arquivo JSON."""
-        if COSTS_FILE.exists():
-            try:
-                with open(COSTS_FILE, encoding="utf-8") as f:
-                    self._entries = json.load(f)
-            except (json.JSONDecodeError, OSError):
-                self._entries = []
+        """Carrega o ledger. Arquivo corrompido é isolado, nunca sobrescrito."""
+        data = read_json_or_none(COSTS_FILE)
+        if isinstance(data, list):
+            self._entries = [e for e in data if isinstance(e, dict)]
+        elif data is not None:
+            logger.error("Ledger %s não é uma lista; começando vazio", COSTS_FILE)
+            self._entries = []
 
     def _save(self) -> None:
-        """Persiste todas as entradas no arquivo JSON."""
-        COSTS_FILE.parent.mkdir(parents=True, exist_ok=True)
-        with open(COSTS_FILE, "w", encoding="utf-8") as f:
-            json.dump(self._entries, f, indent=2, ensure_ascii=False, default=str)
+        """Persiste o ledger. Falha de disco vira log, não interrompe o pipeline."""
+        try:
+            write_json_atomic(COSTS_FILE, self._entries)
+        except OSError as exc:
+            logger.error("Não consegui gravar o ledger de custos em %s: %s", COSTS_FILE, exc)
 
+    def entries(self) -> list[Entry]:
+        """Cópia das entradas do ledger (fonte única para relatórios)."""
+        return list(self._entries)
+
+    # ------------------------------------------------------------- registro
     def track(
         self,
         provider: str,
@@ -56,7 +68,7 @@ class CostTracker:
         course_id: str = "",
     ) -> None:
         """Registra uma chamada LLM com seu custo."""
-        entry = {
+        entry: Entry = {
             "timestamp": datetime.now(UTC).isoformat(),
             "provider": provider,
             "model": model,
@@ -69,28 +81,48 @@ class CostTracker:
         self._entries.append(entry)
         self._save()
 
+    # ------------------------------------------------------------- consultas
+    def _totals_by_provider(self, pred: Callable[[Entry], bool]) -> dict[str, float]:
+        totais: dict[str, float] = {}
+        for e in self._entries:
+            if pred(e):
+                p = str(e.get("provider", ""))
+                totais[p] = totais.get(p, 0.0) + float(e.get("custo_usd", 0.0))
+        return totais
+
     def get_daily_total(self, provider: str) -> float:
-        """Retorna o custo total do dia para um provider específico."""
-        hoje = date.today().isoformat()
+        """Custo total de hoje (dia UTC, mesmo fuso dos carimbos) para um provider."""
+        hoje = datetime.now(UTC).date().isoformat()
         return sum(
-            e["custo_usd"]
+            float(e.get("custo_usd", 0.0))
             for e in self._entries
-            if e["provider"] == provider and e["timestamp"].startswith(hoje)
+            if e.get("provider") == provider and str(e.get("timestamp", "")).startswith(hoje)
         )
 
     def get_session_total(self) -> dict[str, float]:
-        """Retorna o custo total da sessão atual por provider."""
-        totais: dict[str, float] = {}
-        for e in self._entries:
-            if e["sessao"] == self.session_id:
-                totais[e["provider"]] = totais.get(e["provider"], 0.0) + e["custo_usd"]
-        return totais
+        """Custo total da sessão atual por provider."""
+        return self._totals_by_provider(lambda e: e.get("sessao") == self.session_id)
 
+    def get_course_total(self, course_id: str) -> dict[str, float]:
+        """Custos por provider para um curso específico."""
+        return self._totals_by_provider(lambda e: e.get("course_id") == course_id)
+
+    def indice_atual(self) -> int:
+        """Posição do ledger, para medir o que uma etapa consumiu (`entradas_desde`)."""
+        return len(self._entries)
+
+    def entradas_desde(self, indice: int, course_id: str = "") -> list[Entry]:
+        """Entradas registradas a partir de `indice`, filtradas por curso quando pedido."""
+        novas = self._entries[indice:]
+        if course_id:
+            novas = [e for e in novas if e.get("course_id") == course_id]
+        return list(novas)
+
+    # ------------------------------------------------------------ orçamento
     def is_over_budget(self, provider: str) -> bool:
-        """Verifica se o provider excedeu o orçamento diário."""
+        """Verifica o teto diário do provider e o teto total da sessão."""
         daily = self.get_daily_total(provider)
-        session_totals = self.get_session_total()
-        session_sum = sum(session_totals.values())
+        session_sum = sum(self.get_session_total().values())
         if daily >= DAILY_BUDGET_PER_PROVIDER:
             logger.warning("Provider %s excedeu orçamento diário: USD %.4f", provider, daily)
             return True
@@ -99,24 +131,15 @@ class CostTracker:
             return True
         return False
 
-    def get_course_total(self, course_id: str) -> dict[str, float]:
-        """Retorna custos por provider para um curso específico."""
-        totais: dict[str, float] = {}
-        for e in self._entries:
-            if e.get("course_id") == course_id:
-                p = e["provider"]
-                totais[p] = totais.get(p, 0.0) + e["custo_usd"]
-        return totais
-
     def pode_chamar(self, provider: str, course_id: str = "") -> tuple[bool, str]:
         """Decide se a próxima chamada cabe no orçamento e diz qual limite barrou.
 
-        Combina o teto por curso (`check_before_call`) com o teto total da
-        sessão. O teto DIÁRIO por provedor fica de fora de propósito: quando
-        um provedor cai e a cadeia de fallback concentra tudo em outro, o
-        teto diário do sobrevivente cortava o pipeline no meio (E2E de
-        02/09/2026: revisão interrompida na aula 2 com US$ 2,13 no Anthropic).
-        O que protege o bolso é o teto por curso e o da sessão.
+        Combina o teto por curso com o teto total da sessão. O teto DIÁRIO por
+        provedor fica de fora de propósito: quando um provedor cai e a cadeia
+        de fallback concentra tudo em outro, o teto diário do sobrevivente
+        cortava o pipeline no meio (E2E de 02/09/2026: revisão interrompida na
+        aula 2 com US$ 2,13 no Anthropic). O que protege o bolso é o teto por
+        curso e o da sessão.
 
         Returns:
             (True, "") quando pode chamar; (False, motivo) quando não.
@@ -143,52 +166,14 @@ class CostTracker:
                 )
         return True, ""
 
-    def indice_atual(self) -> int:
-        """Posição do ledger, para medir o que uma etapa consumiu (`entradas_desde`)."""
-        return len(self._entries)
-
-    def entradas_desde(self, indice: int, course_id: str = "") -> list[dict]:
-        """Entradas registradas a partir de `indice`, filtradas por curso quando pedido."""
-        novas = self._entries[indice:]
-        if course_id:
-            novas = [e for e in novas if e.get("course_id") == course_id]
-        return list(novas)
-
     def check_before_call(self, provider: str, course_id: str = "") -> bool:
-        """Verifica se a próxima chamada está dentro do budget.
+        """Forma booleana de :meth:`pode_chamar` (mantida por compatibilidade)."""
+        ok, motivo = self.pode_chamar(provider, course_id)
+        if not ok:
+            logger.warning("Chamada a %s barrada: %s", provider, motivo)
+        return ok
 
-        Returns True se está OK, False se deve bloquear.
-        Aplica limites:
-        - Claude: máx $5.00 por curso
-        - Total: máx $10.00 por curso
-        """
-        if not course_id:
-            return not self.is_over_budget(provider)
-
-        course_costs = self.get_course_total(course_id)
-        total_course = sum(course_costs.values())
-        claude_course = course_costs.get("anthropic", 0.0)
-
-        if provider == "anthropic" and claude_course >= CLAUDE_BUDGET_PER_COURSE:
-            logger.warning(
-                "Budget Claude excedido para curso %s: USD %.2f >= %.2f",
-                course_id,
-                claude_course,
-                CLAUDE_BUDGET_PER_COURSE,
-            )
-            return False
-
-        if total_course >= TOTAL_BUDGET_PER_COURSE:
-            logger.warning(
-                "Budget total excedido para curso %s: USD %.2f >= %.2f",
-                course_id,
-                total_course,
-                TOTAL_BUDGET_PER_COURSE,
-            )
-            return False
-
-        return True
-
+    # ------------------------------------------------------------- relatório
     def report(self) -> str:
         """Gera relatório formatado dos custos da sessão."""
         totais = self.get_session_total()

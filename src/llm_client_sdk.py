@@ -32,14 +32,13 @@ Diferencas deliberadas vs legado (documentadas, nao acidentais):
 from __future__ import annotations
 
 import logging
-import os
 import sys
-from pathlib import Path
 from typing import Any
 
 from src.cache import Cache
-from src.config import MAX_TOKENS_PER_CALL
+from src.config import GEO_ORCHESTRATOR_PATH, MAX_TOKENS_PER_CALL
 from src.cost_tracker import CostTracker
+from src.llm_base import BaseLLMClient
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +57,7 @@ PROVIDER_TO_SDK: dict[str, tuple[str, str]] = {
 
 def _ensure_sdk_on_path() -> None:
     """Adiciona o repo do geo-orchestrator ao sys.path (path-based install)."""
-    root = Path(os.environ.get("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator")))
+    root = GEO_ORCHESTRATOR_PATH
     if not (root / "geo_orchestrator_sdk" / "__init__.py").exists():
         raise ImportError(
             f"geo_orchestrator_sdk nao encontrado em {root} — defina "
@@ -68,11 +67,13 @@ def _ensure_sdk_on_path() -> None:
         sys.path.insert(0, str(root))
 
 
-class SDKLLMClient:
-    """Drop-in do LLMClient legado, delegando ao geo_orchestrator_sdk.
+class SDKLLMClient(BaseLLMClient):
+    """Backend que delega ao geo_orchestrator_sdk.
 
-    Mesma superficie usada pelos agents: call(), atalhos call_<provider>(),
-    set_course_context(), close(), context manager e cost_tracker local.
+    Mesma superfície do `LLMClient` (herdada de `BaseLLMClient`): call(),
+    atalhos call_<provider>(), set_course_context(), close(), context manager
+    e cost_tracker local. Não há circuito nem cadeia própria: isso é do
+    orquestrador.
     """
 
     def __init__(
@@ -84,25 +85,12 @@ class SDKLLMClient:
         _ensure_sdk_on_path()
         from geo_orchestrator_sdk import call_llm  # noqa: PLC0415
 
+        super().__init__(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)
         self._call_llm = call_llm
-        self.cost_tracker = cost_tracker or CostTracker()
-        self.cache = cache if cache is not None else (Cache() if use_cache else None)
-        self.current_course_id: str = ""
         logger.info("LLM backend: geo_orchestrator_sdk (CURSO_FACTORY_LLM_BACKEND=sdk)")
 
-    # --- interface legada -------------------------------------------------
-
-    def set_course_context(self, course_id: str) -> None:
-        self.current_course_id = course_id or ""
-
     def close(self) -> None:
-        """No-op: o SDK fecha o ConnectionPool por chamada (licao F3)."""
-
-    def __enter__(self) -> SDKLLMClient:
-        return self
-
-    def __exit__(self, *exc: object) -> None:
-        self.close()
+        """No-op: o SDK fecha o ConnectionPool por chamada (lição F3)."""
 
     def call(self, provider: str, prompt: str, **kwargs: Any) -> str:
         if provider not in PROVIDER_TO_SDK:
@@ -123,53 +111,24 @@ class SDKLLMClient:
         if kwargs:
             logger.debug("SDK backend: kwargs nao mapeados ignorados: %s", sorted(kwargs))
 
-        # Cache local do curso-factory (mesma posicao do fluxo legado).
-        if self.cache is not None:
-            cached = self.cache.get(prompt, provider, alias)
-            if cached is not None:
-                return cached
+        # Cache local do curso-factory (mesma posição do fluxo legado).
+        cached = self._cache_get(prompt, provider, alias)
+        if cached is not None:
+            return cached
 
         result = self._call_llm(prompt, task_type=task_type, alias=alias, max_tokens=max_tokens)
 
-        # Dupla contabilidade: FinOps global ja registrado pelo SDK; aqui o
-        # ledger LOCAL por curso (relatorios por course_id continuam integros).
-        self.cost_tracker.track(
+        # Dupla contabilidade: FinOps global já registrado pelo SDK; aqui o
+        # ledger LOCAL por curso (relatórios por course_id continuam íntegros).
+        self._registrar_custo(
             provider,
-            result.tokens_input,
-            result.tokens_output,
-            result.model,
-            result.cost,
-            course_id=self.current_course_id,
-        )
-        logger.info(
-            "LLM(sdk) %s->%s/%s: %d tok_in, %d tok_out, USD %.4f (curso=%s%s)",
-            provider,
-            result.alias,
-            result.model,
+            f"{result.alias}/{result.model}",
             result.tokens_input,
             result.tokens_output,
             result.cost,
-            self.current_course_id or "n/a",
-            ", fallback" if result.fallback_used else "",
+            rotulo="LLM(sdk)",
+            detalhe=", fallback" if result.fallback_used else "",
         )
 
-        if self.cache is not None:
-            self.cache.set(prompt, provider, alias, result.text)
+        self._cache_set(prompt, provider, alias, result.text)
         return result.text
-
-    # --- atalhos legados ---------------------------------------------------
-
-    def call_perplexity(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("perplexity", prompt, **kwargs)
-
-    def call_openai(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("openai", prompt, **kwargs)
-
-    def call_google(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("google", prompt, **kwargs)
-
-    def call_groq(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("groq", prompt, **kwargs)
-
-    def call_anthropic(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("anthropic", prompt, **kwargs)

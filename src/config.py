@@ -79,6 +79,32 @@ CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
 # --- Modelo Claude (AAA = Opus) ---
 CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
 
+# --- Transporte e backend LLM ---
+# Timeout de leitura HTTP em segundos. 600 s: o research em sonar-deep-research
+# passa de minutos, e geração densa de aula não pode cair em fallback por pressa.
+HTTP_TIMEOUT: float = float(os.getenv("HTTP_TIMEOUT", "600"))
+# Clone do geo-orchestrator quando CURSO_FACTORY_LLM_BACKEND=sdk.
+GEO_ORCHESTRATOR_PATH: Path = Path(
+    os.getenv("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator"))
+)
+
+
+def LLM_BACKEND() -> str:  # noqa: N802 - lido em tempo de chamada, por isso função
+    """Backend LLM ativo: "sdk" (geo_orchestrator_sdk) ou "legacy" (httpx próprio).
+
+    É função, e não constante, para que a troca por variável de ambiente valha
+    dentro do mesmo processo (testes e sessões longas).
+    """
+    valor = os.getenv("CURSO_FACTORY_LLM_BACKEND", "").strip().lower()
+    return "sdk" if valor == "sdk" else "legacy"
+
+
+# --- Cliente e certificação ---
+# Cliente padrão quando a CLI não recebe --client (ver `clients.get_client_from_env`).
+CLIENT_ENV_VAR: str = "CURSO_FACTORY_CLIENT"
+# Segredo HMAC dos certificados (`cli certify`). Vazio = certificado sem assinatura.
+CERTIFICATE_SECRET_ENV_VAR: str = "CERTIFICATE_SECRET"
+
 
 def load_courses() -> list[dict[str, Any]]:
     """Carrega a lista de cursos definidos em config/courses.yaml."""
@@ -92,16 +118,24 @@ def load_courses() -> list[dict[str, Any]]:
     return data.get("courses", data) if isinstance(data, dict) else data
 
 
+#: Variável de ambiente que guarda a chave de cada provider.
+API_KEY_ENV_VARS: dict[str, str] = {
+    "openai": "OPENAI_API_KEY",
+    "anthropic": "ANTHROPIC_API_KEY",
+    "google": "GOOGLE_API_KEY",
+    "groq": "GROQ_API_KEY",
+    "perplexity": "PERPLEXITY_API_KEY",
+}
+
+
 def get_api_key(provider: str) -> str:
-    """Retorna a chave de API para o provider indicado."""
-    keys = {
-        "openai": OPENAI_API_KEY,
-        "anthropic": ANTHROPIC_API_KEY,
-        "google": GOOGLE_API_KEY,
-        "groq": GROQ_API_KEY,
-        "perplexity": PERPLEXITY_API_KEY,
-    }
-    key = keys.get(provider.lower(), "")
+    """Retorna a chave de API para o provider indicado.
+
+    Lê o ambiente na hora da chamada (não a cópia feita no import), para que
+    rotação de chave e `monkeypatch.setenv` em testes tenham efeito.
+    """
+    env_var = API_KEY_ENV_VARS.get(provider.lower(), "")
+    key = os.getenv(env_var, "") if env_var else ""
     if not key:
         raise ValueError(f"Chave de API não configurada para o provider: {provider}")
     return key

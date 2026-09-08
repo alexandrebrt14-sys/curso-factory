@@ -101,13 +101,13 @@ def tutor_endpoint(course_slug: str, payload: TutorRequest) -> TutorResponse:
     """
     try:
         mode = TutorMode(payload.mode)
-    except ValueError:
+    except ValueError as exc:
         raise HTTPException(
             status_code=400,
             detail=(
                 f"mode inválido: {payload.mode!r}. Valores aceitos: {[m.value for m in TutorMode]}."
             ),
-        )
+        ) from exc
 
     memory = _get_memory(payload.student_id, course_slug)
 

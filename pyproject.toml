@@ -51,7 +51,7 @@ include = ["src*"]
 target-version = "py311"
 line-length = 100
 # Scripts legados (scripts/legacy/) são congelados — não fazem parte do produto.
-extend-exclude = ["scripts/legacy", "output", "wiki"]
+extend-exclude = ["scripts/legacy", "output", "wiki", "docs/research"]
 
 [tool.ruff.lint]
 # E/W: pycodestyle · F: pyflakes · I: isort · UP: pyupgrade · B: flake8-bugbear
@@ -64,6 +64,8 @@ ignore = ["E501", "B008", "UP042"]
 [tool.ruff.lint.per-file-ignores]
 # Testes inserem o root no sys.path antes de importar src → E402 é intencional.
 "tests/*" = ["E402"]
+# Scripts utilitários inserem a raiz no sys.path antes de importar src.
+"scripts/*" = ["E402"]
 # course_indexer carrega .env (load_dotenv) antes de derivar constantes de módulo.
 "src/indexer/course_indexer.py" = ["E402"]
 

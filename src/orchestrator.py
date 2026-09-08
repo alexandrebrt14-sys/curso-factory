@@ -35,7 +35,6 @@ leitura: sem exercício, checkpoint, mockup, "requer verificação" nem LGPD
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 from collections.abc import Callable
@@ -59,6 +58,7 @@ from src.config import (
     TRAIL_RESEARCH_CHARS,
 )
 from src.cost_tracker import CostTracker
+from src.fsutil import quarantine_corrupt, read_json_or_none, write_json_atomic
 from src.models import Course, Module
 
 if TYPE_CHECKING:
@@ -66,6 +66,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+#: Diretório de rascunhos do cliente `default`. Os demais clientes gravam em
+#: `<client.output_dir>/drafts` (ver `Orchestrator.drafts_dir`), o mesmo lugar
+#: onde `cli certify` e `cli emit-llms-txt` os procuram.
 DRAFTS_DIR = OUTPUT_DIR / "drafts"
 
 #: Cabeçalho que abre cada aula no rascunho montado.
@@ -175,6 +178,7 @@ class Orchestrator:
         self,
         cost_tracker: CostTracker | None = None,
         client_context: ClientContext | None = None,
+        drafts_dir: Path | None = None,
     ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
         if client_context is None:
@@ -182,6 +186,10 @@ class Orchestrator:
 
             client_context = load_client("default")
         self.client_context = client_context
+        #: Rascunhos, checkpoints e resultados vão para o diretório do cliente,
+        #: para que dois clientes com o mesmo slug não colidam e para que os
+        #: comandos de publicação encontrem o que o pipeline gravou.
+        self.drafts_dir: Path = drafts_dir or (client_context.output_dir / "drafts")
         # B-019/D8: factory decide o backend: legado (default) ou
         # geo_orchestrator_sdk via CURSO_FACTORY_LLM_BACKEND=sdk (herda
         # timeout por task_type, fallback chain e FinOps do orquestrador).
@@ -197,27 +205,53 @@ class Orchestrator:
         #: entregues ao resultado quando a etapa fecha.
         self._avisos_pendentes: list[str] = []
 
+    # ── ciclo de vida ───────────────────────────────────────────────────
+
+    def close(self) -> None:
+        """Fecha o cliente LLM (conexões HTTP). Idempotente."""
+        fechar = getattr(self.client, "close", None)
+        if callable(fechar):
+            fechar()
+
+    def __enter__(self) -> Orchestrator:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
     # ── checkpoint ──────────────────────────────────────────────────────
 
     def _checkpoint_path(self, course_id: str) -> Path:
-        return DRAFTS_DIR / f"{course_id}_checkpoint.json"
+        return self.drafts_dir / f"{course_id}_checkpoint.json"
 
     def _save_checkpoint(self, course_id: str, result: PipelineResult, context: str = "") -> None:
-        """Salva checkpoint incremental após cada etapa concluída."""
+        """Salva checkpoint incremental após cada etapa concluída (escrita atômica)."""
         data = result.to_dict()
         data["_context"] = context
         path = self._checkpoint_path(course_id)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        try:
+            write_json_atomic(path, data)
+        except OSError as exc:
+            # Perder o checkpoint custa uma retomada; parar o pipeline custa o curso.
+            logger.error("Não consegui gravar o checkpoint %s: %s", path, exc)
+            return
         logger.info("Checkpoint salvo: %s (%d etapas)", path.name, len(result.etapas))
 
     def _load_checkpoint(self, course_id: str) -> tuple[PipelineResult, str] | None:
-        """Carrega checkpoint se existir, para resume após desconexão."""
+        """Carrega checkpoint se existir, para resume após desconexão.
+
+        Checkpoint corrompido (gravação interrompida em versão antiga) é posto
+        de lado com sufixo `.corrupt-*` e o pipeline recomeça do zero, em vez
+        de reprovar todo `create` daquele slug com `JSONDecodeError`.
+        """
         path = self._checkpoint_path(course_id)
-        if not path.exists():
+        data = read_json_or_none(path)
+        if data is None:
             return None
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
+        if not isinstance(data, dict):
+            logger.error("Checkpoint %s com formato inesperado; ignorado", path.name)
+            quarantine_corrupt(path)
+            return None
         result = PipelineResult(course_id)
         result.etapas = data.get("etapas", {})
         result.avisos = list(data.get("avisos", []))
@@ -327,7 +361,7 @@ class Orchestrator:
 
     def run(self, course: Course) -> PipelineResult:
         """Executa o pipeline completo para um curso, com resume de checkpoint."""
-        DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+        self.drafts_dir.mkdir(parents=True, exist_ok=True)
 
         # Achado F32: propaga course_id para todas as chamadas LLM, fazendo
         # com que o cost_tracker registre cada call sob o curso correto.
@@ -398,7 +432,7 @@ class Orchestrator:
                 self._save_checkpoint(course.id, result, saida)
             except Exception as exc:
                 msg = f"Erro na etapa '{nome}': {exc}"
-                logger.error(msg)
+                logger.exception(msg)
                 result.erros.append(msg)
                 self._registrar_procedencia(
                     result, nome, provider, self._procedencia(marca, course.id)
@@ -414,7 +448,7 @@ class Orchestrator:
         self._save_result(course.id, result)
         cp = self._checkpoint_path(course.id)
         if result.sucesso and cp.exists():
-            cp.unlink()
+            cp.unlink(missing_ok=True)
             logger.info("Checkpoint removido (pipeline concluído com sucesso)")
         logger.info(
             "Pipeline %s para curso '%s'",
@@ -764,7 +798,7 @@ class Orchestrator:
                     bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False
                 )
             except Exception as exc:
-                logger.warning("Quality gate falhou em '%s': %s", rotulo, exc)
+                logger.warning("Quality gate falhou em '%s': %s", rotulo, exc, exc_info=True)
                 result.gate[rotulo] = {
                     "aprovado": None,
                     "erros": [f"gate falhou: {exc}"],
@@ -789,7 +823,7 @@ class Orchestrator:
             try:
                 geo_achados = gate.check_geo(final, "curso", geo_config)
             except Exception as exc:
-                logger.warning("Camada GEO falhou: %s", exc)
+                logger.warning("Camada GEO falhou: %s", exc, exc_info=True)
                 geo_achados = []
             erros_geo = [a.mensagem for a in geo_achados if a.tipo == "error"]
             result.gate["curso"] = {
@@ -852,7 +886,6 @@ class Orchestrator:
         """Salva o resultado do pipeline em JSON."""
         timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         filename = f"{course_id}_{timestamp}.json"
-        path = DRAFTS_DIR / filename
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(result.to_dict(), f, indent=2, ensure_ascii=False)
+        path = self.drafts_dir / filename
+        write_json_atomic(path, result.to_dict())
         logger.info("Resultado salvo em: %s", path)

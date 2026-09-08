@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 from src.config import CACHE_DIR, CACHE_TTL_SECONDS
+from src.fsutil import write_json_atomic
 
 logger = logging.getLogger(__name__)
 
@@ -68,15 +69,22 @@ class Cache:
             "prompt_preview": prompt[:200],
             "result": result,
         }
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        try:
+            write_json_atomic(path, data)
+        except OSError as exc:
+            # Cache é otimização: falha de disco não pode derrubar a chamada.
+            logger.warning("Não consegui gravar o cache %s: %s", key[:12], exc)
+            return
         logger.debug("Cache gravado: chave %s", key[:12])
 
     def clear(self) -> int:
         """Remove todas as entradas do cache. Retorna quantidade removida."""
         count = 0
         for path in self._dir.glob("*.json"):
-            path.unlink()
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                continue
             count += 1
         logger.info("Cache limpo: %d entradas removidas", count)
         return count
@@ -89,7 +97,7 @@ class Cache:
             try:
                 with open(path, encoding="utf-8") as f:
                     data = json.load(f)
-                if now - data.get("created", 0) > self.ttl:
+                if now - data.get("created", 0) >= self.ttl:
                     path.unlink()
                     count += 1
             except (json.JSONDecodeError, OSError):
