@@ -1,8 +1,15 @@
 ---
 name: abertura-direta-sem-distracao-20260908
 description: "Toda aula abre com título, subtítulo e parágrafo; sem faça agora, mockup, checkpoint, requer verificação, LGPD; fontes só no rodapé (R1 a R9, pedido do dono)."
+type: feedback   # preferência declarada pelo dono: não decai
+status: stable
+created: 2026-09-08
+updated: 2026-09-08
+related:
+  - abertura-direta-sem-distracao
+  - abertura-checker
 metadata:
-  type: feedback   # preferência declarada pelo dono: não decai
+  type: feedback
   created: 2026-09-08
 ---
 
@@ -19,7 +26,8 @@ em corpo pequeno, com nome e link (R7). As nove regras estão numeradas em
 `QualityGate`, pelo orquestrador e por `TsxGenerator.render_page`, que levanta `AberturaError`
 e não escreve o arquivo).
 
-Relacionadas: [[bastidor-fora-da-aula-20260903]], [[geracao-por-aula-e-insumo-correto]],
+Relacionadas: [[abertura-direta-sem-distracao]] (conceito), [[abertura-checker]] (gate),
+[[bastidor-fora-da-aula-20260903]], [[geracao-por-aula-e-insumo-correto]],
 [[diretriz-editorial-v3-narrativa-sem-cota]].
 
 ---

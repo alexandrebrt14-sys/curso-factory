@@ -4,12 +4,14 @@ type: entity
 category: validator
 status: stable
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-09-08
 related:
   - quality-gate-5-camadas
   - andragogia-knowles
   - taxonomia-bloom
   - padrao-editorial-hsm-hbr
+  - abertura-checker
+  - abertura-direta-sem-distracao
 ---
 
 # content_checker.py (camada 2 do quality gate)
@@ -18,7 +20,21 @@ Validator em `src/validators/content_checker.py`. Camada **2 —
 Conteúdo** do [[quality-gate-5-camadas]]. Valida estrutura editorial e
 pedagógica de cada módulo gerado.
 
-## Cheques
+## Atualização de 08/09/2026 — a unidade é a aula, e a aula não tem exercício
+
+Os cheques abaixo descrevem o estado de 26/05/2026 e ficam como histórico. Desde
+27/08/2026 a unidade medida é a **aula** (tetos em `config/lexicos.json`, `tetos.D`), e
+desde 08/09/2026 valem as regras [[abertura-direta-sem-distracao]]:
+
+- **Exercícios: zero por aula** (`min_exercises_per_lesson: 0`). O cheque 5 abaixo foi
+  invertido: a presença de "faça agora"/"exercício" reprova, pela categoria `abertura`
+  (regra R6), medida pelo [[abertura-checker]] e emitida por `check_content` (item 15).
+- **Categoria `abertura`** (erro bloqueante, aula e trilha): R1 (subtítulo e parágrafo depois
+  do H1), R3, R5, R6, R7 (fonte só no rodapé da trilha), R8, R9. `erros_de_abertura()` é a
+  ponte; `QualityGate._check_content_por_unidade` passa a medir também a trilha.
+- Tabela, blockquote e negrito não têm piso desde 02/09/2026; apoio visual é teto.
+
+## Cheques (estado de 26/05/2026, histórico)
 
 1. **Contagem de palavras** por módulo: 2.500 a 4.000.
 2. **Presença de tabelas**: mínimo 1 tabela markdown (com pipes) por
