@@ -479,8 +479,7 @@ curso-factory/
 │   │       └── review.md     # (~160 linhas) Revisão e correção ativa
 │   ├── generators/
 │   │   ├── schema_builder.py # Builds CourseDefinition from pipeline output
-│   │   ├── metadata_sync.py  # Emits output/course_catalog.json (consumed externally, never writes to landing-page-geo)
-│   │   └── build_validator.py # TSX build validation + syntax check
+│   │   └── metadata_sync.py  # Emits output/course_catalog.json (consumed externally, never writes to landing-page-geo)
 │   ├── schemas/
 │   │   └── course.schema.json # JSON Schema para CourseDefinition
 │   └── validators/

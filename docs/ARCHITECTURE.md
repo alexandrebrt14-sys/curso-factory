@@ -55,7 +55,6 @@ QualityGate (acentos + conteúdo + links + voice_guard + html opcional)
 - `tsx_generator.py` — Jinja2 puro; templates em `src/templates/*.j2`. Sem regex de substituição.
 - `schema_builder.py` — converte saída do pipeline em `CourseDefinition` validado.
 - `metadata_sync.py` — escreve `output/course_catalog.json` (consumido por worker externo da landing page).
-- `build_validator.py` — roda `npx next build` no diretório da landing page (opcional).
 
 ### 7. Validação — `src/validators/`
 - `accent_checker.py` — 300+ palavras PT-BR sem acento, com auto-fix preservando código/URLs.

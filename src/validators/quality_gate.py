@@ -116,8 +116,11 @@ class QualityGate:
         """
         result = GateResult()
 
-        # 0. Auto-correção de acentos (se habilitada)
+        # 0. Auto-correção de acentos (se habilitada). `texto_corrigido` é
+        # sempre o texto que o gate avaliou: sem auto_fix é o próprio input
+        # (antes ficava vazio e cada chamador fazia `or texto`).
         working_text = text
+        result.texto_corrigido = text
         if self.auto_fix:
             working_text, num_correcoes = fix_accents(text)
             result.acentos_corrigidos = num_correcoes

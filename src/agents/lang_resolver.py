@@ -4,10 +4,8 @@ Wave 8 — Multi-idioma. Permite que cada agente carregue o prompt na
 língua escolhida, caindo de volta para PT-BR (canônico) e finalmente para
 o prompt raiz quando o idioma alvo não tiver tradução.
 
-NOTA DE INTEGRAÇÃO: este módulo NÃO modifica `src/agents/base.py` na Wave 8.
-A integração com `Agent._load_prompt_template` ficou documentada em
-`curso-factory.wiki/Multi-Language.md` e será aplicada numa wave futura,
-quando o pipeline aceitar `editorial.language` no `client.yaml`.
+Integrado em `Agent._load_prompt_template` (`src/agents/base.py`): cada
+agente resolve o prompt pelo idioma que carrega em `Agent.language`.
 
 Cascata::
 

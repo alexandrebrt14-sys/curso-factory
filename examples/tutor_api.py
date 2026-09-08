@@ -34,8 +34,9 @@ from __future__ import annotations
 
 import logging
 
-# Imports do FastAPI são lazy — o stub não deve quebrar `pytest tests/`
-# em ambientes onde fastapi não está instalado.
+# FastAPI é dependência opcional (`pip install -e ".[tutor-api]"`). Sem ela
+# este módulo falha no import com instrução clara; `pytest tests/` não o
+# importa, então a bateria não depende do FastAPI.
 try:
     from fastapi import FastAPI, HTTPException
     from pydantic import BaseModel

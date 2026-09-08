@@ -42,12 +42,16 @@ fonte.
 
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from src.validators.lexicos_loader import familias_de_abertura
 from src.validators.rules_loader import validation_section
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from src.models import CourseDefinition
@@ -207,7 +211,8 @@ def _termos_da_fonte(chave: str) -> list[str]:
                 if isinstance(t, str) and t.strip() and t.strip().lower() not in _EXCLUIR_DA_FONTE
             )
         elif isinstance(bruto, str) and bruto.strip():
-            termos.append(bruto)
+            # Mesmo tratamento das listas: termo literal, não regex.
+            termos.append(_literal(bruto.strip()))
     return termos
 
 
@@ -230,14 +235,21 @@ def _padroes(chave: str) -> list[re.Pattern[str]]:
             for t in extra.get(chave, []) or []:
                 if isinstance(t, str) and t.strip():
                     termos.append(re.escape(t.strip()) if not t.startswith("re:") else t[3:])
-    except Exception:  # noqa: BLE001 - configuração ausente nunca derruba o gate
-        pass
+    except (TypeError, AttributeError, KeyError) as exc:
+        # Configuração malformada nunca derruba o gate, mas o operador precisa saber.
+        logger.warning("validation.abertura.termos ignorado (formato inválido): %s", exc)
+    return _compilar(tuple(termos))
+
+
+@lru_cache(maxsize=64)
+def _compilar(termos: tuple[str, ...]) -> list[re.Pattern[str]]:
+    """Compila uma vez por conjunto de termos: `_padroes` roda por regra e por bloco."""
     compilados: list[re.Pattern[str]] = []
     for t in termos:
         try:
             compilados.append(re.compile(t, re.IGNORECASE | re.MULTILINE))
-        except re.error:
-            continue
+        except re.error as exc:
+            logger.warning("Padrão de abertura ignorado (%s): %r", exc, t)
     return compilados
 
 
