@@ -122,12 +122,12 @@ class SDKLLMClient(BaseLLMClient):
         # ledger LOCAL por curso (relatórios por course_id continuam íntegros).
         self._registrar_custo(
             provider,
-            f"{result.alias}/{result.model}",
+            result.model,
             result.tokens_input,
             result.tokens_output,
             result.cost,
             rotulo="LLM(sdk)",
-            detalhe=", fallback" if result.fallback_used else "",
+            detalhe=f", alias={result.alias}" + (", fallback" if result.fallback_used else ""),
         )
 
         self._cache_set(prompt, provider, alias, result.text)
