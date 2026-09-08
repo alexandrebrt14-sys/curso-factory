@@ -19,9 +19,6 @@ from src.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
 
-#: Provedores que o pipeline conhece pelo nome curto.
-PROVIDER_NAMES: tuple[str, ...] = ("perplexity", "openai", "google", "groq", "anthropic")
-
 
 class BaseLLMClient(ABC):
     """Contrato que o orquestrador e os agentes usam, independente do transporte."""
@@ -118,4 +115,4 @@ class BaseLLMClient(ABC):
         return self.call("anthropic", prompt, **kwargs)
 
 
-__all__ = ["PROVIDER_NAMES", "BaseLLMClient"]
+__all__ = ["BaseLLMClient"]

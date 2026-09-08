@@ -322,7 +322,7 @@ class LLMClient(BaseLLMClient):
         # normal é o Orchestrator fechar. Erros no destrutor não têm dono.
         try:
             self.close()
-        except (OSError, RuntimeError):
+        except Exception:  # noqa: BLE001 - no encerramento do interpretador tudo pode falhar
             pass
 
     # --- estado por provedor ------------------------------------------------

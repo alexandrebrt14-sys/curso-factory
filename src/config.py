@@ -23,11 +23,8 @@ CACHE_DIR = ROOT_DIR / ".cache"
 load_dotenv(ROOT_DIR / ".env")
 
 # --- Chaves de API ---
-OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
-GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
-PERPLEXITY_API_KEY: str = os.getenv("PERPLEXITY_API_KEY", "")
+# Não há cópia das chaves em constante de módulo: `get_api_key(provider)` lê o
+# ambiente na hora da chamada (rotação de chave e testes com monkeypatch).
 
 # --- Limites FinOps (em USD) ---
 # Teto diário por provedor. Só o relatório e `is_over_budget` o usam; o

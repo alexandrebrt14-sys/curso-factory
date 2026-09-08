@@ -36,13 +36,12 @@ from src.certification.certificate import (  # noqa: E402
     render_html,
     verify_certificate,
 )
-from src.clients import load_client  # noqa: E402
+from src.clients import get_client_from_env, load_client  # noqa: E402
+from src.clients.context import ClientContext  # noqa: E402
 from src.models import CourseDefinition  # noqa: E402
 
 
-def _load_course(
-    slug: str, course_json: Path | None, client_id: str = "default"
-) -> CourseDefinition:
+def _load_course(slug: str, course_json: Path | None, client: ClientContext) -> CourseDefinition:
     """Carrega CourseDefinition de JSON ou monta um stub mínimo."""
     if course_json and course_json.exists():
         data = json.loads(course_json.read_text(encoding="utf-8"))
@@ -52,7 +51,6 @@ def _load_course(
 
     # Stub mínimo válido (descrição precisa de >=20 chars); autoria e domínio
     # vêm do cliente configurado, nunca de texto fixo no exemplo.
-    client = load_client(client_id)
     return CourseDefinition(
         slug=slug,
         titulo=f"Curso {slug.replace('-', ' ').title()}",
@@ -92,10 +90,17 @@ def main() -> int:
         default=0.7,
         help="Threshold mínimo de aprovação (default 0.7)",
     )
+    parser.add_argument(
+        "--client",
+        default=None,
+        metavar="ID",
+        help="Cliente emissor (default: CURSO_FACTORY_CLIENT ou 'default')",
+    )
 
     args = parser.parse_args()
 
-    course = _load_course(args.slug, args.course_json)
+    client = load_client(args.client) if args.client else get_client_from_env()
+    course = _load_course(args.slug, args.course_json, client)
 
     try:
         certificate = generate_certificate(
