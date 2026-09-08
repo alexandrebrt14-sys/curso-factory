@@ -42,6 +42,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from src import __version__ as PIPELINE_VERSION
 from src.agents.analyzer import Analyzer
 from src.agents.classifier import Classifier
 from src.agents.researcher import Researcher
@@ -772,6 +773,25 @@ class Orchestrator:
 
     # ── quality gate ao fim do pipeline ─────────────────────────────────
 
+    def _registrar_deteccao(self, gate_result: Any, course_id: str, rotulo: str) -> None:
+        """Alimenta o histórico que `cli detection-report` lê.
+
+        Até esta versão nada gravava o histórico: o comando existia e sempre
+        respondia "nenhum registro". Telemetria nunca derruba o pipeline.
+        """
+        try:
+            from src.detection_tracker import DetectionTracker
+
+            DetectionTracker().record_from_gate(
+                gate_result,
+                course_id=course_id,
+                module_name=rotulo,
+                client_id=getattr(self.client_context, "id", "default"),
+                pipeline_version=PIPELINE_VERSION,
+            )
+        except Exception as exc:
+            logger.warning("Histórico de detecção não gravado para '%s': %s", rotulo, exc)
+
     def _quality_gate(self, course: Course, result: PipelineResult) -> None:
         """Roda o quality gate aula a aula sobre o texto final e grava o veredito.
 
@@ -811,6 +831,7 @@ class Orchestrator:
                 "avisos": len(r.avisos),
                 "voice_guard_score": r.voice_guard_score,
             }
+            self._registrar_deteccao(r, course.id, rotulo)
             linhas.append(
                 f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)"
             )

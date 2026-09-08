@@ -40,6 +40,16 @@ class CourseFactory:
             client_context=client,
         )
 
+    def close(self) -> None:
+        """Fecha o orquestrador (e o cliente HTTP dele). Idempotente."""
+        self.orchestrator.close()
+
+    def __enter__(self) -> CourseFactory:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
     def run(
         self,
         nome: str,
