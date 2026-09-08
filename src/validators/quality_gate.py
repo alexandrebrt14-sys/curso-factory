@@ -4,8 +4,8 @@ Se qualquer validador falhar, bloqueia o deploy e gera
 relatório detalhado com o status de cada verificação.
 
 Inclui: acentuação (detecção + auto-correção), HTML,
-links e qualidade de conteúdo (tabelas, formatação,
-exercícios, andragogia, Bloom, clichês).
+links, qualidade de conteúdo (formatação, andragogia, Bloom,
+clichês) e abertura direta sem distração (R1 a R9).
 """
 
 from __future__ import annotations
@@ -237,17 +237,22 @@ class QualityGate:
         aula. Texto sem esse cabeçalho é medido inteiro, na unidade pedida.
         """
         from src.orchestrator import AULA_H1_RE, TRILHA_H1_RE, dividir_em_unidades
+        from src.validators.content_checker import erros_de_abertura
 
         if TRILHA_H1_RE.match(text.lstrip()) or module_name.startswith("Trilha "):
             # Fechamento da trilha (objetivos, glossário, FAQ, fontes): não é
             # aula e a régua da aula o reprovaria pelo motivo errado. As
-            # camadas de acento, link, voice guard e disclosure seguem valendo.
-            return []
+            # camadas de acento, link, voice guard e disclosure seguem valendo,
+            # e a de abertura e distração (R1 a R9) mede a trilha pela posição
+            # do bloco 'Fontes' e pelos blocos proibidos.
+            return erros_de_abertura(text, module_name or "trilha", unidade="trilha")
         if not AULA_H1_RE.search(text):
             return check_content(text, module_name, geo_config=geo_config, unidade=unidade)
         achados = []
         for titulo, bloco in dividir_em_unidades(text):
             if titulo.startswith("Trilha "):
+                rotulo = f"{module_name} / {titulo}" if module_name else titulo
+                achados.extend(erros_de_abertura(bloco, rotulo, unidade="trilha"))
                 continue
             rotulo = f"{module_name} / {titulo}" if module_name else titulo
             # A régua da aula não carrega a camada GEO: fontes, estatísticas

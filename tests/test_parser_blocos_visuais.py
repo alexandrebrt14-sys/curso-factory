@@ -268,10 +268,11 @@ def test_lista_numerada_sem_introducao_nenhuma_continua_texto() -> None:
 
 # ─── Convivência com o comportamento existente ───────────────────────
 
-def test_checkpoint_sintetico_continua_sendo_acrescentado() -> None:
+def test_nenhum_checkpoint_sintetico_e_acrescentado() -> None:
+    """R8 (08/09/2026): o parser não fabrica card de checkpoint."""
     secoes = parse_module_to_sections(MD_TABELA)
-    assert any(s.type == SectionType.CHECKPOINT for s in secoes)
-    assert len(secoes) >= 3
+    assert "checkpoint" not in {s.type.value for s in secoes}
+    assert _tipos(secoes) == ["text", "dataTable", "text"]
 
 
 def test_bloco_visual_convive_com_blockquote_especial() -> None:

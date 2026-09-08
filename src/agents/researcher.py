@@ -29,7 +29,7 @@ class Researcher(Agent):
         "3. EVIDÊNCIAS: pesquisas acadêmicas, estudos de caso reais, estatísticas com fontes\n"
         "4. TENDÊNCIAS 2025-2026: metodologias (andragogia, microlearning), ferramentas emergentes\n"
         "5. ANÁLISE COMPETITIVA: 5+ cursos concorrentes com preço, avaliação, pontos fortes/fracos\n"
-        "6. CASOS PARA EXERCÍCIOS: 3-5 casos reais verificáveis para uso como exemplos didáticos\n\n"
+        "6. CASOS PARA OS EXEMPLOS: 3-5 casos reais verificáveis, contáveis do começo ao fim\n\n"
         "FORMATO: Markdown estruturado com tabelas comparativas e referências completas.\n"
         "IDIOMA: Português do Brasil com acentuação completa e ortografia correta.\n\n"
         "--- CONTEXTO DO CURSO ---\n{context}"

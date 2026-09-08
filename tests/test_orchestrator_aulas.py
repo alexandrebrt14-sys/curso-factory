@@ -58,19 +58,19 @@ class _ClienteFalso:
                 return (
                     "1. Por que o cliente some | A ideia de tempo de resposta\n"
                     "2. Como responder em cinco minutos | Roteiro de resposta\n"
-                    "3. Faça agora com o seu WhatsApp | Exercício aplicado\n"
+                    "3. O que muda no seu caixa em um mês | Consequência prática\n"
                 )
             m = re.search(r"Esta aula: \*\*([^*]+)\*\*", prompt)
             titulo = m.group(1) if m else "aula"
             return (
-                f"Você vai aprender a responder mais rápido ({titulo}).\n\n"
-                "## Por que responder rápido muda o seu resultado\n\n"
+                f"Você vai responder o cliente antes que ele desista ({titulo}).\n\n"
+                + ("Parágrafo de abertura direto ao ponto, com o problema do balcão. " * 4)
+                + "\n\n## Por que responder rápido muda o seu resultado\n\n"
                 + ("Texto explicativo com frase direta e exemplo do balcão. " * 40)
-                + "\n\n## Como fica no seu negócio\n\n"
+                + "\n\n## Como a oficina do bairro fechou a venda em cinco minutos\n\n"
                 + ("A oficina do bairro respondeu em cinco minutos e fechou a venda. " * 30)
-                + "\n\n## Faça agora\n\n1. Abra o WhatsApp e anote o horário.\n"
-                "2. Responda a última mensagem sem resposta.\n\n"
-                "**Resultado esperado:** uma resposta enviada em menos de cinco minutos."
+                + "\n\nDepois desta aula a primeira resposta sai em cinco minutos. "
+                "Abra o WhatsApp e anote o horário da próxima mensagem sem resposta."
             )
         if provider == "google":
             # O mesmo provider atende a análise (gemini pro) e a classificação
@@ -353,9 +353,9 @@ def test_fechamento_da_trilha_vem_depois_das_aulas_e_nao_passa_pela_revisao(tmp_
     titulos = [t for t, _ in dividir_em_unidades(draft)]
     assert titulos == [
         "Aula 1.1: Por que o cliente some", "Aula 1.2: Como responder em cinco minutos",
-        "Aula 1.3: Faça agora com o seu WhatsApp", "Trilha 1: Resposta rápida",
+        "Aula 1.3: O que muda no seu caixa em um mês", "Trilha 1: Resposta rápida",
         "Aula 2.1: Por que o cliente some", "Aula 2.2: Como responder em cinco minutos",
-        "Aula 2.3: Faça agora com o seu WhatsApp", "Trilha 2: Mensagem que traz de volta",
+        "Aula 2.3: O que muda no seu caixa em um mês", "Trilha 2: Mensagem que traz de volta",
     ]
     trilha = dict(dividir_em_unidades(draft))["Trilha 1: Resposta rápida"]
     for secao in ("## O que você vai saber fazer", "## Glossário", "## Perguntas frequentes", "## Fontes"):
@@ -382,10 +382,10 @@ def test_parser_trata_a_trilha_como_bloco_proprio() -> None:
 def test_parser_trata_cada_aula_como_unidade() -> None:
     md = (
         "<!-- Módulo 1: X -->\n\n"
-        "# Aula 1.1: Primeira\n\n## Por que\n\ntexto\n\n## Faça agora\n\n1. passo\n\n"
+        "# Aula 1.1: Primeira\n\n## Por que\n\ntexto\n\n## O caso da oficina\n\n1. passo\n\n"
         "# Aula 1.2: Segunda\n\n## Por que\n\ntexto 2"
     )
     blocos = extract_module_blocks(md)
     assert [t for t, _ in blocos] == ["Aula 1.1: Primeira", "Aula 1.2: Segunda"]
-    assert "## Faça agora" in blocos[0][1]
+    assert "## O caso da oficina" in blocos[0][1]
     assert "<!--" not in blocos[0][1]

@@ -50,12 +50,16 @@ respuesta en prosa justo debajo.
 
 ## Fuentes
 
-Una línea por fuente, en el formato `Nombre de la fuente, título o informe, mes y año`, solo
-con lo que las lecciones o la investigación traen. De una a ocho fuentes.
+Una línea por fuente, en el formato `Nombre de la fuente, título o informe, mes y año` y, cuando
+haya, el enlace justo después, solo con lo que las lecciones o la investigación traen. De una a
+ocho fuentes. Es el ÚLTIMO bloque del itinerario y el único lugar del curso donde aparece una
+fuente (R7): cada línea con hasta 25 palabras, sin comentario, sin tarjeta, sin cita destacada.
+Se dibuja en el pie de la página, en cuerpo pequeño.
 
 ## Antes de entregar, comprueba
 
-1. Cinco secciones, en este orden, cada una con el encabezado de arriba como H2.
+1. Cinco secciones, en este orden, cada una con el encabezado de arriba como H2; "Fuentes" es la última.
+6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R5 a R9).
 2. Verbos de acción en los objetivos; ningún "entender" o "conocer".
 3. Glosa de hasta 12 palabras por término; ningún término que las lecciones no usen.
 4. Ninguna fuente inventada.

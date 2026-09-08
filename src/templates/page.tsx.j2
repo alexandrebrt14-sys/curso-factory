@@ -75,7 +75,6 @@ interface Section {
     | "code"
     | "warning"
     | "tip"
-    | "checkpoint"
     | "figure"
     | "dataTable"
     | "comparison"
@@ -594,16 +593,14 @@ function BlockTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-function BlockFootnote({ source, note }: { source?: string; note?: string }) {
-  if (!source && !note) return null;
+/* Nota de rodapé do bloco. A FONTE não é desenhada aqui: desde 08/09/2026
+   (R7) o `source` do payload sobe para o bloco "Fontes" do rodapé da página,
+   em corpo pequeno, para não competir com a leitura no meio do texto. */
+function BlockFootnote({ note }: { note?: string }) {
+  if (!note) return null;
   return (
     <div className="mt-2 space-y-1">
-      {note && (
-        <p className="text-xs text-[var(--text-muted)] leading-relaxed">{note}</p>
-      )}
-      {source && (
-        <p className="text-xs text-[var(--text-light)] leading-relaxed">Fonte: {source}</p>
-      )}
+      <p className="text-xs text-[var(--text-muted)] leading-relaxed">{note}</p>
     </div>
   );
 }
@@ -665,7 +662,7 @@ function DataTableBlock({ data }: { data: DataTablePayload }) {
           </tbody>
         </table>
       </div>
-      <BlockFootnote source={data.source} note={data.note} />
+      <BlockFootnote note={data.note} />
     </div>
   );
 }
@@ -743,7 +740,6 @@ function StatGridBlock({ data }: { data: StatGridPayload }) {
           </div>
         ))}
       </div>
-      <BlockFootnote source={data.source} />
     </div>
   );
 }
@@ -862,6 +858,8 @@ function StepCard({
   index,
   isOpen,
   isCompleted,
+  completedCount,
+  totalSteps,
   onToggle,
   onComplete,
 }: {
@@ -869,6 +867,8 @@ function StepCard({
   index: number;
   isOpen: boolean;
   isCompleted: boolean;
+  completedCount: number;
+  totalSteps: number;
   onToggle: () => void;
   onComplete: () => void;
 }) {
@@ -901,17 +901,12 @@ function StepCard({
           {isCompleted ? icons.checkLg : (icons[STEP_ICONS[step.id]] || <span className="text-sm font-bold">{String(index + 1).padStart(2, "0")}</span>)}
         </div>
 
-        {/* Title & meta */}
+        {/* Título e subtítulo (R1): nada entre eles, nada de chip de metadado. */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <h3 className={`font-bold text-lg ${isCompleted ? "text-[var(--success)]" : "text-[var(--text)]"}`}>
-              {step.title}
-            </h3>
-            <span className="text-xs font-medium text-[var(--text-light)] bg-[var(--bg-muted)] px-2 py-0.5 rounded-full">
-              {step.duration}
-            </span>
-          </div>
-          <p className="text-sm text-[var(--text-muted)] line-clamp-1">{step.description}</p>
+          <h3 className={`font-bold text-lg mb-1 ${isCompleted ? "text-[var(--success)]" : "text-[var(--text)]"}`}>
+            {step.title}
+          </h3>
+          <p className="text-sm text-[var(--text-muted)] leading-snug">{step.description}</p>
         </div>
 
         {/* Chevron */}
@@ -944,16 +939,6 @@ function StepCard({
                       <p className="text-sm text-[var(--accent-dark)] leading-relaxed text-justify">{section.value}</p>
                     </div>
                   );
-                case "checkpoint":
-                  return (
-                    <div key={i} className="flex gap-3 p-4 rounded-[var(--radius)] bg-[var(--success-light)] border border-[var(--success)]/20">
-                      <span className="flex-shrink-0 mt-0.5">{icons.circleCheck}</span>
-                      <div>
-                        <span className="text-xs font-bold text-[var(--success)] uppercase tracking-wider block mb-1">Checkpoint</span>
-                        <p className="text-sm text-[var(--success)] leading-relaxed text-justify">{section.value}</p>
-                      </div>
-                    </div>
-                  );
                 case "figure":
                   return <FigureBlock key={i} markup={section.value} caption={section.label} />;
                 case "dataTable":
@@ -981,15 +966,17 @@ function StepCard({
               }
             })}
 
-            {/* Reading progress indicator */}
+            {/* Tempo de leitura e progresso: no fim do módulo, nunca no topo (R1/R2). */}
             <div className="mt-4 pt-3 border-t border-[var(--border-light)]">
               <div className="flex items-center gap-2 text-xs text-[var(--text-light)]">
                 <span className="flex-shrink-0">{icons.clock}</span>
                 <span>Tempo estimado: {step.duration}</span>
+                <span aria-hidden="true">·</span>
+                <span>{completedCount}/{totalSteps} concluídos</span>
               </div>
             </div>
 
-            {/* Complete step button */}
+            {/* Único botão do módulo, depois da leitura (R2) */}
             <div className="pt-4 flex items-center gap-3">
               <button
                 onClick={onComplete}
@@ -1071,8 +1058,6 @@ export default function {{ component_name }}() {
     setCompleted(next);
   };
 
-  const progress = Math.round((completed.size / STEPS.length) * 100);
-
   const resetProgress = () => {
     setCompleted(new Set());
     setOpenStep("{{ steps[0].id }}");
@@ -1091,154 +1076,33 @@ export default function {{ component_name }}() {
       />
 
       <main id="main-content">
-        {/* Hero */}
+        {/* Abertura (R1, 08/09/2026): título, subtítulo em uma frase e o parágrafo
+            de descrição. Nada antes do H1, nada entre eles: sem rótulo, sem barra
+            de estatísticas, sem barra de progresso, sem índice de módulos, sem
+            card "o que você vai aprender". O leitor entra direto na leitura. */}
         <section className="py-16 sm:py-20 px-6" style={{ '{{' }} background: "linear-gradient(135deg, {{ hero_gradient_from }} 0%, {{ hero_gradient_to }} 100%)" {{ '}}' }}>
           <div className="max-w-[var(--max)] mx-auto">
             <div className="max-w-3xl">
-              <span className="sf-label mb-3 block text-white/80">{{ descricao_curta | js_escape }}</span>
-              <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold text-white leading-[1.1] mb-5">
+              <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold text-white leading-[1.1] mb-4">
                 {{ titulo | js_escape }}
               </h1>
-              <p className="text-lg text-white/80 leading-relaxed mb-8 max-w-2xl">
+              <p className="text-xl text-white/90 leading-snug mb-4 max-w-2xl">
+                {{ descricao_curta | js_escape }}
+              </p>
+{% if descricao and descricao != descricao_curta %}
+              <p className="text-lg text-white/80 leading-relaxed max-w-2xl text-justify">
                 {{ descricao | js_escape }}
               </p>
-
-              {/* Stats row */}
-              <div className="flex flex-wrap gap-6 text-sm">
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.clock}
-                  <span>Tempo estimado: ~{{ duracao_display }}</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.bookOpen}
-                  <span>{STEPS.length} módulos</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.graduationCap}
-                  <span>Nível: {{ nivel_display | js_escape }}</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.layers}
-                  <span>{{ tags | join(', ') }}</span>
-                </div>
-              </div>
+{% endif %}
             </div>
           </div>
         </section>
 
-        {/* Progress bar */}
-        <div className="sticky top-[57px] z-[5] bg-white/95 backdrop-blur-sm border-b border-[var(--border)]">
-          <div className="max-w-[var(--max)] mx-auto px-6 py-3">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 flex-1">
-                <span className="text-sm font-semibold text-[var(--text)] whitespace-nowrap">
-                  {completed.size}/{STEPS.length} concluídos
-                </span>
-                <div className="flex-1 h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500 ease-out"
-                    style={% raw %}{{
-                      width: `${progress}%`,
-                      background: progress === 100
-                        ? "var(--success)"
-                        : "var(--accent)",
-                    }}{% endraw %}
-                  />
-                </div>
-                <span className="text-sm font-bold text-[var(--accent)] whitespace-nowrap">
-                  {progress}%
-                </span>
-              </div>
-              {completed.size > 0 && (
-                <button
-                  onClick={resetProgress}
-                  className="text-xs text-[var(--text-light)] hover:text-[var(--text)] transition-colors"
-                >
-                  Resetar
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Course sidebar + content */}
+        {/* Um único percurso, linear (R3): os módulos, na ordem, sem sidebar. */}
         <section className="py-12 px-6">
           <div className="max-w-[var(--max)] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
-              {/* Sidebar - module index */}
-              <aside className="hidden lg:block">
-                <div className="sticky top-[110px]">
-                  <h4 className="font-bold text-[var(--text)] text-sm mb-4 uppercase tracking-wider">
-                    Módulos
-                  </h4>
-                  <nav className="space-y-1">
-                    {STEPS.map((step, i) => (
-                      <button
-                        key={step.id}
-                        onClick={() => {
-                          setOpenStep(step.id);
-                          document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-                        }}
-                        className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius)] text-sm transition-colors ${
-                          openStep === step.id
-                            ? "bg-[var(--accent-lighter)] text-[var(--accent)] font-semibold"
-                            : completed.has(step.id)
-                            ? "text-[var(--success)] hover:bg-[var(--success-light)]"
-                            : "text-[var(--text-muted)] hover:bg-[var(--bg-muted)] hover:text-[var(--text)]"
-                        }`}
-                      >
-                        <span className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
-                          completed.has(step.id)
-                            ? "bg-[var(--success)] text-white"
-                            : openStep === step.id
-                            ? "bg-[var(--accent)] text-white"
-                            : "bg-[var(--bg-muted)] text-[var(--text-muted)]"
-                        }`}>
-                          {completed.has(step.id) ? (
-                            icons.check
-                          ) : (
-                            <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icons[STEP_ICONS[step.id]] || String(i + 1).padStart(2, "0")}</span>
-                          )}
-                        </span>
-                        <span className="truncate">{step.title}</span>
-                      </button>
-                    ))}
-                  </nav>
-
-                  {/* Prerequisites card */}
-                  <div className="mt-8 p-4 rounded-[var(--radius)] bg-[var(--bg-muted)] border border-[var(--border-light)]">
-                    <h5 className="font-bold text-sm text-[var(--text)] mb-2">Pré-requisitos</h5>
-                    <ul className="text-xs text-[var(--text-muted)] space-y-2">
-{% for prereq in prerequisitos_display %}
-                      <li className="flex items-start gap-2">
-                        <span className="mt-0.5 flex-shrink-0">{icons.targetSm}</span>
-                        {{ prereq | js_escape }}
-                      </li>
-{% endfor %}
-                    </ul>
-                  </div>
-                </div>
-              </aside>
-
-              {/* Steps list */}
+            <div className="max-w-3xl mx-auto">
               <div className="space-y-4">
-                {/* Intro card */}
-                <div className="p-6 rounded-[var(--radius-lg)] bg-[var(--card-dark)] text-white mb-6">
-                  <h2 className="text-xl font-bold mb-3">O que você vai aprender</h2>
-                  <p className="text-sm text-[#a6adc8] leading-relaxed mb-4 text-justify">
-                    {{ descricao | js_escape }}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-{% for tag in tags[:3] %}
-                    <div className="flex items-center gap-3 text-sm text-[#cdd6f4] bg-white/5 rounded-lg px-3 py-2.5">
-                      <span className="text-[#a6e3a1]">{icons.checkCircle}</span>
-                      {{ tag | js_escape }}
-                    </div>
-{% endfor %}
-                  </div>
-                </div>
-
-                {/* Steps */}
                 {STEPS.map((step, i) => (
                   <StepCard
                     key={step.id}
@@ -1246,6 +1110,8 @@ export default function {{ component_name }}() {
                     index={i}
                     isOpen={openStep === step.id}
                     isCompleted={completed.has(step.id)}
+                    completedCount={completed.size}
+                    totalSteps={STEPS.length}
                     onToggle={() => toggleStep(step.id)}
                     onComplete={() => completeStep(step.id)}
                   />
@@ -1268,6 +1134,12 @@ export default function {{ component_name }}() {
                       <a href="/conteudos" className="sf-btn-outline">
                         Ler artigos técnicos
                       </a>
+                      <button
+                        onClick={resetProgress}
+                        className="text-xs text-[var(--text-light)] hover:text-[var(--text)] transition-colors"
+                      >
+                        Recomeçar do primeiro módulo
+                      </button>
                     </div>
                   </div>
                 )}
@@ -1310,6 +1182,26 @@ export default function {{ component_name }}() {
                     </p>
                   </div>
                 </div>
+
+{% if prerequisitos_display %}
+                {/* Pré-requisitos: uma linha discreta, longe do topo. */}
+                <p className="mt-8 text-[0.8rem] leading-relaxed text-[var(--text-light)]">
+                  <span className="font-semibold">Antes de começar:</span> {{ prerequisitos_display | join('; ') | js_escape }}.
+                </p>
+{% endif %}
+{% if fontes %}
+                {/* Fontes (R7, 08/09/2026): uma vez, no rodapé, em corpo pequeno.
+                    Nome da fonte e link, sem comentário, para não competir com a
+                    leitura no meio da página. Nenhum bloco desenha "Fonte:" inline. */}
+                <section aria-label="Fontes" className="mt-10 pt-4 border-t border-[var(--border-light)] text-[0.8rem] leading-relaxed text-[var(--text-light)]">
+                  <h2 className="text-[0.8rem] font-semibold uppercase tracking-wider mb-2">Fontes</h2>
+                  <ol className="list-decimal pl-5 space-y-1">
+{% for fonte in fontes %}
+                    <li>{{ fonte | fonte_jsx }}</li>
+{% endfor %}
+                  </ol>
+                </section>
+{% endif %}
               </div>
             </div>
           </div>

@@ -87,12 +87,14 @@ Evaluate the content against Knowles's 6 principles:
 - Are prerequisites explicit?
 - Are there enough practical examples to consolidate each concept?
 
-### 6. Exercises and Assessment
+### 6. Opening and distraction (R1 to R9)
 
-- Do exercises use real professional contexts (not generic hypotheticals)?
-- Is there a complexity progression (Bloom's taxonomy: apply → analyze → evaluate → create)?
-- Are evaluation criteria clear and measurable?
-- One executable exercise per lesson (5 to 15 minutes, real data, expected result)?
+- Does each lesson open with a one-sentence subtitle and then a paragraph, nothing in between (R1)?
+- List, per lesson, every block the owner asked out (R5 to R9): "do it now" exercises, "mockup"/"in
+  your business" sections, "checkpoint"/"recap"/"quiz" cards, "needs verification" markers,
+  the data protection law named, a "Source:" line or "Sources" heading inside a lesson,
+  alternative paths ("if you are X go to Y"). One such finding in a lesson makes `approved` false.
+- Does the closing carry the next step in prose (no exercise)?
 
 ### 7. English usage and consistency
 
@@ -135,7 +137,7 @@ Return a structured JSON with these fields:
       "notes": "..."
     },
     "gaps": {"score": 0-10, "notes": "..."},
-    "exercises": {"score": 0-10, "notes": "..."},
+    "opening_and_distraction": {"score": 0-10, "lessons_with_forbidden_blocks": ["Lesson 1.2: [R6] do it now"], "notes": "..."},
     "language_consistency": {"score": 0-10, "british_americanism_drift": ["..."]}
   },
   "priority_improvements": ["...", "...", "..."],

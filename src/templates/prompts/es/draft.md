@@ -36,18 +36,23 @@ R$ 40 mil al mes").
 
 ## El molde de la lección
 
-La lección enseña UNA idea hasta el final y termina con el alumno habiendo hecho algo con un
-dato de su propio negocio. Extensión: de {palavras_alvo_min} a {palavras_alvo_max} palabras.
+La lección enseña UNA idea hasta el final y es LECTURA: el alumno termina sabiendo qué cambia
+en su negocio y cuál es el próximo paso, dicho en prosa. Extensión: de {palavras_alvo_min} a {palavras_alvo_max} palabras.
 Por debajo de {palavras_piso} la idea quedó sin explicar; por encima de {palavras_aviso} entró
 una segunda idea, que pertenece a otra lección.
 
-Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son tres, uno por bloque. H3 solo cuando
+Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son dos, uno por bloque. H3 solo cuando
 un H2 pasa de 350 palabras y necesita dos partes (como máximo {h3_por_h2} por H2). Nada de H4,
 nada de línea terminada en dos puntos como subtítulo.
 
-**Apertura, sin encabezado, en 2 o 3 frases.** La primera frase dice qué va a poder hacer el
-alumno al terminar. La segunda dice para quién sirve o qué gana. Sin escena, sin hora del día,
-sin personaje, sin "en este módulo", sin lista de objetivos.
+**Apertura, en este orden exacto, sin nada en medio (regla R1).** El pipeline inserta el título
+(H1). Tú empiezas por el **subtítulo: UNA frase, en línea propia, de hasta 25 palabras**, que
+dice qué va a poder hacer el alumno al terminar. Después de una línea en blanco, **dos o tres
+párrafos de apertura**, directos al punto: el problema que vive hoy, qué cuesta no resolverlo y
+qué cambia al terminar la lección. El primer elemento después del subtítulo es siempre un
+párrafo. Sin escena, sin hora del día, sin personaje, sin "en este módulo", sin lista de
+objetivos, sin "qué vas a aprender", sin "para quién es", sin índice, sin botón, sin tarjeta,
+sin tabla antes del primer párrafo.
 
 **H2 1: por qué [la idea] cambia tu resultado.** Explica la idea en prosa corrida, sin
 viñetas: de dónde viene (quién la formuló y qué problema resolvía), qué cuesta no saberla en su
@@ -57,16 +62,11 @@ como **Trampa común:**. Empieza por el problema y llega a la idea; nunca abras 
 definición de X es". Una analogía del día a día del ramo del alumno ayuda; dos, si la
 segunda explica lo que la primera no explicó.
 
-**H2 2: cómo queda en tu negocio.** UN ejemplo del rubro del alumno, contado de principio a
-fin: quién es, qué estaba pasando, qué hizo la persona paso a paso, qué pasó después, con
-número. Medio ejemplo no sirve; tres ejemplos cortos tampoco.
-
-**H2 3: hazlo ahora.** Un ejercicio de 5 a 15 minutos, con estos campos: título que dice qué
-va a producir (nunca "Ejercicio 1"); pasos numerados, cada uno con un verbo en imperativo y un
-campo para el dato real de su negocio; **Resultado esperado:** qué debe estar viendo en la
-pantalla o en el papel cuando acierte; **Si te trabas:** una salida que destraba sin entregar la
-respuesta. El ejercicio suele ocupar entre un cuarto y un tercio de la lección; el tamaño
-correcto es el que el alumno necesita para hacerlo, no una cuota.
+**H2 2: un caso de tu rubro, de principio a fin.** UN ejemplo del rubro del alumno, contado
+entero: quién es, qué estaba pasando, qué hizo la persona paso a paso, qué pasó después, con
+número. Medio ejemplo no sirve; tres ejemplos cortos tampoco. El encabezado nombra el caso
+("Cómo el taller de Sergio dejó de perder presupuestos"); nunca "cómo queda en tu negocio",
+"aplícalo en tu negocio" ni "mockup".
 
 **Cierre, sin encabezado, en 3 a 5 líneas.** Qué cambió en su negocio después de esta lección,
 dicho por el ejemplo del H2 2, y un único puente hacia la siguiente lección (verbo en imperativo
@@ -74,6 +74,29 @@ con objeto visible: abre, anota, lista, calcula, publica). No resumas lo que aca
 
 Objetivos formales, prerrequisitos, glosario, FAQ y fuentes fechadas viven en el nivel del
 itinerario, una vez; no entran en la lección.
+
+## Apertura y distracción (R1 a R9): lo que la lección NUNCA lleva
+
+Pedido del dueño, 08/09/2026: el inicio cargado dispersa al lector y la tarjeta en el medio
+compite con la lectura. El gate rechaza cada ítem de abajo y la página no se publica con él.
+
+- R1. Cualquier cosa entre el título, el subtítulo y el primer párrafo.
+- R2. Botón, invitación o llamada a la acción antes del cuerpo. Si hay, es una sola, al final.
+- R3. Recorrido alternativo: "elige tu camino", "si eres X ve a Y", "empieza por aquí", pestañas
+  por perfil. Un solo camino, lineal.
+- R4. Segunda descripción, lead o resumen repetido arriba.
+- R5. Bloque "mockup en tu negocio" y variantes ("en tu negocio", "aplícalo en tu negocio",
+  "simula", "maqueta") como sección o rótulo.
+- R6. Ejercicio: "hazlo ahora", "ejercicio", "manos a la obra", "tu turno", "practica", "tarea",
+  "desafío", "checklist de acción", "Resultado esperado:", "Si te trabas:". La lección es
+  lectura, no cuaderno de ejercicios. El próximo paso va en prosa, en el cierre.
+- R7. Fuente en medio de la lección: línea "Fuente:", encabezado "Fuentes", cita en tarjeta o
+  callout. La fuente va al bloque "Fuentes" del final del itinerario, una línea corta por fuente.
+- R8. Tarjeta "checkpoint", "recapitulando", "resumen del capítulo", "aprendiste", "quiz".
+- R9. Marcador visible de verificación ("requiere verificación", "a verificar", "[verificar]",
+  "dato no confirmado", "fuente pendiente") y CUALQUIER mención a la ley de protección de datos
+  por su nombre (LGPD, Lei 13.709), incluso entre comillas. La verificación es bastidor; la
+  protección de datos entra como conducta práctica.
 
 ## Párrafo, frase, ritmo
 
@@ -118,10 +141,10 @@ nunca la figura.
   hecho y el paso.
 - Rótulo de la investigación ([Alta], [Media], [Baja], "nivel de confianza"): te sirve para
   elegir el dato; en la lección el número entra limpio o no entra.
-- Aviso legal genérico ("consulte a un abogado", "conforme a la legislación vigente", "de
-  acuerdo con la ley de protección de datos", "exención de responsabilidad"). La ley entra solo
-  cuando cambia la decisión del alumno, y entra con número: qué ley, qué artículo, qué plazo,
-  qué valor.
+- Aviso legal genérico ("consulte a un abogado", "conforme a la legislación vigente", "exención
+  de responsabilidad"). La ley entra solo cuando cambia la decisión del alumno, y entra con
+  número: qué ley, qué artículo, qué plazo, qué valor. Excepción fija (R9): la ley de protección
+  de datos no se nombra de ninguna forma; la conducta entra, el nombre de la ley no.
 
 - Antítesis que niega para afirmar ("no es X, es Y", "no se trata de X", "más que X, Y").
 - Tríada como ritmo (tres adjetivos, tres ejemplos, tres beneficios por costumbre).
@@ -141,22 +164,22 @@ nunca la figura.
 
 ## Antes de entregar, comprueba
 
-1. La primera frase dice qué va a poder hacer el alumno.
-2. Una sola idea, explicada hasta el final; el ejemplo es uno y va de principio a fin, con
+1. La primera línea es el subtítulo: una sola frase, que dice qué va a poder hacer el alumno.
+2. Justo después del subtítulo viene un párrafo, y después uno o dos más, antes del primer H2.
+3. Una sola idea, explicada hasta el final; el ejemplo es uno y va de principio a fin, con
    número.
-3. {h2_min} a {h2_max} H2; H3 solo en H2 largo; ningún H4.
-4. Extensión entre {palavras_alvo_min} y {palavras_alvo_max} palabras; ejercicio entre un
-   cuarto y un tercio de ellas.
-5. Ejercicio con título, pasos numerados con dato real del alumno, resultado esperado y
-   "si te trabas".
-6. Ningún número sin origen en la investigación; como máximo 3 marcadores `[FALTA EVIDENCIA]`.
-7. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta 28.
-8. Hasta {figuras_max} apoyos visuales, todos sustituyendo texto.
-9. Nada de la lista "Lo que nunca entra".
-10. Cierre por el ejemplo, con un puente hacia la siguiente lección.
-11. Acentuación completa en todas las palabras.
+4. {h2_min} a {h2_max} H2; H3 solo en H2 largo; ningún H4.
+5. Extensión entre {palavras_alvo_min} y {palavras_alvo_max} palabras.
+6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R1 a R9).
+7. Ninguna línea "Fuente:" y ningún encabezado "Fuentes" dentro de la lección.
+8. Ningún número sin origen en la investigación; como máximo 3 marcadores `[FALTA EVIDENCIA]`.
+9. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta 28.
+10. Hasta {figuras_max} apoyos visuales, todos sustituyendo texto.
+11. Nada de la lista "Lo que nunca entra".
+12. Cierre por el ejemplo, con un puente hacia la siguiente lección.
+13. Acentuación completa en todas las palabras.
 
-Empieza directo por la apertura de la lección, sin encabezado de lección (el pipeline lo
+Empieza directo por el subtítulo de la lección, sin encabezado de lección (el pipeline lo
 inserta), sin título de módulo y sin comentario sobre este prompt.
 
 --- DATOS DE LA INVESTIGACIÓN ---

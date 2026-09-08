@@ -402,7 +402,7 @@ def test_geracao_reprova_curso_que_nasce_como_coluna_de_texto() -> None:
     curso = _curso_de_prova([
         {"type": "text", "value": prosa(900)},
         {"type": "text", "value": prosa(900)},
-        {"type": "checkpoint", "value": "Você consegue explicar o conceito central?"},
+        {"type": "tip", "value": "O conceito central cabe em uma frase dita no balcão."},
     ])
 
     with pytest.raises(VisualDensityError) as exc:
@@ -425,7 +425,7 @@ def test_geracao_passa_quando_o_modulo_tem_as_pecas() -> None:
         {"type": "stepGuide", "value": "", "data": {
             "title": "Instalar a medição",
             "steps": [{"label": "Criar o evento"}, {"label": "Conferir a taxa"}]}},
-        {"type": "checkpoint", "value": "Você consegue nomear o evento perseguido?"},
+        {"type": "tip", "value": "O evento perseguido tem nome próprio no painel."},
     ])
 
     tsx = TsxGenerator().render_page(curso)
@@ -440,7 +440,7 @@ def test_modo_legado_renderiza_sem_reprovar() -> None:
     curso = _curso_de_prova([
         {"type": "text", "value": prosa(900)},
         {"type": "text", "value": prosa(900)},
-        {"type": "checkpoint", "value": "Você consegue explicar o conceito central?"},
+        {"type": "tip", "value": "O conceito central cabe em uma frase dita no balcão."},
     ])
 
     tsx = TsxGenerator().render_page(curso, cobrar_peso_visual=False)

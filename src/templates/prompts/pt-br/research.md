@@ -54,9 +54,9 @@ Priorize fontes de 2024–2026:
 - **Dados públicos de plataformas**: páginas de vendas, reviews, dados de redes sociais
 - **Publicações brasileiras**: HSM Management, Exame, Valor Econômico, repositórios USP/Unicamp/FGV
 
-### 6. Dados para Exercícios e Estudos de Caso
+### 6. Casos para os exemplos das aulas
 
-- Identifique 3–5 casos reais (empresas, projetos, incidentes) que possam ser usados como exercícios ou exemplos
+- Identifique 3–5 casos reais (empresas, projetos, incidentes) que possam ser contados do começo ao fim como exemplo (a aula não carrega exercício)
 - Para cada caso, forneça: contexto, desafio enfrentado, abordagem adotada, resultado obtido
 - Priorize casos verificáveis com fontes públicas
 

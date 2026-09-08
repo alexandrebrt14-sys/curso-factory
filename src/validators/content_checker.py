@@ -11,7 +11,15 @@ e 6):
 
 - palavras, H2, H3 por H2, apoios visuais e parágrafo: os números vivem em
   `tetos.D` de `config/lexicos.json` (a fonte é a única cópia);
-- 1 exercício por aula; 1 fonte datada e 1 cápsula por trilha.
+- nenhum exercício na aula (desde 08/09/2026, regra R6 do mandato de abertura
+  direta; `min_exercises_per_lesson: 0` no YAML); 1 fonte datada por trilha, no
+  rodapé.
+
+**Abertura e distração (R1 a R9, 08/09/2026).** Toda unidade passa também por
+`src/validators/abertura_checker.py`: abertura em H1, subtítulo e parágrafo;
+sem "faça agora", "mockup no seu negócio", "checkpoint", "requer verificação" nem
+LGPD; fontes só no rodapé da trilha. Achado sai na categoria `abertura`, como
+erro bloqueante.
 
 Nenhum desses números mora neste arquivo nem em `config/quality_rules.yaml`:
 eles vêm de `config/lexicos.json` (`tetos.D`), espelho gerado da fonte, lido por
@@ -36,6 +44,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from src.validators.abertura_checker import check_abertura
 from src.validators.lexicos_loader import (
     expressoes_de_bastidor,
     expressoes_de_muleta_legal,
@@ -116,7 +125,9 @@ def tetos_da_unidade(unidade: str = "aula") -> dict:
     paragrafo = _par(d.get("paragrafo"), FALLBACK_PARAGRAFO)
 
     cq = validation_section("content_quality")
-    exercicios_min = _inteiro(cq.get("min_exercises_per_lesson"), 1)
+    # Zero desde 08/09/2026 (R6): a aula é leitura, não workbook. A chave fica
+    # no YAML para quem precisar reativar por cliente; o padrão é não cobrar.
+    exercicios_min = _inteiro(cq.get("min_exercises_per_lesson"), 0)
 
     if unidade == "modulo":
         minimo, maximo = _par(cq.get("lessons_per_module"), FALLBACK_AULAS_POR_MODULO)
@@ -752,7 +763,7 @@ def check_content(
             modulo=mod,
         ))
 
-    # 3. H2 e H3: 2 a 4 H2 por aula (explicar, exemplo, fazer agora), até 2 H3
+    # 3. H2 e H3: 2 a 4 H2 por aula (explicar a ideia, contar o caso), até 2 H3
     #    por H2. O piso antigo de "3+ headings" não dizia de que nível.
     h2 = [h for h in headings if h[0] == 2]
     h2_min, h2_max = tetos["h2"]
@@ -761,8 +772,8 @@ def check_content(
             tipo="error",
             categoria="formatação",
             mensagem=f"{len(h2)} H2 na {nome_unidade}, abaixo do mínimo de {h2_min}. "
-                     f"A sequência do molde pede ao menos: explicar a ideia, exemplo do "
-                     f"negócio do aluno e 'faça agora'.",
+                     f"A sequência do molde pede ao menos: explicar a ideia e contar o "
+                     f"caso do ramo do aluno até o fim.",
             modulo=mod,
         ))
     elif len(h2) > h2_max:
@@ -816,19 +827,21 @@ def check_content(
                 modulo=mod,
             ))
 
-    # 5. Exercício: 1 por aula ("faça agora", 5-15 min, com etapas numeradas e
-    #    o resultado esperado). Era "mínimo 3 por módulo".
-    exercises = _find_exercises(text)
+    # 5. Exercício: desde 08/09/2026 a aula NÃO carrega exercício (R6, mandato
+    #    de abertura direta). O piso só volta a agir se algum cliente ligar
+    #    `min_exercises_per_lesson` acima de zero no YAML; a presença do bloco
+    #    "faça agora" é reprovada pelo abertura_checker (item 15).
     minimo_ex = tetos["exercicios_min"]
-    if len(exercises) < minimo_ex:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="exercícios",
-            mensagem=f"{len(exercises)} exercício(s) detectado(s) na {nome_unidade} "
-                     f"(mínimo: {minimo_ex}). O exercício é o 'faça agora': 5 a 15 minutos, "
-                     f"em etapas numeradas, com dado real do aluno e o resultado esperado.",
-            modulo=mod,
-        ))
+    if minimo_ex > 0:
+        exercises = _find_exercises(text)
+        if len(exercises) < minimo_ex:
+            erros.append(ContentError(
+                tipo="error",
+                categoria="exercícios",
+                mensagem=f"{len(exercises)} exercício(s) detectado(s) na {nome_unidade} "
+                         f"(mínimo configurado: {minimo_ex}).",
+                modulo=mod,
+            ))
 
     # 7. Clichês proibidos
     cliches = _check_cliches(text)
@@ -1079,7 +1092,27 @@ def check_content(
                 modulo=mod,
             ))
 
+    # 15. Abertura e distração (R1 a R9, 08/09/2026): abertura em H1, subtítulo
+    #     e parágrafo; sem "faça agora", "mockup no seu negócio", "checkpoint",
+    #     "requer verificação" nem LGPD; fonte só no rodapé da trilha. Erro
+    #     bloqueante, porque cada um desses blocos foi pedido fora pelo dono.
+    erros.extend(erros_de_abertura(text, mod, unidade="trilha" if unidade == "trilha" else "aula"))
+
     return erros
+
+
+def erros_de_abertura(text: str, module_name: str = "", unidade: str = "aula") -> list[ContentError]:
+    """Achados do `abertura_checker` no formato do relatório de conteúdo."""
+    resultado = check_abertura(text, unidade=unidade)
+    return [
+        ContentError(
+            tipo=a.tipo,
+            categoria="abertura",
+            mensagem=f"[{a.regra}] {a.mensagem}",
+            modulo=module_name or unidade,
+        )
+        for a in resultado.achados
+    ]
 
 
 def format_report(erros: list[ContentError]) -> str:

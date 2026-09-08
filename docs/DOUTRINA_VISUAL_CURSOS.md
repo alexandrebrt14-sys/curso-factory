@@ -96,10 +96,13 @@ A escolha não é de gosto. Cada defeito de leitura tem uma peça que o resolve,
 | Conceito abstrato sem âncora | `figure` com SVG ou diagrama | Legenda que afirma o que a figura mostra, não o que ela é |
 | Regra curta que o leitor vai reencontrar | `tipCard` | Cabe no formato fechado dele, e só |
 | Sequência longa demais para uma tela | `slides` ou `tabs` | Cada painel autônomo, legível fora de ordem |
-| Verificação que o leitor fará depois | `checklist` | Itens que se pode marcar, não afirmações |
 | Decisão com consequência | `decisionCase` | O contexto antes da pergunta |
 
 Quando nenhuma linha descreve o caso, a resposta certa quase sempre é **quebrar o parágrafo em dois**, e não inventar bloco. Bloco inventado para cumprir cota é o mesmo defeito de outro ângulo.
+
+### Abertura e distração (R1 a R9, 08/09/2026)
+
+Peça visual nenhuma entra antes do primeiro parágrafo: a página abre com H1, subtítulo em uma frase e prosa (R1), e o gerador deixou de emitir o que morava no topo (rótulo antes do H1, barra de estatísticas, barra de progresso fixa, índice lateral de módulos, card "o que você vai aprender"). Três peças saíram do catálogo deste gerador por pedido do dono: o `checkpoint` (R8), o `checklist` de ação e qualquer bloco de exercício "faça agora" (R6), e o "mockup no seu negócio" (R5). O `sourceNote` e o `source` de `dataTable` e `statGrid` deixaram de ser desenhados dentro do bloco: a fonte sobe para o único bloco "Fontes" do rodapé, em corpo pequeno, com nome e link (R7). Nenhum card carrega "requer verificação" nem menção à LGPD (R9). Regras completas em `DIRETRIZ_EDITORIAL.md`; gate em `src/validators/abertura_checker.py`.
 
 ## 6. As quatro famílias de ilustração, com o custo de cada uma
 

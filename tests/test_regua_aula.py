@@ -30,13 +30,19 @@ from src.validators.content_checker import (  # noqa: E402
 from src.validators.lexicos_loader import expressoes_vetadas, tetos_da_aula  # noqa: E402
 
 
-def _aula(palavras: int, h2: int = 3, exercicios: int = 1) -> str:
+def _aula(palavras: int, h2: int = 3, exercicios: int = 0) -> str:
     """Monta uma aula sintética com o número de palavras e de H2 pedidos.
 
-    Os parágrafos saem com 30 palavras, no meio da faixa de 15-45, para que a
-    checagem de parágrafo não polua o resultado dos testes de extensão.
+    Abre como manda a regra R1 (H1, subtítulo de uma frase, parágrafo). Os
+    parágrafos saem com 30 palavras, no meio da faixa de 15-45, para que a
+    checagem de parágrafo não polua o resultado dos testes de extensão. O
+    padrão é ZERO exercício desde 08/09/2026 (R6).
     """
-    partes = ["# Aula de teste", ""]
+    partes = [
+        "# Aula de teste", "",
+        "Subtítulo em uma frase só.", "",
+        " ".join(["abertura"] * 30), "",
+    ]
     for i in range(h2):
         partes += [f"## Seção {i + 1}", ""]
     for i in range(exercicios):
@@ -95,7 +101,8 @@ class TestTetosDaUnidade(unittest.TestCase):
         self.assertEqual(t["unidade"], "aula")
         self.assertEqual(t["piso"], d["palavras"]["piso"])
         self.assertEqual(list(t["alvo"]), list(d["palavras"]["alvo"]))
-        self.assertEqual(t["exercicios_min"], 1)
+        # Zero desde 08/09/2026 (R6): a aula é leitura, não workbook.
+        self.assertEqual(t["exercicios_min"], 0)
 
     def test_modulo_vale_de_quatro_a_seis_aulas(self):
         aula = tetos_da_unidade("aula")
@@ -162,21 +169,25 @@ class TestEstruturaDaAula(unittest.TestCase):
         avisos = _categorias(erros, "formatação", "warning")
         self.assertTrue(any("acima do teto" in m for m in avisos))
 
-    def test_um_exercicio_basta(self):
-        """Era 'mínimo 3'. Com 1 o gate não pode mais reprovar."""
-        erros = check_content(_aula(1500, exercicios=1), "aula")
-        self.assertEqual(_categorias(erros, "exercícios", "error"), [])
-
-    def test_sem_exercicio_reprova(self):
+    def test_sem_exercicio_passa(self):
+        """Era 'mínimo 3', depois 'mínimo 1'. Desde 08/09/2026 (R6) é zero."""
         erros = check_content(_aula(1500, exercicios=0), "aula")
-        self.assertEqual(len(_categorias(erros, "exercícios", "error")), 1)
+        self.assertEqual(_categorias(erros, "exercícios", "error"), [])
+        self.assertEqual(_categorias(erros, "abertura", "error"), [])
+
+    def test_com_exercicio_reprova_por_abertura(self):
+        """O bloco 'Exercício' é o que reprova agora, na categoria abertura (R6)."""
+        erros = check_content(_aula(1500, exercicios=1), "aula")
+        achados = _categorias(erros, "abertura", "error")
+        self.assertTrue(any("[R6]" in m for m in achados), achados)
+        # "aplique no seu negócio" no cabeçalho também é R5.
+        self.assertTrue(any("[R5]" in m for m in achados), achados)
 
     def test_tabela_nao_e_mais_obrigatoria(self):
         """Regressão: aula sem tabela e sem blockquote passa."""
         erros = check_content(_aula(1500), "aula")
         mensagens = " ".join(e.mensagem for e in erros if e.tipo == "error")
-        self.assertNotIn("tabela", mensagens)
-        self.assertNotIn("citação", mensagens)
+        self.assertEqual(mensagens, "")
 
     def test_mais_de_tres_visuais_avisa(self):
         base = _aula(1500)

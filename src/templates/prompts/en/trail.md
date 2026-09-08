@@ -49,12 +49,16 @@ below.
 
 ## Sources
 
-One line per source, in the form `Source name, title or report, month and year`, only with
-what the lessons or the research bring. One to eight sources.
+One line per source, in the form `Source name, title or report, month and year` and, when there
+is one, the link right after, only with what the lessons or the research bring. One to eight
+sources. It is the LAST block of the track and the only place in the course where a source
+appears (R7): each line up to 25 words, no commentary, no card, no highlighted quote. It is
+rendered in the page footer, in small type.
 
 ## Before delivering, check
 
-1. Five sections, in this order, each with the heading above as H2.
+1. Five sections, in this order, each with the heading above as H2; "Sources" is the last.
+6. No exercise, checkpoint, mockup, "needs verification" or data protection law by name (R5 to R9).
 2. Action verbs in the objectives; no "understand" or "know".
 3. Gloss of up to 12 words per term; no term the lessons do not use.
 4. No invented source.

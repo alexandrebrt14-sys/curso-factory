@@ -92,10 +92,15 @@ class Course(BaseModel):
 class SectionType(str, Enum):
     """Tipos de seção de conteúdo dentro de um módulo.
 
-    Os cinco primeiros carregam prosa ou código no campo `value`. Os seis
+    Os quatro primeiros carregam prosa ou código no campo `value`. Os seis
     seguintes são blocos visuais, com carga tipada em `data`, e existem para
     cumprir a doutrina de peso visual (`docs/DOUTRINA_VISUAL_CURSOS.md`):
     nenhum curso nasce como coluna de texto.
+
+    `checkpoint` saiu do vocabulário em 08/09/2026 (regra R8 do mandato de
+    abertura direta): o card de "verifique seu entendimento" compete com a
+    leitura e o dono pediu fora. Curso legado com `> CHECKPOINT:` no Markdown
+    tem o bloco descartado pelo parser.
 
     As formas de payload são as do motor de cursos do `landing-page-geo`
     (`src/types/course-page.ts`). Curso gerado aqui é montado lá, então
@@ -105,7 +110,6 @@ class SectionType(str, Enum):
     CODE = "code"
     WARNING = "warning"
     TIP = "tip"
-    CHECKPOINT = "checkpoint"
     # Blocos visuais. Carga em `data`, e `value` fica vazio.
     FIGURE = "figure"
     DATA_TABLE = "dataTable"
@@ -295,17 +299,24 @@ class StepDefinition(BaseModel):
     title: str = Field(..., min_length=3, description="Título PT-BR com acentos")
     duration: str = Field(..., pattern=r"^\d+ min$", description="Duração ex: '18 min'")
     icon_key: str = Field(default="trendingUp", description="Chave do ícone SVG")
-    description: str = Field(..., min_length=5, description="Descrição em uma linha")
+    description: str = Field(
+        ..., min_length=5,
+        description="Subtítulo do módulo: uma frase, logo abaixo do título (R1)",
+    )
     content: list[CourseSection] = Field(default_factory=list)
 
     @field_validator("content")
     @classmethod
     def validate_content(cls, v: list[CourseSection]) -> list[CourseSection]:
-        if len(v) < 3:
-            raise ValueError("Cada step precisa de pelo menos 3 seções de conteúdo")
-        types = [s.type for s in v]
-        if SectionType.CHECKPOINT not in types:
-            raise ValueError("Cada step precisa de pelo menos 1 checkpoint")
+        """Ao menos uma seção; nenhum checkpoint.
+
+        Até 08/09/2026 cobrava três seções e um checkpoint por step, e o parser
+        fabricava os dois quando faltavam (checkpoint sintético e "reflita
+        sobre como aplicar" como enchimento). O mandato de abertura direta
+        (R8) tirou o card; o piso de três seções produzia enchimento.
+        """
+        if not v:
+            raise ValueError("Cada step precisa de pelo menos 1 seção de conteúdo")
         return v
 
 
@@ -338,6 +349,11 @@ class CourseDefinition(BaseModel):
     steps: list[StepDefinition] = Field(default_factory=list)
     prerequisitos_display: list[str] = Field(default_factory=list)
     faq: list[FAQItem] = Field(default_factory=list)
+    # R7 (08/09/2026): as fontes verificadas do curso inteiro, uma por linha,
+    # renderizadas UMA vez no rodapé da página em corpo pequeno. O gerador
+    # hasteia para cá o `source` de tabela e painel e a seção "Fontes" da
+    # trilha; nada de fonte fica em card no meio da leitura.
+    fontes: list[str] = Field(default_factory=list, description="Fontes do rodapé (R7)")
 
     # Hero
     hero_gradient_from: str = Field(default="#032d60")

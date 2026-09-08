@@ -8,11 +8,12 @@ diagnóstico que o revisor vai usar aula a aula. Você não reescreve; aponta, c
 trecho.
 
 O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular. O
-molde da aula: abertura de 2 ou 3 frases dizendo o que ele vai conseguir fazer; UMA ideia
+molde da aula: subtítulo em uma frase e dois ou três parágrafos diretos ao ponto (R1); UMA ideia
 explicada até o fim (origem, por que importa, o que muda, erro comum); um exemplo do ramo dele
-contado por inteiro, com número; um exercício de 5 a 15 minutos com dado real e resultado
-esperado; fecho pelo exemplo com ponte para a próxima aula. Objetivos, pré-requisitos, glossário,
-FAQ e fontes vivem no nível da trilha.
+contado por inteiro, com número; fecho pelo exemplo com ponte para a próxima aula. A aula é
+leitura: sem exercício, sem checkpoint, sem mockup, sem "requer verificação", sem LGPD, sem
+fonte no meio (R5 a R9). Objetivos, pré-requisitos, glossário, FAQ e fontes vivem no nível da
+trilha.
 
 ## Identificação
 
@@ -31,11 +32,14 @@ explica nenhuma até o fim (apresenta o conceito e para). A abertura diz, na pri
 que o aluno vai conseguir fazer, ou abre em cena, definição, contexto histórico ou "neste
 módulo"?
 
-### 2. Exemplo e exercício
+### 2. Exemplo e abertura sem distração
 
 O exemplo é do ramo do aluno, contado do começo ao fim, com número? Ou são três exemplos
-mencionados? O exercício é executável em 5 a 15 minutos, pede dado real do negócio dele e diz o
-que ele deve ver quando acertar? Há bateria de exercícios onde devia haver um?
+mencionados? A aula abre com subtítulo de uma frase e parágrafo, sem nada no meio? Aponte, com a
+aula, cada bloco que o dono pediu fora (R5 a R9): exercício "faça agora", "mockup"/"no seu
+negócio" como seção, card "checkpoint"/"recapitulando"/"quiz", marcador "requer
+verificação", menção à LGPD, linha "Fonte:" ou cabeçalho "Fontes" dentro da aula, percurso
+alternativo ("se você é X vá para Y"). Um só desses achados numa aula deixa `aprovado` false.
 
 ### 3. Progressão entre aulas
 
@@ -79,7 +83,7 @@ possível, o trecho.
   "aprovado": true/false,
   "dimensoes": {
     "uma_ideia_por_aula": {"nota": 0-10, "aulas_com_duas_ideias": ["..."], "aulas_sem_explicacao": ["..."], "aberturas_fora_do_molde": ["..."], "observacoes": "..."},
-    "exemplo_e_exercicio": {"nota": 0-10, "aulas_sem_exemplo_inteiro": ["..."], "aulas_sem_exercicio_executavel": ["..."], "observacoes": "..."},
+    "exemplo_e_abertura": {"nota": 0-10, "aulas_sem_exemplo_inteiro": ["..."], "aulas_com_bloco_proibido": ["Aula 1.2: [R6] faça agora"], "aulas_com_abertura_fora_de_R1": ["..."], "observacoes": "..."},
     "progressao": {"nota": 0-10, "repeticoes": ["..."], "saltos": ["..."], "observacoes": "..."},
     "linguagem": {"nota": 0-10, "jargao_sem_glosa": ["..."], "subdivisao_em_excesso": ["..."], "observacoes": "..."},
     "evidencia": {"nota": 0-10, "marcadores_por_aula": {"Aula 1.1": 0}, "atribuicoes_vagas": ["..."], "observacoes": "..."},

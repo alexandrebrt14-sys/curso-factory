@@ -52,9 +52,9 @@ Prioriza fuentes de 2024–2026:
 - **Datos públicos de plataformas**: páginas de venta, reseñas, datos de redes sociales
 - **Publicaciones en español**: HSM Management, Iberoamericana de Educación, Universia, repositorios de UNAM, Universidad de Buenos Aires, IE Business School
 
-### 6. Datos para Ejercicios y Estudios de Caso
+### 6. Casos para los ejemplos de las lecciones
 
-- Identifica 3–5 casos reales (empresas, proyectos, incidentes) que puedan usarse como ejercicios o ejemplos
+- Identifica 3–5 casos reales (empresas, proyectos, incidentes) que puedan contarse de principio a fin como ejemplo (la lección no lleva ejercicio)
 - Para cada caso, proporciona: contexto, desafío enfrentado, abordaje adoptado, resultado obtenido
 - Prioriza casos verificables con fuentes públicas
 

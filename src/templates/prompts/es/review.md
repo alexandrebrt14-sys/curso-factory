@@ -14,16 +14,16 @@ lo que entró, o que llega como informe en lugar del contenido, es descartado po
 {analysis_summary}
 
 El lector es dueño de un pequeño negocio, lego en marketing y tecnología, en el celular.
-Lenguaje de mostrador, respuesta primero, un ejemplo contado hasta el final, un ejercicio con
-dato real. Acentuación completa, sin emoji, sin raya.
+Lenguaje de mostrador, respuesta primero, un ejemplo contado hasta el final, y la lección es
+LECTURA: sin ejercicio, sin tarjeta. Acentuación completa, sin emoji, sin raya.
 
 ## Qué corregir, en este orden
 
 ### 1. Sustancia (antes de cualquier corte)
 
 ¿La lección tiene una sola idea, explicada hasta el final (de dónde viene, por qué importa, qué
-cambia, el error común), un ejemplo del rubro del alumno con número y un ejercicio ejecutable
-con resultado esperado? Si falta uno, AGRÉGALO con el material de la propia lección y lo que la
+cambia, el error común), un ejemplo del rubro del alumno con número y un cierre que dice qué
+cambió y el próximo paso en prosa? Si falta uno, AGRÉGALO con el material de la propia lección y lo que la
 investigación sostiene; si no hay material, marca `[FALTA EVIDENCIA: ...]` en lugar del dato.
 Nunca cortes sustancia para satisfacer una regla de forma.
 
@@ -34,15 +34,23 @@ por el contexto. Nunca acentúes URL, slug, código, variable o atributo HTML.
 
 ### 3. Estructura de la lección
 
-- Apertura en 2 o 3 frases diciendo qué va a poder hacer el alumno. Escena, hora del día,
-  personaje, "en este módulo" y lista de objetivos salen; la respuesta sube a la primera frase.
-- 2 a 4 H2 (lo normal son tres: por qué la idea cambia el resultado; cómo queda en tu negocio;
-  hazlo ahora). H3 solo en H2 de más de 350 palabras. H4 y subtítulo por línea terminada en
-  dos puntos se vuelven prosa o desaparecen. Las secciones que tratan el mismo asunto se
+- Apertura en el orden R1: justo debajo de `# Aula ...`, el subtítulo en UNA frase y en línea
+  propia, después dos o tres párrafos directos al punto. Si el subtítulo falta, escríbelo a
+  partir de la primera frase. Escena, hora del día, personaje, "en este módulo", lista de
+  objetivos, "qué vas a aprender", "para quién es", índice y tarjeta salen del inicio.
+- 2 a 4 H2 (lo normal son dos: por qué la idea cambia el resultado; un caso del rubro, de
+  principio a fin). H3 solo en H2 de más de 350 palabras. H4 y subtítulo por línea terminada
+  en dos puntos se vuelven prosa o desaparecen. Las secciones que tratan el mismo asunto se
   funden.
-- Un ejercicio, con título que dice qué produce, pasos numerados con verbo en imperativo y
-  campo para el dato real del alumno, resultado esperado y "si te trabas". Una batería de ejercicios
-  se vuelve uno.
+- Los bloques prohibidos (R5 a R9) SALEN, sin sustituto: ejercicio ("hazlo ahora",
+  "ejercicio", "manos a la obra", "tu turno", "practica", "tarea", "desafío", "Resultado
+  esperado:", "Si te trabas:"), "mockup"/"en tu negocio" como sección, tarjeta
+  "checkpoint"/"recapitulando"/"quiz", marcador "requiere verificación"/"a verificar" y
+  cualquier mención a la ley de protección de datos por su nombre (la conducta queda, el nombre
+  sale). El paso práctico que llevaba el ejercicio se vuelve una o dos frases de prosa en el
+  cierre. El recorrido alternativo ("si eres X ve a Y") se vuelve un solo camino.
+- La fuente en medio de la lección (línea "Fuente:", encabezado "Fuentes", cita en tarjeta)
+  sale; el dato queda limpio en la frase y la fuente pertenece al pie del itinerario (R7).
 - Cierre de 3 a 5 líneas por el ejemplo, con un puente hacia la siguiente lección. El cierre
   que resume lo leído se reescribe como consecuencia.
 - Apoyo visual solo donde sustituye texto (comparación, secuencia, figura con leyenda
@@ -102,7 +110,7 @@ informe:
 REVISIÓN CONCLUIDA
 Palabras recibidas / devueltas: [n] / [n]
 Correcciones de acentuación: [n]
-Correcciones de estructura (apertura, H2/H3, ejercicio, cierre): [n]
+Correcciones de estructura (apertura R1, H2/H3, bloques R5 a R9 quitados, cierre): [n]
 Correcciones de léxico vetado: [n]
 Sustancia agregada o marcada: [qué faltaba, o "completa"]
 Marcadores [FALTA EVIDENCIA] abiertos: [n]

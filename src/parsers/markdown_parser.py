@@ -8,6 +8,8 @@ Funções públicas:
 - `slugify(valor)` → ASCII kebab-case (sem acentos)
 - `short_id(valor, max_len=24)` → slug truncado para step_id
 - `extract_module_blocks(md)` → lista de (título, conteúdo) por heading
+- `extrair_subtitulo(md)` → (subtítulo de uma frase, corpo) — R1
+- `extrair_fontes(md)` → (corpo sem `## Fontes`, lista de fontes) — R7
 - `parse_module_to_sections(md)` → lista de CourseSection validáveis
 
 ## Promoção a bloco visual
@@ -47,12 +49,24 @@ H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 AULA_H1_RE = re.compile(r"^#\s+Aula\s+\d+\.\d+\s*[:.\-]", re.MULTILINE)
 CODE_FENCE_RE = re.compile(r"```([a-zA-Z0-9_+-]*)\n(.*?)```", re.DOTALL)
 
-# Prefixos de blockquote especiais (DICA/AVISO/CHECKPOINT) para schema_builder
+# Prefixos de blockquote especiais (DICA/AVISO) para schema_builder
 _SPECIAL_QUOTES = {
     "DICA": SectionType.TIP,
     "AVISO": SectionType.WARNING,
-    "CHECKPOINT": SectionType.CHECKPOINT,
 }
+
+#: Prefixos de blockquote que o mandato de abertura direta (08/09/2026) tirou
+#: da página: o card some, sem substituto. `CHECKPOINT` é R8; os demais são as
+#: variantes de exercício (R6) e de recapitulação (R8) que o redator antigo
+#: escrevia como citação rotulada.
+_QUOTES_DESCARTADOS = ("CHECKPOINT", "EXERCÍCIO", "EXERCICIO", "FAÇA AGORA", "FACA AGORA",
+                       "RECAPITULANDO", "QUIZ", "DESAFIO", "TAREFA")
+
+#: Subtítulo: uma frase só, curta, em linha própria logo depois do H1 (R1).
+_SUBTITULO_MAX_PALAVRAS = 30
+_FIM_DE_FRASE_RE = re.compile(r"[.!?](?=\s|$)")
+#: Cabeçalho "Fontes" da trilha (R7): o bloco sai do corpo e vai ao rodapé.
+_H2_FONTES_RE = re.compile(r"^##\s+(?:Fontes?|Sources|Fuentes|Refer[êe]ncias)\b[^\n]*\n", re.MULTILINE | re.IGNORECASE)
 
 # ─── Promoção a bloco visual: padrões ────────────────────────────────
 
@@ -177,8 +191,60 @@ def extract_module_blocks(markdown: str) -> list[tuple[str, str]]:
     return blocks
 
 
+def extrair_subtitulo(content: str) -> tuple[str, str]:
+    """Separa o subtítulo (R1) do corpo de uma unidade já sem o H1.
+
+    O subtítulo é o primeiro bloco quando ele é prosa de uma frase só, em uma
+    linha, com até `_SUBTITULO_MAX_PALAVRAS` palavras. Devolve `(subtitulo,
+    corpo_sem_ele)`; quando o primeiro bloco não tem essa forma, devolve
+    `("", content)` e nada se perde. O subtítulo vira o `description` do step
+    (o template o desenha logo abaixo do título) e por isso sai do corpo, para
+    não aparecer duas vezes (R4).
+    """
+    content = _normalizar_quebras(content)
+    blocos = re.split(r"\n\s*\n", content.strip(), maxsplit=1)
+    if not blocos or not blocos[0].strip():
+        return "", content
+    primeiro = blocos[0].strip()
+    if "\n" in primeiro:
+        return "", content
+    if primeiro.startswith(("#", "-", "*", "+", "|", ">", "!", "<", "```", "[")):
+        return "", content
+    if re.match(r"^\d{1,2}[.)]\s", primeiro):
+        return "", content
+    frases = len(_FIM_DE_FRASE_RE.findall(primeiro)) or 1
+    if frases > 1 or len(primeiro.split()) > _SUBTITULO_MAX_PALAVRAS:
+        return "", content
+    resto = blocos[1] if len(blocos) > 1 else ""
+    return primeiro, resto.strip()
+
+
+def extrair_fontes(content: str) -> tuple[str, list[str]]:
+    """Tira a seção `## Fontes` do corpo e devolve as fontes, uma por linha (R7).
+
+    Vale para o fechamento da trilha, onde o prompt escreve as fontes datadas.
+    A seção vai do cabeçalho até o próximo cabeçalho de qualquer nível ou o fim.
+    Linha vazia e marcador de lista são descartados; o texto da fonte fica.
+    """
+    content = _normalizar_quebras(content)
+    m = _H2_FONTES_RE.search(content)
+    if not m:
+        return content, []
+    resto = content[m.end():]
+    fim = re.search(r"^\s{0,3}#{1,6}\s+", resto, re.MULTILINE)
+    bloco = resto[: fim.start()] if fim else resto
+    depois = resto[fim.start():] if fim else ""
+    fontes: list[str] = []
+    for linha in bloco.splitlines():
+        s = re.sub(r"^\s*(?:[-*+]|\d{1,2}[.)])\s+", "", linha).strip()
+        if s:
+            fontes.append(s)
+    sem = (content[: m.start()].rstrip() + ("\n\n" + depois.lstrip() if depois.strip() else "")).strip()
+    return sem, fontes
+
+
 def _detect_special_quote(line: str) -> tuple[SectionType, str] | None:
-    """Detecta `> DICA: ...`, `> AVISO: ...`, `> CHECKPOINT: ...`."""
+    """Detecta `> DICA: ...` e `> AVISO: ...`."""
     stripped = line.strip()
     if not stripped.startswith(">"):
         return None
@@ -499,20 +565,25 @@ def _extrair_blocos_visuais(texto: str) -> tuple[str, list[CourseSection]]:
 def parse_module_to_sections(
     content: str,
     chunk_size: int = 1500,
-    add_checkpoint_if_missing: bool = True,
-    min_sections: int = 3,
+    add_checkpoint_if_missing: bool = False,
+    min_sections: int = 1,
 ) -> list[CourseSection]:
     """Converte conteúdo de um módulo em CourseSections.
 
     Estratégia:
     1. Normaliza quebras de linha (CRLF vira LF)
     2. Extrai code fences e guarda marcadores
-    3. Extrai blockquotes especiais (DICA/AVISO/CHECKPOINT) e genéricos (TIP)
+    3. Extrai blockquotes especiais (DICA/AVISO) e genéricos (TIP); descarta os
+       rotulados como CHECKPOINT, EXERCÍCIO, FAÇA AGORA, RECAPITULANDO, QUIZ,
+       DESAFIO e TAREFA (R6 e R8, 08/09/2026)
     4. Promove tabela, lista de procedimento e imagem legendada a bloco visual,
        deixando um marcador na posição original
     5. Quebra texto restante em chunks
     6. Reinsere code fences e blocos visuais onde aparecem os marcadores
-    7. Garante ≥1 CHECKPOINT e ≥min_sections sections (validação Pydantic)
+
+    `add_checkpoint_if_missing` e `min_sections` ficam na assinatura por
+    compatibilidade e são ignorados: desde 08/09/2026 o parser não fabrica
+    checkpoint nem enche a unidade com dica genérica para chegar a três seções.
     """
     content = _normalizar_quebras(content)
     sections: list[CourseSection] = []
@@ -543,7 +614,10 @@ def parse_module_to_sections(
         joined = " ".join(current_quote_lines).strip()
         if not joined:
             return
-        # Verifica se é um quote especial (DICA:/AVISO:/CHECKPOINT:)
+        # Card proibido (R6/R8): some sem substituto.
+        if any(joined.upper().startswith(f"{p}:") for p in _QUOTES_DESCARTADOS):
+            return
+        # Verifica se é um quote especial (DICA:/AVISO:)
         matched_type: SectionType | None = None
         for prefix, stype in _SPECIAL_QUOTES.items():
             if joined.startswith(f"{prefix}:"):
@@ -625,26 +699,7 @@ def parse_module_to_sections(
     # Quotes ao final
     sections.extend(quote_sections)
 
-    # Garantias mínimas para validação Pydantic de StepDefinition
-    has_checkpoint = any(s.type == SectionType.CHECKPOINT for s in sections)
-    if add_checkpoint_if_missing and not has_checkpoint:
-        sections.append(
-            CourseSection(
-                type=SectionType.CHECKPOINT,
-                value=(
-                    "Verifique seu entendimento: revise os conceitos centrais "
-                    "deste módulo antes de avançar para o próximo."
-                ),
-                label="CHECKPOINT",
-            )
-        )
-
-    while len(sections) < min_sections:
-        sections.append(
-            CourseSection(
-                type=SectionType.TIP,
-                value="Reflita sobre como aplicar este conteúdo ao seu contexto profissional.",
-            )
-        )
-
+    # Sem checkpoint sintético e sem enchimento (08/09/2026, R6 e R8): a
+    # unidade sai com o que o autor escreveu. Unidade vazia é problema do
+    # conteúdo, e o StepDefinition recusa lista vazia.
     return sections
