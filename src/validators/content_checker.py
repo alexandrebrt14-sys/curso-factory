@@ -520,23 +520,37 @@ def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
     return fora_da_faixa
 
 
+#: Faixas Unicode de emoji, sem sobreposição. A versão anterior somava
+#: `\U00010000-\U0010ffff` (todo o plano astral: CJK raro, símbolos matemáticos,
+#: notação musical) e `\U000024c2-\U0001f251` (que engole ideogramas e Hangul):
+#: qualquer texto com um caractere fora do plano básico contava como emoji.
+_EMOJI_RE = re.compile(
+    "["
+    "\U0001f000-\U0001f02f"  # mahjong, dominó
+    "\U0001f0a0-\U0001f0ff"  # cartas de baralho
+    "\U0001f100-\U0001f1ff"  # símbolos alfanuméricos em quadrado, indicadores regionais
+    "\U0001f200-\U0001f2ff"  # ideogramas em quadrado
+    "\U0001f300-\U0001f5ff"  # símbolos e pictogramas diversos
+    "\U0001f600-\U0001f64f"  # emoticons
+    "\U0001f680-\U0001f6ff"  # transporte e mapas
+    "\U0001f700-\U0001f77f"  # alquimia
+    "\U0001f780-\U0001f7ff"  # formas geométricas estendidas
+    "\U0001f800-\U0001f8ff"  # setas suplementares C
+    "\U0001f900-\U0001f9ff"  # símbolos e pictogramas suplementares
+    "\U0001fa00-\U0001faff"  # xadrez, símbolos e pictogramas estendidos A
+    "\u2600-\u26ff"  # símbolos diversos (sol, guarda-chuva, sinais)
+    "\u2700-\u27bf"  # dingbats (tesoura, check, cruz)
+    "\u2300-\u23ff"  # técnicos (relógio, ampulheta)
+    "\u2b00-\u2bff"  # setas e formas diversas (estrela)
+    "\u3030\u303d\u3297\u3299"  # sinais CJK usados como emoji
+    "\u200d\ufe0f"  # zero-width joiner e seletor de apresentação
+    "]"
+)
+
+
 def _has_emoji(text: str) -> bool:
     """Detecta emojis no texto."""
-    emoji_pattern = re.compile(
-        "["
-        "\U0001f600-\U0001f64f"
-        "\U0001f300-\U0001f5ff"
-        "\U0001f680-\U0001f6ff"
-        "\U0001f1e0-\U0001f1ff"
-        "\U00002702-\U000027b0"
-        "\U000024c2-\U0001f251"
-        "\U0001f926-\U0001f937"
-        "\U00010000-\U0010ffff"
-        "\u200d\u2640-\u2642"
-        "]+",
-        flags=re.UNICODE,
-    )
-    return bool(emoji_pattern.search(text))
+    return bool(_EMOJI_RE.search(text))
 
 
 def _strip_noise(text: str) -> str:
