@@ -145,7 +145,9 @@ classify_stub = {
 
 sb = SchemaBuilder()
 course = sb.build(SLUG, yaml_def, md_limpo, classify_stub, client=client)
-print(f"  CourseDefinition válido: slug={course.slug}, steps={len(course.steps)}, min={course.duracao_total_minutos}")
+print(
+    f"  CourseDefinition válido: slug={course.slug}, steps={len(course.steps)}, min={course.duracao_total_minutos}"
+)
 print(f"  Autor: {course.autor_nome}")
 print(f"  Domínio: {course.dominio}")
 print(f"  Company: {course.company_name}")

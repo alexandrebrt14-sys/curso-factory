@@ -30,6 +30,7 @@ from src.validators.voice_guard import voice_guard_check
 
 # ─── accent_checker ──────────────────────────────────────────────────
 
+
 def test_check_accents_detecta_palavras_sem_acento() -> None:
     text = "Voce nao precisa de producao infinita ate amanha."
     erros = check_accents(text)
@@ -98,6 +99,7 @@ def test_fix_accents_preserva_codigo() -> None:
 
 # ─── quality_gate ────────────────────────────────────────────────────
 
+
 def test_quality_gate_texto_canonico() -> None:
     """Texto que respeita acentuação deve sair sem erro de acentos."""
     client = load_client("default")
@@ -118,6 +120,7 @@ def test_quality_gate_autofix_corrige_acentos() -> None:
 
 # ─── voice_guard ─────────────────────────────────────────────────────
 
+
 def test_voice_guard_score_em_zero_a_cem() -> None:
     client = load_client("default")
     result = voice_guard_check("Texto qualquer com produção e análise.", client=client)
@@ -137,9 +140,7 @@ def test_voice_guard_isolamento_entre_clientes() -> None:
     """Naming canônico do default não pode aprovar voz de outro cliente."""
     default = load_client("default")
     acme = load_client("acme")
-    text_default = (
-        "Curso de GEO assinado por Alexandre Caramaschi, CEO da Brasil GEO."
-    )
+    text_default = "Curso de GEO assinado por Alexandre Caramaschi, CEO da Brasil GEO."
     r_default = voice_guard_check(text_default, client=default)
     r_acme = voice_guard_check(text_default, client=acme)
     # Voz Alexandre passa no cliente default e cai (ou pelo menos pontua menor)
@@ -148,6 +149,7 @@ def test_voice_guard_isolamento_entre_clientes() -> None:
 
 
 # ─── citabilidade GEO (content_checker) ──────────────────────────────
+
 
 def test_geo_count_cite_sources() -> None:
     text = (
@@ -203,6 +205,7 @@ def test_geo_check_ausente_e_retrocompativel() -> None:
 
 
 # ─── quality_rules.yaml lido em runtime (rules_loader) ───────────────
+
 
 @pytest.fixture
 def yaml_de_regras_ausente(monkeypatch: pytest.MonkeyPatch):
@@ -265,6 +268,7 @@ def test_cliche_usa_fonte_quando_yaml_nao_carrega(yaml_de_regras_ausente) -> Non
 
 # ─── anti-invencao: percentual sem fonte ─────────────────────────────
 
+
 def test_percentual_sem_fonte_gera_aviso() -> None:
     """Numero sem origem na mesma frase vira aviso nao-bloqueante."""
     texto = "## Dados\n\nA adocao de agentes subiu 42% entre as empresas medias."
@@ -308,6 +312,7 @@ def test_percentual_limita_avisos_por_documento() -> None:
 
 
 # ─── anti-invencao: marcadores de apuracao em aberto ─────────────────
+
 
 def test_marcadores_acima_do_teto_bloqueiam() -> None:
     """6 marcadores passam do teto de 5 e reprovam a peca."""

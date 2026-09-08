@@ -118,18 +118,20 @@ class MetadataSync:
             elif slug in approved_slugs:
                 status = "approved"
 
-            enriched.append({
-                "slug": slug,
-                "nome": course.get("nome", ""),
-                "nivel": course.get("nivel", ""),
-                "modulos": course.get("modulos", 0),
-                "descricao": str(course.get("descricao", "")).strip(),
-                "tags": course.get("tags", []),
-                "prerequisitos": course.get("prerequisitos", []),
-                "duracao_estimada": course.get("duracao_estimada", ""),
-                "prioridade": course.get("prioridade", ""),
-                "status": status,
-            })
+            enriched.append(
+                {
+                    "slug": slug,
+                    "nome": course.get("nome", ""),
+                    "nivel": course.get("nivel", ""),
+                    "modulos": course.get("modulos", 0),
+                    "descricao": str(course.get("descricao", "")).strip(),
+                    "tags": course.get("tags", []),
+                    "prerequisitos": course.get("prerequisitos", []),
+                    "duracao_estimada": course.get("duracao_estimada", ""),
+                    "prioridade": course.get("prioridade", ""),
+                    "status": status,
+                }
+            )
 
         return enriched
 
@@ -141,6 +143,7 @@ class MetadataSync:
             return []
         try:
             import yaml  # import local para não exigir yaml em contextos sem config
+
             with open(courses_path, encoding="utf-8") as fh:
                 data = yaml.safe_load(fh)
             if not data:

@@ -11,10 +11,11 @@ Principios (do setup de Memoria Persistente):
 - O hook FALHA EM SILENCIO: nunca bloqueia o agente (sempre exit 0).
 - 1 arquivo por dia, 1 linha por sessao — leve, sem explosao de arquivos.
 """
-import sys
-import os
+
 import json
-from datetime import datetime, timezone
+import os
+import sys
+from datetime import UTC, datetime
 
 
 def main():
@@ -46,7 +47,7 @@ def main():
     cands = os.path.join(base, "candidates")
     os.makedirs(cands, exist_ok=True)
 
-    now = datetime.now(timezone.utc).astimezone()
+    now = datetime.now(UTC).astimezone()
     day = now.strftime("%Y-%m-%d")
     stamp = now.strftime("%H:%M %z")
     out = os.path.join(cands, "_candidate_" + day + ".md")

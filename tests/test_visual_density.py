@@ -24,6 +24,7 @@ from src.validators.visual_density import CATEGORIA, check_visual_density
 
 # ─── Fábricas de blocos ──────────────────────────────────────────────
 
+
 def bloco_texto(texto: str) -> CourseSection:
     """Bloco de prosa."""
     return CourseSection(type=SectionType.TEXT, value=texto)
@@ -65,7 +66,7 @@ def prosa(tamanho: int, semente: str = "palavra ") -> str:
     Termina em ponto final para que o `strip()` do checador não devolva um
     caractere a menos e as asserções de tamanho batam na unidade.
     """
-    return (semente * (tamanho // len(semente) + 1))[:tamanho - 1] + "."
+    return (semente * (tamanho // len(semente) + 1))[: tamanho - 1] + "."
 
 
 def tres_visuais() -> list[CourseSection]:
@@ -89,6 +90,7 @@ def yaml_do_repositorio():
 @pytest.fixture
 def yaml_customizado(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     """Devolve uma função que instala um YAML de regras temporário."""
+
     def instalar(corpo: str) -> Path:
         caminho = tmp_path / "quality_rules.yaml"
         caminho.write_text(corpo, encoding="utf-8")
@@ -101,6 +103,7 @@ def yaml_customizado(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
 
 
 # ─── 1. Teto de parágrafo ────────────────────────────────────────────
+
 
 def test_paragrafo_acima_do_teto_reprova_e_nomeia_modulo_e_tamanho() -> None:
     """Parágrafo de 1.500 caracteres reprova, com módulo e medida na mensagem."""
@@ -141,6 +144,7 @@ def test_codigo_e_figura_nao_entram_no_teto_nem_no_denominador() -> None:
 
 # ─── 2. Piso de blocos visuais ───────────────────────────────────────
 
+
 def test_dois_blocos_visuais_nao_cumprem_o_piso_de_tres() -> None:
     # Prosa acima do corte de 800: só então o piso de três se aplica.
     sections = [bloco_texto(prosa(900)), bloco_figura(1), bloco_tabela()]
@@ -165,6 +169,7 @@ def test_tabela_dentro_de_bloco_de_texto_nao_da_credito_de_piso() -> None:
 
 
 # ─── 3. Densidade ────────────────────────────────────────────────────
+
 
 def test_modulo_longo_com_tres_visuais_falha_na_densidade() -> None:
     """20 mil caracteres de prosa pedem 8 blocos visuais, não 3."""
@@ -248,6 +253,7 @@ def test_valor_ilegivel_no_yaml_cai_no_fallback_sem_explodir(yaml_customizado) -
 
 # ─── 5. Camada ausente ou desligada ──────────────────────────────────
 
+
 def test_camada_ausente_nao_derruba_e_avisa(yaml_customizado) -> None:
     yaml_customizado("validation:\n  content_quality:\n    enabled: true\n")
     erros = check_visual_density([bloco_texto(prosa(9000))], "Módulo 4")
@@ -281,6 +287,7 @@ def test_yaml_inexistente_nao_derruba(monkeypatch: pytest.MonkeyPatch) -> None:
 
 # ─── Curso legado ────────────────────────────────────────────────────
 
+
 def test_curso_legado_recebe_aviso_no_lugar_de_erro() -> None:
     """Com `required_for_new_course: true`, o acervo publicado não fica refém."""
     sections = [bloco_texto(prosa(1500)), bloco_figura(1)]
@@ -307,6 +314,7 @@ def test_blocos_como_dicionario_sao_medidos_igual() -> None:
 
 
 # ─── 6. O corte que separa capítulo de trecho de apoio ────────────────
+
 
 def test_modulo_curto_nao_responde_pelo_piso_de_tres() -> None:
     """Abertura e encerramento não são capítulo, e não pedem três peças.
@@ -363,14 +371,14 @@ def test_o_corte_sai_do_yaml(tmp_path, monkeypatch) -> None:
         erros = check_visual_density(sections, "módulo")
         pisos = [e for e in erros if "min_visual_blocks_per_module" in e.mensagem]
         assert bool(pisos) is espera_piso, (
-            f"com corte em {corte} o piso deveria "
-            f"{'valer' if espera_piso else 'ficar de fora'}"
+            f"com corte em {corte} o piso deveria {'valer' if espera_piso else 'ficar de fora'}"
         )
 
     rules_loader.load_rules.cache_clear()
 
 
 # ─── 7. A costura: a régua morde na geração ──────────────────────────
+
 
 def _curso_de_prova(secoes: list) -> object:
     """Monta um CourseDefinition mínimo em volta das seções dadas."""
@@ -380,13 +388,15 @@ def _curso_de_prova(secoes: list) -> object:
         slug="prova-peso-visual",
         titulo="Curso de prova do peso visual",
         descricao="Curso mínimo para exercitar a cobrança na geração do TSX.",
-        steps=[{
-            "id": "capitulo-um",
-            "title": "Capítulo de prova",
-            "duration": "12 min",
-            "description": "Exercita a cobrança de peso visual",
-            "content": secoes,
-        }],
+        steps=[
+            {
+                "id": "capitulo-um",
+                "title": "Capítulo de prova",
+                "duration": "12 min",
+                "description": "Exercita a cobrança de peso visual",
+                "content": secoes,
+            }
+        ],
     )
 
 
@@ -399,11 +409,13 @@ def test_geracao_reprova_curso_que_nasce_como_coluna_de_texto() -> None:
     """
     from src.generators.tsx_generator import TsxGenerator, VisualDensityError
 
-    curso = _curso_de_prova([
-        {"type": "text", "value": prosa(900)},
-        {"type": "text", "value": prosa(900)},
-        {"type": "tip", "value": "O conceito central cabe em uma frase dita no balcão."},
-    ])
+    curso = _curso_de_prova(
+        [
+            {"type": "text", "value": prosa(900)},
+            {"type": "text", "value": prosa(900)},
+            {"type": "tip", "value": "O conceito central cabe em uma frase dita no balcão."},
+        ]
+    )
 
     with pytest.raises(VisualDensityError) as exc:
         TsxGenerator().render_page(curso)
@@ -417,16 +429,29 @@ def test_geracao_reprova_curso_que_nasce_como_coluna_de_texto() -> None:
 def test_geracao_passa_quando_o_modulo_tem_as_pecas() -> None:
     from src.generators.tsx_generator import TsxGenerator
 
-    curso = _curso_de_prova([
-        {"type": "text", "value": prosa(900)},
-        {"type": "figure", "value": "<svg role='img'></svg>", "label": "O funil"},
-        {"type": "dataTable", "value": "", "data": {
-            "columns": ["Régua", "Número"], "rows": [["Operador", "400"], ["Documento", "250"]]}},
-        {"type": "stepGuide", "value": "", "data": {
-            "title": "Instalar a medição",
-            "steps": [{"label": "Criar o evento"}, {"label": "Conferir a taxa"}]}},
-        {"type": "tip", "value": "O evento perseguido tem nome próprio no painel."},
-    ])
+    curso = _curso_de_prova(
+        [
+            {"type": "text", "value": prosa(900)},
+            {"type": "figure", "value": "<svg role='img'></svg>", "label": "O funil"},
+            {
+                "type": "dataTable",
+                "value": "",
+                "data": {
+                    "columns": ["Régua", "Número"],
+                    "rows": [["Operador", "400"], ["Documento", "250"]],
+                },
+            },
+            {
+                "type": "stepGuide",
+                "value": "",
+                "data": {
+                    "title": "Instalar a medição",
+                    "steps": [{"label": "Criar o evento"}, {"label": "Conferir a taxa"}],
+                },
+            },
+            {"type": "tip", "value": "O evento perseguido tem nome próprio no painel."},
+        ]
+    )
 
     tsx = TsxGenerator().render_page(curso)
     assert 'case "dataTable"' in tsx
@@ -437,11 +462,13 @@ def test_modo_legado_renderiza_sem_reprovar() -> None:
     """Curso já publicado atravessa, com a dívida saindo no log."""
     from src.generators.tsx_generator import TsxGenerator
 
-    curso = _curso_de_prova([
-        {"type": "text", "value": prosa(900)},
-        {"type": "text", "value": prosa(900)},
-        {"type": "tip", "value": "O conceito central cabe em uma frase dita no balcão."},
-    ])
+    curso = _curso_de_prova(
+        [
+            {"type": "text", "value": prosa(900)},
+            {"type": "text", "value": prosa(900)},
+            {"type": "tip", "value": "O conceito central cabe em uma frase dita no balcão."},
+        ]
+    )
 
     tsx = TsxGenerator().render_page(curso, cobrar_peso_visual=False)
     assert "capitulo-um" in tsx

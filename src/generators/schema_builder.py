@@ -65,29 +65,22 @@ class SchemaBuilder:
         nivel = nivel_map.get(nivel_str.lower(), NivelCurso.INTERMEDIARIO)
 
         tags = classify_result.get("tags", yaml_def.get("tags", []))
-        keywords_seo = classify_result.get(
-            "keywords_seo", yaml_def.get("keywords_seo", [])
-        )
-        prerequisitos = classify_result.get(
-            "prerequisitos", yaml_def.get("prerequisitos", [])
-        )
+        keywords_seo = classify_result.get("keywords_seo", yaml_def.get("keywords_seo", []))
+        prerequisitos = classify_result.get("prerequisitos", yaml_def.get("prerequisitos", []))
 
         faq_raw = classify_result.get("faq", yaml_def.get("faq", []))
         faq_items = []
         for item in faq_raw:
             if isinstance(item, dict) and "pergunta" in item and "resposta" in item:
-                faq_items.append(
-                    FAQItem(pergunta=item["pergunta"], resposta=item["resposta"])
-                )
+                faq_items.append(FAQItem(pergunta=item["pergunta"], resposta=item["resposta"]))
 
-        duracao_total = sum(
-            int(s.duration.replace(" min", "")) for s in steps
-        ) if steps else 180
+        duracao_total = sum(int(s.duration.replace(" min", "")) for s in steps) if steps else 180
         # Schema exige >= 30 min; clamp para o piso legal sem inflar artificialmente.
         duracao_total = max(30, duracao_total)
 
         if client is None:
             from src.clients import load_client
+
             client = load_client("default")
 
         # Branding vem do cliente por padrão; YAML pode sobrescrever por curso
@@ -118,8 +111,7 @@ class SchemaBuilder:
             educacao_path=client.domain.educacao_path,
             company_name=client.company.name or client.author.name,
             company_description=(
-                client.company.description
-                or f"Curso produzido por {client.author.name}."
+                client.company.description or f"Curso produzido por {client.author.name}."
             ),
         )
 

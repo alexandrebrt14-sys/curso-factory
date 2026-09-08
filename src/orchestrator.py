@@ -142,7 +142,7 @@ def dividir_em_unidades(texto: str) -> list[tuple[str, str]]:
     for ini in inicios:
         antes = texto[:ini].rstrip()
         m = MODULO_COMENTARIO_RE.search(antes)
-        ajustados.append(m.start() if m and not texto[m.end():ini].strip() else ini)
+        ajustados.append(m.start() if m and not texto[m.end() : ini].strip() else ini)
     unidades: list[tuple[str, str]] = []
     for k, ini in enumerate(ajustados):
         fim = ajustados[k + 1] if k + 1 < len(ajustados) else len(texto)
@@ -161,7 +161,7 @@ def separar_relatorio_de_revisao(saida: str) -> tuple[str, str]:
     m = RELATORIO_REVISAO_RE.search(saida)
     if not m:
         return saida.strip(), ""
-    return saida[: m.start()].strip(), saida[m.start():].strip().strip("-").strip()
+    return saida[: m.start()].strip(), saida[m.start() :].strip().strip("-").strip()
 
 
 def _contar_palavras(texto: str) -> int:
@@ -179,12 +179,14 @@ class Orchestrator:
         self.cost_tracker = cost_tracker or CostTracker()
         if client_context is None:
             from src.clients import load_client
+
             client_context = load_client("default")
         self.client_context = client_context
         # B-019/D8: factory decide o backend: legado (default) ou
         # geo_orchestrator_sdk via CURSO_FACTORY_LLM_BACKEND=sdk (herda
         # timeout por task_type, fallback chain e FinOps do orquestrador).
         from src.llm_client import make_llm_client
+
         self.client = make_llm_client(self.cost_tracker)
         self.researcher = Researcher(self.client)
         self.writer = Writer(self.client)
@@ -312,15 +314,11 @@ class Orchestrator:
         return self._draft_modules_iterative(course, research)
 
     def _step_analyze(self, course: Course, draft: str) -> str:
-        return self.analyzer.execute(
-            draft, course_name=course.titulo, draft_content=draft
-        )
+        return self.analyzer.execute(draft, course_name=course.titulo, draft_content=draft)
 
     def _step_classify(self, course: Course, draft: str) -> str:
         conteudo = draft[:CLASSIFY_CONTEXT_CHARS]
-        return self.classifier.execute(
-            conteudo, course_name=course.titulo, content=conteudo
-        )
+        return self.classifier.execute(conteudo, course_name=course.titulo, content=conteudo)
 
     def _step_review(
         self, course: Course, draft: str, analysis: str, result: PipelineResult
@@ -338,24 +336,39 @@ class Orchestrator:
         checkpoint = self._load_checkpoint(course.id)
         if checkpoint:
             result, _ = checkpoint
-            logger.info("Retomando pipeline de checkpoint com etapas: %s", list(result.etapas.keys()))
+            logger.info(
+                "Retomando pipeline de checkpoint com etapas: %s", list(result.etapas.keys())
+            )
         else:
             result = PipelineResult(course.id)
 
         etapas: list[tuple[str, str, Callable[[], str]]] = [
-            ("research", self.researcher.provider,
-             lambda: self._step_research(course)),
-            ("draft", self.writer.provider,
-             lambda: self._step_draft(course, result.etapas.get("research", ""))),
-            ("analyze", self.analyzer.provider,
-             lambda: self._step_analyze(course, result.etapas.get("draft", ""))),
-            ("classify", self.classifier.provider,
-             lambda: self._step_classify(course, result.etapas.get("draft", ""))),
-            ("review", self.reviewer.provider,
-             lambda: self._step_review(
-                 course, result.etapas.get("draft", ""),
-                 result.etapas.get("analyze", ""), result,
-             )),
+            ("research", self.researcher.provider, lambda: self._step_research(course)),
+            (
+                "draft",
+                self.writer.provider,
+                lambda: self._step_draft(course, result.etapas.get("research", "")),
+            ),
+            (
+                "analyze",
+                self.analyzer.provider,
+                lambda: self._step_analyze(course, result.etapas.get("draft", "")),
+            ),
+            (
+                "classify",
+                self.classifier.provider,
+                lambda: self._step_classify(course, result.etapas.get("draft", "")),
+            ),
+            (
+                "review",
+                self.reviewer.provider,
+                lambda: self._step_review(
+                    course,
+                    result.etapas.get("draft", ""),
+                    result.etapas.get("analyze", ""),
+                    result,
+                ),
+            ),
         ]
 
         for nome, provider, executar in etapas:
@@ -378,14 +391,18 @@ class Orchestrator:
                 if self._avisos_pendentes:
                     result.avisos.extend(self._avisos_pendentes)
                     self._avisos_pendentes.clear()
-                self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
+                self._registrar_procedencia(
+                    result, nome, provider, self._procedencia(marca, course.id)
+                )
                 logger.info("Etapa '%s' concluída (%d palavras)", nome, _contar_palavras(saida))
                 self._save_checkpoint(course.id, result, saida)
             except Exception as exc:
                 msg = f"Erro na etapa '{nome}': {exc}"
                 logger.error(msg)
                 result.erros.append(msg)
-                self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
+                self._registrar_procedencia(
+                    result, nome, provider, self._procedencia(marca, course.id)
+                )
                 self._save_checkpoint(course.id, result)
                 break
         else:
@@ -399,9 +416,11 @@ class Orchestrator:
         if result.sucesso and cp.exists():
             cp.unlink()
             logger.info("Checkpoint removido (pipeline concluído com sucesso)")
-        logger.info("Pipeline %s para curso '%s'",
-                     "concluído com sucesso" if result.sucesso else "interrompido com erros",
-                     course.id)
+        logger.info(
+            "Pipeline %s para curso '%s'",
+            "concluído com sucesso" if result.sucesso else "interrompido com erros",
+            course.id,
+        )
         logger.info(self.cost_tracker.report())
         return result
 
@@ -479,8 +498,13 @@ class Orchestrator:
     ) -> str:
         """Escreve UMA aula, com a pesquisa inteira e o mapa das aulas vizinhas."""
         aula = aulas[indice]
-        anteriores = [f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[:indice])]
-        seguintes = [f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[indice + 1:], indice + 1)]
+        anteriores = [
+            f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[:indice])
+        ]
+        seguintes = [
+            f"{numero_modulo}.{k + 1} {a['titulo']}"
+            for k, a in enumerate(aulas[indice + 1 :], indice + 1)
+        ]
         variaveis = {
             "course_name": course.titulo,
             "course_level": course.nivel.value,
@@ -508,9 +532,13 @@ class Orchestrator:
             and palavras < piso
             and self._pode_chamar(self.writer.provider, course.id)[0]
         ):
-            logger.info("%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso)
+            logger.info(
+                "%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso
+            )
             nota = self._nota_de_expansao(texto, palavras, variaveis)
-            expandido = self._normalizar_aula(self.writer.execute(nota + "\n\n" + contexto, **variaveis))
+            expandido = self._normalizar_aula(
+                self.writer.execute(nota + "\n\n" + contexto, **variaveis)
+            )
             palavras_exp = _contar_palavras(expandido)
             if palavras_exp > palavras:
                 self._avisos_pendentes.append(
@@ -535,7 +563,9 @@ class Orchestrator:
         """Instrução de expansão no idioma do redator, com o rascunho curto embutido."""
         from src.agents.lang_resolver import resolve_prompt_path
 
-        template = resolve_prompt_path("expand.md", self.writer.language).read_text(encoding="utf-8")
+        template = resolve_prompt_path("expand.md", self.writer.language).read_text(
+            encoding="utf-8"
+        )
         return template.format(
             palavras_atual=str(palavras),
             palavras_piso=variaveis["palavras_piso"],
@@ -551,7 +581,9 @@ class Orchestrator:
         escreve cada aula numa chamada própria, com a pesquisa inteira. Curso
         sem módulos declarados vira um módulo com o título do curso.
         """
-        modulos = course.modulos or [Module(titulo=course.titulo, descricao=course.descricao, ordem=1)]
+        modulos = course.modulos or [
+            Module(titulo=course.titulo, descricao=course.descricao, ordem=1)
+        ]
         partes: list[str] = []
 
         for i, modulo in enumerate(modulos, 1):
@@ -560,8 +592,13 @@ class Orchestrator:
                 logger.warning("%s antes do módulo %d. Parando draft.", motivo, i)
                 break
             aulas = self._plan_lessons(course, modulo, i, research_context)
-            logger.info("Módulo %d/%d '%s': %d aula(s) planejada(s)",
-                        i, len(modulos), modulo.titulo, len(aulas))
+            logger.info(
+                "Módulo %d/%d '%s': %d aula(s) planejada(s)",
+                i,
+                len(modulos),
+                modulo.titulo,
+                len(aulas),
+            )
             partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
             partes_do_modulo: list[str] = []
             for j in range(len(aulas)):
@@ -578,7 +615,9 @@ class Orchestrator:
             if not pode:
                 logger.warning("%s antes do fechamento da trilha %d. Parando draft.", motivo, i)
                 return "\n\n".join(partes)
-            trilha_md = self._close_trail(course, modulo, i, aulas, partes_do_modulo, research_context)
+            trilha_md = self._close_trail(
+                course, modulo, i, aulas, partes_do_modulo, research_context
+            )
             if trilha_md:
                 partes.append(trilha_md)
                 logger.info("Trilha %d fechada: %d palavras", i, _contar_palavras(trilha_md))
@@ -607,21 +646,30 @@ class Orchestrator:
         if not aulas_md:
             return ""
         try:
-            template = resolve_prompt_path("trail.md", self.writer.language).read_text(encoding="utf-8")
+            template = resolve_prompt_path("trail.md", self.writer.language).read_text(
+                encoding="utf-8"
+            )
         except FileNotFoundError:
-            logger.warning("Prompt trail.md ausente; a trilha %d fica sem fechamento", numero_modulo)
+            logger.warning(
+                "Prompt trail.md ausente; a trilha %d fica sem fechamento", numero_modulo
+            )
             return ""
         lessons = "\n\n".join(aulas_md)[:TRAIL_LESSONS_CHARS]
-        prompt = _safe_substitute(template, {
-            "course_name": course.titulo,
-            "course_level": course.nivel.value,
-            "module_number": str(numero_modulo),
-            "module_title": modulo.titulo,
-            "module_description": modulo.descricao or "conforme pesquisa",
-            "lesson_titles": "; ".join(f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas)),
-            "lessons": lessons,
-            "context": research_context[:TRAIL_RESEARCH_CHARS],
-        })
+        prompt = _safe_substitute(
+            template,
+            {
+                "course_name": course.titulo,
+                "course_level": course.nivel.value,
+                "module_number": str(numero_modulo),
+                "module_title": modulo.titulo,
+                "module_description": modulo.descricao or "conforme pesquisa",
+                "lesson_titles": "; ".join(
+                    f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas)
+                ),
+                "lessons": lessons,
+                "context": research_context[:TRAIL_RESEARCH_CHARS],
+            },
+        )
         texto = self.client.call(self.writer.provider, prompt, model=self.writer.model).strip()
         texto = TRILHA_H1_RE.sub("", texto, count=1).strip() if TRILHA_H1_RE.match(texto) else texto
         return f"# Trilha {numero_modulo}: {modulo.titulo}\n\n{texto}"
@@ -658,7 +706,7 @@ class Orchestrator:
                 aviso = f"{motivo} na revisão da unidade {k}; as seguintes ficam sem revisão."
                 logger.warning(aviso)
                 result.avisos.append(aviso)
-                revisadas.extend(t for _, t in unidades[k - 1:])
+                revisadas.extend(t for _, t in unidades[k - 1 :])
                 break
             logger.info("Revisão %d/%d: %s", k, len(unidades), titulo or "(unidade sem título)")
             saida = self.reviewer.execute(
@@ -712,10 +760,16 @@ class Orchestrator:
         for titulo, bloco in dividir_em_unidades(final):
             rotulo = titulo or "unidade"
             try:
-                r = gate.check_text(bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False)
+                r = gate.check_text(
+                    bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False
+                )
             except Exception as exc:
                 logger.warning("Quality gate falhou em '%s': %s", rotulo, exc)
-                result.gate[rotulo] = {"aprovado": None, "erros": [f"gate falhou: {exc}"], "avisos": 0}
+                result.gate[rotulo] = {
+                    "aprovado": None,
+                    "erros": [f"gate falhou: {exc}"],
+                    "avisos": 0,
+                }
                 continue
             result.gate[rotulo] = {
                 "aprovado": bool(r.aprovado),
@@ -723,7 +777,9 @@ class Orchestrator:
                 "avisos": len(r.avisos),
                 "voice_guard_score": r.voice_guard_score,
             }
-            linhas.append(f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)")
+            linhas.append(
+                f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)"
+            )
             for e in r.erros:
                 linhas.append(f"      - {e}")
         # Camada GEO (fontes, estatísticas, citação, cápsula) sobre o curso
@@ -741,8 +797,10 @@ class Orchestrator:
                 "erros": erros_geo,
                 "avisos": sum(1 for a in geo_achados if a.tipo == "warning"),
             }
-            linhas.append(f"{'OK  ' if not erros_geo else 'FAIL'} curso (GEO): {len(erros_geo)} erro(s), "
-                          f"{result.gate['curso']['avisos']} aviso(s)")
+            linhas.append(
+                f"{'OK  ' if not erros_geo else 'FAIL'} curso (GEO): {len(erros_geo)} erro(s), "
+                f"{result.gate['curso']['avisos']} aviso(s)"
+            )
             for e in erros_geo:
                 linhas.append(f"      - {e}")
         aprovadas = sum(1 for v in result.gate.values() if v.get("aprovado"))

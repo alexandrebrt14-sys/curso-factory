@@ -36,6 +36,7 @@ def test_mencao_entre_aspas_nao_e_bastidor() -> None:
 
 def test_autoapresentacao_e_aviso_nao_bastidor() -> None:
     from src.validators.content_checker import _check_autoapresentacao
+
     t = "Esta aula explica como montar a tabela de preços do salão em uma tarde."
     assert _check_autoapresentacao(t)
     assert _check_bastidor(t) == []

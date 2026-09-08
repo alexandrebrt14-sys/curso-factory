@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class GateResult:
     """Resultado consolidado do quality gate."""
+
     aprovado: bool = True
     acentuacao_ok: bool = True
     html_ok: bool = True
@@ -88,6 +89,7 @@ class QualityGate:
         self.auto_fix = auto_fix
         if client is None:
             from src.clients import load_client
+
             client = load_client("default")
         self.client = client
 
@@ -295,8 +297,11 @@ class QualityGate:
                 result.erros.append(f"HTML [{e.tipo}]{loc}: {e.mensagem}")
         result.relatorios.append(html_report(html_errors))
 
-        logger.info("Quality gate (HTML) para '%s': %s",
-                     curso_id, "APROVADO" if result.aprovado else "REPROVADO")
+        logger.info(
+            "Quality gate (HTML) para '%s': %s",
+            curso_id,
+            "APROVADO" if result.aprovado else "REPROVADO",
+        )
         return result
 
     def to_quality_report(self, gate_result: GateResult, curso_id: str) -> QualityReport:

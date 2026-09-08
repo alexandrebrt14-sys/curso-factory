@@ -44,6 +44,7 @@ _DEFAULT_HISTORY_PATH = Path("output/.detection/history.jsonl")
 @dataclass
 class DetectionEntry:
     """Linha JSONL no historico de deteccao."""
+
     ts: str
     course_id: str
     module_name: str
@@ -133,9 +134,7 @@ class DetectionTracker:
                 out.append(d)
         return out
 
-    def report_text(
-        self, since: datetime | None = None, client_id: str | None = None
-    ) -> str:
+    def report_text(self, since: datetime | None = None, client_id: str | None = None) -> str:
         """Agregado por curso/cliente com medianas e tendencias."""
         entries = self.load_entries(since=since, client_id=client_id)
         if not entries:
@@ -173,12 +172,9 @@ class DetectionTracker:
             f"min={min(bursts) if bursts else 0:.3f}  "
             f"max={max(bursts) if bursts else 0:.3f}"
         )
+        lines.append(f"  voice_guard_score  mediana={med(vg_scores):.1f}")
         lines.append(
-            f"  voice_guard_score  mediana={med(vg_scores):.1f}"
-        )
-        lines.append(
-            f"  aprovados_gate:    {approved}/{len(entries)} "
-            f"({100 * approved / len(entries):.1f}%)"
+            f"  aprovados_gate:    {approved}/{len(entries)} ({100 * approved / len(entries):.1f}%)"
         )
 
         # Por cliente

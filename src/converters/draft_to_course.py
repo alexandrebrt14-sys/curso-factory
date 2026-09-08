@@ -164,7 +164,8 @@ def _extract_review_or_draft_text(etapas: dict) -> str:
             return review
         logger.warning(
             "etapa review com %d palavras para um draft de %d: usando o draft",
-            len(review.split()), len(draft.split()),
+            len(review.split()),
+            len(draft.split()),
         )
         return draft
     if review:
@@ -195,6 +196,7 @@ def convert_draft_to_course(
     """
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     try:
@@ -281,8 +283,7 @@ def convert_draft_to_course(
             educacao_path=client.domain.educacao_path,
             company_name=client.company.name or client.author.name,
             company_description=(
-                client.company.description
-                or f"Curso produzido por {client.author.name}."
+                client.company.description or f"Curso produzido por {client.author.name}."
             ),
             hero_gradient_from=client.branding.hero_gradient_from,
             hero_gradient_to=client.branding.hero_gradient_to,
@@ -323,10 +324,16 @@ def convert_drafts_directory(
 
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     if not input_dir.exists():
-        return {"converted": 0, "failed": 0, "files": [], "error": f"input_dir nao existe: {input_dir}"}
+        return {
+            "converted": 0,
+            "failed": 0,
+            "files": [],
+            "error": f"input_dir nao existe: {input_dir}",
+        }
 
     output_dir.mkdir(parents=True, exist_ok=True)
     generator = TsxGenerator()
@@ -341,30 +348,36 @@ def convert_drafts_directory(
         course = convert_draft_to_course(draft_path, client=client)
         if not course:
             failed += 1
-            results.append({
-                "file": draft_path.name,
-                "status": "failed",
-                "reason": "ver logs",
-            })
+            results.append(
+                {
+                    "file": draft_path.name,
+                    "status": "failed",
+                    "reason": "ver logs",
+                }
+            )
             continue
 
         try:
             page_path, layout_path = generator.write(course, output_dir)
             converted += 1
-            results.append({
-                "file": draft_path.name,
-                "status": "ok",
-                "slug": course.slug,
-                "steps": len(course.steps),
-                "page_path": str(page_path),
-            })
+            results.append(
+                {
+                    "file": draft_path.name,
+                    "status": "ok",
+                    "slug": course.slug,
+                    "steps": len(course.steps),
+                    "page_path": str(page_path),
+                }
+            )
         except Exception as exc:
             failed += 1
-            results.append({
-                "file": draft_path.name,
-                "status": "failed",
-                "reason": f"tsx_generator: {exc}",
-            })
+            results.append(
+                {
+                    "file": draft_path.name,
+                    "status": "failed",
+                    "reason": f"tsx_generator: {exc}",
+                }
+            )
 
     return {
         "converted": converted,

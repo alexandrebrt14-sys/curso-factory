@@ -42,7 +42,9 @@ class _ClienteFalso:
         self.chamadas.append((provider, prompt))
         if self.tracker is not None:
             atendeu = self.fallback.get(provider, provider)
-            self.tracker.track(atendeu, 100, 100, f"modelo-{atendeu}", 0.01, course_id=self.course_id)
+            self.tracker.track(
+                atendeu, 100, 100, f"modelo-{atendeu}", 0.01, course_id=self.course_id
+            )
         if provider == "perplexity":
             return "PESQUISA " + ("dado relevante. " * 800)
         if provider == "openai":
@@ -107,7 +109,9 @@ class _LedgerFalso:
         self.teto_sessao = teto_sessao
 
     def track(self, provider, tokens_in, tokens_out, model, custo_usd, course_id="") -> None:
-        self.entradas.append({"provider": provider, "model": model, "custo_usd": custo_usd, "course_id": course_id})
+        self.entradas.append(
+            {"provider": provider, "model": model, "custo_usd": custo_usd, "course_id": course_id}
+        )
 
     def pode_chamar(self, provider: str, course_id: str = "") -> tuple[bool, str]:
         total = sum(e["custo_usd"] for e in self.entradas)
@@ -146,8 +150,12 @@ def orquestrador(tmp_path, monkeypatch):
 
 def _curso(com_etapas: bool = False) -> Course:
     etapas = (
-        [Step(titulo="Aula fixa A", conteudo="ideia A"), Step(titulo="Aula fixa B", conteudo="ideia B")]
-        if com_etapas else []
+        [
+            Step(titulo="Aula fixa A", conteudo="ideia A"),
+            Step(titulo="Aula fixa B", conteudo="ideia B"),
+        ]
+        if com_etapas
+        else []
     )
     return Course(
         id="whatsapp-que-vende",
@@ -202,15 +210,22 @@ def test_pipeline_entrega_o_rascunho_a_analise_classificacao_e_revisao(orquestra
 
     assert resultado.sucesso, resultado.erros
     draft = resultado.etapas["draft"]
-    prompt_analise = next(p for prov, p in cliente.chamadas if prov == "google" and "classificar" not in p)
-    prompt_classificacao = next(p for prov, p in cliente.chamadas if prov == "google" and "classificar" in p)
+    prompt_analise = next(
+        p for prov, p in cliente.chamadas if prov == "google" and "classificar" not in p
+    )
+    prompt_classificacao = next(
+        p for prov, p in cliente.chamadas if prov == "google" and "classificar" in p
+    )
     prompts_revisao = [p for prov, p in cliente.chamadas if prov == "anthropic"]
 
     assert "# Aula 1.1:" in prompt_analise and "# Aula 2.3:" in prompt_analise
     assert "# Aula 1.1:" in prompt_classificacao
     # A revisão é aula a aula, e cada chamada recebe a aula, não o JSON anterior.
     assert len(prompts_revisao) == 6
-    assert all("# Aula" in p and '"nivel"' not in p.split("--- AULA PARA REVISÃO ---")[-1] for p in prompts_revisao)
+    assert all(
+        "# Aula" in p and '"nivel"' not in p.split("--- AULA PARA REVISÃO ---")[-1]
+        for p in prompts_revisao
+    )
     assert "melhorias_prioritarias" in prompts_revisao[0]  # pista da análise
     # O texto revisado volta inteiro e sem o bloco de relatório.
     revisado = resultado.etapas["review"]
@@ -257,7 +272,10 @@ def test_conversor_prefere_rascunho_quando_a_revisao_e_comentario() -> None:
     etapas = {"draft": draft, "review": "Revisado. Aprovado para publicação: sim."}
     assert _extract_review_or_draft_text(etapas) == draft
     revisao_inteira = draft.replace("palavra", "revista")
-    assert _extract_review_or_draft_text({"draft": draft, "review": revisao_inteira}) == revisao_inteira
+    assert (
+        _extract_review_or_draft_text({"draft": draft, "review": revisao_inteira})
+        == revisao_inteira
+    )
 
 
 def _orquestrador_com_ledger(tmp_path, monkeypatch, ledger):
@@ -344,7 +362,9 @@ def test_orcamento_da_sessao_interrompe_com_motivo(tmp_path, monkeypatch) -> Non
     assert any("orçamento da sessão esgotado" in e and "'analyze'" in e for e in resultado.erros)
 
 
-def test_fechamento_da_trilha_vem_depois_das_aulas_e_nao_passa_pela_revisao(tmp_path, monkeypatch) -> None:
+def test_fechamento_da_trilha_vem_depois_das_aulas_e_nao_passa_pela_revisao(
+    tmp_path, monkeypatch
+) -> None:
     orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
     resultado = orq.run(_curso())
 
@@ -352,16 +372,27 @@ def test_fechamento_da_trilha_vem_depois_das_aulas_e_nao_passa_pela_revisao(tmp_
     draft = resultado.etapas["draft"]
     titulos = [t for t, _ in dividir_em_unidades(draft)]
     assert titulos == [
-        "Aula 1.1: Por que o cliente some", "Aula 1.2: Como responder em cinco minutos",
-        "Aula 1.3: O que muda no seu caixa em um mês", "Trilha 1: Resposta rápida",
-        "Aula 2.1: Por que o cliente some", "Aula 2.2: Como responder em cinco minutos",
-        "Aula 2.3: O que muda no seu caixa em um mês", "Trilha 2: Mensagem que traz de volta",
+        "Aula 1.1: Por que o cliente some",
+        "Aula 1.2: Como responder em cinco minutos",
+        "Aula 1.3: O que muda no seu caixa em um mês",
+        "Trilha 1: Resposta rápida",
+        "Aula 2.1: Por que o cliente some",
+        "Aula 2.2: Como responder em cinco minutos",
+        "Aula 2.3: O que muda no seu caixa em um mês",
+        "Trilha 2: Mensagem que traz de volta",
     ]
     trilha = dict(dividir_em_unidades(draft))["Trilha 1: Resposta rápida"]
-    for secao in ("## O que você vai saber fazer", "## Glossário", "## Perguntas frequentes", "## Fontes"):
+    for secao in (
+        "## O que você vai saber fazer",
+        "## Glossário",
+        "## Perguntas frequentes",
+        "## Fontes",
+    ):
         assert secao in trilha
     # O prompt da trilha recebe as aulas do módulo e os títulos na ordem.
-    prompt_trilha = next(p for prov, p in cliente.chamadas if prov == "openai" and "AULAS DA TRILHA" in p)
+    prompt_trilha = next(
+        p for prov, p in cliente.chamadas if prov == "openai" and "AULAS DA TRILHA" in p
+    )
     assert "1.1 Por que o cliente some; 1.2 Como responder" in prompt_trilha
     assert "# Aula 1.3:" in prompt_trilha and "# Aula 2.1:" not in prompt_trilha
     # A revisão pula as trilhas (6 aulas revisadas, não 8) e o texto revisado as preserva.

@@ -47,8 +47,13 @@ class CostTracker:
             json.dump(self._entries, f, indent=2, ensure_ascii=False, default=str)
 
     def track(
-        self, provider: str, tokens_in: int, tokens_out: int,
-        model: str, custo_usd: float, course_id: str = ""
+        self,
+        provider: str,
+        tokens_in: int,
+        tokens_out: int,
+        model: str,
+        custo_usd: float,
+        course_id: str = "",
     ) -> None:
         """Registra uma chamada LLM com seu custo."""
         entry = {
@@ -118,15 +123,24 @@ class CostTracker:
         """
         session_sum = sum(self.get_session_total().values())
         if session_sum >= SESSION_BUDGET_TOTAL:
-            return False, f"orçamento da sessão esgotado (USD {session_sum:.2f} >= {SESSION_BUDGET_TOTAL:.2f})"
+            return (
+                False,
+                f"orçamento da sessão esgotado (USD {session_sum:.2f} >= {SESSION_BUDGET_TOTAL:.2f})",
+            )
         if course_id:
             course_costs = self.get_course_total(course_id)
             total_course = sum(course_costs.values())
             claude_course = course_costs.get("anthropic", 0.0)
             if provider == "anthropic" and claude_course >= CLAUDE_BUDGET_PER_COURSE:
-                return False, f"orçamento Claude do curso esgotado (USD {claude_course:.2f} >= {CLAUDE_BUDGET_PER_COURSE:.2f})"
+                return (
+                    False,
+                    f"orçamento Claude do curso esgotado (USD {claude_course:.2f} >= {CLAUDE_BUDGET_PER_COURSE:.2f})",
+                )
             if total_course >= TOTAL_BUDGET_PER_COURSE:
-                return False, f"orçamento total do curso esgotado (USD {total_course:.2f} >= {TOTAL_BUDGET_PER_COURSE:.2f})"
+                return (
+                    False,
+                    f"orçamento total do curso esgotado (USD {total_course:.2f} >= {TOTAL_BUDGET_PER_COURSE:.2f})",
+                )
         return True, ""
 
     def indice_atual(self) -> int:
@@ -158,14 +172,18 @@ class CostTracker:
         if provider == "anthropic" and claude_course >= CLAUDE_BUDGET_PER_COURSE:
             logger.warning(
                 "Budget Claude excedido para curso %s: USD %.2f >= %.2f",
-                course_id, claude_course, CLAUDE_BUDGET_PER_COURSE,
+                course_id,
+                claude_course,
+                CLAUDE_BUDGET_PER_COURSE,
             )
             return False
 
         if total_course >= TOTAL_BUDGET_PER_COURSE:
             logger.warning(
                 "Budget total excedido para curso %s: USD %.2f >= %.2f",
-                course_id, total_course, TOTAL_BUDGET_PER_COURSE,
+                course_id,
+                total_course,
+                TOTAL_BUDGET_PER_COURSE,
             )
             return False
 

@@ -53,11 +53,19 @@ _FIXED_TS = datetime(2026, 4, 29, 12, 0, 0, tzinfo=UTC)
 def test_generate_certificate_id_deterministico():
     course = _make_course()
     cert_a = generate_certificate(
-        "aluno@example.com", "João Silva", course, 0.85, "secret",
+        "aluno@example.com",
+        "João Silva",
+        course,
+        0.85,
+        "secret",
         issued_at=_FIXED_TS,
     )
     cert_b = generate_certificate(
-        "ALUNO@example.com", "João Silva", course, 0.85, "secret",
+        "ALUNO@example.com",
+        "João Silva",
+        course,
+        0.85,
+        "secret",
         issued_at=_FIXED_TS,
     )
     # Email normalizado para lowercase => mesmo id e mesmo hash.
@@ -69,11 +77,19 @@ def test_generate_certificate_id_deterministico():
 def test_generate_certificate_hash_deterministico():
     course = _make_course()
     cert_a = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "secret",
         issued_at=_FIXED_TS,
     )
     cert_b = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "secret",
         issued_at=_FIXED_TS,
     )
     assert cert_a.hash == cert_b.hash
@@ -83,7 +99,11 @@ def test_generate_certificate_hash_deterministico():
 def test_generate_certificate_signature_diferente_de_hash():
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "secret",
         issued_at=_FIXED_TS,
     )
     assert cert.signature != cert.hash
@@ -94,7 +114,11 @@ def test_generate_certificate_score_abaixo_do_threshold_levanta():
     course = _make_course()
     with pytest.raises(ValueError, match="reprovado"):
         generate_certificate(
-            "aluno@example.com", "João", course, 0.5, "secret",
+            "aluno@example.com",
+            "João",
+            course,
+            0.5,
+            "secret",
             issued_at=_FIXED_TS,
         )
 
@@ -103,8 +127,13 @@ def test_generate_certificate_threshold_customizado():
     course = _make_course()
     # Com pass_threshold=0.4, 0.5 passa.
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.5, "secret",
-        pass_threshold=0.4, issued_at=_FIXED_TS,
+        "aluno@example.com",
+        "João",
+        course,
+        0.5,
+        "secret",
+        pass_threshold=0.4,
+        issued_at=_FIXED_TS,
     )
     assert cert.score == 0.5
 
@@ -113,12 +142,20 @@ def test_generate_certificate_score_fora_do_intervalo():
     course = _make_course()
     with pytest.raises(ValueError):
         generate_certificate(
-            "aluno@example.com", "João", course, 1.5, "secret",
+            "aluno@example.com",
+            "João",
+            course,
+            1.5,
+            "secret",
             issued_at=_FIXED_TS,
         )
     with pytest.raises(ValueError):
         generate_certificate(
-            "aluno@example.com", "João", course, -0.1, "secret",
+            "aluno@example.com",
+            "João",
+            course,
+            -0.1,
+            "secret",
             issued_at=_FIXED_TS,
         )
 
@@ -127,7 +164,11 @@ def test_generate_certificate_secret_vazio():
     course = _make_course()
     with pytest.raises(ValueError, match="secret"):
         generate_certificate(
-            "aluno@example.com", "João", course, 0.9, "",
+            "aluno@example.com",
+            "João",
+            course,
+            0.9,
+            "",
             issued_at=_FIXED_TS,
         )
 
@@ -136,7 +177,11 @@ def test_generate_certificate_email_unicode_nao_quebra():
     """Email com chars unicode (raro mas permitido em RFC 6531)."""
     course = _make_course()
     cert = generate_certificate(
-        "joão@exámple.com", "João Çávio", course, 0.95, "secret",
+        "joão@exámple.com",
+        "João Çávio",
+        course,
+        0.95,
+        "secret",
         issued_at=_FIXED_TS,
     )
     # Nome preserva acentuação PT-BR.
@@ -154,7 +199,11 @@ def test_generate_certificate_email_unicode_nao_quebra():
 def test_verify_certificate_assinatura_correta():
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "my-secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "my-secret",
         issued_at=_FIXED_TS,
     )
     assert verify_certificate(cert, "my-secret") is True
@@ -163,7 +212,11 @@ def test_verify_certificate_assinatura_correta():
 def test_verify_certificate_assinatura_errada():
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "my-secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "my-secret",
         issued_at=_FIXED_TS,
     )
     assert verify_certificate(cert, "wrong-secret") is False
@@ -172,7 +225,11 @@ def test_verify_certificate_assinatura_errada():
 def test_verify_certificate_hash_adulterado():
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "my-secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "my-secret",
         issued_at=_FIXED_TS,
     )
     tampered = cert.model_copy(update={"score": 0.99})
@@ -187,7 +244,11 @@ def test_verify_certificate_hash_adulterado():
 def test_render_html_contem_dados_chave():
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "Maria José", course, 0.92, "secret",
+        "aluno@example.com",
+        "Maria José",
+        course,
+        0.92,
+        "secret",
         issued_at=_FIXED_TS,
     )
     html = render_html(cert, course)
@@ -210,7 +271,11 @@ def test_render_html_contem_dados_chave():
 def test_render_html_url_verificacao_usa_dominio_do_course():
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "secret",
         issued_at=_FIXED_TS,
     )
     html = render_html(cert, course)
@@ -285,6 +350,7 @@ def test_qr_to_base64_png_funciona_ou_skip():
     assert isinstance(result, str)
     assert len(result) > 100
     import base64 as _b64
+
     decoded = _b64.b64decode(result)
     # Magic bytes PNG: 89 50 4E 47.
     assert decoded[:4] == b"\x89PNG"
@@ -292,6 +358,7 @@ def test_qr_to_base64_png_funciona_ou_skip():
 
 def test_qr_to_base64_png_url_vazia_levanta():
     from src.certification.qrcode_helper import qr_to_base64_png
+
     with pytest.raises(ValueError):
         qr_to_base64_png("")
 
@@ -300,7 +367,11 @@ def test_render_html_sem_qrcode_lib_nao_quebra(monkeypatch):
     """Mesmo sem qrcode, render_html retorna HTML válido."""
     course = _make_course()
     cert = generate_certificate(
-        "aluno@example.com", "João", course, 0.9, "secret",
+        "aluno@example.com",
+        "João",
+        course,
+        0.9,
+        "secret",
         issued_at=_FIXED_TS,
     )
 

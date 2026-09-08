@@ -21,6 +21,7 @@ from src.parsers import (
 
 # ─── slugify ─────────────────────────────────────────────────────────
 
+
 def test_slugify_remove_acentos() -> None:
     assert slugify("Geração de Conteúdo Avançado") == "geracao-de-conteudo-avancado"
 
@@ -39,6 +40,7 @@ def test_slugify_string_vazia() -> None:
 
 # ─── short_id ────────────────────────────────────────────────────────
 
+
 def test_short_id_trunca() -> None:
     longo = "este-titulo-eh-muito-longo-para-um-step-id"
     assert len(short_id(longo, max_len=12)) <= 12
@@ -49,6 +51,7 @@ def test_short_id_curto_passa_inteiro() -> None:
 
 
 # ─── extract_module_blocks ───────────────────────────────────────────
+
 
 def test_extract_blocks_h2() -> None:
     md = (
@@ -85,6 +88,7 @@ def test_extract_blocks_string_vazia() -> None:
 
 # ─── parse_module_to_sections ────────────────────────────────────────
 
+
 def test_parse_secoes_nao_fabrica_checkpoint_nem_enchimento() -> None:
     """Desde 08/09/2026 (R6/R8) o parser devolve só o que o autor escreveu.
 
@@ -98,13 +102,7 @@ def test_parse_secoes_nao_fabrica_checkpoint_nem_enchimento() -> None:
 
 
 def test_parse_secoes_extrai_codigo() -> None:
-    md = (
-        "Texto antes.\n\n"
-        "```python\n"
-        "x = 42\n"
-        "```\n\n"
-        "Texto depois."
-    )
+    md = "Texto antes.\n\n```python\nx = 42\n```\n\nTexto depois."
     sections = parse_module_to_sections(md)
     code_sections = [s for s in sections if s.type == SectionType.CODE]
     assert len(code_sections) == 1

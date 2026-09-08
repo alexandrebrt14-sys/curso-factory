@@ -46,8 +46,7 @@ def qr_to_base64_png(url: str, size: int = 200) -> str:
         import qrcode  # type: ignore[import-not-found]
     except ImportError as exc:  # pragma: no cover - depende do ambiente
         raise RuntimeError(
-            "Biblioteca 'qrcode' não está instalada. "
-            "Instale com: pip install qrcode[pil]>=7.4"
+            "Biblioteca 'qrcode' não está instalada. Instale com: pip install qrcode[pil]>=7.4"
         ) from exc
 
     # Calcula box_size a partir do tamanho desejado.

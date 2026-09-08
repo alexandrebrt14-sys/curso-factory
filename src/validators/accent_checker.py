@@ -14,6 +14,7 @@ from dataclasses import dataclass
 @dataclass
 class AccentError:
     """Erro de acentuação encontrado."""
+
     linha: int
     palavra_errada: str
     correcao: str
@@ -335,7 +336,7 @@ ACCENT_MAP: dict[str, str] = {
     "permitira": "permitirá",
     "contribuira": "contribuirá",
     "garantira": "garantirá",
-    "e" : None,  # Não mapear "e" para "é": ambiguidade com a conjunção
+    "e": None,  # Não mapear "e" para "é": ambiguidade com a conjunção
 }
 
 # Remover entradas None (marcadores de exclusão)
@@ -357,15 +358,15 @@ ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if v is not None}
 # gramatical ("esta (verbo) -> está"). Ver wiki/decisions/
 # diretriz-editorial-v3-narrativa-sem-cota.md.
 AMBIGUOUS_HOMOGRAPHS: dict[str, str] = {
-    "nos": "nós",           # preposição/pronome "nos" vs pronome "nós"
-    "esta": "está",         # demonstrativo "esta" vs verbo "está"
-    "seria": "séria",       # futuro do pretérito "seria" vs adjetivo "séria"
-    "analise": "análise",   # subjuntivo/imperativo "analise" vs substantivo
-    "pratica": "prática",   # verbo "pratica" vs substantivo/adjetivo
-    "pratico": "prático",   # verbo "pratico" vs adjetivo
-    "publico": "público",   # verbo "publico" vs substantivo/adjetivo
-    "valido": "válido",     # verbo "valido" vs adjetivo
-    "ele": "ele",           # entrada no-op herdada: só gerava ruído
+    "nos": "nós",  # preposição/pronome "nos" vs pronome "nós"
+    "esta": "está",  # demonstrativo "esta" vs verbo "está"
+    "seria": "séria",  # futuro do pretérito "seria" vs adjetivo "séria"
+    "analise": "análise",  # subjuntivo/imperativo "analise" vs substantivo
+    "pratica": "prática",  # verbo "pratica" vs substantivo/adjetivo
+    "pratico": "prático",  # verbo "pratico" vs adjetivo
+    "publico": "público",  # verbo "publico" vs substantivo/adjetivo
+    "valido": "válido",  # verbo "valido" vs adjetivo
+    "ele": "ele",  # entrada no-op herdada: só gerava ruído
 }
 
 ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if k not in AMBIGUOUS_HOMOGRAPHS}
@@ -422,12 +423,14 @@ def check_accents(text: str) -> list[AccentError]:
             if lower in ACCENT_MAP:
                 ctx_start = max(0, linha.lower().find(lower) - 20)
                 ctx_end = min(len(linha), linha.lower().find(lower) + len(lower) + 20)
-                erros.append(AccentError(
-                    linha=num_linha,
-                    palavra_errada=palavra,
-                    correcao=ACCENT_MAP[lower],
-                    contexto=linha[ctx_start:ctx_end].strip(),
-                ))
+                erros.append(
+                    AccentError(
+                        linha=num_linha,
+                        palavra_errada=palavra,
+                        correcao=ACCENT_MAP[lower],
+                        contexto=linha[ctx_start:ctx_end].strip(),
+                    )
+                )
 
     return erros
 

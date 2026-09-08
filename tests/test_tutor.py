@@ -137,9 +137,7 @@ def test_tutor_build_prompt_injeta_question_e_course_context():
 
 def test_tutor_prompt_template_carregado_de_arquivo():
     """O arquivo tutor.md em src/templates/prompts/ é carregado de fato."""
-    template_path = (
-        ROOT / "src" / "templates" / "prompts" / "tutor.md"
-    )
+    template_path = ROOT / "src" / "templates" / "prompts" / "tutor.md"
     assert template_path.exists(), "tutor.md ausente — Wave 7 incompleta."
 
     tutor = Tutor(dry_run=True)

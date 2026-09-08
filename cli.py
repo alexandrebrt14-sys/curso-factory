@@ -32,11 +32,13 @@ def _setup_logging() -> None:
 
 def _resolve_client(args: argparse.Namespace):
     from src.clients import load_client
+
     client_id = getattr(args, "client", None) or "default"
     return load_client(client_id)
 
 
 # ─── create ────────────────────────────────────────────────────────────
+
 
 def cmd_create(args: argparse.Namespace) -> int:
     _setup_logging()
@@ -93,6 +95,7 @@ def cmd_create(args: argparse.Namespace) -> int:
 
 # ─── clients ───────────────────────────────────────────────────────────
 
+
 def cmd_clients(args: argparse.Namespace) -> int:
     from src.clients import list_clients, load_client
 
@@ -119,6 +122,7 @@ def cmd_clients(args: argparse.Namespace) -> int:
 
 
 # ─── validate ──────────────────────────────────────────────────────────
+
 
 def cmd_validate(args: argparse.Namespace) -> int:
     """Roda o QualityGate (acentos + conteúdo + links + voice guard) num path."""
@@ -154,11 +158,14 @@ def cmd_validate(args: argparse.Namespace) -> int:
             for err in result.erros:
                 print(f"     - {err}")
 
-    print(f"\nTotal: {len(files)} arquivo(s); aprovados: {len(files) - reprovados}; reprovados: {reprovados}")
+    print(
+        f"\nTotal: {len(files)} arquivo(s); aprovados: {len(files) - reprovados}; reprovados: {reprovados}"
+    )
     return 0 if reprovados == 0 else 1
 
 
 # ─── cost-report ───────────────────────────────────────────────────────
+
 
 def cmd_cost_report(args: argparse.Namespace) -> int:
     """Relatório de custos a partir do log persistido em output/costs.json."""
@@ -180,7 +187,9 @@ def cmd_cost_report(args: argparse.Namespace) -> int:
         prov = e["provider"]
         slot = by_provider.setdefault(prov, {"calls": 0, "tokens": 0, "cost": 0.0})
         slot["calls"] = int(slot["calls"]) + 1
-        slot["tokens"] = int(slot["tokens"]) + int(e.get("tokens_in", 0)) + int(e.get("tokens_out", 0))
+        slot["tokens"] = (
+            int(slot["tokens"]) + int(e.get("tokens_in", 0)) + int(e.get("tokens_out", 0))
+        )
         slot["cost"] = float(slot["cost"]) + float(e["custo_usd"])
 
         cid = e.get("course_id") or "(sem curso)"
@@ -194,7 +203,9 @@ def cmd_cost_report(args: argparse.Namespace) -> int:
     print(f"{'Provider':<15} {'Chamadas':>10} {'Tokens':>12} {'Custo (USD)':>14}")
     print("-" * 55)
     for prov, slot in sorted(by_provider.items()):
-        print(f"{prov:<15} {int(slot['calls']):>10} {int(slot['tokens']):>12} ${float(slot['cost']):>13.4f}")
+        print(
+            f"{prov:<15} {int(slot['calls']):>10} {int(slot['tokens']):>12} ${float(slot['cost']):>13.4f}"
+        )
     print("-" * 55)
     print(f"{'TOTAL':<15} {total_calls:>10} {total_tokens:>12} ${total_cost:>13.4f}")
 
@@ -207,6 +218,7 @@ def cmd_cost_report(args: argparse.Namespace) -> int:
 
 
 # ─── batch ─────────────────────────────────────────────────────────────
+
 
 def cmd_batch(args: argparse.Namespace) -> int:
     """Cria múltiplos cursos a partir de um YAML de lote."""
@@ -229,7 +241,11 @@ def cmd_batch(args: argparse.Namespace) -> int:
     with config_path.open(encoding="utf-8") as fh:
         batch_config = yaml.safe_load(fh) or {}
 
-    courses = batch_config.get("courses", batch_config) if isinstance(batch_config, dict) else batch_config
+    courses = (
+        batch_config.get("courses", batch_config)
+        if isinstance(batch_config, dict)
+        else batch_config
+    )
     if not courses:
         print("Nenhum curso definido no arquivo de configuração.", file=sys.stderr)
         return 1
@@ -268,6 +284,7 @@ def cmd_batch(args: argparse.Namespace) -> int:
 
 # ─── emit-catalog ──────────────────────────────────────────────────────
 
+
 def cmd_emit_catalog(args: argparse.Namespace) -> int:
     _setup_logging()
     from src.generators.metadata_sync import MetadataSync
@@ -286,6 +303,7 @@ def cmd_emit_catalog(args: argparse.Namespace) -> int:
 
 
 # ─── drafts-to-tsx ─────────────────────────────────────────────────────
+
 
 def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
     from src.converters.draft_to_course import convert_drafts_directory
@@ -330,6 +348,7 @@ def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
 
 # ─── cache-clear ───────────────────────────────────────────────────────
 
+
 def cmd_cache_clear(args: argparse.Namespace) -> int:
     """Limpa o cache LLM em disco (.cache/)."""
     from src.cache import Cache
@@ -341,6 +360,7 @@ def cmd_cache_clear(args: argparse.Namespace) -> int:
 
 
 # ─── emit-llms-txt (Wave 10) ───────────────────────────────────────────
+
 
 def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
     """Gera llms.txt para 1 curso ou todos os cursos do cliente.
@@ -369,7 +389,9 @@ def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
     if args.slug:
         drafts = [d for d in drafts if d.stem.startswith(args.slug)]
         if not drafts:
-            print(f"Nenhum draft encontrado para slug '{args.slug}' em {drafts_dir}", file=sys.stderr)
+            print(
+                f"Nenhum draft encontrado para slug '{args.slug}' em {drafts_dir}", file=sys.stderr
+            )
             return 1
 
     gerados = 0
@@ -389,6 +411,7 @@ def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
 
 
 # ─── certify (Wave 9) ──────────────────────────────────────────────────
+
 
 def cmd_certify(args: argparse.Namespace) -> int:
     """Gera certificado HTML verificável para um aluno."""
@@ -447,6 +470,7 @@ def cmd_certify(args: argparse.Namespace) -> int:
 
 
 # ─── parser ────────────────────────────────────────────────────────────
+
 
 def _add_client_arg(sub: argparse.ArgumentParser) -> None:
     sub.add_argument(
@@ -563,8 +587,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Gera llms.txt por curso (agent legibility, Wave 10)",
     )
     p.add_argument("--slug", default=None, help="Slug específico (default: todos)")
-    p.add_argument("--input", default=None, metavar="DIR", help="Diretório de drafts (default: <output_dir>/drafts)")
-    p.add_argument("--output-dir", dest="output_dir", default=None, metavar="DIR", help="Saída (default: <output_dir>/llms-txt)")
+    p.add_argument(
+        "--input",
+        default=None,
+        metavar="DIR",
+        help="Diretório de drafts (default: <output_dir>/drafts)",
+    )
+    p.add_argument(
+        "--output-dir",
+        dest="output_dir",
+        default=None,
+        metavar="DIR",
+        help="Saída (default: <output_dir>/llms-txt)",
+    )
     _add_client_arg(p)
     p.set_defaults(func=cmd_emit_llms_txt)
 
@@ -578,8 +613,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--name", required=True, help="Nome completo do aluno")
     p.add_argument("--score", type=float, required=True, help="Score (0.0 a 1.0)")
     p.add_argument("--secret", default=None, help="Secret HMAC (ou env CERTIFICATE_SECRET)")
-    p.add_argument("--pass-threshold", dest="pass_threshold", type=float, default=0.7, help="Mínimo para aprovar (default 0.7)")
-    p.add_argument("--output-dir", dest="output_dir", default=None, metavar="DIR", help="Saída (default: <output_dir>/certificates)")
+    p.add_argument(
+        "--pass-threshold",
+        dest="pass_threshold",
+        type=float,
+        default=0.7,
+        help="Mínimo para aprovar (default 0.7)",
+    )
+    p.add_argument(
+        "--output-dir",
+        dest="output_dir",
+        default=None,
+        metavar="DIR",
+        help="Saída (default: <output_dir>/certificates)",
+    )
     _add_client_arg(p)
     p.set_defaults(func=cmd_certify)
 

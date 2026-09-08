@@ -204,9 +204,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         min_statistics=int(geo_d.get("min_statistics", 5)),
         min_quotations=int(geo_d.get("min_quotations", 1)),
         require_answer_capsule=bool(geo_d.get("require_answer_capsule", True)),
-        schema_authority_stack_enabled=bool(
-            geo_d.get("schema_authority_stack_enabled", False)
-        ),
+        schema_authority_stack_enabled=bool(geo_d.get("schema_authority_stack_enabled", False)),
     )
 
     # Wave 8 — idioma default do cliente

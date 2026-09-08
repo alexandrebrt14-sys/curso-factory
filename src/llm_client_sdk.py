@@ -46,21 +46,19 @@ logger = logging.getLogger(__name__)
 # provider (curso-factory) -> (alias canonico, task_type) no orquestrador.
 # task_type governa a BANDA DE TIMEOUT e a fallback chain herdadas.
 PROVIDER_TO_SDK: dict[str, tuple[str, str]] = {
-    "perplexity": ("perplexity", "research"),    # sonar-deep-research, 600s
-    "openai":     ("gpt4o", "writing"),          # gpt-5.5, 420s
-    "google":     ("gemini", "analysis"),        # gemini pro, 360s
-    "anthropic":  ("claude", "review"),          # opus, 360s
+    "perplexity": ("perplexity", "research"),  # sonar-deep-research, 600s
+    "openai": ("gpt4o", "writing"),  # gpt-5.5, 420s
+    "google": ("gemini", "analysis"),  # gemini pro, 360s
+    "anthropic": ("claude", "review"),  # opus, 360s
     # groq foi removido do orquestrador (Sprint 16); o equivalente bulk
     # canonico e o gemini_flash. Mantido para compat com fluxos legados.
-    "groq":       ("gemini_flash", "classification"),
+    "groq": ("gemini_flash", "classification"),
 }
 
 
 def _ensure_sdk_on_path() -> None:
     """Adiciona o repo do geo-orchestrator ao sys.path (path-based install)."""
-    root = Path(
-        os.environ.get("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator"))
-    )
+    root = Path(os.environ.get("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator")))
     if not (root / "geo_orchestrator_sdk" / "__init__.py").exists():
         raise ImportError(
             f"geo_orchestrator_sdk nao encontrado em {root} — defina "
@@ -118,7 +116,8 @@ class SDKLLMClient:
             if ignored in kwargs:
                 logger.debug(
                     "SDK backend ignora kwarg %r=%r (governado pelo orquestrador)",
-                    ignored, kwargs.pop(ignored),
+                    ignored,
+                    kwargs.pop(ignored),
                 )
         max_tokens = int(kwargs.pop("max_tokens", MAX_TOKENS_PER_CALL))
         if kwargs:
@@ -130,9 +129,7 @@ class SDKLLMClient:
             if cached is not None:
                 return cached
 
-        result = self._call_llm(
-            prompt, task_type=task_type, alias=alias, max_tokens=max_tokens
-        )
+        result = self._call_llm(prompt, task_type=task_type, alias=alias, max_tokens=max_tokens)
 
         # Dupla contabilidade: FinOps global ja registrado pelo SDK; aqui o
         # ledger LOCAL por curso (relatorios por course_id continuam integros).
@@ -146,8 +143,12 @@ class SDKLLMClient:
         )
         logger.info(
             "LLM(sdk) %s->%s/%s: %d tok_in, %d tok_out, USD %.4f (curso=%s%s)",
-            provider, result.alias, result.model,
-            result.tokens_input, result.tokens_output, result.cost,
+            provider,
+            result.alias,
+            result.model,
+            result.tokens_input,
+            result.tokens_output,
+            result.cost,
             self.current_course_id or "n/a",
             ", fallback" if result.fallback_used else "",
         )

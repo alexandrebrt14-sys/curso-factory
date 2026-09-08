@@ -88,9 +88,7 @@ def review(card: SRSCard, quality: int, now: datetime | None = None) -> SRSCard:
         reference = reference.replace(tzinfo=UTC)
 
     # Recalcula ease_factor pela fórmula SM-2.
-    new_ef = card.ease_factor + (
-        0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
-    )
+    new_ef = card.ease_factor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
     new_ef = max(MIN_EASE_FACTOR, new_ef)
 
     if quality < QUALITY_PASS_THRESHOLD:

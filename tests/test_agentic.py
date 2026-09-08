@@ -286,9 +286,7 @@ def test_a2a_course_info_jsonld_valido() -> None:
     # Endpoints batem com as constantes.
     assert parsed["agent_endpoints"]["purchase"].endswith(A2A_ENDPOINT_PURCHASE)
     assert parsed["agent_endpoints"]["enroll"].endswith(A2A_ENDPOINT_ENROLL)
-    assert parsed["agent_endpoints"]["course_info"].endswith(
-        A2A_ENDPOINT_COURSE_INFO
-    )
+    assert parsed["agent_endpoints"]["course_info"].endswith(A2A_ENDPOINT_COURSE_INFO)
 
 
 def test_a2a_course_info_offer_paga_e_gratuita() -> None:

@@ -75,13 +75,9 @@ def course_jsonld(course: CourseDefinition) -> dict[str, Any]:
         "instructor": _instructor_block(course),
         "teaches": teaches,
         "educationalLevel": course.nivel_display or course.nivel.value,
-        "timeRequired": _duration_to_iso8601(
-            f"{course.duracao_total_minutos} min"
-        ),
+        "timeRequired": _duration_to_iso8601(f"{course.duracao_total_minutos} min"),
         "courseCode": course.slug,
-        "educationalCredentialAwarded": (
-            f"Certificado de conclusão — {course.titulo}"
-        ),
+        "educationalCredentialAwarded": (f"Certificado de conclusão — {course.titulo}"),
         "hasCourseInstance": [
             {
                 "@type": "CourseInstance",

@@ -74,9 +74,7 @@ class BuildValidator:
                 )
 
         except subprocess.TimeoutExpired:
-            result["errors"].append(
-                f"Build excedeu o timeout de {self.timeout} segundos"
-            )
+            result["errors"].append(f"Build excedeu o timeout de {self.timeout} segundos")
             logger.error("Build Next.js excedeu timeout de %ds", self.timeout)
         except FileNotFoundError:
             result["errors"].append(
@@ -122,8 +120,7 @@ class BuildValidator:
         # Verifica export default
         if "export default" not in content:
             errors.append(
-                "Nenhum 'export default' encontrado. "
-                "O componente principal precisa ser exportado."
+                "Nenhum 'export default' encontrado. O componente principal precisa ser exportado."
             )
 
         # Balanceamento de chaves
@@ -131,8 +128,7 @@ class BuildValidator:
         close_braces = content.count("}")
         if open_braces != close_braces:
             errors.append(
-                f"Chaves desbalanceadas: {open_braces} abertas vs "
-                f"{close_braces} fechadas"
+                f"Chaves desbalanceadas: {open_braces} abertas vs {close_braces} fechadas"
             )
 
         # Balanceamento de parênteses
@@ -140,8 +136,7 @@ class BuildValidator:
         close_parens = content.count(")")
         if open_parens != close_parens:
             errors.append(
-                f"Parênteses desbalanceados: {open_parens} abertos vs "
-                f"{close_parens} fechados"
+                f"Parênteses desbalanceados: {open_parens} abertos vs {close_parens} fechados"
             )
 
         # Balanceamento de colchetes
@@ -149,8 +144,7 @@ class BuildValidator:
         close_brackets = content.count("]")
         if open_brackets != close_brackets:
             errors.append(
-                f"Colchetes desbalanceados: {open_brackets} abertos vs "
-                f"{close_brackets} fechados"
+                f"Colchetes desbalanceados: {open_brackets} abertos vs {close_brackets} fechados"
             )
 
         return errors
@@ -185,9 +179,7 @@ class BuildValidator:
 
         if not errors and output.strip():
             # Se não encontrou padrões específicos, retorna as últimas linhas
-            last_lines = [
-                ln.strip() for ln in output.strip().split("\n")[-5:] if ln.strip()
-            ]
+            last_lines = [ln.strip() for ln in output.strip().split("\n")[-5:] if ln.strip()]
             errors = last_lines
 
         return errors

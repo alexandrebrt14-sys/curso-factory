@@ -52,6 +52,7 @@ console = Console()
 
 # ───────────────────── Tipos auxiliares ─────────────────────
 
+
 class CourseData:
     """Dados de um curso extraídos do TypeScript."""
 
@@ -96,6 +97,7 @@ class Chunk:
 
 
 # ───────────────────── Parser do TypeScript ─────────────────────
+
 
 def _extract_str(obj_text: str, field: str) -> str:
     """Extrai um campo string de um objeto-literal TS (`field: "valor"`)."""
@@ -229,6 +231,7 @@ def parse_faqs_from_tsx(file_path: Path) -> list[dict[str, str]]:
 
 # ───────────────────── Geração de chunks ─────────────────────
 
+
 def _prerequisites_for_level(level: str) -> str:
     """Gera texto de pré-requisitos baseado no nível do curso."""
     level_lower = level.lower()
@@ -237,7 +240,9 @@ def _prerequisites_for_level(level: str) -> str:
     elif "intermediário" in level_lower or "intermediario" in level_lower:
         return "Conhecimento básico de tecnologia e familiaridade com ferramentas digitais."
     elif "avançado" in level_lower or "avancado" in level_lower:
-        return "Experiência prévia na área. Recomendável ter completado cursos de nível intermediário."
+        return (
+            "Experiência prévia na área. Recomendável ter completado cursos de nível intermediário."
+        )
     else:
         return "Consulte a descrição do curso para pré-requisitos específicos."
 
@@ -372,6 +377,7 @@ def generate_chunks(courses: list[CourseData], faqs: list[dict[str, str]]) -> li
 
 # ───────────────────── Embeddings via OpenAI ─────────────────────
 
+
 def embed_chunks(chunks: list[Chunk], client: httpx.Client) -> list[Chunk]:
     """Gera embeddings para todos os chunks em batches.
 
@@ -434,19 +440,21 @@ def embed_chunks(chunks: list[Chunk], client: httpx.Client) -> list[Chunk]:
                     break
 
                 except httpx.HTTPStatusError as e:
-                    console.print(f"[red]Erro HTTP {e.response.status_code}: {e.response.text}[/red]")
+                    console.print(
+                        f"[red]Erro HTTP {e.response.status_code}: {e.response.text}[/red]"
+                    )
                     retries += 1
                     if retries >= max_retries:
                         console.print("[red]Maximo de tentativas atingido. Abortando batch.[/red]")
                         break
-                    time.sleep(2 ** retries)
+                    time.sleep(2**retries)
 
                 except httpx.RequestError as e:
                     console.print(f"[red]Erro de conexão: {e}[/red]")
                     retries += 1
                     if retries >= max_retries:
                         break
-                    time.sleep(2 ** retries)
+                    time.sleep(2**retries)
 
             # Pausa entre batches para respeitar rate limits
             if i + BATCH_SIZE < total:
@@ -458,6 +466,7 @@ def embed_chunks(chunks: list[Chunk], client: httpx.Client) -> list[Chunk]:
 
 
 # ───────────────────── Upsert no Supabase ─────────────────────
+
 
 def upsert_to_supabase(chunks: list[Chunk], client: httpx.Client) -> int:
     """Faz upsert dos chunks na tabela edu_documents do Supabase.
@@ -532,9 +541,7 @@ def upsert_to_supabase(chunks: list[Chunk], client: httpx.Client) -> int:
                         progress.update(task, completed=inserted)
                         break
                     else:
-                        console.print(
-                            f"[red]Erro Supabase {resp.status_code}: {resp.text}[/red]"
-                        )
+                        console.print(f"[red]Erro Supabase {resp.status_code}: {resp.text}[/red]")
                         retries += 1
                         if retries >= max_retries:
                             console.print(
@@ -542,20 +549,21 @@ def upsert_to_supabase(chunks: list[Chunk], client: httpx.Client) -> int:
                                 f"{len(batch)} chunks não inseridos.[/red]"
                             )
                             break
-                        time.sleep(2 ** retries)
+                        time.sleep(2**retries)
 
                 except httpx.RequestError as e:
                     console.print(f"[red]Erro de conexão com Supabase: {e}[/red]")
                     retries += 1
                     if retries >= max_retries:
                         break
-                    time.sleep(2 ** retries)
+                    time.sleep(2**retries)
 
     console.print(f"[green]{inserted}/{len(valid_chunks)} chunks inseridos no Supabase.[/green]")
     return inserted
 
 
 # ───────────────────── Validação de configuração ─────────────────────
+
 
 def validate_config() -> bool:
     """Valida que todas as variáveis de ambiente necessárias estão configuradas."""
@@ -580,6 +588,7 @@ def validate_config() -> bool:
 
 
 # ───────────────────── Main ─────────────────────
+
 
 def main() -> None:
     """Pipeline principal: parse -> chunks -> embed -> upsert."""

@@ -29,6 +29,7 @@ def _run(args: list[str]) -> int:
 
 # ─── parser e ajuda ──────────────────────────────────────────────────
 
+
 def test_parser_has_all_commands() -> None:
     parser = cli.build_parser()
     help_text = parser.format_help()
@@ -53,6 +54,7 @@ def test_parser_requires_command() -> None:
 
 # ─── clients ──────────────────────────────────────────────────────────
 
+
 def test_cmd_clients_lista_default(capsys) -> None:
     rc = _run(["clients"])
     captured = capsys.readouterr()
@@ -62,6 +64,7 @@ def test_cmd_clients_lista_default(capsys) -> None:
 
 
 # ─── validate ────────────────────────────────────────────────────────
+
 
 def test_cmd_validate_path_inexistente(capsys) -> None:
     rc = _run(["validate", "C:/nao_existe_xyz_fictpath"])
@@ -80,6 +83,7 @@ def test_cmd_validate_arquivo_aprovado(tmp_path, capsys) -> None:
 
 # ─── cost-report ─────────────────────────────────────────────────────
 
+
 def test_cmd_cost_report_executa(capsys) -> None:
     rc = _run(["cost-report"])
     out = capsys.readouterr().out
@@ -91,12 +95,17 @@ def test_cmd_cost_report_executa(capsys) -> None:
 
 # ─── drafts-to-tsx ───────────────────────────────────────────────────
 
+
 def test_cmd_drafts_to_tsx_input_inexistente(tmp_path, capsys) -> None:
-    rc = _run([
-        "drafts-to-tsx",
-        "--input", str(tmp_path / "nao_existe"),
-        "--output", str(tmp_path / "out"),
-    ])
+    rc = _run(
+        [
+            "drafts-to-tsx",
+            "--input",
+            str(tmp_path / "nao_existe"),
+            "--output",
+            str(tmp_path / "out"),
+        ]
+    )
     out = capsys.readouterr().out
     assert rc == 1
     assert "ERRO" in out or "nao existe" in out
@@ -106,17 +115,22 @@ def test_cmd_drafts_to_tsx_input_vazio(tmp_path, capsys) -> None:
     """Diretório existe mas sem arquivos: 0 conversões, exit 0."""
     inp = tmp_path / "drafts"
     inp.mkdir()
-    rc = _run([
-        "drafts-to-tsx",
-        "--input", str(inp),
-        "--output", str(tmp_path / "out"),
-    ])
+    rc = _run(
+        [
+            "drafts-to-tsx",
+            "--input",
+            str(inp),
+            "--output",
+            str(tmp_path / "out"),
+        ]
+    )
     out = capsys.readouterr().out
     assert rc == 0
     assert "Convertidos: 0" in out
 
 
 # ─── emit-catalog ────────────────────────────────────────────────────
+
 
 def test_cmd_emit_catalog(tmp_path) -> None:
     rc = _run(["emit-catalog", "--output-dir", str(tmp_path)])
@@ -130,6 +144,7 @@ def test_cmd_emit_catalog(tmp_path) -> None:
 
 # ─── batch ───────────────────────────────────────────────────────────
 
+
 def test_cmd_batch_arquivo_inexistente(capsys) -> None:
     rc = _run(["batch", "C:/nao_existe_yaml.yaml"])
     err = capsys.readouterr().err
@@ -138,6 +153,7 @@ def test_cmd_batch_arquivo_inexistente(capsys) -> None:
 
 
 # ─── client desconhecido ─────────────────────────────────────────────
+
 
 def test_cmd_create_cliente_inexistente(capsys) -> None:
     """Cliente bobo: o CLI deve avisar e retornar exit 1, sem chamar LLM."""

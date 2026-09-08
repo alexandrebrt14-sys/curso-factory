@@ -18,6 +18,7 @@ from pathlib import Path
 @dataclass
 class Author:
     """Dados de autoria que vão para SEO, hero e schema.org."""
+
     name: str
     credential: str
     title_seo_suffix: str = ""
@@ -31,6 +32,7 @@ class Author:
 class Company:
     """Dados da empresa que aparecem como `provider` em schema.org e no bloco
     de autoria do curso."""
+
     name: str = ""
     description: str = ""
 
@@ -38,6 +40,7 @@ class Company:
 @dataclass
 class Domain:
     """Domínio canônico e caminho dos cursos."""
+
     canonical_url: str
     educacao_path: str = "/educacao"
 
@@ -50,6 +53,7 @@ class Domain:
 @dataclass
 class Branding:
     """Cores do hero do curso."""
+
     hero_gradient_from: str = "#032d60"
     hero_gradient_to: str = "#0176d3"
     badge_color: str = "#0176d3"
@@ -58,6 +62,7 @@ class Branding:
 @dataclass
 class Editorial:
     """Regras editoriais do cliente."""
+
     style: str = "business"
     reference_publications: list[str] = field(default_factory=list)
     bloom_min_level: int = 3
@@ -69,6 +74,7 @@ class Editorial:
 @dataclass
 class VoiceGuardCanonical:
     """Naming canônico obrigatório quando o texto referencia a empresa/fundador."""
+
     company: str = ""
     founder: str = ""
     credential_fragments: list[str] = field(default_factory=list)
@@ -78,6 +84,7 @@ class VoiceGuardCanonical:
 @dataclass
 class VoiceGuardForbidden:
     """Listas negras do voice guard deste cliente."""
+
     titles: list[str] = field(default_factory=list)
     company_names: list[str] = field(default_factory=list)
     domains: list[str] = field(default_factory=list)
@@ -99,6 +106,7 @@ class VoiceSample:
     derruba detecção a ~0%. DIPPER (Krishna NeurIPS 2023) confirma que
     persona-conditioning supera fine-tuning para volumes pequenos.
     """
+
     path: str
     length_words: int = 0
     tags: list[str] = field(default_factory=list)
@@ -107,6 +115,7 @@ class VoiceSample:
 @dataclass
 class VoiceSamplesConfig:
     """Configuração de amostras de voz para persona-conditioning few-shot."""
+
     enabled: bool = False
     samples: list[VoiceSample] = field(default_factory=list)
     anchor_strategy: str = "rotate"  # rotate | concat | random
@@ -116,6 +125,7 @@ class VoiceSamplesConfig:
 @dataclass
 class VoiceGuardConfig:
     """Configuração do voice guard para um cliente."""
+
     enabled: bool = True
     min_score: int = 70
     canonical: VoiceGuardCanonical = field(default_factory=VoiceGuardCanonical)
@@ -141,6 +151,7 @@ class DisclosureConfig:
       supervisão e disclosure
     - MEC Marco Referencial 2025-07 — IA na Educação Básica
     """
+
     enabled: bool = False
     required_by: list[str] = field(default_factory=list)
     pipeline_models: list[str] = field(default_factory=list)
@@ -156,6 +167,7 @@ class TutorConfig:
     Tutor é o 6º agente que vive no servidor, fora do pipeline de geração.
     Aluno conversa com tutor que sabe tudo sobre o curso atual.
     """
+
     enabled: bool = False
     persona: str = "curiosa-paciente"
     name: str = ""
@@ -167,6 +179,7 @@ class TutorConfig:
 @dataclass
 class EngagementConfig:
     """Wave 6 — configuração da camada de engajamento."""
+
     gamification_enabled: bool = False
     streak_enabled: bool = True
     badges_enabled: bool = True
@@ -179,6 +192,7 @@ class EngagementConfig:
 @dataclass
 class CertificationConfig:
     """Wave 9 — configuração de certificação."""
+
     enabled: bool = False
     pass_threshold: float = 0.7
     blockchain_opt_in: bool = False
@@ -188,6 +202,7 @@ class CertificationConfig:
 @dataclass
 class AgenticConfig:
     """Wave 10 — configuração de agent legibility (llms.txt + MCP/A2A)."""
+
     enabled: bool = False
     emit_llms_txt: bool = True
     mcp_server: bool = False
@@ -201,6 +216,7 @@ class PipelineConfig:
     Hoje cobre o Humanizer (PR-4 humanizacao). No futuro pode cobrir
     self-test Pangram (PR-3), RADAR-style proxy interno etc.
     """
+
     humanize_enabled: bool = False
     humanize_target_stylometry_score: int = 75
     humanize_max_iters: int = 2
@@ -218,6 +234,7 @@ class Geo2026Config:
     desabilitado, as contagens viram avisos; quando habilitado, viram erros
     bloqueantes no quality gate.
     """
+
     princeton_playbook_enabled: bool = False
     min_cite_sources: int = 3
     min_statistics: int = 5
@@ -229,6 +246,7 @@ class Geo2026Config:
 @dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
+
     id: str
     author: Author
     domain: Domain

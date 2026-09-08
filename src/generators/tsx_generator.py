@@ -29,12 +29,7 @@ def _js_escape(value: str) -> str:
     """
     if not isinstance(value, str):
         return str(value)
-    return (
-        value
-        .replace("\\", "\\\\")
-        .replace('"', '\\"')
-        .replace("\n", "\\n")
-    )
+    return value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
 
 
 def _js_json(value: Any) -> str:
@@ -73,7 +68,7 @@ def _fonte_jsx(value: str) -> str:
 
     def _link(m: re.Match[str]) -> str:
         url = m.group(0).rstrip(".,;")
-        sufixo = m.group(0)[len(url):]
+        sufixo = m.group(0)[len(url) :]
         return (
             f'<a href="{url}" target="_blank" rel="noopener nofollow" '
             f'className="underline underline-offset-2">{url}</a>{sufixo}'
@@ -169,7 +164,9 @@ class TsxGenerator:
         self.env.filters["pascal_case"] = _pascal_case
         self.env.filters["fonte_jsx"] = _fonte_jsx
 
-    def render_page(self, course: CourseDefinition, *, cobrar_peso_visual: bool | None = None) -> str:
+    def render_page(
+        self, course: CourseDefinition, *, cobrar_peso_visual: bool | None = None
+    ) -> str:
         """Renderiza page.tsx a partir do template page.tsx.j2.
 
         Flattena os steps e suas seções para o contexto do template.
@@ -194,7 +191,6 @@ class TsxGenerator:
             raise AberturaError(achados_abertura)
         self._cobrar_peso_visual(course, cobrar_peso_visual)
         template = self.env.get_template("page.tsx.j2")
-
 
         flat_steps = []
         for step in course.steps:
@@ -232,10 +228,7 @@ class TsxGenerator:
             "keywords_seo": course.keywords_seo,
             "steps": flat_steps,
             "prerequisitos_display": course.prerequisitos_display,
-            "faq": [
-                {"pergunta": f.pergunta, "resposta": f.resposta}
-                for f in course.faq
-            ],
+            "faq": [{"pergunta": f.pergunta, "resposta": f.resposta} for f in course.faq],
             # R7: uma lista, no rodapé, em corpo pequeno.
             "fontes": _fontes_do_curso(course),
             "hero_gradient_from": course.hero_gradient_from,
@@ -255,9 +248,7 @@ class TsxGenerator:
 
         return template.render(context)
 
-    def _cobrar_peso_visual(
-        self, course: CourseDefinition, cobrar: bool | None
-    ) -> None:
+    def _cobrar_peso_visual(self, course: CourseDefinition, cobrar: bool | None) -> None:
         """Roda a régua de peso visual em cada módulo antes de renderizar.
 
         Quando `cobrar` é None, a decisão vem do YAML. Achado de severidade
@@ -271,9 +262,7 @@ class TsxGenerator:
 
         reprovas: list[str] = []
         for step in course.steps:
-            achados = check_visual_density(
-                step.content, module_name=step.id, curso_novo=cobrar
-            )
+            achados = check_visual_density(step.content, module_name=step.id, curso_novo=cobrar)
             for a in achados:
                 if a.tipo == "error":
                     reprovas.append(a.mensagem)
@@ -302,9 +291,7 @@ class TsxGenerator:
 
         return template.render(context)
 
-    def write(
-        self, course: CourseDefinition, target_dir: Path
-    ) -> tuple[Path, Path]:
+    def write(self, course: CourseDefinition, target_dir: Path) -> tuple[Path, Path]:
         """Gera e escreve page.tsx e layout.tsx no diretório alvo.
 
         Cria target_dir/slug/ se não existir.

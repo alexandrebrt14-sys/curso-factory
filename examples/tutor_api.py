@@ -105,8 +105,7 @@ def tutor_endpoint(course_slug: str, payload: TutorRequest) -> TutorResponse:
         raise HTTPException(
             status_code=400,
             detail=(
-                f"mode inválido: {payload.mode!r}. "
-                f"Valores aceitos: {[m.value for m in TutorMode]}."
+                f"mode inválido: {payload.mode!r}. Valores aceitos: {[m.value for m in TutorMode]}."
             ),
         )
 

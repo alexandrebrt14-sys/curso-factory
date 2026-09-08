@@ -80,9 +80,7 @@ def test_repetition_score_baixo_em_texto_natural() -> None:
 
 def test_repetition_score_alto_em_boilerplate() -> None:
     # ≥10 palavras (limite minimo da funcao) com bigrama "o gato" repetido
-    words = (
-        "o gato gosta o gato corre o gato dorme e o gato pula"
-    ).split()
+    words = ("o gato gosta o gato corre o gato dorme e o gato pula").split()
     score = compute_repetition_score(words)
     assert score > 0.0
 
@@ -168,13 +166,15 @@ def test_disclosure_block_if_missing_false_emite_aviso() -> None:
     client = load_client("default")
     # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
     client.disclosure = DisclosureConfig(
-        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+        enabled=True,
+        required_by=["PL_2338_2023"],
+        block_if_missing=False,
     )
     # Configuracao default tem block_if_missing=False
     assert client.disclosure.block_if_missing is False
     r = disclosure_check("Texto sem disclosure algum.", client=client)
     assert r.aprovado is True  # nao bloqueia
-    assert len(r.avisos) > 0   # mas avisa
+    assert len(r.avisos) > 0  # mas avisa
 
 
 def test_disclosure_block_if_missing_true_bloqueia() -> None:
@@ -195,7 +195,9 @@ def test_disclosure_detecta_bloco_canonico() -> None:
     client = load_client("default")
     # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
     client.disclosure = DisclosureConfig(
-        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+        enabled=True,
+        required_by=["PL_2338_2023"],
+        block_if_missing=False,
     )
     client.disclosure.block_if_missing = True
     bloco = build_disclosure_block(client)
@@ -209,7 +211,9 @@ def test_build_disclosure_block_inclui_autor() -> None:
     client = load_client("default")
     # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
     client.disclosure = DisclosureConfig(
-        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+        enabled=True,
+        required_by=["PL_2338_2023"],
+        block_if_missing=False,
     )
     block = build_disclosure_block(client)
     assert client.author.name in block
@@ -280,16 +284,25 @@ def test_detection_tracker_filtro_por_cliente() -> None:
     tmp = Path(tempfile.mkdtemp()) / "history.jsonl"
     t = DetectionTracker(path=tmp)
     for cid in ["default", "acme", "default"]:
-        t.record(DetectionEntry(
-            ts="2026-05-17T15:00:00+00:00",
-            course_id="c", module_name="m", client_id=cid,
-            stylometry_score=70, burstiness=0.7,
-            sentence_len_variance=0.0, type_token_ratio=0.0,
-            repetition_score=0.0, mean_perplexity=None,
-            voice_guard_score=80, disclosure_ok=True,
-            pangram_score=None, aprovado_gate=True,
-            pipeline_version="5.2",
-        ))
+        t.record(
+            DetectionEntry(
+                ts="2026-05-17T15:00:00+00:00",
+                course_id="c",
+                module_name="m",
+                client_id=cid,
+                stylometry_score=70,
+                burstiness=0.7,
+                sentence_len_variance=0.0,
+                type_token_ratio=0.0,
+                repetition_score=0.0,
+                mean_perplexity=None,
+                voice_guard_score=80,
+                disclosure_ok=True,
+                pangram_score=None,
+                aprovado_gate=True,
+                pipeline_version="5.2",
+            )
+        )
     only_default = t.load_entries(client_id="default")
     only_acme = t.load_entries(client_id="acme")
     assert len(only_default) == 2
@@ -302,16 +315,25 @@ def test_detection_tracker_report_text_legivel() -> None:
     # Sem entradas
     assert "Nenhum registro" in t.report_text()
     # Com entrada
-    t.record(DetectionEntry(
-        ts="2026-05-17T15:00:00+00:00",
-        course_id="c1", module_name="m1", client_id="default",
-        stylometry_score=80, burstiness=0.9,
-        sentence_len_variance=120.0, type_token_ratio=0.55,
-        repetition_score=0.05, mean_perplexity=None,
-        voice_guard_score=85, disclosure_ok=True,
-        pangram_score=None, aprovado_gate=True,
-        pipeline_version="5.2",
-    ))
+    t.record(
+        DetectionEntry(
+            ts="2026-05-17T15:00:00+00:00",
+            course_id="c1",
+            module_name="m1",
+            client_id="default",
+            stylometry_score=80,
+            burstiness=0.9,
+            sentence_len_variance=120.0,
+            type_token_ratio=0.55,
+            repetition_score=0.05,
+            mean_perplexity=None,
+            voice_guard_score=85,
+            disclosure_ok=True,
+            pangram_score=None,
+            aprovado_gate=True,
+            pipeline_version="5.2",
+        )
+    )
     rpt = t.report_text()
     assert "Detection Report" in rpt
     assert "mediana" in rpt.lower()
@@ -320,6 +342,7 @@ def test_detection_tracker_report_text_legivel() -> None:
 def test_detection_tracker_record_from_gate() -> None:
     """Atalho record_from_gate extrai campos de um GateResult."""
     from src.validators.quality_gate import GateResult
+
     tmp = Path(tempfile.mkdtemp()) / "history.jsonl"
     t = DetectionTracker(path=tmp)
     gr = GateResult(
@@ -377,6 +400,7 @@ def test_humanizer_diagnostic_builder_com_problemas() -> None:
     """_build_diagnostic deve listar problemas especificos."""
     from src.agents.humanizer import Humanizer
     from src.validators.stylometry_checker import StylometryReport
+
     h = Humanizer(client=None)  # type: ignore[arg-type]
     bad_report = StylometryReport(
         burstiness=0.30,
@@ -402,6 +426,7 @@ def test_humanizer_diagnostic_builder_quando_ja_bom() -> None:
     """Sem problemas, diagnostico indica que score ja e satisfatorio."""
     from src.agents.humanizer import Humanizer
     from src.validators.stylometry_checker import StylometryReport
+
     h = Humanizer(client=None)  # type: ignore[arg-type]
     good_report = StylometryReport(
         burstiness=0.90,
@@ -419,6 +444,7 @@ def test_humanizer_diagnostic_builder_quando_ja_bom() -> None:
 def test_humanizer_score_inicial_alto_nao_dispara_reescrita() -> None:
     """Se texto ja atende target, retorna sem chamar LLM."""
     from src.agents.humanizer import Humanizer
+
     h = Humanizer(client=None)  # type: ignore[arg-type]
     text = _sample_text_humano_like()
     # target absurdamente baixo para garantir convergencia inicial
@@ -431,6 +457,7 @@ def test_humanizer_score_inicial_alto_nao_dispara_reescrita() -> None:
 def test_humanize_if_enabled_default_off() -> None:
     """Cliente default tem humanize_enabled=false — retorna texto original sem result."""
     from src.agents.humanizer import humanize_if_enabled
+
     client = load_client("default")
     text = "Texto qualquer."
     out, result = humanize_if_enabled(text, client=client, llm_client=None)  # type: ignore[arg-type]

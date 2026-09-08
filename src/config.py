@@ -48,9 +48,9 @@ DRAFT_RESEARCH_CONTEXT_CHARS: int = int(os.getenv("DRAFT_RESEARCH_CONTEXT_CHARS"
 #: rascunho curto e os números na mão. Motivo (03/09/2026): no teste real, cinco
 #: de seis aulas vieram entre 640 e 900 palavras contra alvo de 900 a 1.800, e a
 #: única reprovação do curso foi a aula de 641. Desligue com 0.
-DRAFT_EXPANSAO_ABAIXO_DO_PISO: bool = (
-    os.getenv("DRAFT_EXPANSAO_ABAIXO_DO_PISO", "1").strip().lower() not in ("0", "false", "nao", "não")
-)
+DRAFT_EXPANSAO_ABAIXO_DO_PISO: bool = os.getenv(
+    "DRAFT_EXPANSAO_ABAIXO_DO_PISO", "1"
+).strip().lower() not in ("0", "false", "nao", "não")
 # A classificação (Groq, 128 mil tokens de contexto) não precisa do curso inteiro.
 CLASSIFY_CONTEXT_CHARS: int = int(os.getenv("CLASSIFY_CONTEXT_CHARS", "60000"))
 # Trecho do relatório da análise (Gemini) que acompanha cada aula na revisão.
@@ -68,10 +68,9 @@ CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5
 TOTAL_BUDGET_PER_COURSE: float = float(os.getenv("TOTAL_BUDGET_PER_COURSE", "10.00"))
 
 # --- Landing page integration ---
-LANDING_PAGE_DIR: Path = Path(os.getenv(
-    "LANDING_PAGE_DIR",
-    str(ROOT_DIR.parent / "landing-page-geo")
-))
+LANDING_PAGE_DIR: Path = Path(
+    os.getenv("LANDING_PAGE_DIR", str(ROOT_DIR.parent / "landing-page-geo"))
+)
 EDUCACAO_DIR: Path = LANDING_PAGE_DIR / "src" / "app" / "educacao"
 
 # --- Cache ---

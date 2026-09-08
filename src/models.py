@@ -20,6 +20,7 @@ def _now_utc() -> datetime:
 
 class NivelCurso(str, Enum):
     """Níveis possíveis para um curso."""
+
     INICIANTE = "iniciante"
     INTERMEDIARIO = "intermediário"
     AVANCADO = "avançado"
@@ -27,6 +28,7 @@ class NivelCurso(str, Enum):
 
 class Step(BaseModel):
     """Uma etapa individual dentro de um módulo."""
+
     titulo: str = Field(..., min_length=3, description="Título da etapa")
     conteudo: str = Field(default="", description="Conteúdo textual da etapa")
     tipo: str = Field(default="texto", description="Tipo: texto, vídeo, quiz, exercício")
@@ -46,12 +48,15 @@ class Step(BaseModel):
 
 class Module(BaseModel):
     """Um módulo de curso, composto por etapas."""
+
     titulo: str = Field(..., min_length=3, description="Título do módulo")
     descricao: str = Field(default="", description="Descrição resumida do módulo")
     etapas: list[Step] = Field(default_factory=list, description="Lista de etapas do módulo")
     ordem: int = Field(default=1, ge=1, description="Ordem do módulo dentro do curso")
     # Wave 6 (engagement): conceitos que viram cartões SRS ao concluir o módulo
-    srs_concepts: list[str] = Field(default_factory=list, description="Conceitos para revisão espaçada")
+    srs_concepts: list[str] = Field(
+        default_factory=list, description="Conceitos para revisão espaçada"
+    )
 
     @field_validator("titulo")
     @classmethod
@@ -63,6 +68,7 @@ class Module(BaseModel):
 
 class Course(BaseModel):
     """Representação completa de um curso."""
+
     id: str = Field(..., pattern=r"^[a-z0-9-]+$", description="Identificador único (slug)")
     titulo: str = Field(..., min_length=5, description="Título do curso")
     descricao: str = Field(default="", description="Descrição do curso")
@@ -83,6 +89,7 @@ class Course(BaseModel):
     def id_sem_acentos(cls, v: str) -> str:
         """Garante que o ID/slug não contenha caracteres acentuados."""
         import unicodedata
+
         nfkd = unicodedata.normalize("NFKD", v)
         if nfkd != v:
             raise ValueError(f"O ID do curso não pode conter acentos: '{v}'")
@@ -106,6 +113,7 @@ class SectionType(str, Enum):
     (`src/types/course-page.ts`). Curso gerado aqui é montado lá, então
     divergir de campo ou de opcionalidade quebra a montagem.
     """
+
     TEXT = "text"
     CODE = "code"
     WARNING = "warning"
@@ -121,27 +129,32 @@ class SectionType(str, Enum):
 
 #: Tipos que produzem alívio visual. Espelha o conjunto VISUAL do portão
 #: `scripts/gate-peso-visual.mjs` do `landing-page-geo`.
-VISUAL_SECTION_TYPES: frozenset[SectionType] = frozenset({
-    SectionType.FIGURE,
-    SectionType.DATA_TABLE,
-    SectionType.COMPARISON,
-    SectionType.STAT_GRID,
-    SectionType.STEP_GUIDE,
-    SectionType.TIMELINE,
-})
+VISUAL_SECTION_TYPES: frozenset[SectionType] = frozenset(
+    {
+        SectionType.FIGURE,
+        SectionType.DATA_TABLE,
+        SectionType.COMPARISON,
+        SectionType.STAT_GRID,
+        SectionType.STEP_GUIDE,
+        SectionType.TIMELINE,
+    }
+)
 
 #: Tipos cuja carga vive em `data` e cujo `value` fica vazio de propósito.
-PAYLOAD_SECTION_TYPES: frozenset[SectionType] = frozenset({
-    SectionType.DATA_TABLE,
-    SectionType.COMPARISON,
-    SectionType.STAT_GRID,
-    SectionType.STEP_GUIDE,
-    SectionType.TIMELINE,
-})
+PAYLOAD_SECTION_TYPES: frozenset[SectionType] = frozenset(
+    {
+        SectionType.DATA_TABLE,
+        SectionType.COMPARISON,
+        SectionType.STAT_GRID,
+        SectionType.STEP_GUIDE,
+        SectionType.TIMELINE,
+    }
+)
 
 
 class DataTablePayload(BaseModel):
     """Tabela de dados. Alternativas nas colunas e critério nas linhas."""
+
     title: str | None = None
     columns: list[str] = Field(..., min_length=2)
     rows: list[list[str]] = Field(..., min_length=1)
@@ -165,6 +178,7 @@ class DataTablePayload(BaseModel):
 
 class ComparisonSide(BaseModel):
     """Um lado do comparativo."""
+
     header: str = Field(..., min_length=2)
     items: list[str] = Field(..., min_length=1)
 
@@ -175,6 +189,7 @@ class ComparisonPayload(BaseModel):
     `left` é sempre o lado a evitar e `right` é sempre o recomendado. Inverter
     carimba um certo justamente no que o texto manda descartar.
     """
+
     title: str = Field(..., min_length=3)
     left: ComparisonSide
     right: ComparisonSide
@@ -184,6 +199,7 @@ class ComparisonPayload(BaseModel):
 
 class StatItem(BaseModel):
     """Um número do painel, com o rótulo que o explica."""
+
     value: str = Field(..., min_length=1)
     label: str = Field(..., min_length=2)
     sub: str | None = None
@@ -191,6 +207,7 @@ class StatItem(BaseModel):
 
 class StatGridPayload(BaseModel):
     """Painel de números que só fazem sentido juntos."""
+
     title: str | None = None
     stats: list[StatItem] = Field(..., min_length=2)
     source: str | None = None
@@ -198,6 +215,7 @@ class StatGridPayload(BaseModel):
 
 class StepGuideStep(BaseModel):
     """Um passo do guia, com o que se vê quando dá certo."""
+
     label: str = Field(..., min_length=3)
     detail: str | None = None
     success: str | None = None
@@ -206,6 +224,7 @@ class StepGuideStep(BaseModel):
 
 class StepGuidePayload(BaseModel):
     """Passo a passo numerado, para processo em que a ordem importa."""
+
     title: str = Field(..., min_length=3)
     intro: str | None = None
     steps: list[StepGuideStep] = Field(..., min_length=2)
@@ -214,6 +233,7 @@ class StepGuidePayload(BaseModel):
 
 class TimelineEvent(BaseModel):
     """Um marco da linha do tempo."""
+
     date: str = Field(..., min_length=1)
     label: str = Field(..., min_length=2)
     detail: str | None = None
@@ -222,6 +242,7 @@ class TimelineEvent(BaseModel):
 
 class TimelinePayload(BaseModel):
     """Linha do tempo de marcos datados."""
+
     title: str | None = None
     events: list[TimelineEvent] = Field(..., min_length=2)
 
@@ -244,6 +265,7 @@ class CourseSection(BaseModel):
     landing espera. O bloco `figure` é a exceção entre os visuais: o SVG ou a
     marcação da imagem vai no `value` e a legenda vai em `label`.
     """
+
     type: SectionType
     value: str = Field(default="", description="Conteúdo PT-BR com acentuação")
     language: str | None = Field(default=None, description="Linguagem para blocos de código")
@@ -269,16 +291,13 @@ class CourseSection(BaseModel):
                 modelo.model_validate(self.data)
             except ValidationError as e:
                 raise ValueError(
-                    f"A carga do bloco '{self.type.value}' não bate com "
-                    f"{modelo.__name__}: {e}"
+                    f"A carga do bloco '{self.type.value}' não bate com {modelo.__name__}: {e}"
                 ) from e
             return self
 
         if self.type is SectionType.FIGURE:
             if not self.value.strip():
-                raise ValueError(
-                    "O bloco 'figure' precisa do SVG ou da imagem em `value`."
-                )
+                raise ValueError("O bloco 'figure' precisa do SVG ou da imagem em `value`.")
             if not (self.label or "").strip():
                 raise ValueError(
                     "O bloco 'figure' precisa de legenda em `label`. Figura sem "
@@ -287,20 +306,20 @@ class CourseSection(BaseModel):
             return self
 
         if not self.value.strip():
-            raise ValueError(
-                f"O bloco '{self.type.value}' precisa de conteúdo em `value`."
-            )
+            raise ValueError(f"O bloco '{self.type.value}' precisa de conteúdo em `value`.")
         return self
 
 
 class StepDefinition(BaseModel):
     """Definição de um step/módulo para geração de TSX."""
+
     id: str = Field(..., pattern=r"^[a-z0-9-]+$", description="ID ASCII kebab-case")
     title: str = Field(..., min_length=3, description="Título PT-BR com acentos")
     duration: str = Field(..., pattern=r"^\d+ min$", description="Duração ex: '18 min'")
     icon_key: str = Field(default="trendingUp", description="Chave do ícone SVG")
     description: str = Field(
-        ..., min_length=5,
+        ...,
+        min_length=5,
         description="Subtítulo do módulo: uma frase, logo abaixo do título (R1)",
     )
     content: list[CourseSection] = Field(default_factory=list)
@@ -322,12 +341,14 @@ class StepDefinition(BaseModel):
 
 class FAQItem(BaseModel):
     """Pergunta e resposta para FAQ do curso."""
+
     pergunta: str = Field(..., min_length=5)
     resposta: str = Field(..., min_length=10)
 
 
 class CourseDefinition(BaseModel):
     """Modelo completo para geração determinística de layout.tsx + page.tsx."""
+
     # Identity
     slug: str = Field(..., pattern=r"^[a-z0-9-]+$", description="Slug ASCII para URL")
     titulo: str = Field(..., min_length=5, description="Título PT-BR")
@@ -382,7 +403,11 @@ class CourseDefinition(BaseModel):
             self.local_storage_key = f"{self.slug}-course-progress"
         if not self.canonical_url and self.dominio:
             dominio_norm = self.dominio.rstrip("/")
-            path_norm = self.educacao_path if self.educacao_path.startswith("/") else f"/{self.educacao_path}"
+            path_norm = (
+                self.educacao_path
+                if self.educacao_path.startswith("/")
+                else f"/{self.educacao_path}"
+            )
             self.canonical_url = f"{dominio_norm}{path_norm}/{self.slug}"
         if not self.breadcrumb_label:
             self.breadcrumb_label = self.titulo
@@ -398,6 +423,7 @@ class CourseDefinition(BaseModel):
 
 class CostEntry(BaseModel):
     """Registro de custo de uma chamada LLM."""
+
     timestamp: datetime = Field(default_factory=_now_utc)
     provider: str = Field(..., description="Nome do provider LLM")
     model: str = Field(..., description="Modelo utilizado")
@@ -409,6 +435,7 @@ class CostEntry(BaseModel):
 
 class QualityReport(BaseModel):
     """Relatório de qualidade gerado pelos validadores."""
+
     curso_id: str = Field(..., description="ID do curso avaliado")
     timestamp: datetime = Field(default_factory=_now_utc)
     acentuacao_ok: bool = Field(default=False, description="Acentuação PT-BR correta")

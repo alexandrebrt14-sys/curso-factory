@@ -19,6 +19,7 @@ _PROVIDERS_YAML = _ROOT / "config" / "providers.yaml"
 @dataclass(frozen=True)
 class ProviderConfig:
     """Configuração imutável de um provider LLM."""
+
     name: str
     endpoint: str
     default_model: str
@@ -35,9 +36,7 @@ class ProviderConfig:
 
 def _load() -> dict[str, ProviderConfig]:
     if not _PROVIDERS_YAML.exists():
-        raise FileNotFoundError(
-            f"config/providers.yaml não encontrado em {_PROVIDERS_YAML}"
-        )
+        raise FileNotFoundError(f"config/providers.yaml não encontrado em {_PROVIDERS_YAML}")
     with _PROVIDERS_YAML.open("r", encoding="utf-8") as f:
         raw: dict[str, Any] = yaml.safe_load(f) or {}
     providers_raw = raw.get("providers", {})
@@ -77,22 +76,16 @@ PRICING: dict[str, tuple[float, float]] = {
     name: (cfg.price_input, cfg.price_output) for name, cfg in PROVIDERS.items()
 }
 
-DEFAULT_MODELS: dict[str, str] = {
-    name: cfg.default_model for name, cfg in PROVIDERS.items()
-}
+DEFAULT_MODELS: dict[str, str] = {name: cfg.default_model for name, cfg in PROVIDERS.items()}
 
-ENDPOINTS: dict[str, str] = {
-    name: cfg.endpoint for name, cfg in PROVIDERS.items()
-}
+ENDPOINTS: dict[str, str] = {name: cfg.endpoint for name, cfg in PROVIDERS.items()}
 
 FALLBACK_MAP: dict[str, str] = {
     name: cfg.fallback for name, cfg in PROVIDERS.items() if cfg.fallback
 }
 
 #: Teto de saída por provedor (0 = padrão global).
-MAX_TOKENS_BY_PROVIDER: dict[str, int] = {
-    name: cfg.max_tokens for name, cfg in PROVIDERS.items()
-}
+MAX_TOKENS_BY_PROVIDER: dict[str, int] = {name: cfg.max_tokens for name, cfg in PROVIDERS.items()}
 
 #: Cadeia completa por provedor, na ordem em que o cliente tenta (wave 6).
 FALLBACK_CHAINS: dict[str, tuple[str, ...]] = {

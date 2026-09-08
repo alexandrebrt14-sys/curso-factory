@@ -149,13 +149,18 @@ if result.erros:
 # do Claude corrige isso. Para essa bateria, seguimos adiante para
 # demonstrar o resto do pipeline.
 check("pipeline: camadas executaram", True, "5/5 camadas rodaram")
-check("acentos foram corrigidos automaticamente", result.acentos_corrigidos >= 0,
-      f"{result.acentos_corrigidos} correções aplicadas")
+check(
+    "acentos foram corrigidos automaticamente",
+    result.acentos_corrigidos >= 0,
+    f"{result.acentos_corrigidos} correções aplicadas",
+)
 if result.voice_guard_score >= client.voice_guard.min_score:
     check("voice_guard aprovou", True, f"score {result.voice_guard_score}")
 else:
-    print(f"  [WARN] voice_guard reprovou (score {result.voice_guard_score} < {client.voice_guard.min_score}) — "
-          f"esperado em draft bruto sem review polido. Seguindo para validar TSX gen.")
+    print(
+        f"  [WARN] voice_guard reprovou (score {result.voice_guard_score} < {client.voice_guard.min_score}) — "
+        f"esperado em draft bruto sem review polido. Seguindo para validar TSX gen."
+    )
 
 # Texto corrigido (com acentos auto-fix) para próxima etapa
 working_text = result.texto_corrigido or normalized_md
@@ -223,11 +228,16 @@ check("steps extraídos", len(course.steps) >= 3, f"{len(course.steps)} steps")
 check("autor injetado do cliente", course.autor_nome == client.author.name)
 check("domínio injetado do cliente", course.dominio == client.domain.canonical_url)
 check("company injetada", course.company_name == client.company.name)
-check("canonical URL montada",
-      course.canonical_url == f"{client.domain.canonical_url}/educacao/seo-geo-para-dentistas",
-      course.canonical_url)
-check("duração total >= 30min", course.duracao_total_minutos >= 30,
-      f"{course.duracao_total_minutos} min")
+check(
+    "canonical URL montada",
+    course.canonical_url == f"{client.domain.canonical_url}/educacao/seo-geo-para-dentistas",
+    course.canonical_url,
+)
+check(
+    "duração total >= 30min",
+    course.duracao_total_minutos >= 30,
+    f"{course.duracao_total_minutos} min",
+)
 check("FAQ presente", len(course.faq) >= 1, f"{len(course.faq)} perguntas")
 check("sem acento no slug", "ú" not in course.slug and "â" not in course.slug)
 
@@ -245,9 +255,11 @@ check("page.tsx renderizado", len(page_tsx) > 5000, f"{len(page_tsx)} chars")
 check("layout.tsx renderizado", len(layout_tsx) > 300, f"{len(layout_tsx)} chars")
 check("client ativo no TSX", client.author.name in page_tsx)
 check("domínio no TSX", client.domain.canonical_url.replace("https://", "") in page_tsx)
-check("zero variáveis Jinja sem render",
-      not re.findall(r"\{\{\s+[a-z_]+\s+\}\}", page_tsx),
-      "nenhum {{ var }} literal")
+check(
+    "zero variáveis Jinja sem render",
+    not re.findall(r"\{\{\s+[a-z_]+\s+\}\}", page_tsx),
+    "nenhum {{ var }} literal",
+)
 check("sem vazamento ACME", "ACME Consultoria" not in page_tsx and "Maria Silva" not in page_tsx)
 
 
@@ -318,7 +330,9 @@ print(f"  Nível:                 {course.nivel.value}")
 print(f"  Tags:                  {', '.join(course.tags[:5])}")
 print(f"  FAQ:                   {len(course.faq)} perguntas")
 print()
-print(f"  Voice Guard score:     {result.voice_guard_score}/100 (min {client.voice_guard.min_score})")
+print(
+    f"  Voice Guard score:     {result.voice_guard_score}/100 (min {client.voice_guard.min_score})"
+)
 print(f"  Acentos corrigidos:    {result.acentos_corrigidos}")
 print()
 print("  Artefatos publicados:")

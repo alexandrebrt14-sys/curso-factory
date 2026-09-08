@@ -57,9 +57,7 @@ MCP_ENDPOINTS: list[MCPEndpoint] = [
         parameters={},
         returns={
             "type": "array<ModuleInfo>",
-            "description": (
-                "Lista de objetos com campos id, title, order, duration_minutes."
-            ),
+            "description": ("Lista de objetos com campos id, title, order, duration_minutes."),
         },
     ),
     MCPEndpoint(
@@ -89,10 +87,7 @@ MCP_ENDPOINTS: list[MCPEndpoint] = [
         },
         returns={
             "type": "Quiz | null",
-            "description": (
-                "Objeto Quiz com perguntas e opções; null se o módulo "
-                "não tiver quiz."
-            ),
+            "description": ("Objeto Quiz com perguntas e opções; null se o módulo não tiver quiz."),
         },
     ),
     MCPEndpoint(
@@ -113,8 +108,7 @@ MCP_ENDPOINTS: list[MCPEndpoint] = [
         returns={
             "type": "QuizResult",
             "description": (
-                "Objeto com campos correct (bool), explanation (str) e "
-                "next_module_id (str | null)."
+                "Objeto com campos correct (bool), explanation (str) e next_module_id (str | null)."
             ),
         },
     ),
@@ -124,9 +118,7 @@ MCP_ENDPOINTS: list[MCPEndpoint] = [
         parameters={},
         returns={
             "type": "array<Skill>",
-            "description": (
-                "Lista de skills no formato {name, level, evidence_url}."
-            ),
+            "description": ("Lista de skills no formato {name, level, evidence_url}."),
         },
     ),
 ]
@@ -157,9 +149,7 @@ def mcp_manifest(course: CourseDefinition) -> dict[str, Any]:
         "version": "1.0.0",
         "protocol": "mcp/1.0",
         "description": (
-            course.descricao_curta
-            or course.descricao
-            or f"Servidor MCP do curso {course.titulo}."
+            course.descricao_curta or course.descricao or f"Servidor MCP do curso {course.titulo}."
         ),
         "course": {
             "slug": course.slug,

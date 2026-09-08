@@ -39,9 +39,12 @@ def _aula(palavras: int, h2: int = 3, exercicios: int = 0) -> str:
     padrão é ZERO exercício desde 08/09/2026 (R6).
     """
     partes = [
-        "# Aula de teste", "",
-        "Subtítulo em uma frase só.", "",
-        " ".join(["abertura"] * 30), "",
+        "# Aula de teste",
+        "",
+        "Subtítulo em uma frase só.",
+        "",
+        " ".join(["abertura"] * 30),
+        "",
     ]
     for i in range(h2):
         partes += [f"## Seção {i + 1}", ""]
@@ -149,10 +152,10 @@ class TestExtensaoDaAula(unittest.TestCase):
     def test_o_mesmo_texto_passa_como_modulo_e_reprova_como_aula(self):
         """O modo de compatibilidade não pode ser cosmético."""
         texto = _aula(5000, h2=10)
-        como_aula = _categorias(check_content(texto, "x", unidade="aula"),
-                                "profundidade", "error")
-        como_modulo = _categorias(check_content(texto, "x", unidade="modulo"),
-                                  "profundidade", "error")
+        como_aula = _categorias(check_content(texto, "x", unidade="aula"), "profundidade", "error")
+        como_modulo = _categorias(
+            check_content(texto, "x", unidade="modulo"), "profundidade", "error"
+        )
         self.assertEqual(len(como_aula), 1)
         self.assertEqual(como_modulo, [])
 
@@ -192,8 +195,7 @@ class TestEstruturaDaAula(unittest.TestCase):
     def test_mais_de_tres_visuais_avisa(self):
         base = _aula(1500)
         figuras = "\n\n".join(
-            f"![Legenda que afirma o que a figura {i} mostra](fig{i}.svg)"
-            for i in range(4)
+            f"![Legenda que afirma o que a figura {i} mostra](fig{i}.svg)" for i in range(4)
         )
         erros = check_content(base + "\n\n" + figuras, "aula")
         avisos = _categorias(erros, "formatação", "warning")

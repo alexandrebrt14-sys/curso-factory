@@ -18,9 +18,7 @@ import pytest
 from src.cost_tracker import CostTracker
 from src.llm_client import LLMClient, make_llm_client
 
-_SDK_ROOT = Path(
-    os.environ.get("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator"))
-)
+_SDK_ROOT = Path(os.environ.get("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator")))
 _HAS_SDK = (_SDK_ROOT / "geo_orchestrator_sdk" / "__init__.py").exists()
 
 needs_sdk = pytest.mark.skipif(
@@ -63,6 +61,7 @@ def test_factory_unknown_value_is_legacy(monkeypatch):
 def test_factory_sdk_backend(monkeypatch):
     monkeypatch.setenv("CURSO_FACTORY_LLM_BACKEND", "sdk")
     from src.llm_client_sdk import SDKLLMClient
+
     client = make_llm_client(use_cache=False)
     assert isinstance(client, SDKLLMClient)
 
@@ -71,6 +70,7 @@ def test_factory_sdk_backend(monkeypatch):
 class TestSDKAdapter:
     def _client(self, use_cache=False):
         from src.llm_client_sdk import SDKLLMClient
+
         tracker = CostTracker()
         c = SDKLLMClient(cost_tracker=tracker, use_cache=use_cache)
         return c, tracker
@@ -89,8 +89,7 @@ class TestSDKAdapter:
             out = c.call("perplexity", "pesquise algo", max_tokens=2048)
         assert out == "resposta sdk"
         # research herda a banda de 600s no lado do orquestrador
-        assert captured == {"task_type": "research", "alias": "perplexity",
-                            "max_tokens": 2048}
+        assert captured == {"task_type": "research", "alias": "perplexity", "max_tokens": 2048}
         kw = track.call_args.kwargs
         assert track.call_args.args[0] == "perplexity"
         assert kw.get("course_id") == "curso-teste"
@@ -98,8 +97,7 @@ class TestSDKAdapter:
     def test_legacy_kwargs_ignored_not_fatal(self):
         c, _ = self._client()
         c._call_llm = lambda prompt, **kw: _FakeResult()
-        out = c.call("openai", "escreva", model="gpt-4o-custom",
-                     max_retries=9, base_delay=1.0)
+        out = c.call("openai", "escreva", model="gpt-4o-custom", max_retries=9, base_delay=1.0)
         assert out == "resposta sdk"
 
     def test_unknown_provider_raises(self):
@@ -110,6 +108,7 @@ class TestSDKAdapter:
     def test_local_cache_hit_skips_sdk(self, tmp_path):
         from src.cache import Cache
         from src.llm_client_sdk import SDKLLMClient
+
         cache = Cache(ttl=3600)
         cache._dir = tmp_path  # isola do cache real em disco
         c = SDKLLMClient(cache=cache)
@@ -127,6 +126,7 @@ class TestSDKAdapter:
 
     def test_provider_map_covers_legacy_surface(self):
         from src.llm_client_sdk import PROVIDER_TO_SDK
+
         for p in ("perplexity", "openai", "google", "anthropic", "groq"):
             assert p in PROVIDER_TO_SDK
         # timeouts herdados: research para o canal que estourava 60s
