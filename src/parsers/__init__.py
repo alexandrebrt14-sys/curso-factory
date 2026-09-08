@@ -8,6 +8,8 @@ e parsing de markdown em CourseSections.
 
 from src.parsers.markdown_parser import (
     extract_module_blocks,
+    extrair_fontes,
+    extrair_subtitulo,
     parse_module_to_sections,
     short_id,
     slugify,
@@ -15,6 +17,8 @@ from src.parsers.markdown_parser import (
 
 __all__ = [
     "extract_module_blocks",
+    "extrair_fontes",
+    "extrair_subtitulo",
     "parse_module_to_sections",
     "short_id",
     "slugify",

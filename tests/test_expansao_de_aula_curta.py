@@ -15,10 +15,10 @@ from src.orchestrator import _contar_palavras  # noqa: E402
 from tests.test_orchestrator_aulas import _curso, orquestrador  # noqa: E402, F401
 
 CURTA = (
-    "Você vai aprender a cobrar certo.\n\n## Por que o preço muda o resultado\n\n"
+    "Você vai cobrar o preço certo.\n\nAbertura curta.\n\n## Por que o preço muda o resultado\n\n"
     + ("Frase curta. " * 30)
-    + "\n\n## Como fica no seu negócio\n\nA Ana cobrou certo.\n\n## Faça agora\n\n"
-    "1. Abra a agenda.\n\n**Resultado esperado:** um preço anotado."
+    + "\n\n## Como a Ana cobrou certo\n\nA Ana cobrou certo.\n\n"
+    "Abra a agenda e anote o preço de hoje."
 )
 LONGA = CURTA.replace("Frase curta. " * 30, "Frase que explica a ideia por inteiro, com o exemplo do salão. " * 120)
 

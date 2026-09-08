@@ -138,6 +138,13 @@
     "component_name": {
       "type": "string",
       "description": "Nome do componente React em PascalCase"
+    },
+    "fontes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fontes verificadas do curso, uma por linha, renderizadas uma vez no rodapé em corpo pequeno (R7, 08/09/2026)."
     }
   },
   "$defs": {
@@ -177,11 +184,11 @@
         },
         "content": {
           "type": "array",
-          "minItems": 3,
+          "minItems": 1,
           "items": {
             "$ref": "#/$defs/CourseSection"
           },
-          "description": "Seções de conteúdo do step"
+          "description": "Seções de conteúdo do step (ao menos uma; sem checkpoint desde 08/09/2026, R8)"
         }
       }
     },
@@ -199,7 +206,6 @@
             "code",
             "warning",
             "tip",
-            "checkpoint",
             "figure",
             "dataTable",
             "comparison",
@@ -207,7 +213,7 @@
             "stepGuide",
             "timeline"
           ],
-          "description": "Tipo da seção de conteúdo. Os cinco primeiros carregam prosa ou código em `value`; os seis seguintes são blocos visuais, com carga em `data`."
+          "description": "Tipo da seção de conteúdo. Os quatro primeiros carregam prosa ou código em `value`; os seis seguintes são blocos visuais, com carga em `data`. `checkpoint` saiu em 08/09/2026 (R8)."
         },
         "value": {
           "type": "string",

@@ -85,11 +85,16 @@ def test_extract_blocks_string_vazia() -> None:
 
 # ─── parse_module_to_sections ────────────────────────────────────────
 
-def test_parse_secoes_minimo_garante_checkpoint() -> None:
-    """Mesmo conteúdo curtíssimo deve gerar >= 3 sections com 1 CHECKPOINT."""
+def test_parse_secoes_nao_fabrica_checkpoint_nem_enchimento() -> None:
+    """Desde 08/09/2026 (R6/R8) o parser devolve só o que o autor escreveu.
+
+    Antes, conteúdo curtíssimo virava três seções: o texto, um checkpoint
+    sintético e uma dica genérica de "reflita sobre como aplicar". Os dois
+    últimos eram card de distração fabricado pelo código.
+    """
     sections = parse_module_to_sections("Texto qualquer.")
-    assert len(sections) >= 3
-    assert any(s.type == SectionType.CHECKPOINT for s in sections)
+    assert [s.type for s in sections] == [SectionType.TEXT]
+    assert "checkpoint" not in {t.value for t in SectionType}
 
 
 def test_parse_secoes_extrai_codigo() -> None:
@@ -115,9 +120,10 @@ def test_parse_secoes_blockquote_dica() -> None:
     assert "aplique" in tips[0].value
 
 
-def test_parse_secoes_blockquote_checkpoint() -> None:
-    md = "Texto.\n\n> CHECKPOINT: revise os conceitos."
+def test_parse_secoes_blockquote_checkpoint_e_descartado() -> None:
+    """`> CHECKPOINT:` de rascunho antigo some sem substituto (R8)."""
+    md = "Texto.\n\n> CHECKPOINT: revise os conceitos.\n\n> FAÇA AGORA: abra a agenda."
     sections = parse_module_to_sections(md)
-    checkpoints = [s for s in sections if s.type == SectionType.CHECKPOINT]
-    # Deve haver ao menos 1 checkpoint vindo do blockquote ou do auto-add.
-    assert len(checkpoints) >= 1
+    assert [s.type for s in sections] == [SectionType.TEXT]
+    assert "revise os conceitos" not in " ".join(s.value for s in sections)
+    assert "abra a agenda" not in " ".join(s.value for s in sections)

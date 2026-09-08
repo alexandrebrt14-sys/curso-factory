@@ -49,12 +49,16 @@ prosa logo abaixo.
 
 ## Fontes
 
-Uma linha por fonte, no formato `Nome da fonte, título ou relatório, mês e ano`, só com o que
-as aulas ou a pesquisa trazem. De uma a oito fontes.
+Uma linha por fonte, no formato `Nome da fonte, título ou relatório, mês e ano` e, quando
+houver, o link logo depois, só com o que as aulas ou a pesquisa trazem. De uma a oito fontes.
+É o ÚLTIMO bloco da trilha e o único lugar do curso onde fonte aparece (R7): cada linha tem até
+25 palavras, sem comentário, sem card, sem citação em destaque. Ela é desenhada no rodapé da
+página, em corpo pequeno.
 
 ## Antes de entregar, confira
 
-1. Cinco seções, nesta ordem, cada uma com o cabeçalho acima como H2.
+1. Cinco seções, nesta ordem, cada uma com o cabeçalho acima como H2; "Fontes" é a última.
+6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem menção à LGPD (R5 a R9).
 2. Verbos de ação nos objetivos; nenhum "entender" ou "conhecer".
 3. Glosa de até 12 palavras por termo; nenhum termo que as aulas não usem.
 4. Nenhuma fonte inventada.

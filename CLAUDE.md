@@ -190,17 +190,35 @@ Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/202
 - ACEITOS (nível 3-6): analisar, comparar, diagnosticar, avaliar, justificar, criar, projetar, aplicar, implementar
 - PROIBIDOS (nível 1-2): entender, conhecer, saber, compreender, lembrar, memorizar, listar, descrever, identificar
 
+### Abertura e distração (R1 a R9, 08/09/2026) — LEIA ANTES de mexer em prompt, template ou gate
+Pedido do dono: o topo carregado dispersa o leitor e o card no meio compete com a leitura.
+Regras completas e onde cada uma morde: `DIRETRIZ_EDITORIAL.md`, seção "Abertura e distração",
+e `wiki/decisions/abertura-direta-sem-distracao-20260908.md`. Em resumo:
+- R1 toda unidade abre com H1, subtítulo em UMA frase e parágrafos; nada antes nem entre eles
+- R2 sem botão antes do corpo; R3 um único percurso; R4 uma descrição só
+- R5 sem "mockup no seu negócio"; R6 sem exercício "faça agora" (a aula é leitura)
+- R7 fontes só no rodapé, em `0.8rem`, nome e link; R8 sem card "checkpoint"; R9 sem "requer
+  verificação" visível e sem menção à LGPD
+- Garantia em três níveis: prompts (`draft.md`, `review.md`, `analyze.md`, nos três idiomas),
+  gerador (`page.tsx.j2` sem rótulo pré-H1, sem barra de estatísticas, sem índice lateral, sem
+  card "o que você vai aprender", sem `case checkpoint`, com bloco "Fontes" no rodapé; parser
+  descarta `> CHECKPOINT:` e hasteia `## Fontes` para `CourseDefinition.fontes`) e gate
+  (`src/validators/abertura_checker.py`: categoria `abertura` no `content_checker`, erro
+  bloqueante; `AberturaError` em `TsxGenerator.render_page`). Teste:
+  `tests/test_abertura_sem_distracao.py`
+
 ### Molde da aula (unidade de geração desde 02/09/2026)
 - A unidade que o pipeline escreve, revisa e mede é a AULA, uma por chamada de LLM
   (`Orchestrator._draft_lesson`), com a pesquisa inteira no prompt
 - Os números da aula (palavras, H2, H3 por H2, figuras, parágrafo) vêm de `config/lexicos.json`,
   espelho da fonte de estilo `escrita-empreendedor`, e entram no prompt como variáveis
   (`{palavras_alvo_min}`, `{figuras_max}`...). NUNCA repita número de régua em prompt ou doc
-- Abertura de 2 ou 3 frases dizendo o que o aluno vai conseguir fazer; 2 a 4 H2 (o normal são
-  três: por que a ideia muda o resultado; como fica no seu negócio; faça agora); H3 só em H2
-  acima de 350 palavras; nada de H4 nem subtítulo por linha terminada em dois-pontos
-- Um exercício por aula, com título, etapas numeradas com dado real do aluno, resultado esperado
-  e dica. Sem bateria de exercícios
+- Abertura na ordem R1: subtítulo em uma frase (vira `description` do step) e dois ou três
+  parágrafos diretos ao ponto; 2 a 4 H2 (o normal são dois: por que a ideia muda o resultado;
+  um caso do ramo, do começo ao fim); H3 só em H2 acima de 350 palavras; nada de H4 nem
+  subtítulo por linha terminada em dois-pontos
+- NENHUM exercício por aula desde 08/09/2026 (R6): o próximo passo entra em prosa, no fecho.
+  `min_exercises_per_lesson: 0` no YAML; o bloco "faça agora" reprova
 - Apoio visual é TETO (até `figuras_max` por aula), só quando substitui texto. Sem piso de
   tabela, blockquote, negrito ou figura
 - Objetivos, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha: o
@@ -219,7 +237,7 @@ O template `page.tsx.j2` inclui um componente `FormattedText` que renderiza:
 - `| col | col |` → `<table>` com header uppercase e zebra striping
 - `> texto` → blockquote com borda lateral azul
 - Parágrafos → text-justify com leading-[1.75]
-- Warning/tip/checkpoint → text-justify aplicado
+- Warning/tip → text-justify aplicado (`checkpoint` saiu em 08/09/2026, R8)
 
 ### REGRA — Parágrafos SEMPRE justificados (invariável)
 Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve sair com
@@ -257,7 +275,8 @@ Todo conteúdo de texto gerado por este repositório (drafts → páginas) deve 
   régua da aula por 4 a 6)
 - Extensão, H2, H3 por H2, teto de apoios visuais e faixa de parágrafo: números de `tetos.D` em
   `config/lexicos.json`
-- Um exercício por aula (erro se faltar); hierarquia de títulos sem pulos
+- Nenhum exercício por aula (R6; o bloco reprova); hierarquia de títulos sem pulos
+- Abertura e distração (R1, R3, R5 a R9) na categoria `abertura`, erro bloqueante, aula e trilha
 - Clichês proibidos: união de `lexicos.json`, `quality_rules.yaml` e fallback do módulo
 - Verbos de Bloom só quando existe seção de objetivos; andragogia só avisa
 - Emojis proibidos; teto de marcadores `[FALTA EVIDÊNCIA]`; percentual sem fonte avisa

@@ -13,16 +13,16 @@ ou que vem como relatório no lugar do conteúdo, é descartado pelo pipeline.
 {analysis_summary}
 
 O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular.
-Linguagem de balcão, resposta primeiro, um exemplo contado por inteiro, um exercício com dado
-real. Português do Brasil com acentuação completa, sem emoji, sem travessão.
+Linguagem de balcão, resposta primeiro, um exemplo contado por inteiro, e a aula é LEITURA:
+sem exercício, sem card. Português do Brasil com acentuação completa, sem emoji, sem travessão.
 
 ## O que corrigir, nesta ordem
 
 ### 1. Substância (antes de qualquer corte)
 
 A aula tem uma ideia só, explicada até o fim (de onde vem, por que importa, o que muda, o erro
-comum), um exemplo do ramo do aluno com número e um exercício executável com resultado
-esperado? Se faltar um desses, ACRESCENTE com o material da própria aula e do que a pesquisa
+comum), um exemplo do ramo do aluno com número e um fecho que diz o que mudou e o próximo
+passo em prosa? Se faltar um desses, ACRESCENTE com o material da própria aula e do que a pesquisa
 sustenta; se não houver material, marque `[FALTA EVIDÊNCIA: ...]` no lugar do dado. Nunca corte
 substância para satisfazer regra de forma.
 
@@ -36,13 +36,22 @@ acentue URL, slug, código, variável ou atributo HTML.
 
 ### 3. Estrutura da aula
 
-- Abertura em 2 ou 3 frases dizendo o que o aluno vai conseguir fazer. Cena, hora do dia,
-  personagem, "neste módulo" e lista de objetivos saem; a resposta sobe para a primeira frase.
-- 2 a 4 H2 (o normal são três: por que a ideia muda o resultado; como fica no seu negócio;
-  faça agora). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
+- Abertura na ordem R1: logo abaixo do `# Aula ...`, o subtítulo em UMA frase e em linha
+  própria, depois dois ou três parágrafos diretos ao ponto. Se o subtítulo faltar, escreva-o a
+  partir da primeira frase. Cena, hora do dia, personagem, "neste módulo", lista de
+  objetivos, "o que você vai aprender", "para quem é", índice e card saem do topo.
+- 2 a 4 H2 (o normal são dois: por que a ideia muda o resultado; um caso do ramo, do começo
+  ao fim). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
   dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
-- Um exercício, com título que diz o que ele produz, etapas numeradas com verbo no imperativo e
-  campo para o dado real do aluno, resultado esperado e "se travar". Bateria de exercícios vira um.
+- Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
+  "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",
+  "Se travar:"), "mockup"/"no seu negócio" como seção, card "checkpoint"/"recapitulando"/
+  "quiz", marcador "requer verificação"/"a verificar" e qualquer menção à LGPD ou à Lei
+  13.709 (a conduta fica, o nome da lei sai). O passo prático que o exercício carregava vira
+  uma ou duas frases de prosa no fecho. Percurso alternativo ("se você é X vá para Y") vira
+  um caminho só.
+- Fonte no meio da aula (linha "Fonte:", cabeçalho "Fontes", citação em card) sai; o dado
+  fica limpo na frase e a fonte pertence ao rodapé da trilha (R7).
 - Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula. Fecho que resume o que
   foi lido é reescrito como consequência.
 - Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).
@@ -102,7 +111,7 @@ relatório:
 REVISÃO CONCLUÍDA
 Palavras recebidas / devolvidas: [n] / [n]
 Correções de acentuação: [n]
-Correções de estrutura (abertura, H2/H3, exercício, fecho): [n]
+Correções de estrutura (abertura R1, H2/H3, blocos R5 a R9 removidos, fecho): [n]
 Correções de léxico vetado: [n]
 Substância acrescentada ou marcada: [o que faltava, ou "completa"]
 Marcadores [FALTA EVIDÊNCIA] abertos: [n]

@@ -52,9 +52,9 @@ Prioritize sources from 2024–2026:
 - **Public platform data**: sales pages, reviews, social media data
 - **Regional publications**: relevant trade and business outlets in the target market
 
-### 6. Data for exercises and case studies
+### 6. Cases for the lessons' examples
 
-- Identify 3–5 real cases (companies, projects, incidents) that can be used as exercises or examples
+- Identify 3–5 real cases (companies, projects, incidents) that can be told from beginning to end as an example (the lesson carries no exercise)
 - For each case, provide: context, challenge faced, approach taken, outcome achieved
 - Prioritize cases that are verifiable through public sources
 

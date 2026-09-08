@@ -37,8 +37,8 @@ SECOES_BASE = [
         "language": "python",
     },
     {
-        "type": "checkpoint",
-        "value": "Você consegue explicar a diferença sem consultar a anotação.",
+        "type": "tip",
+        "value": "A diferença cabe em uma frase, sem consultar a anotação.",
     },
 ]
 

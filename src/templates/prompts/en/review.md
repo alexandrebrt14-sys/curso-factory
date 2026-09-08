@@ -14,16 +14,16 @@ the pipeline.
 {analysis_summary}
 
 The reader is a small business owner, a layperson in marketing and technology, on a phone.
-Counter language, answer first, one example told to the end, one exercise with real data.
-Correct spelling and diacritics, no emoji, no em dash.
+Counter language, answer first, one example told to the end, and the lesson is READING: no
+exercise, no card. Correct spelling and diacritics, no emoji, no em dash.
 
 ## What to correct, in this order
 
 ### 1. Substance (before any cut)
 
 Does the lesson have one idea, explained to the end (where it comes from, why it matters, what
-changes, the common mistake), one example from the student's trade with a number and one
-executable exercise with an expected result? If one is missing, ADD it with the lesson's own
+changes, the common mistake), one example from the student's trade with a number and a closing
+that says what changed and the next step in prose? If one is missing, ADD it with the lesson's own
 material and what the research supports; if there is no material, mark `[MISSING EVIDENCE:
 ...]` in place of the data. Never cut substance to satisfy a rule of form.
 
@@ -34,15 +34,22 @@ decided by context. Never add accents to URLs, slugs, code, variables or HTML at
 
 ### 3. Lesson structure
 
-- Opening in 2 or 3 sentences saying what the student will be able to do. Scene, time of day,
-  character, "in this module" and lists of objectives go; the answer moves up to the first
-  sentence.
-- 2 to 4 H2 (three is the norm: why the idea changes the result; how it looks in your business;
-  do it now). H3 only in an H2 above 350 words. H4 and subheadings made of a line ending in a
-  colon become prose or disappear. Sections that deal with the same subject merge.
-- One exercise, with a title that says what it produces, numbered steps with imperative verbs
-  and a field for the student's real data, expected result and "if stuck". A battery of exercises
-  becomes one.
+- Opening in the R1 order: right below `# Aula ...`, the subtitle in ONE sentence on its own
+  line, then two or three paragraphs straight to the point. If the subtitle is missing, write
+  it from the first sentence. Scene, time of day, character, "in this module", lists of
+  objectives, "what you will learn", "who this is for", index and cards leave the top.
+- 2 to 4 H2 (two is the norm: why the idea changes the result; one case from the trade,
+  beginning to end). H3 only in an H2 above 350 words. H4 and subheadings made of a line
+  ending in a colon become prose or disappear. Sections that deal with the same subject merge.
+- Forbidden blocks (R5 to R9) GO, with no replacement: exercises ("do it now", "exercise",
+  "hands on", "your turn", "practice", "task", "challenge", "Expected result:", "If
+  stuck:"), "mockup"/"in your business" as a section, "checkpoint"/"recap"/"quiz" cards,
+  "needs verification"/"to verify" markers and any mention of the data protection law by name
+  (the conduct stays, the name goes). The practical step the exercise carried becomes one or two
+  sentences of prose in the closing. Alternative paths ("if you are X go to Y") become one path.
+- A source in the middle of the lesson (a "Source:" line, a "Sources" heading, a quote in a
+  card) goes; the figure stays clean in the sentence and the source belongs to the track's
+  footer (R7).
 - Closing of 3 to 5 lines through the example, with one bridge to the next lesson. A closing
   that summarizes what was read is rewritten as consequence.
 - Visual support only where it replaces text (comparison, sequence, figure with an affirmative
@@ -100,7 +107,7 @@ that goes only in the report. Then, separated by a line with three hyphens, the 
 REVIEW COMPLETE
 Words received / returned: [n] / [n]
 Spelling corrections: [n]
-Structure corrections (opening, H2/H3, exercise, closing): [n]
+Structure corrections (opening R1, H2/H3, R5 to R9 blocks removed, closing): [n]
 Banned lexicon corrections: [n]
 Substance added or marked: [what was missing, or "complete"]
 Open [MISSING EVIDENCE] markers: [n]

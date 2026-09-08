@@ -41,9 +41,8 @@ List the knowledge the student should have before starting this course. For each
 
 Estimate the study time per module, considering:
 
-- Reading the theoretical content
-- Completing the practical exercises
-- Practice/experimentation time
+- Reading the content
+- Time for the student to apply the next step stated in each lesson's closing
 
 Provide the estimate in minutes per module and total in hours.
 

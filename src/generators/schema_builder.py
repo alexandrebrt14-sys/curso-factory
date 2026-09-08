@@ -17,7 +17,12 @@ from src.models import (
     SectionType,
     StepDefinition,
 )
-from src.parsers import extract_module_blocks, parse_module_to_sections
+from src.parsers import (
+    extract_module_blocks,
+    extrair_fontes,
+    extrair_subtitulo,
+    parse_module_to_sections,
+)
 
 if TYPE_CHECKING:
     from src.clients.context import ClientContext
@@ -47,7 +52,7 @@ class SchemaBuilder:
         Returns:
             CourseDefinition validado pelo Pydantic.
         """
-        steps = self._parse_markdown_to_steps(reviewed_content)
+        steps, fontes = self._parse_markdown_to_steps(reviewed_content)
 
         nivel_str = classify_result.get("nivel", yaml_def.get("nivel", "intermediario"))
         nivel_map = {
@@ -100,6 +105,7 @@ class SchemaBuilder:
             prerequisitos_display=prerequisitos,
             steps=steps,
             faq=faq_items,
+            fontes=fontes,
             duracao_total_minutos=duracao_total,
             duracao_display=f"~{duracao_total} min",
             hero_gradient_from=hero_from,
@@ -125,33 +131,46 @@ class SchemaBuilder:
         )
         return course
 
-    def _parse_markdown_to_steps(self, markdown: str) -> list[StepDefinition]:
+    def _parse_markdown_to_steps(self, markdown: str) -> tuple[list[StepDefinition], list[str]]:
         """Converte markdown revisado em StepDefinitions via parser compartilhado.
 
         Delega a extração de módulos e parsing de seções para
         `src.parsers.markdown_parser`, garantindo paridade com o conversor
-        de drafts órfãos.
+        de drafts órfãos. Devolve também as fontes hasteadas das trilhas
+        (`## Fontes`), que o template desenha uma vez no rodapé (R7).
         """
         if not markdown or not markdown.strip():
-            return []
+            return [], []
 
         blocks = extract_module_blocks(markdown)
         if not blocks:
-            return []
+            return [], []
 
         steps: list[StepDefinition] = []
+        fontes: list[str] = []
         for idx, (title, content) in enumerate(blocks):
-            sections = parse_module_to_sections(content)
-            steps.append(self._build_step(idx, title, sections))
+            content, fontes_do_bloco = extrair_fontes(content)
+            fontes.extend(f for f in fontes_do_bloco if f not in fontes)
+            subtitulo, corpo = extrair_subtitulo(content)
+            sections = parse_module_to_sections(corpo or content)
+            if not sections:
+                logger.warning("Bloco '%s' sem seção de conteúdo; pulado", title)
+                continue
+            steps.append(self._build_step(idx, title, sections, subtitulo))
 
-        logger.info("Markdown parseado: %d steps extraídos", len(steps))
-        return steps
+        logger.info("Markdown parseado: %d steps extraídos, %d fonte(s)", len(steps), len(fontes))
+        return steps, fontes
 
     @staticmethod
     def _build_step(
-        index: int, title: str, sections: list[CourseSection]
+        index: int, title: str, sections: list[CourseSection], subtitulo: str = ""
     ) -> StepDefinition:
-        """Monta um StepDefinition a partir do título e seções coletadas."""
+        """Monta um StepDefinition a partir do título, subtítulo e seções.
+
+        O `description` é o subtítulo (R1): a frase única que o redator escreve
+        logo abaixo do H1. Quando a unidade não traz subtítulo no formato, a
+        primeira linha de prosa faz as vezes dele, como antes de 08/09/2026.
+        """
         # Gera ID kebab-case a partir do índice
         step_id = f"step-{index:02d}"
 
@@ -159,14 +178,14 @@ class SchemaBuilder:
         total_chars = sum(len(s.value) for s in sections)
         estimated_minutes = max(5, min(60, total_chars // 200))
 
-        # Gera descrição a partir do primeiro parágrafo de texto
-        description = title
-        for section in sections:
-            if section.type == SectionType.TEXT:
-                first_line = section.value.split("\n")[0].strip()
-                if len(first_line) >= 5:
-                    description = first_line[:120]
-                    break
+        description = subtitulo.strip() if subtitulo and len(subtitulo.strip()) >= 5 else title
+        if not subtitulo:
+            for section in sections:
+                if section.type == SectionType.TEXT:
+                    first_line = section.value.split("\n")[0].strip()
+                    if len(first_line) >= 5:
+                        description = first_line[:120]
+                        break
 
         return StepDefinition(
             id=step_id,

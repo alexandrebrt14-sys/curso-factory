@@ -87,12 +87,15 @@ Evalúa el contenido según los 6 principios de Knowles:
 - ¿Los prerrequisitos están explícitos?
 - ¿Hay ejemplos prácticos suficientes para consolidar cada concepto?
 
-### 6. Ejercicios y Evaluación
+### 6. Apertura y distracción (R1 a R9)
 
-- ¿Los ejercicios usan contextos profesionales reales (no hipotéticos genéricos)?
-- ¿Hay progresión de complejidad (Taxonomía de Bloom: aplicar → analizar → evaluar → crear)?
-- ¿Los criterios de evaluación son claros y medibles?
-- ¿Un ejercicio ejecutable por lección (5 a 15 minutos, dato real, resultado esperado)?
+- ¿Cada lección abre con subtítulo de una frase y después un párrafo, sin nada en medio (R1)?
+- Lista, por lección, cada bloque que el dueño pidió fuera (R5 a R9): ejercicio "hazlo ahora",
+  sección "mockup"/"en tu negocio", tarjeta "checkpoint"/"recapitulando"/"quiz", marcador
+  "requiere verificación", la ley de protección de datos nombrada, línea "Fuente:" o encabezado
+  "Fuentes" dentro de la lección, recorrido alternativo ("si eres X ve a Y"). Un solo hallazgo
+  de esos en una lección deja `aprobado` en false.
+- ¿El cierre lleva el próximo paso en prosa (sin ejercicio)?
 
 ### 7. Acentuación ES y uso de `ñ`
 
@@ -135,7 +138,7 @@ Devuelve un JSON estructurado con los campos:
       "observaciones": "..."
     },
     "vacios": {"nota": 0-10, "observaciones": "..."},
-    "ejercicios": {"nota": 0-10, "observaciones": "..."},
+    "apertura_y_distraccion": {"nota": 0-10, "lecciones_con_bloque_prohibido": ["Lección 1.2: [R6] hazlo ahora"], "observaciones": "..."},
     "acentuacion": {"nota": 0-10, "errores_encontrados": ["..."]}
   },
   "mejoras_prioritarias": ["...", "...", "..."],

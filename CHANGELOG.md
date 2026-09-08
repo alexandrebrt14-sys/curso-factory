@@ -1,5 +1,45 @@
 # Changelog
 
+## 08/09/2026: abertura direta e sem distração (R1 a R9)
+
+Pedido do dono: o topo carregado dispersa o leitor e o card no meio compete com a leitura.
+Decisão em `wiki/decisions/abertura-direta-sem-distracao-20260908.md`; regras em
+`DIRETRIZ_EDITORIAL.md`, seção "Abertura e distração".
+
+- **Doutrina.** Toda aula abre com H1, subtítulo em uma frase e parágrafos (R1); sem botão
+  antes do corpo (R2), sem percurso alternativo (R3), uma descrição só (R4), sem "mockup no seu
+  negócio" (R5), sem exercício "faça agora" (R6), fontes só no rodapé em corpo pequeno (R7),
+  sem card "checkpoint" (R8), sem "requer verificação" visível nem menção à LGPD (R9). Onde a
+  fonte de estilo ainda pede exercício por aula, a regra nova vence. Seções em `CLAUDE.md`,
+  `AGENTS.md`, `GEMINI.md`, `docs/DOUTRINA_VISUAL_CURSOS.md`,
+  `docs/GOVERNANCA_PUBLICACAO_CURSO.md` e nota de precedência em `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+- **Prompts (pt-br, raiz, en, es).** `draft.md` troca o molde: subtítulo, parágrafos de
+  abertura, H2 "por que", H2 com o caso nomeado, fecho em prosa; o "H2 3: faça agora" e o
+  "como fica no seu negócio" saem; lista R1 a R9 carimbada. `review.md` remove os blocos
+  proibidos sem substituto; `analyze.md` os aponta e reprova; `trail.md` fixa "Fontes" como
+  último H2, uma linha curta por fonte; `expand.md`, `classify.md`, `research.md` e
+  `humanize.md` deixam de pedir exercício. Templates inline dos agentes e o plano de aulas do
+  orquestrador acompanham.
+- **Gerador.** `SectionType.CHECKPOINT` sai do modelo e do schema; `StepDefinition` aceita uma
+  seção e não exige checkpoint; o parser descarta `> CHECKPOINT:`/`> EXERCÍCIO:`/`> FAÇA
+  AGORA:`, não fabrica checkpoint nem dica de enchimento, extrai o subtítulo (vira
+  `description` do step) e a seção `## Fontes` da trilha (`CourseDefinition.fontes`).
+  `page.tsx.j2` abre com H1, subtítulo e parágrafo e perde rótulo pré-H1, barra de
+  estatísticas, barra de progresso fixa, índice lateral, card de pré-requisitos e card "o que
+  você vai aprender"; o `case "checkpoint"` some; "Fonte:" deixa de ser desenhado em tabela e
+  painel e sobe, com o `source` do payload, para um único bloco "Fontes" no rodapé, em `0.8rem`,
+  com URL virando link.
+- **Gate.** Novo `src/validators/abertura_checker.py`: R1, R3, R5, R6, R7, R8 e R9 no Markdown
+  (categoria `abertura`, erro bloqueante, aula e trilha, via `content_checker.check_content`,
+  `QualityGate`, orquestrador e `cli.py validate`) e no curso montado (`AberturaError` em
+  `TsxGenerator.render_page`, sem modo legado). `min_exercises_per_lesson: 0`;
+  `validation.abertura` no YAML acrescenta termos. `tests/test_abertura_sem_distracao.py` cobre
+  as nove regras, incluindo R2 e R4 medidas no TSX gerado.
+- **Dados.** `config/courses.yaml` perde "LGPD" em títulos e descrições de módulo (vira
+  "proteção de dados", com a conduta no lugar do nome da lei).
+- **Testes ajustados** por decisão registrada: os que exigiam checkpoint por step, três seções
+  por step ou um exercício por aula passam a exigir o contrário.
+
 ## 03/09/2026: aula abaixo do piso ganha uma passada de expansão
 
 - Teste real com as regras novas (curso de precificação para salão, 6 aulas, US$ 2,33, tudo em

@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from src.models import CourseDefinition
+from src.validators.abertura_checker import AberturaError, check_abertura_definicao
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +49,60 @@ def _js_json(value: Any) -> str:
     if value is None:
         return "undefined"
     return json.dumps(value, ensure_ascii=False).replace("<", "\\u003c")
+
+
+_URL_RE = re.compile(r"https?://[^\s<>\"')\]]+")
+
+
+def _fonte_jsx(value: str) -> str:
+    """Uma fonte do rodapé como filho JSX: texto escapado e URL virando link.
+
+    Chave e sinal de menor viram entidade, porque dentro de JSX `{` abre
+    expressão e `<` abre tag. A URL vira `<a>` discreto (sublinhado, corpo
+    pequeno herdado do bloco), que é o "texto e link objetivos" da regra R7.
+    """
+    if not isinstance(value, str):
+        value = str(value)
+    texto = (
+        value.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("{", "&#123;")
+        .replace("}", "&#125;")
+    )
+
+    def _link(m: re.Match[str]) -> str:
+        url = m.group(0).rstrip(".,;")
+        sufixo = m.group(0)[len(url):]
+        return (
+            f'<a href="{url}" target="_blank" rel="noopener nofollow" '
+            f'className="underline underline-offset-2">{url}</a>{sufixo}'
+        )
+
+    return _URL_RE.sub(_link, texto)
+
+
+def _fontes_do_curso(course: CourseDefinition) -> list[str]:
+    """As fontes do rodapé (R7): as do curso mais o `source` de tabela e painel.
+
+    O `source` continua no payload (é a forma do motor da landing), mas o
+    template não o desenha dentro do bloco: a fonte que vivia no card sobe para
+    o rodapé, uma vez, sem repetição.
+    """
+    fontes: list[str] = []
+
+    def _add(f: str | None) -> None:
+        f = (f or "").strip()
+        if f and f not in fontes:
+            fontes.append(f)
+
+    for f in course.fontes:
+        _add(f)
+    for step in course.steps:
+        for secao in step.content:
+            if isinstance(secao.data, dict):
+                _add(secao.data.get("source"))
+    return fontes
 
 
 def _peso_visual_obrigatorio() -> bool:
@@ -111,25 +167,31 @@ class TsxGenerator:
         self.env.filters["js_escape"] = _js_escape
         self.env.filters["js_json"] = _js_json
         self.env.filters["pascal_case"] = _pascal_case
+        self.env.filters["fonte_jsx"] = _fonte_jsx
 
     def render_page(self, course: CourseDefinition, *, cobrar_peso_visual: bool | None = None) -> str:
         """Renderiza page.tsx a partir do template page.tsx.j2.
 
         Flattena os steps e suas seções para o contexto do template.
 
-        Antes de renderizar, cobra a régua de peso visual de cada módulo. É
-        aqui que ela morde, e não numa etapa opcional depois: curso que nasce
-        como coluna de texto não chega a virar arquivo. O padrão vem de
-        `validation.visual_density.required_for_new_course` no
-        `config/quality_rules.yaml`; passe `cobrar_peso_visual=False` para
-        renderizar um curso legado sem reprovar, caso em que os achados saem
-        apenas no log.
+        Antes de renderizar, cobra duas réguas. A de peso visual de cada
+        módulo: curso que nasce como coluna de texto não chega a virar arquivo
+        (padrão em `validation.visual_density.required_for_new_course`;
+        `cobrar_peso_visual=False` renderiza curso legado com os achados só no
+        log). E a de abertura e distração (R1 a R9, 08/09/2026): módulo com
+        card checkpoint, exercício "faça agora", "mockup no seu negócio",
+        "requer verificação", LGPD ou fonte em prosa não vira arquivo, sem
+        modo legado, porque cada um desses blocos foi pedido fora pelo dono.
 
         Raises:
             VisualDensityError: quando a cobrança está ligada e algum módulo
                 reprova. A mensagem nomeia o módulo, a regra, o número medido
                 e a peça que resolve.
+            AberturaError: quando algum módulo carrega bloco proibido.
         """
+        achados_abertura = check_abertura_definicao(course)
+        if achados_abertura:
+            raise AberturaError(achados_abertura)
         self._cobrar_peso_visual(course, cobrar_peso_visual)
         template = self.env.get_template("page.tsx.j2")
 
@@ -174,6 +236,8 @@ class TsxGenerator:
                 {"pergunta": f.pergunta, "resposta": f.resposta}
                 for f in course.faq
             ],
+            # R7: uma lista, no rodapé, em corpo pequeno.
+            "fontes": _fontes_do_curso(course),
             "hero_gradient_from": course.hero_gradient_from,
             "hero_gradient_to": course.hero_gradient_to,
             "autor_nome": course.autor_nome,

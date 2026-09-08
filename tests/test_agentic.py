@@ -106,9 +106,9 @@ def _make_minimal_course() -> CourseDefinition:
         value="Dica curta para o edge case com acentuação válida.",
     )
     section_check = CourseSection(
-        type=SectionType.CHECKPOINT,
+        type=SectionType.TIP,
         value="Você consegue rodar o pipeline mínimo sem quebrar?",
-        label="CHECKPOINT",
+        label="DICA",
     )
     step = StepDefinition(
         id="step-00",

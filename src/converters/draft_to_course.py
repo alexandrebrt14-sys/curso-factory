@@ -23,7 +23,9 @@ Estrategia de parsing:
   - Paragrafos -> CourseSection(type=TEXT)
   - ```code blocks``` -> CourseSection(type=CODE, language=...)
   - Insights/notas -> CourseSection(type=TIP) heuristicamente
-  - Ultimo bloco do modulo -> CourseSection(type=CHECKPOINT) sintetico
+  - Subtitulo (primeira frase em linha propria) -> description do step (R1)
+  - Secao `## Fontes` da trilha -> CourseDefinition.fontes, rodape (R7)
+  - `> CHECKPOINT:` e afins sao descartados (R6/R8, 08/09/2026)
 - Best-effort: se um draft falhar parsing, retorna None e loga warning;
   o batch processor continua com os proximos
 """
@@ -47,6 +49,8 @@ from src.models import (
 )
 from src.parsers import (
     extract_module_blocks,
+    extrair_fontes,
+    extrair_subtitulo,
     parse_module_to_sections,
     short_id,
     slugify,
@@ -69,8 +73,13 @@ _parse_module_to_sections = parse_module_to_sections
 def _build_steps(
     blocks: list[tuple[str, str]],
     fallback_module_minutes: int = 18,
+    fontes: list[str] | None = None,
 ) -> list[StepDefinition]:
-    """Converte blocos (titulo, conteudo) em StepDefinitions validados."""
+    """Converte blocos (titulo, conteudo) em StepDefinitions validados.
+
+    `fontes`, quando passado, recebe as linhas da secao `## Fontes` de cada
+    bloco (a trilha), que saem do corpo e vao ao rodape do curso (R7).
+    """
     steps: list[StepDefinition] = []
     used_ids: set[str] = set()
 
@@ -84,11 +93,20 @@ def _build_steps(
             suffix += 1
         used_ids.add(step_id)
 
-        # Description = primeira frase do conteudo (sem markdown)
-        clean = re.sub(r"[*_`#>\[\]]", "", content)
-        first_sentence = re.split(r"(?<=[.!?])\s+", clean.strip(), maxsplit=1)
-        description = first_sentence[0] if first_sentence else title
-        description = description[:240].strip()
+        content, fontes_do_bloco = extrair_fontes(content)
+        if fontes is not None:
+            fontes.extend(f for f in fontes_do_bloco if f not in fontes)
+        subtitulo, corpo = extrair_subtitulo(content)
+
+        # Description = subtitulo (R1) ou, sem ele, primeira frase do conteudo
+        if subtitulo and len(subtitulo) >= 5:
+            description = subtitulo[:240].strip()
+            content = corpo or content
+        else:
+            clean = re.sub(r"[*_`#>\[\]]", "", content)
+            first_sentence = re.split(r"(?<=[.!?])\s+", clean.strip(), maxsplit=1)
+            description = first_sentence[0] if first_sentence else title
+            description = description[:240].strip()
         if len(description) < 5:
             description = f"Modulo {idx + 1}: {title}"
 
@@ -199,7 +217,8 @@ def convert_draft_to_course(
         logger.warning("draft %s sem modulos identificaveis", draft_path.name)
         return None
 
-    steps = _build_steps(blocks)
+    fontes: list[str] = []
+    steps = _build_steps(blocks, fontes=fontes)
     if not steps:
         logger.warning("draft %s nao gerou nenhum step valido", draft_path.name)
         return None
@@ -246,6 +265,7 @@ def convert_draft_to_course(
             duracao_total_minutos=duracao_total,
             duracao_display=f"~{duracao_total} min",
             steps=steps,
+            fontes=fontes,
             faq=[
                 FAQItem(
                     pergunta="Este curso eh adequado para meu nivel?",

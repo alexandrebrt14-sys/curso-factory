@@ -36,6 +36,44 @@ três passadas, vícios de português, estruturas proibidas — passou a viver n
   código realmente carrega o arquivo de regras. Foi o defeito de 11/08/2026, quando o YAML tinha
   56 clichês e o gate rodava com 18 em código.
 
+## Abertura e distração (R1 a R9)
+
+Pedido do dono dos repositórios em 08/09/2026, literal na decisão
+`wiki/decisions/abertura-direta-sem-distracao-20260908.md`: o topo carregado dispersa o leitor
+e o card no meio compete com a leitura. Onde a fonte de estilo ainda pedir bloco de exercício
+por aula (molde D, "faça agora"), **esta seção vence** até a fonte ser regerada; o ponteiro
+registra a divergência de propósito.
+
+- **R1. Abertura mínima obrigatória.** Toda página, artigo, aula e capítulo começa com H1
+  (título), depois subtítulo em UMA frase, depois parágrafos diretos ao ponto. Nada antes nem
+  entre eles: sem barra de botões, sem bloco de metadados, resumo ou "o que você vai
+  aprender", sem índice, sem card, sem "trilhas", sem "para quem é". O primeiro elemento
+  depois do subtítulo é um parágrafo.
+- **R2. Sem excesso de botões.** Zero chamadas para ação antes do corpo; se houver, uma, no fim.
+- **R3. Sem percursos alternativos.** Nada de "escolha seu caminho", "se você é X vá para Y",
+  abas por perfil, vários "comece por aqui". Um único caminho, linear.
+- **R4. Uma descrição só.** Uma `description` por página; o resumo não se repete em card.
+- **R5. Sem "mockup no seu negócio"** e variantes ("no seu negócio", "aplique no seu
+  negócio", "simule", "maquete") como seção ou rótulo.
+- **R6. Sem exercício "faça agora"** e variantes ("exercício", "mão na massa", "sua vez",
+  "pratique", "tarefa", "desafio", "checklist de ação", "Resultado esperado:", "Se
+  travar:"). Conteúdo é leitura, não workbook; o próximo passo entra em prosa, no fecho.
+- **R7. Fontes só no rodapé.** Um único bloco "Fontes" ao fim, em corpo pequeno
+  (`0.8rem`), com nome da fonte e link, uma linha curta por fonte. Nenhuma fonte em card,
+  callout, sidebar ou linha "Fonte:" no meio do texto. Link inline discreto é aceito.
+- **R8. Sem card "checkpoint"** e variantes ("ponto de verificação", "recapitulando", "resumo
+  do capítulo", "você aprendeu", "quiz").
+- **R9. Sem "requer verificação" e sem LGPD.** Nenhum marcador visível de apuração ("requer
+  verificação", "a verificar", "[verificar]", "dado não confirmado", "fonte pendente",
+  `[FALTA EVIDÊNCIA:` no publicado); verificação é bastidor. Nenhuma menção à LGPD, à Lei
+  Geral de Proteção de Dados ou à Lei 13.709 em texto de leitura, mesmo entre aspas.
+
+Onde cada regra é garantida: prompts (`src/templates/prompts/*/draft.md`, `review.md`,
+`analyze.md`), gerador (`src/templates/page.tsx.j2`, `src/parsers/markdown_parser.py`,
+`src/generators/tsx_generator.py`) e gate (`src/validators/abertura_checker.py`, chamado
+por `content_checker.check_content` e por `TsxGenerator.render_page`, que levanta
+`AberturaError`). R2 e R4 são cobradas no template por teste (`tests/test_abertura_sem_distracao.py`).
+
 ## Como sincronizar
 
 ```

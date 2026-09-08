@@ -36,18 +36,23 @@ revenue of R$ 40,000").
 
 ## The lesson template
 
-The lesson teaches ONE idea to the end and ends with the student having done something with
-data from their own business. Length: from {palavras_alvo_min} to {palavras_alvo_max} words.
+The lesson teaches ONE idea to the end and is READING: the student finishes knowing what changes
+in their business and what the next step is, said in prose. Length: from {palavras_alvo_min} to {palavras_alvo_max} words.
 Below {palavras_piso} the idea was left unexplained; above {palavras_aviso} a second idea
 crept in, and it belongs to another lesson.
 
-Headings: **{h2_min} to {h2_max} H2**, and three is the norm, one per block below. H3 only
+Headings: **{h2_min} to {h2_max} H2**, and two is the norm, one per block below. H3 only
 when an H2 exceeds 350 words and needs two parts (at most {h3_por_h2} per H2). No H4, no line
 ending in a colon used as a subheading.
 
-**Opening, no heading, in 2 or 3 sentences.** The first sentence says what the student will be
-able to do when done. The second says who this serves or what they gain. No scene, no time of
-day, no character, no "in this module", no list of objectives.
+**Opening, in this exact order, nothing in between (rule R1).** The pipeline inserts the title
+(H1). You start with the **subtitle: ONE sentence, on its own line, up to 25 words**, saying what
+the student will be able to do when done. After a blank line, **two or three opening
+paragraphs**, straight to the point: the problem they live today, what it costs not to solve it
+and what changes by the end of the lesson. The first element after the subtitle is always a
+paragraph. No scene, no time of day, no character, no "in this module", no list of objectives,
+no "what you will learn", no "who this is for", no index, no button, no card, no table before
+the first paragraph.
 
 **H2 1: why [the idea] changes your result.** Explain the idea in running prose, not bullets:
 where it comes from (who formulated it and what problem it solved), what it costs not to know
@@ -57,17 +62,11 @@ marked as **Common trap:**. Start from the problem and arrive at the idea; never
 "the definition of X is". One analogy from the student's trade helps; two, if the second
 explains what the first did not.
 
-**H2 2: how it looks in your business.** ONE example from the student's trade, told from
-beginning to end: who it is, what was happening, what the person did step by step, what
-happened next, with a number. Half an example does not work; three short examples do not
-either.
-
-**H2 3: do it now.** One exercise of 5 to 15 minutes, with these fields: a title that says
-what they will produce (never "Exercise 1"); numbered steps, each with an imperative verb and a
-field for real data from their business; **Expected result:** what they should be seeing on
-screen or on paper when they get it right; **If stuck:** one way out that unblocks without giving the
-answer away. The exercise usually takes between a quarter and a third of the lesson; the right
-size is what the student needs to do it, not a quota.
+**H2 2: one case from the student's trade, beginning to end.** ONE example, told whole: who it
+is, what was happening, what the person did step by step, what happened next, with a number.
+Half an example does not work; three short examples do not either. The heading names the case
+("How Sergio's shop stopped losing quotes"); never "how it looks in your business", "apply it
+in your business" or "mockup".
 
 **Closing, no heading, in 3 to 5 lines.** What changed in their business after this lesson,
 told through the example from H2 2, and a single bridge to the next lesson (imperative verb
@@ -76,6 +75,27 @@ read.
 
 Formal objectives, prerequisites, glossary, FAQ and dated sources live at the track level,
 once; they do not enter the lesson.
+
+## Opening and distraction (R1 to R9): what the lesson NEVER carries
+
+Owner's request, 08/09/2026: a loaded top scatters the reader and a card in the middle competes
+with the reading. The gate rejects each item below and the page is not published with it.
+
+- R1. Anything between the title, the subtitle and the first paragraph.
+- R2. Button, invitation or call to action before the body. If any, one, at the end.
+- R3. Alternative paths: "choose your path", "if you are X go to Y", "start here", tabs by profile.
+- R4. A second description, lead or summary repeated at the top.
+- R5. A "mockup in your business" block and variants ("in your business", "apply it in your
+  business", "simulate", "mockup") as a section or label.
+- R6. Exercises: "do it now", "exercise", "hands on", "your turn", "practice", "task",
+  "challenge", "action checklist", "Expected result:", "If stuck:". The lesson is reading, not a
+  workbook. The next step goes in prose, in the closing.
+- R7. A source in the middle of the lesson: a "Source:" line, a "Sources" heading, a quote in a
+  card or callout. Sources go to the "Sources" block at the end of the track, one short line each.
+- R8. "Checkpoint", "recap", "chapter summary", "you learned", "quiz" cards.
+- R9. Visible verification markers ("needs verification", "to verify", "[verify]", "unconfirmed
+  data", "pending source") and ANY mention of the data protection law by name (LGPD, Lei 13.709),
+  even in quotes. Verification is backstage; data protection enters as practical conduct.
 
 ## Paragraph, sentence, rhythm
 
@@ -120,10 +140,10 @@ never the figure.
   and the step.
 - Research labels ([High], [Medium], [Low], "confidence level"): they help you choose the data;
   in the lesson the number enters clean or not at all.
-- Generic legal disclaimers ("consult a lawyer", "according to current legislation", "in
-  compliance with data protection law", "disclaimer"). Law enters only when it changes the
-  student's decision, and it enters with a number: which law, which article, which deadline,
-  which amount.
+- Generic legal disclaimers ("consult a lawyer", "according to current legislation",
+  "disclaimer"). Law enters only when it changes the student's decision, and it enters with a
+  number: which law, which article, which deadline, which amount. Fixed exception (R9): the data
+  protection law is never named; the conduct enters, the name of the law does not.
 
 - Antithesis that denies to affirm ("it is not X, it is Y", "it is not about X", "more than X,
   Y").
@@ -144,21 +164,22 @@ never the figure.
 
 ## Before delivering, check
 
-1. The first sentence says what the student will be able to do.
-2. One idea only, explained to the end; the example is one and goes from beginning to end,
+1. The first line is the subtitle: one sentence, saying what the student will be able to do.
+2. Right after the subtitle comes a paragraph, then one or two more, before the first H2.
+3. One idea only, explained to the end; the example is one and goes from beginning to end,
    with a number.
-3. {h2_min} to {h2_max} H2; H3 only in a long H2; no H4.
-4. Length between {palavras_alvo_min} and {palavras_alvo_max} words; exercise between a
-   quarter and a third of them.
-5. Exercise with title, numbered steps with the student's real data, expected result and "if stuck".
-6. No number without origin in the research; at most 3 `[MISSING EVIDENCE]` markers.
-7. Paragraphs of {paragrafo_min} to {paragrafo_max} words; sentences up to 28.
-8. Up to {figuras_max} visual supports, all replacing text.
-9. Nothing from the "What never goes in" list.
-10. Closing through the example, with one bridge to the next lesson.
-11. Correct spelling and diacritics throughout.
+4. {h2_min} to {h2_max} H2; H3 only in a long H2; no H4.
+5. Length between {palavras_alvo_min} and {palavras_alvo_max} words.
+6. No exercise, checkpoint, mockup, "needs verification" or data-protection law by name (R1 to R9).
+7. No "Source:" line and no "Sources" heading inside the lesson.
+8. No number without origin in the research; at most 3 `[MISSING EVIDENCE]` markers.
+9. Paragraphs of {paragrafo_min} to {paragrafo_max} words; sentences up to 28.
+10. Up to {figuras_max} visual supports, all replacing text.
+11. Nothing from the "What never goes in" list.
+12. Closing through the example, with one bridge to the next lesson.
+13. Correct spelling and diacritics throughout.
 
-Start directly with the lesson opening, with no lesson heading (the pipeline inserts it), no
+Start directly with the lesson subtitle, with no lesson heading (the pipeline inserts it), no
 module title and no comment about this prompt.
 
 --- RESEARCH DATA ---

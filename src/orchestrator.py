@@ -24,10 +24,13 @@ Três defeitos corrigidos em 02/09/2026, todos medidos nos drafts de
   aula, e uma resposta que encolhe o texto (comentário no lugar do conteúdo)
   é descartada em favor do rascunho, com aviso no resultado.
 
-Formato do rascunho montado: cada aula começa com `# Aula i.j: título` (H1)
-e usa H2 para as próprias seções, como manda o molde D da fonte de estilo.
-O parser (`src/parsers/markdown_parser.py`) reconhece esse H1 como fronteira
-de unidade.
+Formato do rascunho montado: cada aula começa com `# Aula i.j: título` (H1),
+seguido do subtítulo em uma frase e dos parágrafos de abertura (regra R1 de
+08/09/2026), e usa H2 para as próprias seções, como manda o molde D da fonte
+de estilo. O parser (`src/parsers/markdown_parser.py`) reconhece esse H1 como
+fronteira de unidade e o subtítulo como `description` do step. A aula é
+leitura: sem exercício, checkpoint, mockup, "requer verificação" nem LGPD
+(R5 a R9); o gate `abertura_checker` reprova o que escapar.
 """
 
 from __future__ import annotations
@@ -436,9 +439,11 @@ class Orchestrator:
             f"Módulo {numero}: {modulo.titulo}\n"
             f"Descrição do módulo: {modulo.descricao or 'conforme pesquisa'}\n\n"
             f"Planeje de {minimo} a {maximo} aulas para este módulo. Cada aula "
-            f"ensina UMA ideia, explicada por inteiro, e termina com o aluno "
-            f"fazendo algo com um dado do próprio negócio. As aulas se "
-            f"encadeiam: a seguinte usa o que a anterior deixou pronto.\n\n"
+            f"ensina UMA ideia, explicada por inteiro, em leitura corrida (sem "
+            f"exercício, sem checkpoint, sem mockup), e fecha dizendo o que muda "
+            f"no negócio do aluno e o próximo passo. As aulas se encadeiam: a "
+            f"seguinte usa o que a anterior deixou pronto. Título sem 'faça "
+            f"agora', 'exercício', 'no seu negócio', 'checkpoint' ou LGPD.\n\n"
             f"Responda SOMENTE com uma linha por aula, neste formato, sem "
             f"comentário antes ou depois:\n"
             f"1. Título da aula em até 10 palavras | a ideia única da aula em uma frase\n\n"

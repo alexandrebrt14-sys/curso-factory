@@ -89,9 +89,13 @@ class TestTiposVisuais(unittest.TestCase):
         self.assertIn(SectionType.FIGURE, VISUAL_SECTION_TYPES)
         self.assertNotIn(SectionType.FIGURE, PAYLOAD_SECTION_TYPES)
 
+    def test_checkpoint_saiu_do_vocabulario(self):
+        """R8 (08/09/2026): o card de checkpoint não existe mais como tipo."""
+        self.assertNotIn("checkpoint", {t.value for t in SectionType})
+
     def test_tipos_de_prosa_nao_contam_como_visuais(self):
         for tipo in (SectionType.TEXT, SectionType.CODE, SectionType.TIP,
-                     SectionType.WARNING, SectionType.CHECKPOINT):
+                     SectionType.WARNING):
             self.assertNotIn(tipo, VISUAL_SECTION_TYPES)
 
 

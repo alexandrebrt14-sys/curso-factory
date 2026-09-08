@@ -26,7 +26,7 @@ class Classifier(Agent):
         "1. NÍVEL: iniciante, intermediário ou avançado\n"
         "2. TAGS: até 10 palavras-chave relevantes para indexação\n"
         "3. PRÉ-REQUISITOS: conhecimentos necessários para acompanhar o curso\n"
-        "4. DURAÇÃO ESTIMADA: em horas, considerando leitura e exercícios\n"
+        "4. DURAÇÃO ESTIMADA: em horas, considerando a leitura das aulas\n"
         "5. PÚBLICO-ALVO: perfil dos alunos ideais\n\n"
         "Responda em formato JSON válido com as chaves:\n"
         "nivel, tags, pre_requisitos, duracao_horas, publico_alvo\n\n"
