@@ -17,6 +17,14 @@ detalhe vive no arquivo de cada decisão. Mantenha curto — ele entra no contex
 - [Geração por aula e insumo correto por etapa](geracao-por-aula-e-insumo-correto.md) — a revisão nunca via o curso e o writer recebia 3.000 caracteres de pesquisa; a unidade virou a aula · `mistake`
 - [Diretriz editorial v3: narrativa sim, cota de ritmo não](diretriz-editorial-v3-narrativa-sem-cota.md) — por que cota mecânica de frase curta e de formatação derrubou a qualidade · `mistake`
 
+## Lições do portal /educacao (25-07-2026)
+
+- [Invólucro copiado de curso irmão](involucro-copiado-de-curso-irmao.md) — curso novo por cópia serve FAQ/bio/JSON-LD do curso errado; FAQ como fonte única · `mistake`
+- [Números de curso digitados derivam](numeros-de-curso-digitados-derivam.md) — contagem e duração derivam de STEPS, nunca à mão; gate provado por injeção · `mistake`
+- [Arquivo de conteúdo sem consumidor](arquivo-de-conteudo-sem-consumidor.md) — módulo commitado sem import compila limpo e vira âncora morta · `mistake`
+- [Acentuação: ferramentas e armadilhas](acentuacao-ferramentas-e-armadilhas.md) — perl grava mojibake invisível; lista fixa corrige pela metade; corretor cria o inverso · `mistake`
+- [Integração: conflitos têm dono](integracao-conflitos-tem-dono.md) — linha a linha por autor; gerados regeneram; worktree inspeciona antes de remover · `insight`
+
 ## Histórico
 
 - [CLAUDE-CHANGELOG](CLAUDE-CHANGELOG.md) — log datado de mudanças aplicadas, extraído do `CLAUDE.md` para mantê-lo enxuto

@@ -2,9 +2,6 @@
 # Sintaxe: <pattern> <owner1> <owner2> ...
 # Documentação: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Default — qualquer arquivo precisa de review do Alexandre
-*                                  @alexandrebrt14-sys
-
 # Áreas críticas — review obrigatório do Alexandre (não delegável)
 /cli.py                            @alexandrebrt14-sys
 /src/orchestrator.py               @alexandrebrt14-sys
