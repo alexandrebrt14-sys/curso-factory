@@ -30,7 +30,7 @@ dev = [
     "pytest-asyncio>=0.23",
     "pytest-cov>=5.0",
     "jsonschema>=4.21",
-    "ruff>=0.6",
+    "ruff>=0.15,<0.16",
 ]
 
 [project.scripts]
@@ -67,7 +67,8 @@ version = {attr = "src.__version__"}
 target-version = "py311"
 line-length = 100
 # Scripts legados (scripts/legacy/) são congelados — não fazem parte do produto.
-extend-exclude = ["scripts/legacy", "output", "wiki", "docs/research"]
+# docs/ é prosa (versões novas do ruff formatam trechos Python em Markdown).
+extend-exclude = ["scripts/legacy", "output", "wiki", "docs"]
 
 [tool.ruff.lint]
 # E/W: pycodestyle · F: pyflakes · I: isort · UP: pyupgrade · B: flake8-bugbear
