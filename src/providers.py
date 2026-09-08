@@ -26,6 +26,11 @@ class ProviderConfig:
     price_output: float
     fallback: str | None
     protocol: str  # "openai_compat" | "anthropic" | "google"
+    #: Cadeia completa de fallback, na ordem (wave 6). Quando o YAML só traz
+    #: `fallback`, a cadeia é esse único salto.
+    fallback_chain: tuple[str, ...] = ()
+    #: Teto de saída por provedor (catálogo do geo-orchestrator); 0 = usar MAX_TOKENS_PER_CALL.
+    max_tokens: int = 0
 
 
 def _load() -> dict[str, ProviderConfig]:
@@ -39,14 +44,17 @@ def _load() -> dict[str, ProviderConfig]:
     out: dict[str, ProviderConfig] = {}
     for name, cfg in providers_raw.items():
         pricing = cfg.get("pricing", {})
+        cadeia = cfg.get("fallback_chain") or ([cfg["fallback"]] if cfg.get("fallback") else [])
         out[name] = ProviderConfig(
             name=name,
             endpoint=cfg["endpoint"],
             default_model=cfg.get("default_model", ""),
             price_input=float(pricing.get("input", 0.0)),
             price_output=float(pricing.get("output", 0.0)),
-            fallback=cfg.get("fallback") or None,
+            fallback=(cadeia[0] if cadeia else None),
             protocol=cfg.get("protocol", "openai_compat"),
+            fallback_chain=tuple(p for p in cadeia if p and p != name),
+            max_tokens=int(cfg.get("max_tokens", 0) or 0),
         )
     return out
 
@@ -79,4 +87,14 @@ ENDPOINTS: dict[str, str] = {
 
 FALLBACK_MAP: dict[str, str] = {
     name: cfg.fallback for name, cfg in PROVIDERS.items() if cfg.fallback
+}
+
+#: Teto de saída por provedor (0 = padrão global).
+MAX_TOKENS_BY_PROVIDER: dict[str, int] = {
+    name: cfg.max_tokens for name, cfg in PROVIDERS.items()
+}
+
+#: Cadeia completa por provedor, na ordem em que o cliente tenta (wave 6).
+FALLBACK_CHAINS: dict[str, tuple[str, ...]] = {
+    name: cfg.fallback_chain for name, cfg in PROVIDERS.items()
 }

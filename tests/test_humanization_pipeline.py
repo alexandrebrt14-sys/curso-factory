@@ -166,6 +166,10 @@ def test_disclosure_desabilitado_passa_sempre(monkeypatch) -> None:
 def test_disclosure_block_if_missing_false_emite_aviso() -> None:
     """block_if_missing=False → aprovado=True mas avisos populados."""
     client = load_client("default")
+    # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
+    client.disclosure = DisclosureConfig(
+        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+    )
     # Configuracao default tem block_if_missing=False
     assert client.disclosure.block_if_missing is False
     r = disclosure_check("Texto sem disclosure algum.", client=client)
@@ -189,6 +193,10 @@ def test_disclosure_block_if_missing_true_bloqueia() -> None:
 def test_disclosure_detecta_bloco_canonico() -> None:
     """Texto com bloco padrao + autor + norma passa."""
     client = load_client("default")
+    # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
+    client.disclosure = DisclosureConfig(
+        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+    )
     client.disclosure.block_if_missing = True
     bloco = build_disclosure_block(client)
     r = disclosure_check(bloco, client=client)
@@ -199,6 +207,10 @@ def test_disclosure_detecta_bloco_canonico() -> None:
 
 def test_build_disclosure_block_inclui_autor() -> None:
     client = load_client("default")
+    # 03/09/2026: o cliente padrão nasce com disclosure desligado; o teste liga.
+    client.disclosure = DisclosureConfig(
+        enabled=True, required_by=["PL_2338_2023"], block_if_missing=False,
+    )
     block = build_disclosure_block(client)
     assert client.author.name in block
     assert "PL 2338" in block or "pl 2338" in block.lower()
@@ -379,7 +391,11 @@ def test_humanizer_diagnostic_builder_com_problemas() -> None:
     assert "burstiness" in diag.lower()
     assert "type_token" in diag.lower()
     assert "repetition" in diag.lower()
-    assert "ZERO frases curtas" in diag or "zero" in diag.lower()
+    assert "sentenca curta" in diag.lower()
+    # DIRETRIZ_EDITORIAL.md v3 (§4.8): o diagnostico aponta o trecho a reescrever;
+    # nao prescreve cota de frase curta nem troca de termo por sinonimo.
+    assert "por cota" in diag.lower()
+    assert "proibido trocar o termo" in diag.lower()
 
 
 def test_humanizer_diagnostic_builder_quando_ja_bom() -> None:

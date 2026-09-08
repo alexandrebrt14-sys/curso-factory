@@ -57,6 +57,42 @@ def test_cost_tracker_check_before_call_bloqueia_acima_budget(
     assert tracker.check_before_call("anthropic", course_id="caro") is False
 
 
+def test_pode_chamar_ignora_teto_diario_e_respeita_curso_e_sessao(
+    isolated_costs, monkeypatch
+) -> None:
+    """O teto diário por provedor não barra; o do curso e o da sessão barram, com motivo."""
+    monkeypatch.setattr(cost_tracker, "DAILY_BUDGET_PER_PROVIDER", 0.05)
+    monkeypatch.setattr(cost_tracker, "CLAUDE_BUDGET_PER_COURSE", 1.0)
+    monkeypatch.setattr(cost_tracker, "TOTAL_BUDGET_PER_COURSE", 2.0)
+    monkeypatch.setattr(cost_tracker, "SESSION_BUDGET_TOTAL", 3.0)
+    tracker = cost_tracker.CostTracker()
+    tracker.track("anthropic", 1000, 1000, "claude", 0.50, course_id="c1")
+    # acima do teto diário (0,05), abaixo do teto do curso: pode
+    assert tracker.is_over_budget("anthropic") is True
+    assert tracker.pode_chamar("anthropic", "c1") == (True, "")
+    tracker.track("anthropic", 1000, 1000, "claude", 0.60, course_id="c1")
+    ok, motivo = tracker.pode_chamar("anthropic", "c1")
+    assert ok is False and "Claude do curso" in motivo
+    assert tracker.pode_chamar("google", "c1") == (True, "")
+    tracker.track("google", 1000, 1000, "gemini", 1.00, course_id="c1")
+    ok, motivo = tracker.pode_chamar("google", "c1")
+    assert ok is False and "total do curso" in motivo
+    tracker.track("google", 1000, 1000, "gemini", 1.00, course_id="c2")
+    ok, motivo = tracker.pode_chamar("google", "c2")
+    assert ok is False and "sessão" in motivo
+
+
+def test_entradas_desde_mede_o_consumo_de_uma_etapa(isolated_costs) -> None:
+    tracker = cost_tracker.CostTracker()
+    tracker.track("openai", 1, 1, "gpt", 0.01, course_id="c1")
+    marca = tracker.indice_atual()
+    tracker.track("anthropic", 1, 1, "claude", 0.02, course_id="c1")
+    tracker.track("anthropic", 1, 1, "claude", 0.02, course_id="outro")
+    novas = tracker.entradas_desde(marca, "c1")
+    assert [e["provider"] for e in novas] == ["anthropic"]
+    assert len(tracker.entradas_desde(marca)) == 2
+
+
 def test_cost_tracker_report_sem_entries() -> None:
     """Sem dados na sessão atual, report() retorna a string conhecida."""
     tracker = cost_tracker.CostTracker(session_id="sess_inexistente_xyz")

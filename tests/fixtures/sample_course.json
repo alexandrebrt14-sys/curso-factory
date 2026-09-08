@@ -6,8 +6,16 @@
   "descricao_curta": "Validação completa do sistema de geração de cursos",
   "nivel": "intermediário",
   "nivel_display": "Intermediário",
-  "tags": ["teste", "geração", "validação"],
-  "keywords_seo": ["teste de geração", "curso factory", "validação automática"],
+  "tags": [
+    "teste",
+    "geração",
+    "validação"
+  ],
+  "keywords_seo": [
+    "teste de geração",
+    "curso factory",
+    "validação automática"
+  ],
   "duracao_total_minutos": 45,
   "duracao_display": "~45 min",
   "steps": [
@@ -16,11 +24,11 @@
       "title": "Introdução à Geração de Conteúdo",
       "duration": "20 min",
       "icon_key": "trendingUp",
-      "description": "Entenda como o pipeline de geração funciona do início ao fim",
+      "description": "O pipeline de geração explicado do início ao fim.",
       "content": [
         {
           "type": "text",
-          "value": "Neste módulo você vai entender como funciona o pipeline de geração automática de conteúdo educacional. O sistema utiliza cinco LLMs especializados, cada um com uma função específica no processo de criação.",
+          "value": "O pipeline de geração automática de conteúdo educacional usa cinco LLMs especializados, cada um com uma função específica no processo de criação.",
           "language": null,
           "label": null
         },
@@ -35,12 +43,6 @@
           "value": "Sempre valide a acentuação PT-BR antes de fazer deploy. O accent_checker.py detecta automaticamente palavras sem acento que deveriam tê-lo.",
           "language": null,
           "label": "DICA"
-        },
-        {
-          "type": "checkpoint",
-          "value": "Você consegue executar o TsxGenerator e obter um arquivo page.tsx válido sem erros de sintaxe? Verifique se o componente possui 'use client' e 'export default'.",
-          "language": null,
-          "label": "CHECKPOINT"
         }
       ]
     },
@@ -49,7 +51,7 @@
       "title": "Validação e Qualidade",
       "duration": "25 min",
       "icon_key": "checkCircle",
-      "description": "Aprenda a validar conteúdo gerado com os verificadores automáticos",
+      "description": "Os verificadores automáticos que barram o conteúdo com defeito.",
       "content": [
         {
           "type": "text",
@@ -68,12 +70,6 @@
           "value": "Nunca faça deploy sem executar todos os validadores. Conteúdo sem acentuação correta prejudica a credibilidade e o posicionamento nos mecanismos de busca.",
           "language": null,
           "label": "AVISO"
-        },
-        {
-          "type": "checkpoint",
-          "value": "Execute o BuildValidator no diretório da landing page. O build Next.js completou sem erros? Todos os arquivos TSX passaram na verificação de sintaxe?",
-          "language": null,
-          "label": "CHECKPOINT"
         }
       ]
     }
@@ -101,5 +97,8 @@
   "local_storage_key": "teste-geracao-course-progress",
   "canonical_url": "https://alexandrecaramaschi.com/educacao/teste-geracao",
   "breadcrumb_label": "Teste de Geração",
-  "component_name": "TesteGeracaoCoursePage"
+  "component_name": "TesteGeracaoCoursePage",
+  "fontes": [
+    "Documentação do curso-factory, setembro de 2026."
+  ]
 }

@@ -4,8 +4,8 @@ Se qualquer validador falhar, bloqueia o deploy e gera
 relatório detalhado com o status de cada verificação.
 
 Inclui: acentuação (detecção + auto-correção), HTML,
-links e qualidade de conteúdo (tabelas, formatação,
-exercícios, andragogia, Bloom, clichês).
+links, qualidade de conteúdo (formatação, andragogia, Bloom,
+clichês) e abertura direta sem distração (R1 a R9).
 """
 
 from __future__ import annotations
@@ -96,11 +96,21 @@ class QualityGate:
         text: str,
         curso_id: str = "unknown",
         module_name: str = "",
+        unidade: str = "modulo",
+        geo: bool = True,
     ) -> GateResult:
         """Valida texto puro (Markdown) com todas as verificações.
 
         Executa: acentuação, conteúdo, links.
         Se auto_fix=True, corrige acentos automaticamente.
+
+        Args:
+            unidade: `"aula"` ou `"modulo"`. O padrão é `"modulo"` porque o
+                pipeline de geração ainda entrega módulos, e medi-los com a
+                régua de uma aula (piso 900, erro 3.600) reprovaria todo o
+                acervo. Quando o gerador passar a emitir aula, o chamador
+                passa `unidade="aula"` e a régua fica a do molde D sem
+                multiplicador. Ver `content_checker.tetos_da_unidade`.
         """
         result = GateResult()
 
@@ -134,8 +144,10 @@ class QualityGate:
         # 2. Verificação de qualidade de conteúdo (inclui citabilidade GEO
         #    quando o cliente liga geo_2026 no client.yaml — ver
         #    docs/GEO_REDACAO_CHECKLIST_2026.md)
-        geo_config = getattr(self.client, "geo", None)
-        content_errors = check_content(working_text, module_name, geo_config=geo_config)
+        geo_config = getattr(self.client, "geo", None) if geo else None
+        content_errors = self._check_content_por_unidade(
+            working_text, module_name, geo_config, unidade
+        )
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
 
@@ -215,14 +227,63 @@ class QualityGate:
         )
         return result
 
+    @staticmethod
+    def _check_content_por_unidade(text: str, module_name: str, geo_config, unidade: str):
+        """Mede aula a aula quando o texto vem montado pelo orquestrador.
+
+        O rascunho gerado desde 02/09/2026 traz `# Aula i.j: título` abrindo
+        cada aula. Nesse caso a régua da aula (molde D) vale para cada bloco,
+        sem o multiplicador de módulo, e o rótulo do achado carrega o título da
+        aula. Texto sem esse cabeçalho é medido inteiro, na unidade pedida.
+        """
+        from src.orchestrator import AULA_H1_RE, TRILHA_H1_RE, dividir_em_unidades
+        from src.validators.content_checker import erros_de_abertura
+
+        if TRILHA_H1_RE.match(text.lstrip()) or module_name.startswith("Trilha "):
+            # Fechamento da trilha (objetivos, glossário, FAQ, fontes): não é
+            # aula e a régua da aula o reprovaria pelo motivo errado. As
+            # camadas de acento, link, voice guard e disclosure seguem valendo,
+            # e a de abertura e distração (R1 a R9) mede a trilha pela posição
+            # do bloco 'Fontes' e pelos blocos proibidos.
+            return erros_de_abertura(text, module_name or "trilha", unidade="trilha")
+        if not AULA_H1_RE.search(text):
+            return check_content(text, module_name, geo_config=geo_config, unidade=unidade)
+        achados = []
+        for titulo, bloco in dividir_em_unidades(text):
+            if titulo.startswith("Trilha "):
+                rotulo = f"{module_name} / {titulo}" if module_name else titulo
+                achados.extend(erros_de_abertura(bloco, rotulo, unidade="trilha"))
+                continue
+            rotulo = f"{module_name} / {titulo}" if module_name else titulo
+            # A régua da aula não carrega a camada GEO: fontes, estatísticas
+            # e citação vivem no nível da trilha e do curso (molde D).
+            achados.extend(check_content(bloco, rotulo, geo_config=None, unidade="aula"))
+        if geo_config is not None:
+            achados.extend(QualityGate.check_geo(text, module_name or "curso", geo_config))
+        return achados
+
+    @staticmethod
+    def check_geo(text: str, rotulo: str = "curso", geo_config=None):
+        """Camada de citabilidade GEO sobre o texto INTEIRO (curso ou trilha).
+
+        Cite Sources, Statistics, Quotation e answer capsule são metas do
+        conjunto, não de cada aula de mil palavras: cobradas por aula, elas
+        reprovavam toda aula do molde novo (wave 5, 02/09/2026).
+        """
+        if geo_config is None:
+            return []
+        achados = check_content(text, rotulo, geo_config=geo_config, unidade="modulo")
+        return [a for a in achados if a.categoria == "geo"]
+
     def check_html(
         self,
         html: str,
         curso_id: str = "unknown",
         module_name: str = "",
+        unidade: str = "modulo",
     ) -> GateResult:
         """Valida HTML completo com todas as verificações."""
-        result = self.check_text(html, curso_id, module_name)
+        result = self.check_text(html, curso_id, module_name, unidade=unidade)
 
         # 4. Verificação de HTML
         html_errors = validate_html(html)

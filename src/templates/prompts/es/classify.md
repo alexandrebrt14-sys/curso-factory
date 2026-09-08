@@ -41,9 +41,8 @@ Lista los conocimientos que el alumno debe tener antes de iniciar este curso. Pa
 
 Estima el tiempo de estudio para cada módulo, considerando:
 
-- Lectura del contenido teórico
-- Realización de los ejercicios prácticos
-- Tiempo de práctica/experimentación
+- Lectura del contenido
+- Tiempo para que el alumno aplique el próximo paso dicho en el cierre de cada lección
 
 Proporciona la estimación en minutos por módulo y el total en horas.
 

@@ -335,11 +335,40 @@ ACCENT_MAP: dict[str, str] = {
     "permitira": "permitirá",
     "contribuira": "contribuirá",
     "garantira": "garantirá",
-    "e" : None,  # Não mapear "e" para "é" — ambiguidade com conjunção
+    "e" : None,  # Não mapear "e" para "é": ambiguidade com a conjunção
 }
 
 # Remover entradas None (marcadores de exclusão)
 ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if v is not None}
+
+# Homógrafos: a forma SEM acento também é palavra correta do português, e só o
+# contexto sintático decide qual das duas vale. Substituição por dicionário
+# ACERTA a minoria e CORROMPE a maioria dos casos.
+#
+# O gate roda com auto_fix=True por padrão, então cada entrada dessas produzia
+# erro de português em todo curso gerado: "nos projetos" virava "nós projetos",
+# "esta análise" virava "está análise", "seria bom" virava "séria bom" e o
+# imperativo "Analise os dados" virava "Análise os dados". Detectado em
+# 11/08/2026 ao rodar o validador contra a própria diretriz editorial, que
+# acusou 14 erros, todos falsos.
+#
+# Divisão de trabalho: regex cuida do que é inequívoco; o contexto fica com o
+# revisor (Claude), cujo prompt já lista estes casos com a marcação de classe
+# gramatical ("esta (verbo) -> está"). Ver wiki/decisions/
+# diretriz-editorial-v3-narrativa-sem-cota.md.
+AMBIGUOUS_HOMOGRAPHS: dict[str, str] = {
+    "nos": "nós",           # preposição/pronome "nos" vs pronome "nós"
+    "esta": "está",         # demonstrativo "esta" vs verbo "está"
+    "seria": "séria",       # futuro do pretérito "seria" vs adjetivo "séria"
+    "analise": "análise",   # subjuntivo/imperativo "analise" vs substantivo
+    "pratica": "prática",   # verbo "pratica" vs substantivo/adjetivo
+    "pratico": "prático",   # verbo "pratico" vs adjetivo
+    "publico": "público",   # verbo "publico" vs substantivo/adjetivo
+    "valido": "válido",     # verbo "valido" vs adjetivo
+    "ele": "ele",           # entrada no-op herdada: só gerava ruído
+}
+
+ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if k not in AMBIGUOUS_HOMOGRAPHS}
 
 # Padrões que indicam contexto a ignorar (URLs, código, slugs)
 IGNORE_PATTERNS = [

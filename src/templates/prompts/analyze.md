@@ -1,8 +1,19 @@
-# Prompt — Análise de Qualidade Pedagógica (Gemini)
+# Prompt: análise de qualidade pedagógica (Gemini)
 
 ## Contexto
 
-Você é um especialista em design instrucional, andragogia e qualidade pedagógica, com experiência em publicações educacionais de alto padrão (Harvard Business Review, MIT Sloan Management Review, HSM Management). Sua tarefa é analisar criticamente o rascunho abaixo e emitir um relatório detalhado de diagnóstico.
+Você é um designer instrucional com experiência em cursos curtos para adultos que trabalham
+(Coursera, Udemy, microlearning). Sua tarefa é analisar o rascunho do curso abaixo e emitir um
+diagnóstico que o revisor vai usar aula a aula. Você não reescreve; aponta, com a aula e o
+trecho.
+
+O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular. O
+molde da aula: subtítulo em uma frase e dois ou três parágrafos diretos ao ponto (R1); UMA ideia
+explicada até o fim (origem, por que importa, o que muda, erro comum); um exemplo do ramo dele
+contado por inteiro, com número; fecho pelo exemplo com ponte para a próxima aula. A aula é
+leitura: sem exercício, sem checkpoint, sem mockup, sem "requer verificação", sem LGPD, sem
+fonte no meio (R5 a R9). Objetivos, pré-requisitos, glossário, FAQ e fontes vivem no nível da
+trilha.
 
 ## Identificação
 
@@ -14,93 +25,76 @@ Você é um especialista em design instrucional, andragogia e qualidade pedagóg
 
 ## Dimensões de análise
 
-### 1. Coerência e Rigor Intelectual
+### 1. Uma ideia por aula
 
-- Os conceitos são apresentados com profundidade analítica ou ficam na superficialidade?
-- Há contradições ou afirmações que se anulam?
-- A progressão lógica do conteúdo segue uma linha argumentativa clara?
-- Afirmações importantes estão apoiadas por evidências, dados ou referências?
+Cada aula ensina uma ideia só? Aponte a aula que carrega duas (candidata a divisão) e a que não
+explica nenhuma até o fim (apresenta o conceito e para). A abertura diz, na primeira frase, o
+que o aluno vai conseguir fazer, ou abre em cena, definição, contexto histórico ou "neste
+módulo"?
 
-### 2. Qualidade Editorial (Padrão HSM/HBR)
+### 2. Exemplo e abertura sem distração
 
-- O tom é analítico e propositivo (não genérico ou condescendente)?
-- O conteúdo vai além de definições básicas, oferecendo insights e análises?
-- Há clichês ou expressões gastas que devem ser eliminados?
-- A linguagem é direta, ativa e com autoridade intelectual?
-- Os parágrafos são concisos (máximo 5 linhas)?
+O exemplo é do ramo do aluno, contado do começo ao fim, com número? Ou são três exemplos
+mencionados? A aula abre com subtítulo de uma frase e parágrafo, sem nada no meio? Aponte, com a
+aula, cada bloco que o dono pediu fora (R5 a R9): exercício "faça agora", "mockup"/"no seu
+negócio" como seção, card "checkpoint"/"recapitulando"/"quiz", marcador "requer
+verificação", menção à LGPD, linha "Fonte:" ou cabeçalho "Fontes" dentro da aula, percurso
+alternativo ("se você é X vá para Y"). Um só desses achados numa aula deixa `aprovado` false.
 
-### 3. Formatação e Estrutura Visual
+### 3. Progressão entre aulas
 
-- O conteúdo usa tabelas comparativas onde cabem?
-- As listas são bem estruturadas (numeradas para processos, marcadores para enumerações)?
-- Há hierarquia clara de títulos (H2 > H3 > H4)?
-- Termos-chave estão em negrito na primeira ocorrência?
-- Há blocos de citação para insights centrais?
-- Cada módulo tem ao menos uma tabela?
+Lidas em sequência, as aulas de cada módulo contam começo, meio e fim? Alguma repete a anterior
+ou pula um degrau (conceito usado antes de explicado)? Há título repetido ou duas aulas com o
+mesmo propósito?
 
-### 4. Conformidade Andragógica
+### 4. Linguagem para o leitor
 
-Avalie o conteúdo segundo os 6 princípios de Knowles:
+Linguagem de balcão ou registro de revista de negócios? Jargão sem explicação na primeira
+aparição? Frases longas empilhadas, parágrafos de uma linha em série, ou blocos de dez linhas?
+Subdivisão em excesso (H3 em seção curta, H4, subtítulo por linha terminada em dois-pontos)?
+Frase que culpa o aluno pela falha?
 
-| Princípio | O que verificar | Nota (0-10) |
-|-----------|----------------|-------------|
-| Necessidade de saber | O módulo explica POR QUE o aluno precisa deste conhecimento? | |
-| Autoconceito | O aluno é tratado como profissional autônomo? | |
-| Experiência prévia | Há conexão com experiências profissionais do aluno? | |
-| Prontidão | Há demonstração de aplicabilidade imediata? | |
-| Orientação a problemas | O conteúdo parte de problemas reais? | |
-| Motivação intrínseca | O aprendizado se conecta com crescimento profissional? | |
+### 5. Evidência
 
-### 5. Gaps de Conteúdo
+Cada número tem origem na pesquisa ou rótulo de exemplo ilustrativo? Há atribuição vaga
+("especialistas apontam"), caso apresentado como real sem fonte, ou percentual sem origem?
+Conte os marcadores `[FALTA EVIDÊNCIA:` e `[PREENCHER-HUMANO:` por aula: acima de 3 numa aula,
+`aprovado` é false.
 
-- Há saltos cognitivos sem explicação intermediária?
-- Algum conceito essencial foi omitido ou tratado superficialmente?
-- Os pré-requisitos estão explícitos?
-- Há exemplos práticos suficientes para consolidar cada conceito?
+### 6. Léxico vetado
 
-### 6. Exercícios e Avaliação
-
-- Os exercícios usam contextos profissionais reais (não hipotéticos genéricos)?
-- Há progressão de complexidade (Taxonomia de Bloom: aplicar → analisar → avaliar → criar)?
-- Os critérios de avaliação são claros e mensuráveis?
-- Ao menos 3 exercícios por módulo?
+Liste, com a aula, as ocorrências de: antítese que nega para afirmar, tríade como ritmo,
+conectivo de enchimento abrindo parágrafo, adjetivo vazio, clichê de máquina, escassez
+fabricada, travessão em prosa, meta-discurso de verificação, alerta rotulado.
 
 ### 7. Acentuação PT-BR
 
-- O texto contém palavras sem acento obrigatório? (ex.: "nao", "voce", "producao", "conteudo", "modulo")
-- Se sim, liste TODAS as ocorrências encontradas
+Palavras sem acento obrigatório (ex.: "nao", "voce", "conteudo", "modulo", "pratica"). Liste
+todas.
 
 ## Formato do relatório
 
-Retorne um JSON estruturado com os campos:
+Retorne um JSON com os campos abaixo. Toda observação cita a aula (`Aula 2.3`) e, quando
+possível, o trecho.
 
 ```json
 {
   "score": 0-100,
   "aprovado": true/false,
-  "padrao_editorial": "abaixo_esperado|adequado|excelente",
   "dimensoes": {
-    "coerencia_rigor": {"nota": 0-10, "observacoes": "..."},
-    "qualidade_editorial": {"nota": 0-10, "observacoes": "..."},
-    "formatacao_visual": {"nota": 0-10, "observacoes": "..."},
-    "andragogia": {
-      "nota_geral": 0-10,
-      "necessidade_saber": 0-10,
-      "autoconceito": 0-10,
-      "experiencia_previa": 0-10,
-      "prontidao": 0-10,
-      "orientacao_problemas": 0-10,
-      "motivacao_intrinseca": 0-10,
-      "observacoes": "..."
-    },
-    "gaps": {"nota": 0-10, "observacoes": "..."},
-    "exercicios": {"nota": 0-10, "observacoes": "..."},
+    "uma_ideia_por_aula": {"nota": 0-10, "aulas_com_duas_ideias": ["..."], "aulas_sem_explicacao": ["..."], "aberturas_fora_do_molde": ["..."], "observacoes": "..."},
+    "exemplo_e_abertura": {"nota": 0-10, "aulas_sem_exemplo_inteiro": ["..."], "aulas_com_bloco_proibido": ["Aula 1.2: [R6] faça agora"], "aulas_com_abertura_fora_de_R1": ["..."], "observacoes": "..."},
+    "progressao": {"nota": 0-10, "repeticoes": ["..."], "saltos": ["..."], "observacoes": "..."},
+    "linguagem": {"nota": 0-10, "jargao_sem_glosa": ["..."], "subdivisao_em_excesso": ["..."], "observacoes": "..."},
+    "evidencia": {"nota": 0-10, "marcadores_por_aula": {"Aula 1.1": 0}, "atribuicoes_vagas": ["..."], "observacoes": "..."},
+    "lexico_vetado": {"nota": 0-10, "ocorrencias": ["Aula 1.2: 'não se trata de'"]},
     "acentuacao": {"nota": 0-10, "erros_encontrados": ["..."]}
   },
   "melhorias_prioritarias": ["...", "...", "..."],
-  "pontos_fortes": ["...", "...", "..."],
-  "acentos_faltantes": ["palavra_errada → correção", "..."]
+  "pontos_fortes": ["...", "..."],
+  "acentos_faltantes": ["palavra_errada -> correção"]
 }
 ```
 
-Escreva todas as observações em Português do Brasil com acentuação completa e ortografia correta.
+Escreva todas as observações em português do Brasil com acentuação completa e ortografia
+correta, sem emoji e sem travessão.

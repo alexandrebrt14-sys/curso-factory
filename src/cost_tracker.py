@@ -103,6 +103,43 @@ class CostTracker:
                 totais[p] = totais.get(p, 0.0) + e["custo_usd"]
         return totais
 
+    def pode_chamar(self, provider: str, course_id: str = "") -> tuple[bool, str]:
+        """Decide se a próxima chamada cabe no orçamento e diz qual limite barrou.
+
+        Combina o teto por curso (`check_before_call`) com o teto total da
+        sessão. O teto DIÁRIO por provedor fica de fora de propósito: quando
+        um provedor cai e a cadeia de fallback concentra tudo em outro, o
+        teto diário do sobrevivente cortava o pipeline no meio (E2E de
+        02/09/2026: revisão interrompida na aula 2 com US$ 2,13 no Anthropic).
+        O que protege o bolso é o teto por curso e o da sessão.
+
+        Returns:
+            (True, "") quando pode chamar; (False, motivo) quando não.
+        """
+        session_sum = sum(self.get_session_total().values())
+        if session_sum >= SESSION_BUDGET_TOTAL:
+            return False, f"orçamento da sessão esgotado (USD {session_sum:.2f} >= {SESSION_BUDGET_TOTAL:.2f})"
+        if course_id:
+            course_costs = self.get_course_total(course_id)
+            total_course = sum(course_costs.values())
+            claude_course = course_costs.get("anthropic", 0.0)
+            if provider == "anthropic" and claude_course >= CLAUDE_BUDGET_PER_COURSE:
+                return False, f"orçamento Claude do curso esgotado (USD {claude_course:.2f} >= {CLAUDE_BUDGET_PER_COURSE:.2f})"
+            if total_course >= TOTAL_BUDGET_PER_COURSE:
+                return False, f"orçamento total do curso esgotado (USD {total_course:.2f} >= {TOTAL_BUDGET_PER_COURSE:.2f})"
+        return True, ""
+
+    def indice_atual(self) -> int:
+        """Posição do ledger, para medir o que uma etapa consumiu (`entradas_desde`)."""
+        return len(self._entries)
+
+    def entradas_desde(self, indice: int, course_id: str = "") -> list[dict]:
+        """Entradas registradas a partir de `indice`, filtradas por curso quando pedido."""
+        novas = self._entries[indice:]
+        if course_id:
+            novas = [e for e in novas if e.get("course_id") == course_id]
+        return list(novas)
+
     def check_before_call(self, provider: str, course_id: str = "") -> bool:
         """Verifica se a próxima chamada está dentro do budget.
 

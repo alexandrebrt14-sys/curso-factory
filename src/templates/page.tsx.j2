@@ -20,11 +20,72 @@ interface Step {
   content: Section[];
 }
 
+/* Cargas dos blocos visuais. As formas são as do motor de cursos da landing
+   (src/types/course-page.ts): campo renomeado aqui quebra a montagem lá. */
+interface DataTablePayload {
+  title?: string;
+  columns: string[];
+  rows: string[][];
+  source?: string;
+  note?: string;
+}
+
+interface ComparisonSide {
+  header: string;
+  items: string[];
+}
+
+/* Valência fixa: `left` é sempre o lado a evitar, `right` o recomendado. */
+interface ComparisonPayload {
+  title: string;
+  left: ComparisonSide;
+  right: ComparisonSide;
+  leftChip?: string;
+  rightChip?: string;
+}
+
+interface StatGridPayload {
+  title?: string;
+  stats: { value: string; label: string; sub?: string }[];
+  source?: string;
+}
+
+interface StepGuidePayload {
+  title: string;
+  intro?: string;
+  steps: { label: string; detail?: string; success?: string; pitfall?: string }[];
+  outcome?: string;
+}
+
+interface TimelinePayload {
+  title?: string;
+  events: { date: string; label: string; detail?: string; tone?: "past" | "now" | "future" }[];
+}
+
+type SectionData =
+  | DataTablePayload
+  | ComparisonPayload
+  | StatGridPayload
+  | StepGuidePayload
+  | TimelinePayload;
+
 interface Section {
-  type: "text" | "code" | "warning" | "tip" | "checkpoint" | "image-placeholder";
+  type:
+    | "text"
+    | "code"
+    | "warning"
+    | "tip"
+    | "figure"
+    | "dataTable"
+    | "comparison"
+    | "statGrid"
+    | "stepGuide"
+    | "timeline"
+    | "image-placeholder";
   value: string;
   language?: string;
   label?: string;
+  data?: SectionData;
 }
 
 /* ───────── LUCIDE ICONS (enterprise style) ───────── */
@@ -191,6 +252,32 @@ const icons: Record<string, React.ReactNode> = {
       <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
     </svg>
   ),
+  /* ── Ícones dos blocos visuais ── */
+  circleX: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+    </svg>
+  ),
+  circleXSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+    </svg>
+  ),
+  circleCheckSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+    </svg>
+  ),
+  alertTriangleSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  ),
+  flagSm: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+    </svg>
+  ),
   clipboard: (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
@@ -249,6 +336,10 @@ const STEPS: Step[] = [
 {% for section in step.content %}
 {% if section.type == "code" %}
       { type: "code", value: "{{ section.value | js_escape }}", language: "{{ section.language | default('text') }}" },
+{% elif section.data %}
+      { type: "{{ section.type }}", value: "{{ section.value | js_escape }}", label: "{{ section.label | js_escape }}", data: {{ section.data | js_json }} },
+{% elif section.type == "figure" %}
+      { type: "figure", value: "{{ section.value | js_escape }}", label: "{{ section.label | js_escape }}" },
 {% else %}
       { type: "{{ section.type }}", value: "{{ section.value | js_escape }}" },
 {% endif %}
@@ -493,12 +584,282 @@ function FormattedText({ value }: { value: string }) {
   return <div className="text-[var(--text)] text-[15px]">{elements}</div>;
 }
 
+/* ───────── BLOCOS VISUAIS ───────── */
+/* Todos usam token CSS para cor. Hex cravado some no tema escuro. */
+
+function BlockTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h4 className="font-bold text-[var(--text)] text-[15px] mb-3">{children}</h4>
+  );
+}
+
+/* Nota de rodapé do bloco. A FONTE não é desenhada aqui: desde 08/09/2026
+   (R7) o `source` do payload sobe para o bloco "Fontes" do rodapé da página,
+   em corpo pequeno, para não competir com a leitura no meio do texto. */
+function BlockFootnote({ note }: { note?: string }) {
+  if (!note) return null;
+  return (
+    <div className="mt-2 space-y-1">
+      <p className="text-xs text-[var(--text-muted)] leading-relaxed">{note}</p>
+    </div>
+  );
+}
+
+/* Figura: SVG inline ou marcação de imagem, com legenda obrigatória. */
+function FigureBlock({ markup, caption }: { markup: string; caption?: string }) {
+  return (
+    <figure className="my-5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-4">
+      <div
+        className="w-full overflow-x-auto [&>svg]:max-w-full [&>svg]:h-auto [&_img]:max-w-full [&_img]:h-auto"
+        dangerouslySetInnerHTML={% raw %}{{ __html: markup }}{% endraw %}
+      />
+      {caption && (
+        <figcaption className="mt-3 text-xs text-[var(--text-muted)] leading-relaxed">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* Tabela de dados. Rola sozinha no celular: o contêiner tem overflow-x-auto e
+   largura máxima própria, então a página nunca rola na horizontal. */
+function DataTableBlock({ data }: { data: DataTablePayload }) {
+  return (
+    <div className="my-5 max-w-full">
+      {data.title && <BlockTitle>{data.title}</BlockTitle>}
+      <div className="w-full max-w-full overflow-x-auto rounded-[var(--radius)] border border-[var(--border)]">
+        <table className="w-full min-w-[520px] text-sm border-collapse">
+          <thead>
+            <tr className="bg-[var(--bg-muted)] border-b border-[var(--border)]">
+              {data.columns.map((col, ci) => (
+                <th
+                  key={ci}
+                  className="px-3 py-2.5 text-left font-semibold text-[var(--text)] text-[13px] uppercase tracking-wider whitespace-nowrap"
+                  scope="col"
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.rows.map((row, ri) => (
+              <tr
+                key={ri}
+                className={`border-b border-[var(--border-light)] ${ri % 2 === 1 ? "bg-[var(--bg-muted)]/40" : ""}`}
+              >
+                {row.map((cell, ci) => (
+                  <td
+                    key={ci}
+                    className={`px-3 py-2 text-[13px] align-top ${ci === 0 ? "font-medium text-[var(--text)]" : "text-[var(--text-muted)]"}`}
+                  >
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <BlockFootnote note={data.note} />
+    </div>
+  );
+}
+
+/* Comparativo de valência FIXA: `left` é o lado a evitar, `right` o
+   recomendado. Ícone, cor e etiqueta seguem essa ordem, e trocá-los carimba um
+   certo justamente no que o texto manda descartar. */
+function ComparisonBlock({ data }: { data: ComparisonPayload }) {
+  return (
+    <div className="my-5">
+      <BlockTitle>{data.title}</BlockTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Lado a evitar */}
+        <div className="rounded-[var(--radius)] border border-[var(--danger)]/40 bg-[var(--danger-light)] p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="flex-shrink-0">{icons.circleX}</span>
+            <span className="font-bold text-sm text-[var(--danger)]">{data.left.header}</span>
+          </div>
+          <span className="inline-block mb-3 text-[11px] font-bold uppercase tracking-wider text-[var(--danger)] border border-[var(--danger)]/40 rounded-full px-2 py-0.5">
+            {data.leftChip || "Evite"}
+          </span>
+          <ul className="space-y-2">
+            {data.left.items.map((item, i) => (
+              <li key={i} className="flex gap-2 items-start text-sm text-[var(--text)] leading-relaxed">
+                <span className="flex-shrink-0 mt-[3px]">{icons.circleXSm}</span>
+                <span className="flex-1">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Lado recomendado */}
+        <div className="rounded-[var(--radius)] border border-[var(--success)]/40 bg-[var(--success-light)] p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="flex-shrink-0">{icons.circleCheck}</span>
+            <span className="font-bold text-sm text-[var(--success)]">{data.right.header}</span>
+          </div>
+          <span className="inline-block mb-3 text-[11px] font-bold uppercase tracking-wider text-[var(--success)] border border-[var(--success)]/40 rounded-full px-2 py-0.5">
+            {data.rightChip || "Recomendado"}
+          </span>
+          <ul className="space-y-2">
+            {data.right.items.map((item, i) => (
+              <li key={i} className="flex gap-2 items-start text-sm text-[var(--text)] leading-relaxed">
+                <span className="flex-shrink-0 mt-[3px]">{icons.circleCheckSm}</span>
+                <span className="flex-1">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Painel de números que só fazem sentido juntos. */
+function StatGridBlock({ data }: { data: StatGridPayload }) {
+  return (
+    <div className="my-5">
+      {data.title && <BlockTitle>{data.title}</BlockTitle>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {data.stats.map((stat, i) => (
+          <div
+            key={i}
+            className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-4"
+          >
+            <div className="text-[28px] font-extrabold leading-tight text-[var(--accent)]">
+              {stat.value}
+            </div>
+            <div className="mt-1 text-sm font-semibold text-[var(--text)] leading-snug">
+              {stat.label}
+            </div>
+            {stat.sub && (
+              <div className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">{stat.sub}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Passo a passo numerado. `success` e `pitfall` ficam visualmente distintos do
+   `detail` por ícone, cor e fundo. */
+function StepGuideBlock({ data }: { data: StepGuidePayload }) {
+  return (
+    <div className="my-5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--card)] p-4 sm:p-5">
+      <BlockTitle>{data.title}</BlockTitle>
+      {data.intro && (
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">{data.intro}</p>
+      )}
+      <ol className="space-y-4">
+        {data.steps.map((step, i) => (
+          <li key={i} className="flex gap-3 items-start">
+            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[var(--accent)] text-white text-xs font-bold flex items-center justify-center">
+              {i + 1}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm text-[var(--text)] leading-snug">{step.label}</p>
+              {step.detail && (
+                <p className="mt-1 text-sm text-[var(--text-muted)] leading-relaxed">{step.detail}</p>
+              )}
+              {step.success && (
+                <p className="mt-2 flex gap-2 items-start text-xs leading-relaxed text-[var(--success)] bg-[var(--success-light)] rounded-[var(--radius)] px-2.5 py-1.5">
+                  <span className="flex-shrink-0 mt-[1px]">{icons.circleCheckSm}</span>
+                  <span className="flex-1">
+                    <strong className="font-bold">Deu certo quando: </strong>
+                    {step.success}
+                  </span>
+                </p>
+              )}
+              {step.pitfall && (
+                <p className="mt-2 flex gap-2 items-start text-xs leading-relaxed text-[var(--danger)] bg-[var(--danger-light)] rounded-[var(--radius)] px-2.5 py-1.5">
+                  <span className="flex-shrink-0 mt-[1px]">{icons.alertTriangleSm}</span>
+                  <span className="flex-1">
+                    <strong className="font-bold">Onde se erra: </strong>
+                    {step.pitfall}
+                  </span>
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+      {data.outcome && (
+        <div className="mt-4 pt-3 border-t border-[var(--border-light)] flex gap-2 items-start">
+          <span className="flex-shrink-0 mt-[3px]">{icons.flagSm}</span>
+          <p className="text-sm text-[var(--text)] leading-relaxed">
+            <strong className="font-bold">No fim você tem: </strong>
+            {data.outcome}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Linha do tempo. O `tone` muda a marcação do marco: passado discreto, agora em
+   destaque, futuro apenas contornado. */
+function TimelineBlock({ data }: { data: TimelinePayload }) {
+  return (
+    <div className="my-5">
+      {data.title && <BlockTitle>{data.title}</BlockTitle>}
+      <ol className="relative border-l-2 border-[var(--border)] ml-2 space-y-5 pl-5 py-1">
+        {data.events.map((event, i) => {
+          const tone = event.tone || "past";
+          const dot =
+            tone === "now"
+              ? "bg-[var(--accent)] border-[var(--accent)]"
+              : tone === "future"
+              ? "bg-[var(--card)] border-[var(--text-light)]"
+              : "bg-[var(--text-light)] border-[var(--text-light)]";
+          const dateColor =
+            tone === "now"
+              ? "text-[var(--accent)]"
+              : tone === "future"
+              ? "text-[var(--text-light)]"
+              : "text-[var(--text-muted)]";
+          return (
+            <li key={i} className="relative">
+              <span
+                className={`absolute -left-[27px] top-1 w-3 h-3 rounded-full border-2 ${dot}`}
+                aria-hidden="true"
+              />
+              <div className="flex flex-wrap items-baseline gap-x-2">
+                <span className={`text-xs font-bold uppercase tracking-wider ${dateColor}`}>
+                  {event.date}
+                </span>
+                {tone === "now" && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] border border-[var(--accent)]/40 rounded-full px-1.5 py-[1px]">
+                    Agora
+                  </span>
+                )}
+              </div>
+              <p className="font-semibold text-sm text-[var(--text)] leading-snug mt-0.5">
+                {event.label}
+              </p>
+              {event.detail && (
+                <p className="mt-1 text-sm text-[var(--text-muted)] leading-relaxed">
+                  {event.detail}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 /* ───────── COMPONENT: StepCard ───────── */
 function StepCard({
   step,
   index,
   isOpen,
   isCompleted,
+  completedCount,
+  totalSteps,
   onToggle,
   onComplete,
 }: {
@@ -506,6 +867,8 @@ function StepCard({
   index: number;
   isOpen: boolean;
   isCompleted: boolean;
+  completedCount: number;
+  totalSteps: number;
   onToggle: () => void;
   onComplete: () => void;
 }) {
@@ -538,17 +901,12 @@ function StepCard({
           {isCompleted ? icons.checkLg : (icons[STEP_ICONS[step.id]] || <span className="text-sm font-bold">{String(index + 1).padStart(2, "0")}</span>)}
         </div>
 
-        {/* Title & meta */}
+        {/* Título e subtítulo (R1): nada entre eles, nada de chip de metadado. */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <h3 className={`font-bold text-lg ${isCompleted ? "text-[var(--success)]" : "text-[var(--text)]"}`}>
-              {step.title}
-            </h3>
-            <span className="text-xs font-medium text-[var(--text-light)] bg-[var(--bg-muted)] px-2 py-0.5 rounded-full">
-              {step.duration}
-            </span>
-          </div>
-          <p className="text-sm text-[var(--text-muted)] line-clamp-1">{step.description}</p>
+          <h3 className={`font-bold text-lg mb-1 ${isCompleted ? "text-[var(--success)]" : "text-[var(--text)]"}`}>
+            {step.title}
+          </h3>
+          <p className="text-sm text-[var(--text-muted)] leading-snug">{step.description}</p>
         </div>
 
         {/* Chevron */}
@@ -581,30 +939,44 @@ function StepCard({
                       <p className="text-sm text-[var(--accent-dark)] leading-relaxed text-justify">{section.value}</p>
                     </div>
                   );
-                case "checkpoint":
-                  return (
-                    <div key={i} className="flex gap-3 p-4 rounded-[var(--radius)] bg-[var(--success-light)] border border-[var(--success)]/20">
-                      <span className="flex-shrink-0 mt-0.5">{icons.circleCheck}</span>
-                      <div>
-                        <span className="text-xs font-bold text-[var(--success)] uppercase tracking-wider block mb-1">Checkpoint</span>
-                        <p className="text-sm text-[var(--success)] leading-relaxed text-justify">{section.value}</p>
-                      </div>
-                    </div>
-                  );
+                case "figure":
+                  return <FigureBlock key={i} markup={section.value} caption={section.label} />;
+                case "dataTable":
+                  return section.data ? (
+                    <DataTableBlock key={i} data={section.data as DataTablePayload} />
+                  ) : null;
+                case "comparison":
+                  return section.data ? (
+                    <ComparisonBlock key={i} data={section.data as ComparisonPayload} />
+                  ) : null;
+                case "statGrid":
+                  return section.data ? (
+                    <StatGridBlock key={i} data={section.data as StatGridPayload} />
+                  ) : null;
+                case "stepGuide":
+                  return section.data ? (
+                    <StepGuideBlock key={i} data={section.data as StepGuidePayload} />
+                  ) : null;
+                case "timeline":
+                  return section.data ? (
+                    <TimelineBlock key={i} data={section.data as TimelinePayload} />
+                  ) : null;
                 default:
                   return null;
               }
             })}
 
-            {/* Reading progress indicator */}
+            {/* Tempo de leitura e progresso: no fim do módulo, nunca no topo (R1/R2). */}
             <div className="mt-4 pt-3 border-t border-[var(--border-light)]">
               <div className="flex items-center gap-2 text-xs text-[var(--text-light)]">
                 <span className="flex-shrink-0">{icons.clock}</span>
                 <span>Tempo estimado: {step.duration}</span>
+                <span aria-hidden="true">·</span>
+                <span>{completedCount}/{totalSteps} concluídos</span>
               </div>
             </div>
 
-            {/* Complete step button */}
+            {/* Único botão do módulo, depois da leitura (R2) */}
             <div className="pt-4 flex items-center gap-3">
               <button
                 onClick={onComplete}
@@ -686,8 +1058,6 @@ export default function {{ component_name }}() {
     setCompleted(next);
   };
 
-  const progress = Math.round((completed.size / STEPS.length) * 100);
-
   const resetProgress = () => {
     setCompleted(new Set());
     setOpenStep("{{ steps[0].id }}");
@@ -706,154 +1076,33 @@ export default function {{ component_name }}() {
       />
 
       <main id="main-content">
-        {/* Hero */}
+        {/* Abertura (R1, 08/09/2026): título, subtítulo em uma frase e o parágrafo
+            de descrição. Nada antes do H1, nada entre eles: sem rótulo, sem barra
+            de estatísticas, sem barra de progresso, sem índice de módulos, sem
+            card "o que você vai aprender". O leitor entra direto na leitura. */}
         <section className="py-16 sm:py-20 px-6" style={{ '{{' }} background: "linear-gradient(135deg, {{ hero_gradient_from }} 0%, {{ hero_gradient_to }} 100%)" {{ '}}' }}>
           <div className="max-w-[var(--max)] mx-auto">
             <div className="max-w-3xl">
-              <span className="sf-label mb-3 block text-white/80">{{ descricao_curta | js_escape }}</span>
-              <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold text-white leading-[1.1] mb-5">
+              <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold text-white leading-[1.1] mb-4">
                 {{ titulo | js_escape }}
               </h1>
-              <p className="text-lg text-white/80 leading-relaxed mb-8 max-w-2xl">
+              <p className="text-xl text-white/90 leading-snug mb-4 max-w-2xl">
+                {{ descricao_curta | js_escape }}
+              </p>
+{% if descricao and descricao != descricao_curta %}
+              <p className="text-lg text-white/80 leading-relaxed max-w-2xl text-justify">
                 {{ descricao | js_escape }}
               </p>
-
-              {/* Stats row */}
-              <div className="flex flex-wrap gap-6 text-sm">
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.clock}
-                  <span>Tempo estimado: ~{{ duracao_display }}</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.bookOpen}
-                  <span>{STEPS.length} módulos</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.graduationCap}
-                  <span>Nível: {{ nivel_display | js_escape }}</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  {icons.layers}
-                  <span>{{ tags | join(', ') }}</span>
-                </div>
-              </div>
+{% endif %}
             </div>
           </div>
         </section>
 
-        {/* Progress bar */}
-        <div className="sticky top-[57px] z-[5] bg-white/95 backdrop-blur-sm border-b border-[var(--border)]">
-          <div className="max-w-[var(--max)] mx-auto px-6 py-3">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 flex-1">
-                <span className="text-sm font-semibold text-[var(--text)] whitespace-nowrap">
-                  {completed.size}/{STEPS.length} concluídos
-                </span>
-                <div className="flex-1 h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500 ease-out"
-                    style={% raw %}{{
-                      width: `${progress}%`,
-                      background: progress === 100
-                        ? "var(--success)"
-                        : "var(--accent)",
-                    }}{% endraw %}
-                  />
-                </div>
-                <span className="text-sm font-bold text-[var(--accent)] whitespace-nowrap">
-                  {progress}%
-                </span>
-              </div>
-              {completed.size > 0 && (
-                <button
-                  onClick={resetProgress}
-                  className="text-xs text-[var(--text-light)] hover:text-[var(--text)] transition-colors"
-                >
-                  Resetar
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Course sidebar + content */}
+        {/* Um único percurso, linear (R3): os módulos, na ordem, sem sidebar. */}
         <section className="py-12 px-6">
           <div className="max-w-[var(--max)] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
-              {/* Sidebar - module index */}
-              <aside className="hidden lg:block">
-                <div className="sticky top-[110px]">
-                  <h4 className="font-bold text-[var(--text)] text-sm mb-4 uppercase tracking-wider">
-                    Módulos
-                  </h4>
-                  <nav className="space-y-1">
-                    {STEPS.map((step, i) => (
-                      <button
-                        key={step.id}
-                        onClick={() => {
-                          setOpenStep(step.id);
-                          document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-                        }}
-                        className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius)] text-sm transition-colors ${
-                          openStep === step.id
-                            ? "bg-[var(--accent-lighter)] text-[var(--accent)] font-semibold"
-                            : completed.has(step.id)
-                            ? "text-[var(--success)] hover:bg-[var(--success-light)]"
-                            : "text-[var(--text-muted)] hover:bg-[var(--bg-muted)] hover:text-[var(--text)]"
-                        }`}
-                      >
-                        <span className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
-                          completed.has(step.id)
-                            ? "bg-[var(--success)] text-white"
-                            : openStep === step.id
-                            ? "bg-[var(--accent)] text-white"
-                            : "bg-[var(--bg-muted)] text-[var(--text-muted)]"
-                        }`}>
-                          {completed.has(step.id) ? (
-                            icons.check
-                          ) : (
-                            <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{icons[STEP_ICONS[step.id]] || String(i + 1).padStart(2, "0")}</span>
-                          )}
-                        </span>
-                        <span className="truncate">{step.title}</span>
-                      </button>
-                    ))}
-                  </nav>
-
-                  {/* Prerequisites card */}
-                  <div className="mt-8 p-4 rounded-[var(--radius)] bg-[var(--bg-muted)] border border-[var(--border-light)]">
-                    <h5 className="font-bold text-sm text-[var(--text)] mb-2">Pré-requisitos</h5>
-                    <ul className="text-xs text-[var(--text-muted)] space-y-2">
-{% for prereq in prerequisitos_display %}
-                      <li className="flex items-start gap-2">
-                        <span className="mt-0.5 flex-shrink-0">{icons.targetSm}</span>
-                        {{ prereq | js_escape }}
-                      </li>
-{% endfor %}
-                    </ul>
-                  </div>
-                </div>
-              </aside>
-
-              {/* Steps list */}
+            <div className="max-w-3xl mx-auto">
               <div className="space-y-4">
-                {/* Intro card */}
-                <div className="p-6 rounded-[var(--radius-lg)] bg-[var(--card-dark)] text-white mb-6">
-                  <h2 className="text-xl font-bold mb-3">O que você vai aprender</h2>
-                  <p className="text-sm text-[#a6adc8] leading-relaxed mb-4 text-justify">
-                    {{ descricao | js_escape }}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-{% for tag in tags[:3] %}
-                    <div className="flex items-center gap-3 text-sm text-[#cdd6f4] bg-white/5 rounded-lg px-3 py-2.5">
-                      <span className="text-[#a6e3a1]">{icons.checkCircle}</span>
-                      {{ tag | js_escape }}
-                    </div>
-{% endfor %}
-                  </div>
-                </div>
-
-                {/* Steps */}
                 {STEPS.map((step, i) => (
                   <StepCard
                     key={step.id}
@@ -861,6 +1110,8 @@ export default function {{ component_name }}() {
                     index={i}
                     isOpen={openStep === step.id}
                     isCompleted={completed.has(step.id)}
+                    completedCount={completed.size}
+                    totalSteps={STEPS.length}
                     onToggle={() => toggleStep(step.id)}
                     onComplete={() => completeStep(step.id)}
                   />
@@ -883,6 +1134,12 @@ export default function {{ component_name }}() {
                       <a href="/conteudos" className="sf-btn-outline">
                         Ler artigos técnicos
                       </a>
+                      <button
+                        onClick={resetProgress}
+                        className="text-xs text-[var(--text-light)] hover:text-[var(--text)] transition-colors"
+                      >
+                        Recomeçar do primeiro módulo
+                      </button>
                     </div>
                   </div>
                 )}
@@ -925,6 +1182,26 @@ export default function {{ component_name }}() {
                     </p>
                   </div>
                 </div>
+
+{% if prerequisitos_display %}
+                {/* Pré-requisitos: uma linha discreta, longe do topo. */}
+                <p className="mt-8 text-[0.8rem] leading-relaxed text-[var(--text-light)]">
+                  <span className="font-semibold">Antes de começar:</span> {{ prerequisitos_display | join('; ') | js_escape }}.
+                </p>
+{% endif %}
+{% if fontes %}
+                {/* Fontes (R7, 08/09/2026): uma vez, no rodapé, em corpo pequeno.
+                    Nome da fonte e link, sem comentário, para não competir com a
+                    leitura no meio da página. Nenhum bloco desenha "Fonte:" inline. */}
+                <section aria-label="Fontes" className="mt-10 pt-4 border-t border-[var(--border-light)] text-[0.8rem] leading-relaxed text-[var(--text-light)]">
+                  <h2 className="text-[0.8rem] font-semibold uppercase tracking-wider mb-2">Fontes</h2>
+                  <ol className="list-decimal pl-5 space-y-1">
+{% for fonte in fontes %}
+                    <li>{{ fonte | fonte_jsx }}</li>
+{% endfor %}
+                  </ol>
+                </section>
+{% endif %}
               </div>
             </div>
           </div>

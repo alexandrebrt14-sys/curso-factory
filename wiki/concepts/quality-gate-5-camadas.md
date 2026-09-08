@@ -4,12 +4,13 @@ type: concept
 category: architecture
 status: stable
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-09-08
 related:
   - accent-checker
   - content-checker
   - voice-guard
   - claude-reviewer
+  - abertura-checker
 ---
 
 # Quality Gate (5 camadas de validação)
@@ -71,6 +72,16 @@ bloqueantes em camada 2:
 - Quotation count atribuída.
 - Compression Fidelity.
 - Schema-content parity.
+
+## 08/09/2026 — abertura e distração (R1 a R9) dentro da camada 2 e na publicação
+
+A camada 2 ([[content-checker]]) passou a emitir a categoria `abertura`, erro bloqueante,
+vinda do [[abertura-checker]]: abertura em H1, subtítulo e parágrafo (R1); sem percurso
+alternativo (R3), "mockup no seu negócio" (R5), exercício "faça agora" (R6), card
+"checkpoint" (R8), "requer verificação" e LGPD (R9); fonte só no rodapé da trilha (R7). A
+mesma régua morde a publicação: `TsxGenerator.render_page` levanta `AberturaError` antes de
+escrever o TSX. Regras e mapa do código em [[abertura-direta-sem-distracao]]; a cobrança de
+exercício ("3+ por módulo", depois "1 por aula") foi invertida (zero).
 
 ## Quality Gate vs Karpathy Lint
 

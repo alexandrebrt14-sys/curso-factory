@@ -30,9 +30,38 @@ GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 PERPLEXITY_API_KEY: str = os.getenv("PERPLEXITY_API_KEY", "")
 
 # --- Limites FinOps (em USD) ---
-DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", "2.00"))
+# Teto diário por provedor. Só o relatório e `is_over_budget` o usam; o
+# orquestrador decide por curso e por sessão (`CostTracker.pode_chamar`),
+# porque o teto diário do provedor sobrevivente cortava o pipeline quando a
+# cadeia de fallback concentrava as chamadas nele (E2E de 02/09/2026).
+DAILY_BUDGET_PER_PROVIDER: float = float(os.getenv("DAILY_BUDGET_PER_PROVIDER", "5.00"))
 SESSION_BUDGET_TOTAL: float = float(os.getenv("SESSION_BUDGET_TOTAL", "5.00"))
 MAX_TOKENS_PER_CALL: int = int(os.getenv("MAX_TOKENS_PER_CALL", "16384"))
+
+# --- Tamanho dos insumos por etapa (caracteres) ---
+# A geração é por AULA desde 02/09/2026: cada chamada do writer recebe a
+# pesquisa inteira até este teto (antes eram 3.000 caracteres, que deixavam o
+# redator sem dado e produziam aula rasa). 40 mil caracteres cabem com folga
+# no contexto do GPT-4o (128 mil tokens).
+DRAFT_RESEARCH_CONTEXT_CHARS: int = int(os.getenv("DRAFT_RESEARCH_CONTEXT_CHARS", "40000"))
+#: Aula que volta abaixo do piso do molde ganha UMA passada de expansão, com o
+#: rascunho curto e os números na mão. Motivo (03/09/2026): no teste real, cinco
+#: de seis aulas vieram entre 640 e 900 palavras contra alvo de 900 a 1.800, e a
+#: única reprovação do curso foi a aula de 641. Desligue com 0.
+DRAFT_EXPANSAO_ABAIXO_DO_PISO: bool = (
+    os.getenv("DRAFT_EXPANSAO_ABAIXO_DO_PISO", "1").strip().lower() not in ("0", "false", "nao", "não")
+)
+# A classificação (Groq, 128 mil tokens de contexto) não precisa do curso inteiro.
+CLASSIFY_CONTEXT_CHARS: int = int(os.getenv("CLASSIFY_CONTEXT_CHARS", "60000"))
+# Trecho do relatório da análise (Gemini) que acompanha cada aula na revisão.
+REVIEW_ANALYSIS_CHARS: int = int(os.getenv("REVIEW_ANALYSIS_CHARS", "3000"))
+# Revisão que devolve menos que esta fração das palavras recebidas é
+# comentário, não revisão: o rascunho original é mantido.
+REVIEW_MIN_RATIO: float = float(os.getenv("REVIEW_MIN_RATIO", "0.6"))
+# Fechamento da trilha (wave 5): as aulas do módulo e a pesquisa que viajam no
+# prompt que escreve objetivos, pré-requisitos, glossário, FAQ e fontes.
+TRAIL_LESSONS_CHARS: int = int(os.getenv("TRAIL_LESSONS_CHARS", "60000"))
+TRAIL_RESEARCH_CHARS: int = int(os.getenv("TRAIL_RESEARCH_CHARS", "20000"))
 
 # --- Budget per course (AAA quality) ---
 CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5.00"))
@@ -49,7 +78,7 @@ EDUCACAO_DIR: Path = LANDING_PAGE_DIR / "src" / "app" / "educacao"
 CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
 
 # --- Modelo Claude (AAA = Opus) ---
-CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-opus-4-6")
+CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
 
 
 def load_courses() -> list[dict[str, Any]]:

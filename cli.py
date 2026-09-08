@@ -78,6 +78,12 @@ def cmd_create(args: argparse.Namespace) -> int:
     status = "concluído com sucesso" if result.sucesso else "interrompido com erros"
     print(f"\nPipeline {status}")
     print(f"Etapas executadas: {', '.join(result.etapas.keys()) or '(nenhuma)'}")
+    for nome, usados in result.provedores.items():
+        print(f"  {nome}: " + ", ".join(f"{k} ({n})" for k, n in usados.items()))
+    if result.etapas.get("gate_report"):
+        print("\n" + result.etapas["gate_report"])
+    for a in result.avisos:
+        print(f"  AVISO: {a}")
     for e in result.erros:
         print(f"  ERRO: {e}")
     print(f"Custo total: ${custo_total:.4f}")

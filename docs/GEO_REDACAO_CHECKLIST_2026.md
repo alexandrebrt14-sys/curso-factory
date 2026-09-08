@@ -6,6 +6,8 @@
 >
 > **Para que serve:** transformar a orientação genérica "cite fontes" em uma rubrica **com número-alvo por técnica e o lift empírico que justifica cada uma**. É a resposta direta à pergunta "como o conteúdo deve ser escrito para ter o maior ganho possível em Generative Engine Optimization".
 >
+> **Precedência (08/09/2026):** as regras de abertura e distração R1 a R9 (`DIRETRIZ_EDITORIAL.md`) vencem esta rubrica onde colidirem. Fonte inline discreta "(Autor, Ano)" continua valendo para Cite Sources; o que NÃO entra mais é fonte em card, callout ou linha "Fonte:" no meio do texto: a lista de fontes vive num único bloco pequeno no rodapé (R7). Citação de especialista, se entrar, entra como prosa com atribuição, nunca como card. A camada GEO é cobrada sobre o curso inteiro (trilha e rodapé), não por aula.
+>
 > **Como usar:** este é o material que o prompt do redator (`src/templates/prompts/pt-br/draft.md`) carimba e que o `content_checker.py` valida por contagem. Complementa — não substitui — o padrão editorial HSM/HBR/MIT Sloan, os princípios de andragogia de Knowles e a barreira de acentuação PT-BR. Para a teoria por trás dos números, ver `GEO_KNOWLEDGE_BASE_2026_V3.md`; para os conceitos numerados, `GEO_50_CONCEITOS_CANONICAL.md`.
 
 ---

@@ -99,7 +99,7 @@ Para um novo portal de outro segmento (ex: ensino técnico, gastronomia, finanç
 ## O que é **específico** do segmento atual (precisa adaptação)
 
 - Prompts em `src/templates/prompts/*.md` mencionam "HSM/HBR/MIT Sloan", "andragogia Knowles", "Bloom" — adequados para B2B/corporativo. Para outros segmentos, ajuste o prompt.
-- `content_checker.py` impõe 2.500-4.000 palavras/módulo, ≥1 tabela, ≥3 exercícios. Para cursos curtos (cooking class), relaxe via `client.yaml` (`editorial.words_per_module_min/max`) e via fork do checker.
+- `content_checker.py` mede cada aula contra `tetos.D` de `config/lexicos.json` (espelho da fonte de estilo): extensão, H2, H3 por H2, teto de apoios visuais, parágrafo e um exercício por aula. Régua diferente é mudança na fonte, nunca cópia local.
 - `src/indexer/course_indexer.py` integra com Supabase + OpenAI embeddings — substitua por outro provider de busca vetorial se preferir.
 - `docs/knowledge/geo-aeo/` é base de conhecimento sobre GEO. Não venha junto se o portal não é sobre GEO.
 

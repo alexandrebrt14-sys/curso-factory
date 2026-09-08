@@ -61,7 +61,7 @@ Scripts Python que fazem `str.replace()` ou regex para inserir conteúdo em pont
 
 ### 5. Falta de validação de qualidade de conteúdo
 
-Sem validação, módulos podem ser publicados sem tabelas, sem exercícios, sem princípios andragógicos ou com clichês proibidos. O **content_checker.py** valida automaticamente: presença de tabelas, contagem de palavras (2.500-4.000), hierarquia de títulos, blocos de citação, exercícios (mínimo 3), verbos de Bloom, princípios de Knowles e clichês proibidos.
+Sem validação, aulas podem ser publicadas rasas, com o topo carregado ou com clichês proibidos. O **content_checker.py** mede cada aula contra a régua da fonte de estilo (`config/lexicos.json`, `tetos.D`): extensão, H2 e H3 por H2, teto de apoios visuais, faixa de parágrafo, hierarquia de títulos, verbos de Bloom, marcadores de evidência e clichês proibidos. Desde 08/09/2026 o **abertura_checker.py** cobra também as regras R1 a R9 (abertura em título, subtítulo e parágrafo; sem exercício "faça agora", "mockup no seu negócio", card "checkpoint", "requer verificação" ou LGPD; fontes só no rodapé), no Markdown e na publicação do TSX.
 
 ### 6. Agentes falhando por API
 
@@ -111,11 +111,11 @@ O pipeline executa em **waves paralelas**: pesquisa e redação podem rodar em p
 
 | Etapa | Provider | Modelo | Papel | Por que este LLM |
 |-------|----------|--------|-------|-------------------|
-| **1. RESEARCH** | Perplexity | sonar-pro | Coleta dados atualizados, fontes, tendências 2026 | Único LLM com acesso a web em tempo real e citações |
-| **2. DRAFT** | OpenAI | gpt-4o | Redige módulos com padrão editorial HSM/HBR/MIT Sloan | Melhor redator longo em PT-BR, consistência de tom |
-| **3. ANALYZE** | Google | gemini-2.5-pro | Revisa qualidade pedagógica, andragogia, formatação, acentuação | Análise profunda e estruturada com alto contexto |
-| **4. CLASSIFY** | Groq | llama-3.3-70b | Classifica nível, tags, pré-requisitos, duração estimada | Latência ultra-baixa para classificação rápida |
-| **5. REVIEW** | Anthropic | claude-opus-4-6 | Revisão final: acentuação PT-BR, qualidade editorial, formatação | Melhor em instruções complexas e revisão crítica |
+| **1. RESEARCH** | Perplexity | sonar-deep-research | Coleta dados atualizados, fontes, tendências 2026 | Único LLM com acesso a web em tempo real e citações |
+| **2. DRAFT** | OpenAI | gpt-5.5 | Redige módulos com padrão editorial HSM/HBR/MIT Sloan | Melhor redator longo em PT-BR, consistência de tom |
+| **3. ANALYZE** | Google | gemini-3.1-pro-preview | Revisa qualidade pedagógica, andragogia, formatação, acentuação | Análise profunda e estruturada com alto contexto |
+| **4. CLASSIFY** | Google | gemini-3.7-flash | Classifica nível, tags, pré-requisitos, duração estimada | Latência ultra-baixa para classificação rápida |
+| **5. REVIEW** | Anthropic | claude-sonnet-5 | Revisão final: acentuação PT-BR, qualidade editorial, formatação | Melhor em instruções complexas e revisão crítica |
 
 ### Prompts externos de alta densidade
 
@@ -141,18 +141,18 @@ O agente pesquisador recebe o tópico do módulo e coleta:
 - Dados atualizados de 2026 com fontes citáveis e nível de confiança
 - Tendências de mercado e tecnologia com dados quantitativos
 - Análise competitiva de 5+ cursos concorrentes em tabela
-- 3-5 estudos de caso reais e verificáveis para exercícios
+- 3-5 estudos de caso reais e verificáveis para os exemplos das aulas
 
 ### Etapa 2 — Redação (GPT-4o)
 
 O agente redator recebe os dados da pesquisa e gera módulos com:
-- **Abertura com impacto** (dado surpreendente, caso real ou pergunta provocativa)
-- **Objetivos de aprendizagem** com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)
+- **Abertura direta (R1)**: subtítulo em uma frase e parágrafos ao ponto, nada antes nem entre eles
+- **Objetivos de aprendizagem** no nível da trilha, com verbos de Bloom nível 3+ (aplicar, analisar, avaliar, criar)
 - **Fundamentação conceitual** com evidências, dados e analogias sofisticadas
 - **Estudo de caso** estruturado (Contexto → Desafio → Abordagem → Resultado → Lições)
-- **Tabela comparativa** obrigatória (mínimo 1 por módulo)
-- **3+ exercícios práticos** com contexto profissional, critérios de avaliação e progressão Bloom
-- **Síntese executiva** com checklist de aplicação imediata
+- **Tabela comparativa** só quando substitui texto
+- **Nenhum exercício, checkpoint ou mockup** (R5, R6, R8): a aula é leitura e o próximo passo vai em prosa, no fecho
+- **Fecho** pelo caso, com uma ponte para a próxima aula
 
 ### Etapa 3 — Análise (Gemini)
 
@@ -162,7 +162,7 @@ O agente analista revisa o rascunho em 7 dimensões:
 - Formatação visual (tabelas, hierarquia, negrito, citações)
 - Conformidade andragógica (6 princípios de Knowles, nota por princípio)
 - Gaps de conteúdo (saltos cognitivos, omissões)
-- Exercícios (contexto profissional, Bloom, critérios)
+- Abertura e distração (R1 a R9: subtítulo, blocos proibidos, fontes fora do lugar)
 - Acentuação PT-BR (lista de todas as palavras sem acento)
 
 ### Etapa 4 — Classificação (Groq)
@@ -181,7 +181,7 @@ O agente revisor faz a passada final com **correção ativa** (não apenas comen
 - Reescrita de parágrafos superficiais com dados e análise
 - Eliminação de clichês proibidos
 - Adição de tabelas onde faltam
-- Verificação e correção de exercícios
+- Remoção dos blocos proibidos (R5 a R9) e correção da abertura (R1)
 - Validação de princípios andragógicos
 
 ---
@@ -204,12 +204,12 @@ O quality gate é a barreira final antes da publicação. Camadas 1-4 são bloqu
 
 | Verificação | Critério | Tipo |
 |-------------|----------|------|
-| Contagem de palavras | 2.500-4.000 por módulo | Bloqueante |
-| Tabelas | Mínimo 1 por módulo | Bloqueante |
-| Subtítulos | Mínimo 5-7 seções (H2/H3) | Bloqueante |
+| Contagem de palavras por aula | faixa de `tetos.D` em `config/lexicos.json` | Bloqueante abaixo do piso e acima do erro |
+| Abertura (R1) | H1, subtítulo em uma frase, parágrafo; nada entre eles | Bloqueante |
+| Blocos proibidos (R3, R5, R6, R8, R9) | percurso alternativo, mockup, exercício, checkpoint, "requer verificação", LGPD | Bloqueante |
+| Fontes (R7) | só no rodapé da trilha, último H2, uma linha curta por fonte | Bloqueante |
 | Hierarquia de títulos | Sem pulos (H2→H4 proibido) | Bloqueante |
-| Blocos de citação | Ao menos 1 para insights centrais | Bloqueante |
-| Exercícios | Mínimo 3 com contexto profissional | Bloqueante |
+| Exercícios | Zero por aula (`min_exercises_per_lesson: 0`) | Bloqueante se presente |
 | Clichês proibidos | 18 expressões banidas | Bloqueante |
 | Verbos de Bloom | Nível 3+ nos objetivos (proibido: "entender", "conhecer") | Bloqueante |
 | Princípios andragógicos | 5 indicadores de Knowles verificados | Bloqueante (3+ ausentes) |
@@ -312,8 +312,9 @@ Cada módulo inclui obrigatoriamente:
 - **Listas numeradas** para processos sequenciais, **com marcadores** para enumerações
 - **Hierarquia clara** de títulos (H2 > H3 > H4, sem pulos)
 - **Negrito** para termos-chave na primeira ocorrência
-- **Blocos de citação (>)** para insights centrais e conceitos memoráveis
-- **Exercícios** com progressão de complexidade (Taxonomia de Bloom), contexto profissional real e critérios de avaliação
+- **Abertura direta (R1)** e **nenhum bloco de distração** (R5 a R9): sem exercício, checkpoint, mockup, "requer verificação" ou LGPD; fontes num único bloco pequeno no rodapé (R7)
+
+O gerador não produz só prosa e código: o contrato de seções emite seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), e o parser promove tabela em Markdown, lista numerada de passos e imagem com legenda a partir do texto do modelo. A régua de peso visual (camada `visual_density` do `config/quality_rules.yaml`) é cobrada em `TsxGenerator.render_page`, antes da renderização: módulo que reprova levanta `VisualDensityError` e o curso não vira arquivo. Regras e payloads em [docs/DOUTRINA_VISUAL_CURSOS.md](docs/DOUTRINA_VISUAL_CURSOS.md).
 
 ### Expressões Proibidas
 
@@ -348,11 +349,11 @@ O pipeline possui 4 barreiras contra palavras sem acento:
 
 | Provider | Modelo | Custo/1M tokens (input) | Custo/1M tokens (output) | Limite diário | Papel |
 |----------|--------|-------------------------|--------------------------|---------------|-------|
-| Perplexity | sonar-pro | US$ 3,00 | US$ 15,00 | US$ 5,00 | Pesquisa |
-| OpenAI | gpt-4o | US$ 2,50 | US$ 10,00 | US$ 8,00 | Redação |
-| Google | gemini-2.5-pro | US$ 1,25 | US$ 10,00 | US$ 5,00 | Análise |
-| Groq | llama-3.3-70b | US$ 0,59 | US$ 0,79 | US$ 1,00 | Classificação |
-| Anthropic | claude-opus-4-6 | US$ 15,00 | US$ 75,00 | US$ 8,00 | Revisão |
+| Perplexity | sonar-deep-research | US$ 2,00 | US$ 8,00 | US$ 5,00 | Pesquisa |
+| OpenAI | gpt-5.5 | US$ 5,00 | US$ 15,00 | US$ 8,00 | Redação |
+| Google | gemini-3.1-pro-preview | US$ 2,00 | US$ 12,00 | US$ 5,00 | Análise |
+| Google | gemini-3.7-flash | US$ 1,50 | US$ 7,50 | US$ 1,00 | Classificação |
+| Anthropic | claude-sonnet-5 | US$ 3,00 | US$ 15,00 | US$ 8,00 | Revisão |
 
 ### Mecanismos de controle
 
@@ -450,7 +451,7 @@ curso-factory/
 ├── README.md
 ├── config/
 │   ├── courses.yaml          # Definição dos cursos a criar
-│   └── quality_rules.yaml    # Regras de qualidade e validação
+│   └── quality_rules.yaml    # Regras de qualidade e validação (inclui visual_density)
 ├── src/
 │   ├── __init__.py
 │   ├── config.py             # Configurações globais
@@ -484,14 +485,16 @@ curso-factory/
 │   │   └── course.schema.json # JSON Schema para CourseDefinition
 │   └── validators/
 │       ├── accent_checker.py  # 300+ mapeamentos, detecção + auto-correção
-│       ├── content_checker.py # Tabelas, exercícios, Bloom, andragogia, clichês
+│       ├── content_checker.py # Extensão, H2, Bloom, andragogia, clichês, abertura (R1 a R9)
 │       ├── html_validator.py  # Tags, acessibilidade, semântica
 │       ├── link_checker.py    # Acentos em URLs, links internos
+│       ├── visual_density.py  # Peso visual por módulo (camada visual_density do YAML)
 │       └── quality_gate.py    # Gate unificado de 5 camadas com auto-fix
 ├── tests/
 │   ├── fixtures/sample_course.json
 │   └── test_generators.py
 ├── docs/
+│   ├── DOUTRINA_VISUAL_CURSOS.md # Peso visual: tetos, seis tipos de bloco, quatro lugares
 │   └── FINOPS.md             # Documentação de custos e budget guard
 └── output/
     ├── drafts/               # Rascunhos em progresso
@@ -510,6 +513,7 @@ curso-factory/
 | [docs/GEO_REDACAO_CHECKLIST_2026.md](docs/GEO_REDACAO_CHECKLIST_2026.md) | **Como escrever conteúdo para o maior ganho em GEO.** Rubrica empírica de 13 técnicas com lift de citação medido, mapeada para módulos de curso; é o que o `content_checker.py` valida por contagem (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule). |
 | [docs/GEO_KNOWLEDGE_BASE_2026_V3.md](docs/GEO_KNOWLEDGE_BASE_2026_V3.md) | Estado da arte de GEO 20-mai a 03-jun-2026: AutoGEO (GEO/GEU Score), earned media 84%, Selection×Absorption, super-geo 4 tiers, conceitos 51-63, papers Q2 2026. |
 | [docs/GEO_EARNED_MEDIA_2026.md](docs/GEO_EARNED_MEDIA_2026.md) | Por que earned media domina a citação por IA (84% vs paid 0,3%); framework EMGE e KPIs K-EM. |
+| [docs/DOUTRINA_VISUAL_CURSOS.md](docs/DOUTRINA_VISUAL_CURSOS.md) | **Antes de gerar curso.** Os três tetos de peso visual, os seis tipos de bloco que o gerador emite, o que o parser promove sozinho e os quatro lugares que precisam mudar juntos ao criar um tipo novo. |
 | [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
 | [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
 

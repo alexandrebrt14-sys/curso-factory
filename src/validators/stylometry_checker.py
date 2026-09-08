@@ -399,8 +399,10 @@ def stylometry_check(
 
     if burstiness < 0.45:
         erros.append(
-            f"burstiness baixo ({burstiness:.3f} < 0.45) — cadencia uniforme "
-            "tipica de LLM cru; varie comprimento de sentencas"
+            f"burstiness baixo ({burstiness:.3f} < 0.45): cadencia uniforme "
+            "tipica de LLM cru. Reescreva os blocos em que as frases tem todas "
+            "o mesmo tamanho deixando o conteudo governar o comprimento (nunca "
+            "por cota de frase curta)"
         )
     if length_var < 20:
         avisos.append(
@@ -419,8 +421,9 @@ def stylometry_check(
         )
     if short == 0:
         avisos.append(
-            "nenhuma sentenca curta (<=6 palavras) — instrucao de cadencia "
-            "do draft.md nao foi seguida"
+            "nenhuma sentenca curta (<=6 palavras) no texto inteiro: possivel "
+            "uniformidade de periodo. Sinal para inspecionar, nao ordem para "
+            "inserir frase curta (ver DIRETRIZ_EDITORIAL.md, secao 4)"
         )
 
     aprovado = score >= min_score and not erros

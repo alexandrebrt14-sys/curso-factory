@@ -41,9 +41,8 @@ Liste os conhecimentos que o aluno deve ter antes de iniciar este curso. Para ca
 
 Estime o tempo de estudo para cada módulo, considerando:
 
-- Leitura do conteúdo teórico
-- Realização dos exercícios práticos
-- Tempo de prática/experimentação
+- Leitura do conteúdo
+- Tempo para o aluno aplicar o próximo passo dito no fecho de cada aula
 
 Forneça a estimativa em minutos por módulo e o total em horas.
 

@@ -23,7 +23,9 @@ Estrategia de parsing:
   - Paragrafos -> CourseSection(type=TEXT)
   - ```code blocks``` -> CourseSection(type=CODE, language=...)
   - Insights/notas -> CourseSection(type=TIP) heuristicamente
-  - Ultimo bloco do modulo -> CourseSection(type=CHECKPOINT) sintetico
+  - Subtitulo (primeira frase em linha propria) -> description do step (R1)
+  - Secao `## Fontes` da trilha -> CourseDefinition.fontes, rodape (R7)
+  - `> CHECKPOINT:` e afins sao descartados (R6/R8, 08/09/2026)
 - Best-effort: se um draft falhar parsing, retorna None e loga warning;
   o batch processor continua com os proximos
 """
@@ -47,6 +49,8 @@ from src.models import (
 )
 from src.parsers import (
     extract_module_blocks,
+    extrair_fontes,
+    extrair_subtitulo,
     parse_module_to_sections,
     short_id,
     slugify,
@@ -69,8 +73,13 @@ _parse_module_to_sections = parse_module_to_sections
 def _build_steps(
     blocks: list[tuple[str, str]],
     fallback_module_minutes: int = 18,
+    fontes: list[str] | None = None,
 ) -> list[StepDefinition]:
-    """Converte blocos (titulo, conteudo) em StepDefinitions validados."""
+    """Converte blocos (titulo, conteudo) em StepDefinitions validados.
+
+    `fontes`, quando passado, recebe as linhas da secao `## Fontes` de cada
+    bloco (a trilha), que saem do corpo e vao ao rodape do curso (R7).
+    """
     steps: list[StepDefinition] = []
     used_ids: set[str] = set()
 
@@ -84,11 +93,20 @@ def _build_steps(
             suffix += 1
         used_ids.add(step_id)
 
-        # Description = primeira frase do conteudo (sem markdown)
-        clean = re.sub(r"[*_`#>\[\]]", "", content)
-        first_sentence = re.split(r"(?<=[.!?])\s+", clean.strip(), maxsplit=1)
-        description = first_sentence[0] if first_sentence else title
-        description = description[:240].strip()
+        content, fontes_do_bloco = extrair_fontes(content)
+        if fontes is not None:
+            fontes.extend(f for f in fontes_do_bloco if f not in fontes)
+        subtitulo, corpo = extrair_subtitulo(content)
+
+        # Description = subtitulo (R1) ou, sem ele, primeira frase do conteudo
+        if subtitulo and len(subtitulo) >= 5:
+            description = subtitulo[:240].strip()
+            content = corpo or content
+        else:
+            clean = re.sub(r"[*_`#>\[\]]", "", content)
+            first_sentence = re.split(r"(?<=[.!?])\s+", clean.strip(), maxsplit=1)
+            description = first_sentence[0] if first_sentence else title
+            description = description[:240].strip()
         if len(description) < 5:
             description = f"Modulo {idx + 1}: {title}"
 
@@ -114,16 +132,49 @@ def _build_steps(
     return steps
 
 
+#: Revisão com menos que esta fração das palavras do rascunho é relatório,
+#: não texto revisado. Medido em 02/09/2026 em 12 drafts de output/drafts/:
+#: a etapa review devolvia 80 a 1.300 palavras para rascunhos de 1.400 a
+#: 17.400, e o conversor a preferia por ser "mais polida".
+REVIEW_MIN_RATIO = 0.6
+
+
+def _texto_da_etapa(etapas: dict, key: str) -> str:
+    value = etapas.get(key)
+    if isinstance(value, str) and value.strip():
+        return value
+    if isinstance(value, dict):
+        content = value.get("content") or value.get("text") or value.get("output")
+        if isinstance(content, str) and content.strip():
+            return content
+    return ""
+
+
 def _extract_review_or_draft_text(etapas: dict) -> str:
-    """Pega o texto principal: prefere review (mais polido), senao draft."""
-    for key in ("review", "draft", "analyze", "research"):
-        value = etapas.get(key)
-        if isinstance(value, str) and value.strip():
-            return value
-        if isinstance(value, dict):
-            content = value.get("content") or value.get("text") or value.get("output")
-            if isinstance(content, str) and content.strip():
-                return content
+    """Pega o texto principal: review quando ela é o texto de fato, senão draft.
+
+    A revisão só substitui o rascunho quando carrega ao menos 60% das palavras
+    dele. Abaixo disso ela é comentário sobre o curso, e publicar comentário
+    no lugar de curso foi o defeito medido nos drafts de março e abril de 2026.
+    """
+    review = _texto_da_etapa(etapas, "review")
+    draft = _texto_da_etapa(etapas, "draft")
+    if review and draft:
+        if len(review.split()) >= len(draft.split()) * REVIEW_MIN_RATIO:
+            return review
+        logger.warning(
+            "etapa review com %d palavras para um draft de %d: usando o draft",
+            len(review.split()), len(draft.split()),
+        )
+        return draft
+    if review:
+        return review
+    if draft:
+        return draft
+    for key in ("analyze", "research"):
+        texto = _texto_da_etapa(etapas, key)
+        if texto:
+            return texto
     return ""
 
 
@@ -166,7 +217,8 @@ def convert_draft_to_course(
         logger.warning("draft %s sem modulos identificaveis", draft_path.name)
         return None
 
-    steps = _build_steps(blocks)
+    fontes: list[str] = []
+    steps = _build_steps(blocks, fontes=fontes)
     if not steps:
         logger.warning("draft %s nao gerou nenhum step valido", draft_path.name)
         return None
@@ -213,6 +265,7 @@ def convert_draft_to_course(
             duracao_total_minutos=duracao_total,
             duracao_display=f"~{duracao_total} min",
             steps=steps,
+            fontes=fontes,
             faq=[
                 FAQItem(
                     pergunta="Este curso eh adequado para meu nivel?",

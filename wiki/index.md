@@ -3,7 +3,7 @@
 > Catálogo navegável da wiki, organizado por categoria. Substitui infra
 > RAG até escala moderada. Mantido em ordem alfabética por slug.
 >
-> Última atualização: 2026-05-26.
+> Última atualização: 2026-09-08.
 
 ## Como usar
 
@@ -20,12 +20,16 @@
 LLMs do pipeline, validators, autores. Uma página por entidade
 referenciada >1 vez.
 
+- [abertura-checker](entities/abertura-checker.md) — validator. Abertura
+  direta e sem distração (R1 a R9), 08/09/2026: categoria `abertura` na
+  camada 2 e `AberturaError` na publicação do TSX.
 - [accent-checker](entities/accent-checker.md) — validator. Camada 1
   do quality gate. 300+ mapeamentos PT-BR.
 - [claude-reviewer](entities/claude-reviewer.md) — LLM. Etapa 5 do
   pipeline (revisão final).
 - [content-checker](entities/content-checker.md) — validator. Camada 2
-  do quality gate. 10+ regras editoriais.
+  do quality gate. 10+ regras editoriais; desde 08/09/2026 zero exercício
+  por aula e categoria `abertura`.
 - [gpt-4o-writer](entities/gpt-4o-writer.md) — LLM. Etapa 2 do
   pipeline (redação HSM/HBR).
 - [perplexity-sonar](entities/perplexity-sonar.md) — LLM. Etapa 1 do
@@ -37,6 +41,10 @@ referenciada >1 vez.
 
 Definições atômicas reusáveis em múltiplos cursos, decisões e clientes.
 
+- [abertura-direta-sem-distracao](concepts/abertura-direta-sem-distracao.md)
+  — as nove regras (R1 a R9) do pedido do dono de 08/09/2026: título,
+  subtítulo, parágrafos; sem faça agora, mockup, checkpoint, requer
+  verificação, LGPD; fontes só no rodapé. Mapa bloco → código → mudança.
 - [andragogia-knowles](concepts/andragogia-knowles.md) — 6 princípios
   obrigatórios em todo módulo.
 - [llm-wiki-karpathy](concepts/llm-wiki-karpathy.md) — padrão
@@ -91,8 +99,12 @@ Mapas de domínio: cobertura por vertical, gaps, sobreposições.
 
 ## Decisions
 
-ADRs.
+ADRs e decisões editoriais (índice próprio em [decisions/INDEX.md](decisions/INDEX.md)).
 
+- [abertura-direta-sem-distracao-20260908](decisions/abertura-direta-sem-distracao-20260908.md)
+  — pedido do dono em 08/09/2026, tipo `feedback`: os conflitos com o
+  molde D (exercício por aula), com o checkpoint obrigatório e com a fonte
+  no card, e como cada um foi resolvido.
 - [ADR-001-adopcao-llm-wiki](decisions/ADR-001-adopcao-llm-wiki.md) —
   adoção do padrão Karpathy em 2026-05-26.
 - [ADR-002-sync-automatico-courses-wiki](decisions/ADR-002-sync-automatico-courses-wiki.md)
@@ -145,3 +157,4 @@ não criados. Cada onda fecha 1+ ou justifica.
 - `[[clients/_template]]`
 - `[[overview/cobertura-por-vertical]]`
 - `[[overview/gaps-criticos-q3-2026]]`
+- [Bastidor fora da aula, lei como fato, forma livre (03/09/2026)](decisions/bastidor-fora-da-aula-20260903.md)

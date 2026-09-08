@@ -16,7 +16,7 @@ class Analyzer(Agent):
 
     nome = "analyzer"
     provider = "google"
-    model = "gemini-2.5-pro"
+    model = "gemini-3.1-pro-preview"
     prompt_file = "analyze.md"
 
     # Fallback inline caso o arquivo externo não exista
@@ -26,11 +26,13 @@ class Analyzer(Agent):
         "Analise o conteúdo abaixo em 7 dimensões:\n\n"
         "1. RIGOR INTELECTUAL: profundidade analítica, evidências, dados citados\n"
         "2. QUALIDADE EDITORIAL: tom (analítico vs. genérico), clichês, parágrafos concisos\n"
-        "3. FORMATAÇÃO: tabelas por módulo, hierarquia de títulos, negrito, blocos de citação\n"
+        "3. FORMATAÇÃO: hierarquia de títulos, negrito, tabela só onde substitui texto\n"
         "4. ANDRAGOGIA (Knowles): necessidade de saber, autoconceito, experiência prévia, "
         "prontidão, orientação a problemas, motivação intrínseca — avalie cada princípio\n"
         "5. GAPS: saltos cognitivos, conceitos omitidos, pré-requisitos implícitos\n"
-        "6. EXERCÍCIOS: contexto profissional real, progressão Bloom, critérios claros\n"
+        "6. ABERTURA E DISTRAÇÃO (R1 a R9): cada aula abre com subtítulo de uma frase e "
+        "parágrafo; aponte todo exercício 'faça agora', 'mockup no seu negócio', card "
+        "'checkpoint', 'requer verificação', menção à LGPD ou fonte no meio da aula\n"
         "7. ACENTUAÇÃO PT-BR: liste TODAS as palavras sem acento obrigatório encontradas\n\n"
         "Retorne JSON com score (0-100), notas por dimensão e lista de melhorias prioritárias.\n"
         "Escreva em Português do Brasil com acentuação completa.\n\n"

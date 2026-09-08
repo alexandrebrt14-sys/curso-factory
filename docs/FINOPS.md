@@ -4,10 +4,10 @@
 
 | Provider    | Modelo              | Input (por 1M tokens) | Output (por 1M tokens) | Uso no pipeline      |
 |-------------|---------------------|-----------------------|------------------------|----------------------|
-| Perplexity  | sonar-pro           | $3,00                 | $15,00                 | Pesquisa (1x)        |
-| OpenAI      | gpt-4o              | $2,50                 | $10,00                 | Redação (N módulos)  |
+| Perplexity  | sonar-deep-research | $2,00                 | $8,00                  | Pesquisa (1x)        |
+| OpenAI      | gpt-5.5             | $5,00                 | $15,00                 | Redação (N módulos)  |
 | Google      | gemini-1.5-pro      | $1,25                 | $5,00                  | Análise (N módulos)  |
-| Groq        | llama-3.3-70b       | $0,59                 | $0,79                  | Classificação (1x)   |
+| Google      | gemini-3.7-flash    | $1,50                 | $7,50                  | Classificação (1x)   |
 | Anthropic   | claude-sonnet-4-5   | $3,00                 | $15,00                 | Revisão (1x)         |
 
 Valores aproximados. Consulte os sites oficiais para preços atualizados.

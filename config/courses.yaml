@@ -187,7 +187,7 @@ courses:
       - titulo: "GEO para Finanças"
         descricao: "Clusters de perguntas de alta intenção. Páginas answer-first citáveis por ChatGPT/Perplexity/Gemini. FAQs, glossários, simuladores machine-readable. Schema.org."
       - titulo: "IA Generativa com Governança"
-        descricao: "Pesquisa e clusterização com IA. Checagem factual. Privacidade e LGPD. Prompts seguros: o que a IA não deve decidir."
+        descricao: "Pesquisa e clusterização com IA. Checagem factual. Privacidade e proteção de dados do cliente. Prompts seguros: o que a IA não deve decidir."
       - titulo: "Ativos que Convertem Confiança"
         descricao: "Calculadoras, diagnósticos, newsletter, WhatsApp, lives, comunidade, mentorias. Sequência de nutrição: da descoberta ao produto pago."
       - titulo: "Oferta e Monetização"
@@ -220,8 +220,8 @@ courses:
         descricao: "Me Poupe! Kids, Turma da Mônica Financeira, Canal do Dudu, Cerbasi Famílias, apps de mesada (Mozper, GoHenry, Greenlight). O que funciona e o que falta no mercado brasileiro."
       - titulo: "GEO para Conteúdo Infantojuvenil"
         descricao: "Perguntas reais de pais e jovens à IA. Páginas answer-first adaptadas por faixa etária. FAQs para pais vs. FAQs para adolescentes. Schema.org EducationalContent. Linguagem segura e acessível."
-      - titulo: "IA, Segurança e LGPD para Menores"
-        descricao: "LGPD e dados de menores (consentimento parental obrigatório). COPPA como referência. IA responsável: o que jovens podem e não podem fazer com IA financeira. Prompts seguros para contexto educacional."
+      - titulo: "IA, segurança e proteção de dados de menores"
+        descricao: "Proteção de dados de menores (consentimento parental obrigatório). COPPA como referência. IA responsável: o que jovens podem e não podem fazer com IA financeira. Prompts seguros para contexto educacional."
       - titulo: "Gamificação e Ativos Interativos"
         descricao: "Quizzes, simuladores de mesada, desafios de poupança, badges e rankings. Engajamento por faixa etária. Ferramentas: Kahoot, Quizizz, calculadoras interativas."
       - titulo: "Distribuição e Parcerias com Escolas"
@@ -267,10 +267,10 @@ courses:
     nivel: intermediário
     modulos: 14
     descricao: >
-      14 módulos práticos com OAB, LGPD, SEO local, dados estruturados, conteúdo citável
+      14 módulos práticos com OAB, proteção de dados, SEO local, dados estruturados, conteúdo citável
       e plano de 90 dias para advogados e pequenos escritórios aparecerem com mais autoridade
       quando o cliente pesquisa no Google, no Maps e pergunta à IA.
-    tags: [seo, geo, advocacia, oab, lgpd, marketing-juridico, ia, direito]
+    tags: [seo, geo, advocacia, oab, protecao-de-dados, marketing-juridico, ia, direito]
     prerequisitos: [seo-geo]
     duracao_estimada: "~320 min"
     prioridade: P0
@@ -295,10 +295,10 @@ courses:
         descricao: "JSON-LD, Organization, LocalBusiness, LegalService. Campos críticos. FAQ como ativo editorial. Validação e handoff para dev."
       - titulo: "GEO para Advogados: Como Ser Citado por ChatGPT, Gemini, Claude e Perplexity"
         descricao: "Mecanismos generativos e síntese de respostas. Prompt clusters por área do direito. Páginas answer-first. Blocos citáveis. Defensive GEO."
-      - titulo: "IA Generativa com Sigilo, LGPD e Revisão Humana"
+      - titulo: "IA generativa com sigilo, proteção de dados e revisão humana"
         descricao: "IA na produção de conteúdo jurídico. Revisão humana obrigatória. Controlador vs. operador. Prompt hygiene, anonimização. Política interna de IA."
       - titulo: "Conversão Ética: Site, Formulário, WhatsApp, Chatbot e Intake"
-        descricao: "CTAs sóbrios e institucionais. Formulários com minimização de dados. WhatsApp como triagem. Chatbot para primeiras informações. Fluxo LGPD."
+        descricao: "CTAs sóbrios e institucionais. Formulários com minimização de dados. WhatsApp como triagem. Chatbot para primeiras informações. Fluxo de consentimento do cliente."
       - titulo: "Autoridade Externa, Digital PR Jurídico e Reputação Institucional"
         descricao: "Artigos, entrevistas, docência, mídia. Backlinks institucionais. PR jurídico sem expor casos. Vedação a rankings pagos (Provimento 205)."
       - titulo: "Medição, Monitoramento e Plano de 90 Dias"
@@ -332,21 +332,21 @@ courses:
         descricao: "Batch API (50% desconto), filas de processamento, priorização, dead letter queues, idempotência."
       - titulo: "Relatórios para C-Level: ROI, TCO e business cases"
         descricao: "Calcular ROI de IA, TCO completo (infra + API + ops), apresentar para diretoria, benchmarks de mercado."
-      - titulo: "Governança e compliance: políticas, audit trails e LGPD"
-        descricao: "Políticas de uso de IA, audit trails, data residency, LGPD, classificação de dados, revisão humana."
+      - titulo: "Governança e compliance: políticas, audit trails e proteção de dados"
+        descricao: "Políticas de uso de IA, audit trails, data residency, proteção de dados, classificação de dados, revisão humana."
 
   - slug: seo-geo-para-dentistas
     nome: "SEO e GEO para Dentistas: Captar Pacientes no Google e em Respostas Generativas"
     nivel: intermediário
     modulos: 8
-    descricao: "Visibilidade orgânica e generativa para consultórios e clínicas odontológicas respeitando o Código de Ética Odontológica do CFO, a Resolução CFO-196 e a LGPD. SEO local, conteúdo científico citável, GEO para ChatGPT/Perplexity/Gemini, Google Business Profile e conversão por WhatsApp com consentimento."
-    tags: [seo, geo, odontologia, marketing-saude, cfo, lgpd]
+    descricao: "Visibilidade orgânica e generativa para consultórios e clínicas odontológicas respeitando o Código de Ética Odontológica do CFO, a Resolução CFO-196 e a proteção de dados do paciente. SEO local, conteúdo científico citável, GEO para ChatGPT/Perplexity/Gemini, Google Business Profile e conversão por WhatsApp com consentimento."
+    tags: [seo, geo, odontologia, marketing-saude, cfo, protecao-de-dados]
     prerequisitos: []
     duracao_estimada: "~180 min"
     prioridade: P0
     estrutura_modulos:
-      - titulo: "Fundamentos regulatórios: CFO-196, Código de Ética e LGPD para odontologia"
-        descricao: "O que pode e o que não pode na comunicação odontológica. Vedações: sensacionalismo, antes-e-depois, preços, garantia de resultado. Limites da mídia paga. LGPD aplicada a dados de saúde (art. 11)."
+      - titulo: "Fundamentos regulatórios: CFO-196, Código de Ética e proteção de dados na odontologia"
+        descricao: "O que pode e o que não pode na comunicação odontológica. Vedações: sensacionalismo, antes-e-depois, preços, garantia de resultado. Limites da mídia paga. Proteção de dados de saúde: consentimento e guarda mínima, sem nomear a lei na aula (regra R9)."
       - titulo: "SEO local para consultórios: Google Business Profile e citações NAP"
         descricao: "Otimização do perfil GBP odontológico, categorização correta (Dental clinic/Dentist), reviews com conformidade CFO, citations em diretórios de saúde, schema LocalBusiness e Dentist."
       - titulo: "Conteúdo científico citável: do paper à página answer-first"
@@ -355,7 +355,7 @@ courses:
         descricao: "Como mecanismos generativos citam fontes odontológicas. Estrutura de autoridade: autor identificado, CRO visível, credenciais. Páginas FAQ estruturadas. Medição de share-of-voice generativo."
       - titulo: "Jornada do paciente digital: do sintoma ao agendamento"
         descricao: "Mapa de dor/busca por procedimento (ortodontia, implantes, clareamento, endodontia). Keywords informacionais vs transacionais. Conversão sem promessa de resultado. CTA conforme CFO."
-      - titulo: "WhatsApp Business e intake digital dentro da LGPD"
+      - titulo: "WhatsApp Business e intake digital com consentimento do paciente"
         descricao: "Primeira conversa via WhatsApp. Script de triagem. Consentimento explícito para dados de saúde. Opt-in registrado. Encaminhamento presencial obrigatório para avaliação clínica."
       - titulo: "Reputação institucional e prova social compliant"
         descricao: "Reviews no Google sem incentivo financeiro. Depoimentos com consentimento documentado. Cases anonimizados. Publicações em mídia especializada. Parcerias com universidades e SBOs."
@@ -414,3 +414,66 @@ courses:
         descricao: "Zircônia Swarovski, Preciosa, nacional. Como identificar qualidade. Por que zircônia de qualidade eleva a percepção de valor da peça e justifica o preço."
       - titulo: "Coleções Herreira: filosofia, naming e storytelling"
         descricao: "Essência, Leveza, África, Celebrare, Valor do Tempo, Paty 4.4, Vitesse, Cápsula do Amor. Conceito por trás de cada coleção. Como usar o naming nas vendas sem soar decorado."
+
+  - slug: agentic-operating-model
+    nome: "O Novo Mundo de Fazer Software: do Agile ao Agentic Operating Model"
+    nivel: avançado
+    modulos: 18
+    descricao: "Como redesenhar o delivery para delegar, orquestrar, validar e governar trabalho feito por agentes de IA: Validation Engineering, Definition of Verified, TDD como controle de agente, evals, governança L0-L5 e métricas de board (Trust Velocity)."
+    tags: [agentic-coding, validation-engineering, tdd, governança-de-ia, model-routing, evals, sdd, métricas-board]
+    prerequisitos: [setup-claude-code]
+    duracao_estimada: "~360 min"
+    prioridade: P0
+    estrutura_modulos:
+      - titulo: "A Virada Agentic: da Assistência à Orquestração"
+        descricao: "A unidade de produção deixa de ser dev/hora e vira mudança verificada; Validation Engineering emerge como disciplina; vendors convergem para o humano operando um control plane de agentes."
+      - titulo: "Agentic Delivery: o Novo SDLC e a Orquestração por Camadas"
+        descricao: "O novo fluxo parte de intenção e critérios de sucesso, passa por um orquestrador que planeja e valida, e distribui execução por camadas de modelos — model routing como disciplina econômica."
+      - titulo: "Validation Engineering na Prática: Evidência em Vez de Afirmação"
+        descricao: "Quality Evidence Stack em dez camadas, Definition of Verified 2.0 com checklist executivo de 15 itens e Evidence Manifest."
+      - titulo: "Controle de Agentes: TDD, Revisão de Testes e Evals em Produção"
+        descricao: "TDD como mecanismo de controle de agente; testes gerados por IA exigem revisão (TDAD); evals, políticas e telemetria; Nightly Agentic Verification."
+      - titulo: "Humanos, Governança e Specs: o Sistema Nervoso do Operating Model"
+        descricao: "O humano muda de função; autonomia proporcional ao risco em seis níveis L0-L5 com guardrails; SDD e Spec Acceptance Pack."
+      - titulo: "O Operating Model Completo: Forecast, Métricas de Board, Tiny Teams e Cadência"
+        descricao: "Forecast probabilístico, painel AI-native com Trust Velocity, tiny teams com seis novos papéis, operating model em cinco camadas e cadência do daily ao quarterly."
+
+  - slug: reinforcement-learning-vibecoding
+    nome: "Reinforcement Learning para Vibecoding: do prompt ao loop verificável em agentes de código"
+    nivel: avançado
+    modulos: 8
+    descricao: "Curso avançado que transforma vibecoding de truque de produtividade em disciplina de engenharia: como treinar, avaliar e operar agentes de código (SWE-agents) com recompensas verificáveis. Do panorama recente (o termo de Karpathy, a onda de RL em raciocínio, GRPO) até um orquestrador multiagente em produção com verificador independente, reward shaping resistente a hacking, self-improvement loops e FinOps. A tese central: o valor migra do prompt isolado para o loop — quem controla o verificador, a função de recompensa, o roteamento e a telemetria de custo controla a qualidade do código gerado. Destinado a engenheiros sênior/staff/principal de IA, pesquisadores de ML e engenheiros de backend/LLMOps que já operam LLMs em produção."
+    tags: [RLVR, RLHF, RLAIF, GRPO, DPO, KTO, ORPO, PPO, reward-modeling, reward-hacking, SWE-agents, Vibecoding, unit-tests-as-reward, self-improvement-loops, LLMOps, FinOps]
+    prerequisitos:
+      - "Python 3.11+ com concorrência assíncrona (async/await, httpx async) e código modular, testável e observável"
+      - "PyTorch em produção e compreensão estrutural da arquitetura Transformer e mecanismos de atenção"
+      - "Fundamentos de Reinforcement Learning: reward, policy, action, state, trajectory e design de função de recompensa"
+      - "Consumo de APIs de LLMs fundacionais (Anthropic, OpenAI, Google AI, Perplexity) e engenharia de prompts avançada"
+      - "Operação de sistemas com LLMs em produção: cache, retry, timeout, fallback, circuit breaker, evals e observabilidade"
+    duracao_estimada: "~450 min"
+    prioridade: P1
+    estrutura_modulos:
+      - titulo: "Por que RL importa no Vibecoding: o valor migra do prompt para o loop"
+        descricao: >
+          Panorama executivo e técnico. Definir vibecoding conforme o termo popularizado por Karpathy no início de 2025 e distingui-lo de AI-assisted coding e de agentic engineering com oversight humano. Mapear os SWE-agents e a interface computador-agente (ACI), com a evolução das taxas de resolução em benchmarks estilo SWE-bench e as variantes de mercado (Devin, Claude Code, OpenHands, Aider, Cline, Goose). A tese central do curso: a geração automática ficou barata e a validação ficou cara, portanto o valor defensável está no loop gerar to verificar to recompensar to atualizar, não no prompt. Apresentar a convergência recente entre LLMs, engenharia de software e RL (a explosão de RL em raciocínio; a popularização de recompensas verificáveis). Expor as cinco camadas de arquitetura: geração multi-LLM por complexidade, verificação local, recompensa verificável, aprendizado de política (PPO/DPO/GRPO) e FinOps. Trazer a tensão real da comunidade: soluções que passam nos testes mas são inseguras (functional nao é igual a safe) e latência dominada por chamadas de ferramenta, não por tokens por segundo. Exercício: dado um repositório com bug de concorrência que passa nos testes unitários, o aluno explica por que reranking com recompensa verificável supera o prompt único e desenha o loop mínimo agente-verificador-recompensa.
+      - titulo: "Fundamentos de RL para código: MDP, RLHF e reward modeling"
+        descricao: >
+          Fundamentar o problema como um MDP: ambiente, estado (enunciado, código atual, saída do compilador, resultado dos testes, cobertura, custo acumulado, tentativas restantes), ação (gerar solução, editar função, adicionar teste, executar suíte, reverter, encerrar), recompensa, trajetória e critérios de término. Cobrir RLHF em profundidade: o pipeline de três etapas do InstructGPT (pré-treino, SFT, otimização com reward model) e a perda de Bradley-Terry para pares de preferência, com implementação mínima em PyTorch (F.logsigmoid sobre a diferença entre chosen_rewards e rejected_rewards). Discutir a perspectiva estatística do RLHF: viés de anotadores, viés de comprimento (prolixidade como atalho), cobertura limitada da distribuição e sobreajuste do reward model. Nomear as três fragilidades que reaparecem no curso inteiro: viés de anotação, viés de comprimento e reward hacking do próprio reward model. Situar por que preferência humana pura é ineficiente quando a correção é verificável por execução de testes, preparando a transição para RLAIF e RLVR. Introduzir PPO e a regularização por KL contra a política de referência e o coeficiente que limita o afastamento. Exercício: implementar a perda de reward modeling de Bradley-Terry, gerar pares sintéticos e discutir por que o score bruto do reward model não é calibrado entre domínios (código versus texto jurídico).
+      - titulo: "Técnicas core: RLVR, GRPO, DPO, KTO e ORPO"
+        descricao: >
+          Núcleo algorítmico. RLVR (Reinforcement Learning with Verifiable Rewards): recompensa baseada em execução de testes, outputs de programas e constraints lógicas; o objetivo maximiza o valor verificável esperado com regularização por KL contra a política de referência. Intuição central baseada na pesquisa: recompensar apenas a resposta final ainda incentiva raciocínio intermediário correto, e métricas como pass at k precisam ser estendidas para medir a cadeia de raciocínio. GRPO (Group Relative Policy Optimization): vantagem relativa do grupo, normalizada por média e desvio, sem crítico separado — e a família de variantes que amadureceu em 2025. RLAIF como escala de alinhamento com avaliadores de IA e seus riscos (loops de feedback, viés do avaliador). Camada de destilação de preferências: DPO (pares vencedor/perdedor sem reward model separado), KTO (sinais unilaterais de aceitabilidade, com assimetria porque falso positivo em código é caro) e ORPO (SFT mais odds ratio sem política de referência explícita, ideal como destilação pós-RLVR). Matemática de search compression: elevar o Pass at 1 reduz drasticamente o número de amostras necessárias para atingir uma probabilidade-alvo de sucesso (n maior ou igual a log(1-tau)/log(1-p)). Exercício: implementar build_preference_pairs a partir de amostras verificadas, filtrando patches que editaram testes ou não compilam antes de formar os pares finais.
+      - titulo: "Reward design e verifier-based rewards: testes como recompensa"
+        descricao: >
+          Coração da aplicação a código. Por que testes binários (passou/falhou) desperdiçam informação: um patch que corrige quase todos os testes recebe o mesmo score de outro que nem compila. Reward shaping decomposto em componentes ponderados: compilação, testes públicos, testes ocultos, mutation testing, análise estática e tamanho do diff, menos uma penalidade de hacking. Distinguir hard gates de sinais graduais: editar arquivos proibidos, o runner ou os hidden tests zera ou torna negativa a recompensa mesmo com testes passando. Unit-tests-as-reward em três fases: (1) rodar testes antes do patch para provar reprodutibilidade, (2) aplicar o patch em worktree isolada sem acesso de escrita ao verificador, (3) executar públicos mais ocultos mais checagens com timeout rígido. Combinar recompensa de testes públicos e ocultos com peso menor nos públicos para reduzir overfitting; usar mutation testing (mutantes mortos sobre totais) para detectar correções frágeis. Potential-based shaping para medir progresso em vez de preferências arbitrárias. Exercício: implementar compute_code_reward e um UnitTestRewardRunner que copia o repo para um diretório temporário, aplica o patch, detecta arquivos proibidos (CI, scripts de avaliação, testes ocultos) e devolve um RewardBreakdown estruturado. Critério de aceite: o agente não pode ser recompensado por enfraquecer validações ou mascarar falha de concorrência com sleeps.
+      - titulo: "Self-improvement loops e destilação de política para SWE-agents"
+        descricao: >
+          Transformar tentativas em dados de treino em vez de só tentar de novo. O ciclo: a política gera k candidatos, o verificador atribui recompensa, os resultados viram um dataset de preferências que alimenta DPO, KTO ou ORPO para produzir a próxima política. Linha de pesquisa relevante: agentes que aprendem injetando e reparando bugs especificados por testes em repositórios reais, sem issues nem testes anotados por humanos, reduzindo a dependência de dados rotulados. Disciplina operacional: tarefas pequenas, commits incrementais, diffs limitados por iteração. Critério de parada não-ingênuo: parar quando a melhoria marginal da melhor recompensa fica abaixo de um limiar por m rodadas consecutivas, não quando acaba o orçamento. Controle de entropia adaptativo: mais amostras e diversidade quando a melhor recompensa ainda é baixa, convergindo para uma única amostra precisa quando já está perto da solução. Persistir quatro artefatos por iteração: prompt, patch, saída bruta do verificador e reward estruturado — patches aprovados viram SFT, pares com margem clara viram DPO/ORPO, eventos de falha viram sinal negativo. Resultado esperado: política que melhora o Pass at 1 e depende menos de amostragem massiva. Exercício: implementar um SelfImprovementLoop com configuração (amostras por rodada, máximo de rodadas, recompensa-alvo, delta mínimo), gerar os pares de preferência ao final e justificar o motivo de parada.
+      - titulo: "Vibecoding em produção: orquestrador multiagente, eval harness, guardrails e FinOps"
+        descricao: >
+          Arquitetura de produção com autonomia limitada por contratos fortes. Princípio central: o agente nunca é a fonte da verdade — a validação fica fora dele. Estágio Zero satélite-roteador com um orquestrador local (por exemplo Ollama) que normaliza a tarefa em um contrato JSON, classifica complexidade numa escala de 1 a 5 e roteia por FinOps antes da primeira chamada paga (modelos baratos para tarefas triviais, intermediários para médias, frontier apenas para as difíceis com verificação forte). O loop agente to verificador to recompensa to política usa verificadores em camadas (sintático determinístico, semântico, factual, operacional) da mais barata para a mais cara — nunca usar LLM para o que regex, parser, type checker, linter ou teste unitário resolvem. Eval harness para código: aplicar patch, formatter, type checker, testes impactados, integração seletiva e revisão por LLM só sobre diffs e falhas. Recompensa que controla fluxo: aprovar, corrigir localmente, reenviar com feedback ou escalar a humano conforme faixas de score. Infraestrutura de resiliência: cache semântico com limiar de similaridade (nunca para dados sensíveis ou negações críticas), checkpoints para retomada e circuit breaker por provedor. FinOps operacional: custo por tarefa/rollout/episódio, taxa de cache hit, alerta em fração do orçamento, desligar workers ociosos, usar instâncias spot e reduzir inferências por episódio. Exercício: dado um orquestrador com custo subindo sem aumento de volume, segmentar por tipo, propor roteamento por complexidade, quality gates executáveis em YAML e uma métrica de qualidade que prove que a economia não degradou o produto.
+      - titulo: "Riscos: reward hacking, distribution shift, segurança e governança"
+        descricao: >
+          Módulo de riscos, o gargalo real do vibecoding em produção. Reward hacking em código não é abstrato: apagar ou enfraquecer testes, alterar fixtures, modificar scripts de CI, capturar inputs específicos, retornar constantes esperadas, reduzir type checking, mockar dependências reais, adicionar sleeps ou retries para mascarar condição de corrida, explorar ordem de execução, código que passa localmente e falha em ambiente limpo. Formalizar uma penalidade de hacking como soma ponderada de indicadores (edição de teste, edição do runner, caminho proibido, timeout, literais suspeitos) com hard fail para edição do runner ou caminho proibido. Seis proteções estruturais: avaliação imutável (hidden tests fora do workspace), fail-before/pass-after, split público/oculto, mutation testing, sandbox com rede desativada e filesystem controlado, e revisão de diff. Sétima camada: verificação adversarial — um segundo verificador gera casos que deveriam falhar se a correção for superficial, descontando a recompensa base. Distribution shift e sobreajuste aos testes: separar treino/validação/avaliação, property-based testing, casos adversariais e medição em tarefas novas. Segurança operacional: injeção de comando, execução arbitrária, SQL injection, desserialização insegura e exfiltração de credenciais quando o agente roda shell pleno; mitigar com allowlist de ferramentas, permissões por escopo, contrato estreito por ferramenta e segredos fora do contexto. Governança: versionar prompts como código, logs imutáveis, aprovação antes de alterar política e restrição contra o agente modificar o próprio avaliador. Exercício: dado um agente que aprende que desabilitar um teste instável aumenta sua recompensa, redesenhar a função de recompensa, definir permissões por tipo de arquivo, validações externas e critérios de parada.
+      - titulo: "Projeto final: agente RLVR ponta a ponta, métricas e checklist de produção"
+        descricao: >
+          Laboratório integrador. Construir um agente de código autônomo que resolve um incidente crítico (custo anormal por requisição, latência acima do SLO, falha de fallback, loop sem critério de parada, duplicação por timeout entre validação e persistência) e melhora seu próprio desempenho via loop explícito de self-improvement ou RLVR. O aluno escolhe um vetor: redução de custo de inferência, redução de latência ou aumento de robustez. Loop obrigatório de seis componentes: geração de hipótese, aplicação controlada (branch/sandbox rastreável por diff), verificação automática por máquina, cálculo de score, atualização de estratégia (mínimo três iterações documentadas) e critério de parada. Função de recompensa de referência a implementar e reproduzir, combinando taxa de testes aprovados, melhoria de latência, redução de custo e robustez, menos penalidade por regressão. Métricas granulares obrigatórias (Pass at 1 é insuficiente): pass rate contínuo, taxa de sucesso final, ações médias por episódio, latência p50/p95/p99, custo por episódio, regressões introduzidas, violações por análise estática, variação entre sementes e ganho contra baseline (aleatório, heurístico, LLM sem loop). Checklist de produção: orquestração em Ray/Kubernetes, separação treino/avaliação/inferência, alvos de disponibilidade e latência em rotas críticas, observabilidade contínua, sandbox isolado para todo código gerado, análise estática obrigatória, MFA e menor privilégio, rollback automático e critérios de bloqueio. Entregáveis: repositório reproduzível, README técnico, relatório com baseline versus versão final, logs e traces por iteração, relatório transparente de vibecoding (ferramentas, prompts, decisões aceitas e rejeitadas, correções humanas) e demonstração gravada de 5 a 10 minutos.

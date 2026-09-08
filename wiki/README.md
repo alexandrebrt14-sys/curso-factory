@@ -98,6 +98,27 @@ sub-comando `python cli.py wiki {sync, lint, query}` para reduzir
 fricção. Esta wave deixa scripts standalone para evitar conflito com
 trabalho em andamento na branch `feat/geo-seo-knowledge-2026-deep-research`.
 
+## Relação com a GitHub Wiki (definida em 08/07/2026)
+
+Este diretório `wiki/` e a GitHub Wiki do repositório
+(`curso-factory.wiki.git`) são superfícies distintas e **não se
+sincronizam**:
+
+- **`wiki/` (este diretório)**: base de conhecimento no padrão LLM Wiki
+  para consumo pelos agentes do pipeline. Governada por PR no `main`,
+  validada por `scripts/wiki/lint.py` e alimentada por
+  `scripts/wiki/sync-courses.py`. Nenhum script publica este conteúdo
+  na GitHub Wiki.
+- **GitHub Wiki**: documentação humana viva do projeto (arquitetura,
+  operação, referência, roadmap), editada por push direto na
+  `.wiki.git`. Regras e detalhes na página `_Convencoes` da própria
+  GitHub Wiki.
+
+A auditoria de 08/07/2026 apontava risco de drift entre as duas fontes;
+a resolução foi declarar os papéis acima em vez de sincronizar conteúdo
+disjunto por design. A branch histórica `wiki/karpathy-llm-wiki-pattern`
+foi verificada como totalmente contida no `main` e removida.
+
 ## Linhagem
 
 Vannevar Bush (Memex, 1945). Ted Nelson (Xanadu). Niklas Luhmann
