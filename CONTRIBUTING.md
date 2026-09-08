@@ -15,9 +15,10 @@ git clone https://github.com/alexandrebrt14-sys/curso-factory.git
 cd curso-factory
 python -m venv .venv
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
-pip install -e .
+pip install -e ".[dev]"
 cp .env.example .env         # preencha as 5 chaves de API
-python -m pytest tests/ -v   # 74 testes verde
+python -m pytest tests/ -v   # 513 testes verde
+ruff check . && ruff format --check .   # lint e formato (obrigatórios no CI)
 ```
 
 ### Ativando hooks locais (obrigatório)
@@ -101,9 +102,12 @@ Se fechar uma issue, escreva `Closes #N` no body — o GitHub fecha automaticame
 
 ### 5. CI precisa estar verde
 
-Os 2 workflows obrigatórios:
+Os 3 workflows obrigatórios:
 - **tests** — pytest em Python 3.11 e 3.12
+- **lint** — `ruff check` + `ruff format --check`, e build do wheel com o console script rodando de fora do repositório
 - **Security scan (Python)** — bandit, pip-audit, gitleaks
+
+Antes de abrir o PR: `ruff format .` resolve o formato; `ruff check . --fix` resolve o que é automático.
 
 ### 6. Review
 

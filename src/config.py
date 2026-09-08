@@ -86,7 +86,7 @@ HTTP_TIMEOUT: float = float(os.getenv("HTTP_TIMEOUT", "600"))
 # Clone do geo-orchestrator quando CURSO_FACTORY_LLM_BACKEND=sdk.
 GEO_ORCHESTRATOR_PATH: Path = Path(
     os.getenv("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator"))
-)
+).expanduser()
 
 
 def LLM_BACKEND() -> str:  # noqa: N802 - lido em tempo de chamada, por isso função

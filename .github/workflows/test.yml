@@ -83,7 +83,7 @@ jobs:
         run: |
           pytest --tb=short -v
 
-      - name: Sentinela de bateria (>= 74 testes)
+      - name: Sentinela de bateria (>= 500 testes)
         run: |
           python - <<'EOF'
           import re
@@ -98,6 +98,6 @@ jobs:
           match = re.search(r"(\d+) tests? collected", out)
           assert match, f"nao consegui ler a contagem de testes:\n{out[-500:]}"
           total = int(match.group(1))
-          assert total >= 74, f"FAIL: bateria encolheu para {total} testes (minimo 74)"
-          print(f"OK: {total} testes coletados (minimo 74)")
+          assert total >= 500, f"FAIL: bateria encolheu para {total} testes (minimo 500)"
+          print(f"OK: {total} testes coletados (minimo 500)")
           EOF
