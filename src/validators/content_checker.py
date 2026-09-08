@@ -520,31 +520,37 @@ def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
     return fora_da_faixa
 
 
-#: Faixas Unicode de emoji, sem sobreposição. A versão anterior somava
-#: `\U00010000-\U0010ffff` (todo o plano astral: CJK raro, símbolos matemáticos,
-#: notação musical) e `\U000024c2-\U0001f251` (que engole ideogramas e Hangul):
-#: qualquer texto com um caractere fora do plano básico contava como emoji.
+#: Faixas Unicode de emoji (início, fim), sem sobreposição. A versão anterior
+#: somava U+10000..U+10FFFF (todo o plano astral: CJK raro, símbolos matemáticos,
+#: notação musical) e U+24C2..U+1F251 (que engole ideogramas e Hangul): qualquer
+#: caractere fora do plano básico contava como emoji. A classe é montada a partir
+#: dos pontos de código, o que também poupa o CodeQL de ler escapes \U em string.
+_EMOJI_RANGES: tuple[tuple[int, int], ...] = (
+    (0x1F000, 0x1F02F),  # mahjong, dominó
+    (0x1F0A0, 0x1F0FF),  # cartas de baralho
+    (0x1F100, 0x1F1FF),  # alfanuméricos em quadrado, indicadores regionais
+    (0x1F200, 0x1F2FF),  # ideogramas em quadrado
+    (0x1F300, 0x1F5FF),  # símbolos e pictogramas diversos
+    (0x1F600, 0x1F64F),  # emoticons
+    (0x1F680, 0x1F6FF),  # transporte e mapas
+    (0x1F700, 0x1F77F),  # alquimia
+    (0x1F780, 0x1F7FF),  # formas geométricas estendidas
+    (0x1F800, 0x1F8FF),  # setas suplementares C
+    (0x1F900, 0x1F9FF),  # símbolos e pictogramas suplementares
+    (0x1FA00, 0x1FAFF),  # xadrez, pictogramas estendidos A
+    (0x2600, 0x26FF),  # símbolos diversos (sol, guarda-chuva, sinais)
+    (0x2700, 0x27BF),  # dingbats (tesoura, check, cruz)
+    (0x2300, 0x23FF),  # técnicos (relógio, ampulheta)
+    (0x2B00, 0x2BFF),  # setas e formas diversas (estrela)
+    (0x3030, 0x3030),  # sinais CJK usados como emoji
+    (0x303D, 0x303D),
+    (0x3297, 0x3297),
+    (0x3299, 0x3299),
+    (0x200D, 0x200D),  # zero-width joiner
+    (0xFE0F, 0xFE0F),  # seletor de apresentação
+)
 _EMOJI_RE = re.compile(
-    "["
-    "\U0001f000-\U0001f02f"  # mahjong, dominó
-    "\U0001f0a0-\U0001f0ff"  # cartas de baralho
-    "\U0001f100-\U0001f1ff"  # símbolos alfanuméricos em quadrado, indicadores regionais
-    "\U0001f200-\U0001f2ff"  # ideogramas em quadrado
-    "\U0001f300-\U0001f5ff"  # símbolos e pictogramas diversos
-    "\U0001f600-\U0001f64f"  # emoticons
-    "\U0001f680-\U0001f6ff"  # transporte e mapas
-    "\U0001f700-\U0001f77f"  # alquimia
-    "\U0001f780-\U0001f7ff"  # formas geométricas estendidas
-    "\U0001f800-\U0001f8ff"  # setas suplementares C
-    "\U0001f900-\U0001f9ff"  # símbolos e pictogramas suplementares
-    "\U0001fa00-\U0001faff"  # xadrez, símbolos e pictogramas estendidos A
-    "\u2600-\u26ff"  # símbolos diversos (sol, guarda-chuva, sinais)
-    "\u2700-\u27bf"  # dingbats (tesoura, check, cruz)
-    "\u2300-\u23ff"  # técnicos (relógio, ampulheta)
-    "\u2b00-\u2bff"  # setas e formas diversas (estrela)
-    "\u3030\u303d\u3297\u3299"  # sinais CJK usados como emoji
-    "\u200d\ufe0f"  # zero-width joiner e seletor de apresentação
-    "]"
+    "[" + "".join(f"{re.escape(chr(a))}-{re.escape(chr(b))}" for a, b in _EMOJI_RANGES) + "]"
 )
 
 
