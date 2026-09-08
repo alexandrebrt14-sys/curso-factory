@@ -186,3 +186,17 @@ def expressoes_vetadas() -> list[str]:
             vistos.add(limpo.lower())
             saida.append(limpo)
     return saida
+
+
+def familias_de_abertura() -> dict[str, Any]:
+    """O bloco `aberturaEDistracao` da fonte (1.6.0, 08/09/2026).
+
+    Traz as famílias das regras R1 a R9: `percursoAlternativo`, `mockup`,
+    `noSeuNegocio`, `noSeuNegocioInstrucao`, `exercicioForte`, `exercicioRotulo`,
+    `checkpointForte`, `checkpointRotulo`, `verificacaoExplicita`, `lgpd`,
+    `subtituloMaxPalavras`, `fontesTitulos`, `fontesTamanhoMaxRem`. Lista é
+    literal; string é expressão regular. Espelho sem o bloco (1.5.0 ou anterior)
+    devolve vazio e o `abertura_checker` fica com os padrões próprios.
+    """
+    bruto = carregar_lexicos().get("aberturaEDistracao")
+    return bruto if isinstance(bruto, dict) else {}

@@ -97,6 +97,9 @@ O que este repositório emitia, medido no código antes da mudança:
 
 ## Linha do tempo (append-only, ordem reversa)
 
+- **2026-09-08** — [merge] PR #83 mergeado por squash na `main` (`e55f5a9`); fonte 1.6.0
+  (escrita-empreendedor #9, `9d7c341`) ressincronizada em PR próprio: ponteiros no hash
+  `2fc0817a…`, espelho regerado, `abertura_checker` lendo o bloco `aberturaEDistracao`.
 - **2026-09-08** — [criação] pedido do dono aplicado nos três níveis (doutrina, gerador, gate),
   com `tests/test_abertura_sem_distracao.py` e ajuste dos testes que exigiam checkpoint e
   exercício (`test_regua_aula`, `test_parsers`, `test_parser_blocos_visuais`,

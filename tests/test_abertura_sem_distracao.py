@@ -373,3 +373,40 @@ def test_curso_sem_fontes_nao_desenha_o_bloco() -> None:
 def test_step_definition_nao_exige_mais_checkpoint_nem_tres_secoes() -> None:
     curso = _curso([{"type": "text", "value": "Uma seção basta."}])
     assert len(curso.steps[0].content) == 1
+
+
+# ─── Vínculo com a fonte de estilo (1.6.0, bloco aberturaEDistracao) ───
+
+
+def test_espelho_1_6_0_traz_o_bloco_de_abertura() -> None:
+    """A fonte 1.6.0 (08/09/2026) passou a carregar as famílias R1 a R9; o gate as lê."""
+    import json
+
+    from src.validators.lexicos_loader import familias_de_abertura
+
+    dados = json.loads((PROJECT_ROOT / "config" / "lexicos.json").read_text(encoding="utf-8"))
+    assert dados["versao"] == "1.6.0"
+    fam = familias_de_abertura()
+    for chave in ("percursoAlternativo", "mockup", "exercicioForte", "checkpointForte", "verificacaoExplicita", "lgpd"):
+        assert chave in fam, chave
+    assert fam["subtituloMaxPalavras"] == 25
+
+
+@pytest.mark.parametrize("cabecalho,regra", [
+    ("## Hora de praticar", "R6"),          # só na fonte
+    ("## Teste seus conhecimentos", "R8"),  # só na fonte
+    ("## Se você tem pressa", "R3"),        # só na fonte
+])
+def test_familias_da_fonte_somam_aos_padroes_do_modulo(cabecalho: str, regra: str) -> None:
+    texto = AULA_OK + f"\n{cabecalho}\n\n{PROSA}\n"
+    assert regra in _regras(texto), _mensagens(texto)
+
+
+def test_marcador_de_apuracao_no_rascunho_nao_e_r9_no_markdown() -> None:
+    """`[FALTA EVIDÊNCIA:` é tolerado no rascunho (anti-invenção); só a publicação o barra."""
+    assert "R9" not in _regras(AULA_OK + "\nDado [FALTA EVIDÊNCIA: taxa] a apurar.\n")
+
+
+def test_subtitulo_acima_do_teto_da_fonte_reprova() -> None:
+    sub = " ".join(["palavra"] * 27) + "."
+    assert "R1" in _regras(f"# Aula 1.1: X\n\n{sub}\n\n{PROSA}")

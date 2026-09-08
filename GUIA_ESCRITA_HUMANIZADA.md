@@ -1,8 +1,8 @@
 # Guia de escrita humanizada (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 6a38a143bf2c1c3b84ce1bb8608485a63b4b8069206c2f298351169edbbbc4ca
-sincronizado-em: 2026-09-03
+hash-fonte: 2fc0817a84c052e2931bfab470c822cd72b24e33ab2204d0db85433e1435c55d
+sincronizado-em: 2026-09-08
 
 O diagnóstico de ritmo, as técnicas de narrativa, a tabela de vícios de português gerado por
 LLM, o orçamento de formatação, o fluxo de revisão em três passadas e a lista do que não fazer
