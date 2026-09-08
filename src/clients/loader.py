@@ -204,9 +204,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         min_statistics=int(geo_d.get("min_statistics", 5)),
         min_quotations=int(geo_d.get("min_quotations", 1)),
         require_answer_capsule=bool(geo_d.get("require_answer_capsule", True)),
-        schema_authority_stack_enabled=bool(
-            geo_d.get("schema_authority_stack_enabled", False)
-        ),
+        schema_authority_stack_enabled=bool(geo_d.get("schema_authority_stack_enabled", False)),
     )
 
     # Wave 8 — idioma default do cliente
@@ -249,6 +247,8 @@ def list_clients() -> list[str]:
 
 
 def get_client_from_env(default: str = "default") -> ClientContext:
-    """Lê CURSO_FACTORY_CLIENT do env, senão carrega `default`."""
-    client_id = os.environ.get("CURSO_FACTORY_CLIENT", default)
+    """Lê a variável `config.CLIENT_ENV_VAR` (CURSO_FACTORY_CLIENT), senão carrega `default`."""
+    from src.config import CLIENT_ENV_VAR
+
+    client_id = os.environ.get(CLIENT_ENV_VAR, "").strip() or default
     return load_client(client_id)

@@ -41,10 +41,21 @@ IDIOMAS = ("pt-br", "en", "es")
 #: Variáveis que o orquestrador injeta na redação de cada aula
 #: (`Orchestrator._draft_lesson` e `_tetos_da_aula`).
 VARIAVEIS_DA_AULA = (
-    "{lesson_title}", "{lesson_idea}", "{previous_lessons}", "{next_lessons}",
-    "{palavras_piso}", "{palavras_alvo_min}", "{palavras_alvo_max}", "{palavras_aviso}",
-    "{h2_min}", "{h2_max}", "{h3_por_h2}", "{figuras_max}",
-    "{paragrafo_min}", "{paragrafo_max}", "{context}",
+    "{lesson_title}",
+    "{lesson_idea}",
+    "{previous_lessons}",
+    "{next_lessons}",
+    "{palavras_piso}",
+    "{palavras_alvo_min}",
+    "{palavras_alvo_max}",
+    "{palavras_aviso}",
+    "{h2_min}",
+    "{h2_max}",
+    "{h3_por_h2}",
+    "{figuras_max}",
+    "{paragrafo_min}",
+    "{paragrafo_max}",
+    "{context}",
 )
 
 #: Variáveis que o orquestrador injeta na revisão de cada aula
@@ -53,7 +64,13 @@ VARIAVEIS_DA_REVISAO = ("{unit_title}", "{unit_position}", "{analysis_summary}",
 
 #: Números da régua antiga que NÃO podem voltar ao prompt: a régua vive na
 #: fonte de estilo e chega por variável.
-NUMEROS_PROIBIDOS = ("1.200 caracteres", "2.500 caracteres", "3 exercícios", "three exercises", "tres ejercicios")
+NUMEROS_PROIBIDOS = (
+    "1.200 caracteres",
+    "2.500 caracteres",
+    "3 exercícios",
+    "three exercises",
+    "tres ejercicios",
+)
 
 
 def _titulos(caminho: Path) -> list[str]:
@@ -83,7 +100,8 @@ class TestCopiaPorIdiomaNaoPerdeSecao(unittest.TestCase):
                 do_idioma = set(_titulos(arquivo))
                 faltando = [t for t in da_raiz if t not in do_idioma]
                 self.assertEqual(
-                    faltando, [],
+                    faltando,
+                    [],
                     f"pt-br/{arquivo.name} perdeu seção(ões) que existem na raiz: "
                     f"{faltando}. A cópia por idioma pode acrescentar, nunca perder, "
                     "e ela sombreia a raiz na geração em português.",
@@ -109,12 +127,15 @@ class TestVariaveisDaAulaChegaramAosIdiomas(unittest.TestCase):
             with self.subTest(prompt=rotulo):
                 faltando = [v for v in VARIAVEIS_DA_AULA if v not in texto]
                 self.assertEqual(
-                    faltando, [],
+                    faltando,
+                    [],
                     f"{rotulo} não traz as variáveis da aula {faltando}; sem elas o "
                     "redator não recebe os tetos da fonte de estilo.",
                 )
                 proibidos = [n for n in NUMEROS_PROIBIDOS if n in texto]
-                self.assertEqual(proibidos, [], f"{rotulo} voltou a carregar régua fixa: {proibidos}")
+                self.assertEqual(
+                    proibidos, [], f"{rotulo} voltou a carregar régua fixa: {proibidos}"
+                )
 
     def test_review_recebe_as_variaveis_da_unidade(self):
         for caminho in self._alvos("review.md"):
@@ -124,12 +145,15 @@ class TestVariaveisDaAulaChegaramAosIdiomas(unittest.TestCase):
                 faltando = [v for v in VARIAVEIS_DA_REVISAO if v not in texto]
                 self.assertEqual(faltando, [], f"{rotulo} não traz {faltando}")
                 self.assertIn(
-                    "REVIS", texto,
+                    "REVIS",
+                    texto,
                     f"{rotulo} precisa pedir o bloco 'REVISÃO CONCLUÍDA', que o "
                     "orquestrador separa do texto revisado.",
                 )
                 proibidos = [n for n in NUMEROS_PROIBIDOS if n in texto]
-                self.assertEqual(proibidos, [], f"{rotulo} voltou a carregar régua fixa: {proibidos}")
+                self.assertEqual(
+                    proibidos, [], f"{rotulo} voltou a carregar régua fixa: {proibidos}"
+                )
 
     def test_o_prompt_manda_uma_linha_de_texto_por_linha_da_tabela(self):
         """A instrução antiga inviabilizava a promoção da tabela.
@@ -140,8 +164,11 @@ class TestVariaveisDaAulaChegaramAosIdiomas(unittest.TestCase):
         quebra de linha real. A cobrança é pela afirmativa: os prompts dizem
         "uma linha de texto por linha da tabela" como parte da instrução.
         """
-        marcas = ("uma linha de texto por linha da tabela", "one line of text per table row",
-                  "una línea de texto por fila de la tabla")
+        marcas = (
+            "uma linha de texto por linha da tabela",
+            "one line of text per table row",
+            "una línea de texto por fila de la tabla",
+        )
         for caminho in self._alvos("draft.md"):
             texto = caminho.read_text(encoding="utf-8")
             rotulo = caminho.relative_to(PROMPTS).as_posix()

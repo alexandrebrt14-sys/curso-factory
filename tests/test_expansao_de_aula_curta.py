@@ -20,7 +20,9 @@ CURTA = (
     + "\n\n## Como a Ana cobrou certo\n\nA Ana cobrou certo.\n\n"
     "Abra a agenda e anote o preço de hoje."
 )
-LONGA = CURTA.replace("Frase curta. " * 30, "Frase que explica a ideia por inteiro, com o exemplo do salão. " * 120)
+LONGA = CURTA.replace(
+    "Frase curta. " * 30, "Frase que explica a ideia por inteiro, com o exemplo do salão. " * 120
+)
 
 
 def _aula(orq, respostas: list[str]) -> tuple[str, list[str]]:
@@ -33,7 +35,9 @@ def _aula(orq, respostas: list[str]) -> tuple[str, list[str]]:
 
     orq.writer.execute = execute
     modulo = Module(titulo="Preço", descricao="d", ordem=1)
-    md = orq._draft_lesson(_curso(), modulo, 1, [{"titulo": "Cobre certo", "ideia": "preço"}], 0, "PESQUISA " * 400)
+    md = orq._draft_lesson(
+        _curso(), modulo, 1, [{"titulo": "Cobre certo", "ideia": "preço"}], 0, "PESQUISA " * 400
+    )
     return md, chamadas
 
 
@@ -76,7 +80,11 @@ def test_chave_desligada_nao_expande(orquestrador, monkeypatch) -> None:  # noqa
 def test_nota_de_expansao_existe_nos_tres_idiomas() -> None:
     from src.agents.lang_resolver import resolve_prompt_path
 
-    for lang, marca in (("pt-br", "--- AULA CURTA ---"), ("en", "--- SHORT LESSON ---"), ("es", "--- LECCIÓN CORTA ---")):
+    for lang, marca in (
+        ("pt-br", "--- AULA CURTA ---"),
+        ("en", "--- SHORT LESSON ---"),
+        ("es", "--- LECCIÓN CORTA ---"),
+    ):
         texto = resolve_prompt_path("expand.md", lang).read_text(encoding="utf-8")
         assert marca in texto
         assert "{lesson_md}" in texto and "{palavras_piso}" in texto

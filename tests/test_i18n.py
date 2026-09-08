@@ -96,9 +96,7 @@ def test_translated_prompts_are_non_empty() -> None:
             path = PROMPTS_DIR / lang / fname
             content = path.read_text(encoding="utf-8")
             assert content.strip(), f"Prompt vazio: {path}"
-            assert len(content) > 200, (
-                f"Prompt suspeitamente curto em {path}: {len(content)} chars"
-            )
+            assert len(content) > 200, f"Prompt suspeitamente curto em {path}: {len(content)} chars"
 
 
 # ─── Resolução com cascata ───────────────────────────────────────────────

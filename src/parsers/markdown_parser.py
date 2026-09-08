@@ -59,14 +59,25 @@ _SPECIAL_QUOTES = {
 #: da página: o card some, sem substituto. `CHECKPOINT` é R8; os demais são as
 #: variantes de exercício (R6) e de recapitulação (R8) que o redator antigo
 #: escrevia como citação rotulada.
-_QUOTES_DESCARTADOS = ("CHECKPOINT", "EXERCÍCIO", "EXERCICIO", "FAÇA AGORA", "FACA AGORA",
-                       "RECAPITULANDO", "QUIZ", "DESAFIO", "TAREFA")
+_QUOTES_DESCARTADOS = (
+    "CHECKPOINT",
+    "EXERCÍCIO",
+    "EXERCICIO",
+    "FAÇA AGORA",
+    "FACA AGORA",
+    "RECAPITULANDO",
+    "QUIZ",
+    "DESAFIO",
+    "TAREFA",
+)
 
 #: Subtítulo: uma frase só, curta, em linha própria logo depois do H1 (R1).
 _SUBTITULO_MAX_PALAVRAS = 30
 _FIM_DE_FRASE_RE = re.compile(r"[.!?](?=\s|$)")
 #: Cabeçalho "Fontes" da trilha (R7): o bloco sai do corpo e vai ao rodapé.
-_H2_FONTES_RE = re.compile(r"^##\s+(?:Fontes?|Sources|Fuentes|Refer[êe]ncias)\b[^\n]*\n", re.MULTILINE | re.IGNORECASE)
+_H2_FONTES_RE = re.compile(
+    r"^##\s+(?:Fontes?|Sources|Fuentes|Refer[êe]ncias)\b[^\n]*\n", re.MULTILINE | re.IGNORECASE
+)
 
 # ─── Promoção a bloco visual: padrões ────────────────────────────────
 
@@ -230,16 +241,18 @@ def extrair_fontes(content: str) -> tuple[str, list[str]]:
     m = _H2_FONTES_RE.search(content)
     if not m:
         return content, []
-    resto = content[m.end():]
+    resto = content[m.end() :]
     fim = re.search(r"^\s{0,3}#{1,6}\s+", resto, re.MULTILINE)
     bloco = resto[: fim.start()] if fim else resto
-    depois = resto[fim.start():] if fim else ""
+    depois = resto[fim.start() :] if fim else ""
     fontes: list[str] = []
     for linha in bloco.splitlines():
         s = re.sub(r"^\s*(?:[-*+]|\d{1,2}[.)])\s+", "", linha).strip()
         if s:
             fontes.append(s)
-    sem = (content[: m.start()].rstrip() + ("\n\n" + depois.lstrip() if depois.strip() else "")).strip()
+    sem = (
+        content[: m.start()].rstrip() + ("\n\n" + depois.lstrip() if depois.strip() else "")
+    ).strip()
     return sem, fontes
 
 
@@ -595,9 +608,7 @@ def parse_module_to_sections(
         code = match.group(2).strip()
         if not code:
             return ""
-        code_blocks.append(
-            CourseSection(type=SectionType.CODE, value=code, language=lang)
-        )
+        code_blocks.append(CourseSection(type=SectionType.CODE, value=code, language=lang))
         return f"\n[CODE_BLOCK_{len(code_blocks) - 1}]\n"
 
     text_no_code = CODE_FENCE_RE.sub(_code_replace, content)
@@ -623,9 +634,7 @@ def parse_module_to_sections(
             if joined.startswith(f"{prefix}:"):
                 matched_type = stype
                 joined = joined[len(prefix) + 1 :].strip()
-                quote_sections.append(
-                    CourseSection(type=stype, value=joined, label=prefix)
-                )
+                quote_sections.append(CourseSection(type=stype, value=joined, label=prefix))
                 break
         if matched_type is None:
             quote_sections.append(CourseSection(type=SectionType.TIP, value=joined))
@@ -687,9 +696,7 @@ def parse_module_to_sections(
                 if secao is not None:
                     sections.append(secao)
                 continue
-            sections.append(
-                CourseSection(type=SectionType.TEXT, value=parte.strip())
-            )
+            sections.append(CourseSection(type=SectionType.TEXT, value=parte.strip()))
 
     # Blocos não consumidos (marcador perdido em corte de chunk)
     for pendente in (*code_blocks, *visual_blocks):

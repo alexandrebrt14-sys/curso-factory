@@ -41,6 +41,7 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from src.clients.context import ClientContext
 
+from src.config import REVIEW_MIN_RATIO
 from src.models import (
     CourseDefinition,
     FAQItem,
@@ -58,11 +59,8 @@ from src.parsers import (
 
 logger = logging.getLogger(__name__)
 
-# Aliases privados — preservam a API interna usada abaixo sem duplicar o parser
-_slugify = slugify
-_short_id = short_id
-_extract_module_blocks = extract_module_blocks
-_parse_module_to_sections = parse_module_to_sections
+#: Minutos atribuídos a um módulo cujo rótulo de duração não traz número.
+DEFAULT_MODULE_MINUTES = 18
 
 
 # ---------------------------------------------------------------------------
@@ -72,7 +70,7 @@ _parse_module_to_sections = parse_module_to_sections
 
 def _build_steps(
     blocks: list[tuple[str, str]],
-    fallback_module_minutes: int = 18,
+    fallback_module_minutes: int = DEFAULT_MODULE_MINUTES,
     fontes: list[str] | None = None,
 ) -> list[StepDefinition]:
     """Converte blocos (titulo, conteudo) em StepDefinitions validados.
@@ -85,7 +83,7 @@ def _build_steps(
 
     for idx, (title, content) in enumerate(blocks):
         # Garantir id unico
-        base_id = _short_id(title) or f"modulo-{idx + 1}"
+        base_id = short_id(title) or f"modulo-{idx + 1}"
         step_id = base_id
         suffix = 1
         while step_id in used_ids:
@@ -111,7 +109,7 @@ def _build_steps(
             description = f"Modulo {idx + 1}: {title}"
 
         try:
-            sections = _parse_module_to_sections(content)
+            sections = parse_module_to_sections(content)
             step = StepDefinition(
                 id=step_id,
                 title=title[:140],
@@ -132,11 +130,15 @@ def _build_steps(
     return steps
 
 
-#: Revisão com menos que esta fração das palavras do rascunho é relatório,
-#: não texto revisado. Medido em 02/09/2026 em 12 drafts de output/drafts/:
-#: a etapa review devolvia 80 a 1.300 palavras para rascunhos de 1.400 a
-#: 17.400, e o conversor a preferia por ser "mais polida".
-REVIEW_MIN_RATIO = 0.6
+# `REVIEW_MIN_RATIO` (fração mínima de palavras para a revisão valer como
+# texto) vem de `src.config`: é a MESMA régua do orquestrador. Havia uma cópia
+# fixa em 0.6 aqui, e mudar a variável de ambiente só afetava um dos dois.
+
+
+def _minutos(duration: str, fallback: int) -> int:
+    """Minutos de um rótulo como `"25 min"`; sem dígito à frente, usa `fallback`."""
+    m = re.match(r"\s*(\d+)", duration or "")
+    return int(m.group(1)) if m else fallback
 
 
 def _texto_da_etapa(etapas: dict, key: str) -> str:
@@ -164,7 +166,8 @@ def _extract_review_or_draft_text(etapas: dict) -> str:
             return review
         logger.warning(
             "etapa review com %d palavras para um draft de %d: usando o draft",
-            len(review.split()), len(draft.split()),
+            len(review.split()),
+            len(draft.split()),
         )
         return draft
     if review:
@@ -180,7 +183,7 @@ def _extract_review_or_draft_text(etapas: dict) -> str:
 
 def convert_draft_to_course(
     draft_path: Path,
-    client: ClientContext | None = None,  # noqa: F821
+    client: ClientContext | None = None,
 ) -> CourseDefinition | None:
     """Converte um draft JSON para CourseDefinition. Best-effort.
 
@@ -195,6 +198,7 @@ def convert_draft_to_course(
     """
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     try:
@@ -212,7 +216,7 @@ def convert_draft_to_course(
         logger.warning("draft %s sem conteudo em etapas review/draft", draft_path.name)
         return None
 
-    blocks = _extract_module_blocks(text)
+    blocks = extract_module_blocks(text)
     if not blocks:
         logger.warning("draft %s sem modulos identificaveis", draft_path.name)
         return None
@@ -238,10 +242,7 @@ def convert_draft_to_course(
             f"profissionais aplicarem no dia a dia."
         )
 
-    duracao_total = sum(
-        int(re.match(r"(\d+)", s.duration).group(1))  # type: ignore
-        for s in steps
-    )
+    duracao_total = sum(_minutos(s.duration, DEFAULT_MODULE_MINUTES) for s in steps)
     # Schema exige >= 30 min. Drafts com 1 step unico ficariam abaixo;
     # clamp para o minimo legal sem inflar artificialmente o display.
     duracao_total = max(30, duracao_total)
@@ -256,7 +257,7 @@ def convert_draft_to_course(
 
     try:
         course = CourseDefinition(
-            slug=_slugify(course_id),
+            slug=slugify(course_id),
             titulo=titulo,
             descricao=descricao,
             nivel=NivelCurso.INTERMEDIARIO,
@@ -281,8 +282,7 @@ def convert_draft_to_course(
             educacao_path=client.domain.educacao_path,
             company_name=client.company.name or client.author.name,
             company_description=(
-                client.company.description
-                or f"Curso produzido por {client.author.name}."
+                client.company.description or f"Curso produzido por {client.author.name}."
             ),
             hero_gradient_from=client.branding.hero_gradient_from,
             hero_gradient_to=client.branding.hero_gradient_to,
@@ -323,10 +323,16 @@ def convert_drafts_directory(
 
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     if not input_dir.exists():
-        return {"converted": 0, "failed": 0, "files": [], "error": f"input_dir nao existe: {input_dir}"}
+        return {
+            "converted": 0,
+            "failed": 0,
+            "files": [],
+            "error": f"input_dir nao existe: {input_dir}",
+        }
 
     output_dir.mkdir(parents=True, exist_ok=True)
     generator = TsxGenerator()
@@ -341,30 +347,36 @@ def convert_drafts_directory(
         course = convert_draft_to_course(draft_path, client=client)
         if not course:
             failed += 1
-            results.append({
-                "file": draft_path.name,
-                "status": "failed",
-                "reason": "ver logs",
-            })
+            results.append(
+                {
+                    "file": draft_path.name,
+                    "status": "failed",
+                    "reason": "ver logs",
+                }
+            )
             continue
 
         try:
             page_path, layout_path = generator.write(course, output_dir)
             converted += 1
-            results.append({
-                "file": draft_path.name,
-                "status": "ok",
-                "slug": course.slug,
-                "steps": len(course.steps),
-                "page_path": str(page_path),
-            })
+            results.append(
+                {
+                    "file": draft_path.name,
+                    "status": "ok",
+                    "slug": course.slug,
+                    "steps": len(course.steps),
+                    "page_path": str(page_path),
+                }
+            )
         except Exception as exc:
             failed += 1
-            results.append({
-                "file": draft_path.name,
-                "status": "failed",
-                "reason": f"tsx_generator: {exc}",
-            })
+            results.append(
+                {
+                    "file": draft_path.name,
+                    "status": "failed",
+                    "reason": f"tsx_generator: {exc}",
+                }
+            )
 
     return {
         "converted": converted,

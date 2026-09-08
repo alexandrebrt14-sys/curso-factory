@@ -42,12 +42,16 @@ fonte.
 
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from src.validators.lexicos_loader import familias_de_abertura
 from src.validators.rules_loader import validation_section
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from src.models import CourseDefinition
@@ -56,7 +60,8 @@ if TYPE_CHECKING:
 @dataclass
 class AchadoAbertura:
     """Um achado do gate de abertura e distração."""
-    regra: str          # "R1", "R3", "R5", "R6", "R7", "R8", "R9"
+
+    regra: str  # "R1", "R3", "R5", "R6", "R7", "R8", "R9"
     mensagem: str
     tipo: str = "error"
 
@@ -88,7 +93,9 @@ _MENCAO_RE = re.compile(r"[\"“„”']([^\"“„”'\n]{2,80})[\"“„”']"
 #: Linha de fonte solta no corpo da aula.
 _LINHA_DE_FONTE_RE = re.compile(r"^\s*\**\s*Fontes?\s*\**\s*:", re.IGNORECASE)
 #: Cabeçalho "Fontes" (ou variantes) em qualquer nível.
-_H_FONTES_RE = re.compile(r"^\s{0,3}#{1,6}\s+(?:Fontes?|Refer[êe]ncias|Sources|Fuentes)\b", re.IGNORECASE)
+_H_FONTES_RE = re.compile(
+    r"^\s{0,3}#{1,6}\s+(?:Fontes?|Refer[êe]ncias|Sources|Fuentes)\b", re.IGNORECASE
+)
 #: Fronteira de trilha e de aula, como o orquestrador emite.
 _TRILHA_H1_RE = re.compile(r"^#\s+Trilha\s+\d+\s*[:.\-]", re.MULTILINE)
 _H1_RE = re.compile(r"^#\s+(?!#)(.+?)\s*$", re.MULTILINE)
@@ -199,11 +206,13 @@ def _termos_da_fonte(chave: str) -> list[str]:
         bruto = familias.get(nome)
         if isinstance(bruto, list):
             termos.extend(
-                _literal(t.strip()) for t in bruto
+                _literal(t.strip())
+                for t in bruto
                 if isinstance(t, str) and t.strip() and t.strip().lower() not in _EXCLUIR_DA_FONTE
             )
         elif isinstance(bruto, str) and bruto.strip():
-            termos.append(bruto)
+            # Mesmo tratamento das listas: termo literal, não regex.
+            termos.append(_literal(bruto.strip()))
     return termos
 
 
@@ -226,14 +235,21 @@ def _padroes(chave: str) -> list[re.Pattern[str]]:
             for t in extra.get(chave, []) or []:
                 if isinstance(t, str) and t.strip():
                     termos.append(re.escape(t.strip()) if not t.startswith("re:") else t[3:])
-    except Exception:  # noqa: BLE001 - configuração ausente nunca derruba o gate
-        pass
+    except (TypeError, AttributeError, KeyError) as exc:
+        # Configuração malformada nunca derruba o gate, mas o operador precisa saber.
+        logger.warning("validation.abertura.termos ignorado (formato inválido): %s", exc)
+    return _compilar(tuple(termos))
+
+
+@lru_cache(maxsize=64)
+def _compilar(termos: tuple[str, ...]) -> list[re.Pattern[str]]:
+    """Compila uma vez por conjunto de termos: `_padroes` roda por regra e por bloco."""
     compilados: list[re.Pattern[str]] = []
     for t in termos:
         try:
             compilados.append(re.compile(t, re.IGNORECASE | re.MULTILINE))
-        except re.error:
-            continue
+        except re.error as exc:
+            logger.warning("Padrão de abertura ignorado (%s): %r", exc, t)
     return compilados
 
 
@@ -280,40 +296,52 @@ def _check_r1(texto: str) -> list[AchadoAbertura]:
     m = _H1_RE.search(texto)
     if not m:
         return achados
-    corpo = texto[m.end():]
+    corpo = texto[m.end() :]
     blocos = _blocos(_sem_codigo(corpo))
     if len(blocos) < 2:
-        achados.append(AchadoAbertura(
-            "R1", "Abertura incompleta: depois do H1 precisam vir o subtítulo (uma frase) "
-                  "e ao menos um parágrafo antes de qualquer seção.",
-        ))
+        achados.append(
+            AchadoAbertura(
+                "R1",
+                "Abertura incompleta: depois do H1 precisam vir o subtítulo (uma frase) "
+                "e ao menos um parágrafo antes de qualquer seção.",
+            )
+        )
         return achados
 
     subtitulo = blocos[0]
     linhas_sub = subtitulo.splitlines()
     if not all(_eh_paragrafo_liso(ln) for ln in linhas_sub) or len(linhas_sub) > 1:
-        achados.append(AchadoAbertura(
-            "R1", f"O primeiro bloco depois do H1 precisa ser o subtítulo em uma frase, "
-                  f"em linha própria; veio: '{subtitulo[:60]}'. Sem cabeçalho, lista, tabela, "
-                  f"citação, imagem ou card antes do subtítulo.",
-        ))
+        achados.append(
+            AchadoAbertura(
+                "R1",
+                f"O primeiro bloco depois do H1 precisa ser o subtítulo em uma frase, "
+                f"em linha própria; veio: '{subtitulo[:60]}'. Sem cabeçalho, lista, tabela, "
+                f"citação, imagem ou card antes do subtítulo.",
+            )
+        )
         return achados
     frases = len(_FIM_DE_FRASE_RE.findall(subtitulo)) or 1
     palavras = len(subtitulo.split())
     teto = _subtitulo_max_palavras()
     if frases > 1 or palavras > teto:
-        achados.append(AchadoAbertura(
-            "R1", f"Subtítulo com {frases} frase(s) e {palavras} palavra(s); o subtítulo é UMA "
-                  f"frase de até {teto} palavras: '{subtitulo[:60]}'.",
-        ))
+        achados.append(
+            AchadoAbertura(
+                "R1",
+                f"Subtítulo com {frases} frase(s) e {palavras} palavra(s); o subtítulo é UMA "
+                f"frase de até {teto} palavras: '{subtitulo[:60]}'.",
+            )
+        )
 
     primeiro = blocos[1]
     if not all(_eh_paragrafo_liso(ln) for ln in primeiro.splitlines()):
-        achados.append(AchadoAbertura(
-            "R1", f"O primeiro elemento depois do subtítulo precisa ser um parágrafo; veio: "
-                  f"'{primeiro.splitlines()[0][:60]}'. Cabeçalho, lista, tabela, card, TOC, "
-                  f"'o que você vai aprender' e 'para quem é' não abrem a aula.",
-        ))
+        achados.append(
+            AchadoAbertura(
+                "R1",
+                f"O primeiro elemento depois do subtítulo precisa ser um parágrafo; veio: "
+                f"'{primeiro.splitlines()[0][:60]}'. Cabeçalho, lista, tabela, card, TOC, "
+                f"'o que você vai aprender' e 'para quem é' não abrem a aula.",
+            )
+        )
     return achados
 
 
@@ -348,9 +376,12 @@ def _check_rotulos(texto: str, regra: str, chave: str, explicacao: str) -> list[
             m = p.search(limpo)
             if m and m.group(0).lower() not in vistos:
                 vistos.add(m.group(0).lower())
-                achados.append(AchadoAbertura(
-                    regra, f"{explicacao}: '{rotulo.strip()[:70]}'.",
-                ))
+                achados.append(
+                    AchadoAbertura(
+                        regra,
+                        f"{explicacao}: '{rotulo.strip()[:70]}'.",
+                    )
+                )
                 break
     return achados
 
@@ -376,38 +407,53 @@ def _check_qualquer_linha(
 
 def _check_r3(texto: str) -> list[AchadoAbertura]:
     return _check_rotulos(
-        texto, "R3", "R3",
+        texto,
+        "R3",
+        "R3",
         "Percurso alternativo no topo ou em seção (um único caminho linear)",
     )
 
 
 def _check_r5(texto: str) -> list[AchadoAbertura]:
     achados = _check_qualquer_linha(
-        texto, "R5", "R5_qualquer", "Bloco 'mockup no seu negócio' ou variante",
+        texto,
+        "R5",
+        "R5_qualquer",
+        "Bloco 'mockup no seu negócio' ou variante",
     )
     achados += _check_rotulos(
-        texto, "R5", "R5_rotulo", "Seção 'no seu negócio' (remova o bloco e a instrução)",
+        texto,
+        "R5",
+        "R5_rotulo",
+        "Seção 'no seu negócio' (remova o bloco e a instrução)",
     )
     return achados
 
 
 def _check_r6(texto: str) -> list[AchadoAbertura]:
     return _check_rotulos(
-        texto, "R6", "R6",
+        texto,
+        "R6",
+        "R6",
         "Exercício 'faça agora' ou variante (conteúdo é leitura, não workbook)",
     )
 
 
 def _check_r8(texto: str) -> list[AchadoAbertura]:
     return _check_rotulos(
-        texto, "R8", "R8", "Card 'checkpoint' ou variante",
+        texto,
+        "R8",
+        "R8",
+        "Card 'checkpoint' ou variante",
     )
 
 
 def _check_r9(texto: str) -> list[AchadoAbertura]:
     """Vale mesmo entre aspas: a proibição do dono é à menção."""
     return _check_qualquer_linha(
-        texto, "R9", "R9",
+        texto,
+        "R9",
+        "R9",
         "Marcador de verificação ou menção à LGPD visível ao leitor (verificação é bastidor)",
         respeita_mencao=False,
     )
@@ -423,10 +469,13 @@ def _check_r7_aula(texto: str) -> list[AchadoAbertura]:
     achados: list[AchadoAbertura] = []
     for linha in _sem_codigo(texto).splitlines():
         if _H_FONTES_RE.match(linha) or _LINHA_DE_FONTE_RE.match(linha):
-            achados.append(AchadoAbertura(
-                "R7", f"Fonte no meio da aula: '{linha.strip()[:70]}'. A fonte vai para o bloco "
-                      f"'Fontes' do rodapé da trilha, em uma linha curta.",
-            ))
+            achados.append(
+                AchadoAbertura(
+                    "R7",
+                    f"Fonte no meio da aula: '{linha.strip()[:70]}'. A fonte vai para o bloco "
+                    f"'Fontes' do rodapé da trilha, em uma linha curta.",
+                )
+            )
             break
     return achados
 
@@ -436,13 +485,20 @@ def _check_r7_trilha(texto: str) -> list[AchadoAbertura]:
     achados: list[AchadoAbertura] = []
     corpo = _sem_codigo(texto)
     h2s = [(m.start(), m.group(2)) for m in re.finditer(r"^(##)\s+(.+?)\s*$", corpo, re.MULTILINE)]
-    idx_fontes = [i for i, (_, t) in enumerate(h2s) if re.match(r"(?:Fontes?|Sources|Fuentes|Refer[êe]ncias)\b", t, re.I)]
+    idx_fontes = [
+        i
+        for i, (_, t) in enumerate(h2s)
+        if re.match(r"(?:Fontes?|Sources|Fuentes|Refer[êe]ncias)\b", t, re.I)
+    ]
     if not idx_fontes:
         return achados
     if idx_fontes[-1] != len(h2s) - 1 or len(idx_fontes) > 1:
-        achados.append(AchadoAbertura(
-            "R7", "O bloco 'Fontes' precisa ser o último H2 da trilha, e único.",
-        ))
+        achados.append(
+            AchadoAbertura(
+                "R7",
+                "O bloco 'Fontes' precisa ser o último H2 da trilha, e único.",
+            )
+        )
     inicio = h2s[idx_fontes[-1]][0]
     bloco = corpo[inicio:].splitlines()[1:]
     for linha in bloco:
@@ -450,15 +506,21 @@ def _check_r7_trilha(texto: str) -> list[AchadoAbertura]:
         if not s:
             continue
         if s.startswith(">") or s.startswith("|"):
-            achados.append(AchadoAbertura(
-                "R7", "Fonte em card, citação ou tabela; no rodapé a fonte é texto e link, uma linha.",
-            ))
+            achados.append(
+                AchadoAbertura(
+                    "R7",
+                    "Fonte em card, citação ou tabela; no rodapé a fonte é texto e link, uma linha.",
+                )
+            )
             break
         if len(s.split()) > FONTE_MAX_PALAVRAS:
-            achados.append(AchadoAbertura(
-                "R7", f"Fonte com comentário longo ({len(s.split())} palavras): '{s[:60]}'. "
-                      f"Nome da fonte, título e data, no máximo {FONTE_MAX_PALAVRAS} palavras.",
-            ))
+            achados.append(
+                AchadoAbertura(
+                    "R7",
+                    f"Fonte com comentário longo ({len(s.split())} palavras): '{s[:60]}'. "
+                    f"Nome da fonte, título e data, no máximo {FONTE_MAX_PALAVRAS} palavras.",
+                )
+            )
             break
     return achados
 
@@ -550,7 +612,9 @@ def check_abertura_definicao(course: CourseDefinition) -> list[str]:
     for step in course.steps:
         rotulo = step.id
         if not (step.description or "").strip():
-            mensagens.append(f"{rotulo}: módulo sem subtítulo (description). R1 pede título, subtítulo e parágrafo.")
+            mensagens.append(
+                f"{rotulo}: módulo sem subtítulo (description). R1 pede título, subtítulo e parágrafo."
+            )
         if step.content and step.content[0].type is not SectionType.TEXT:
             mensagens.append(
                 f"{rotulo}: o módulo abre com bloco '{step.content[0].type.value}'. R1: o primeiro "
@@ -570,10 +634,16 @@ def check_abertura_definicao(course: CourseDefinition) -> list[str]:
             if secao.type is SectionType.TEXT:
                 for linha in texto.splitlines():
                     if _LINHA_DE_FONTE_RE.match(linha) or _H_FONTES_RE.match(linha):
-                        mensagens.append(f"{rotulo}[{i}]: 'Fonte:' dentro da prosa (R7); a fonte vai ao rodapé.")
+                        mensagens.append(
+                            f"{rotulo}[{i}]: 'Fonte:' dentro da prosa (R7); a fonte vai ao rodapé."
+                        )
                         break
             for achado in (
-                _check_r5(texto) + _check_r6(texto) + _check_r8(texto) + _check_r9(texto) + _check_r3(texto)
+                _check_r5(texto)
+                + _check_r6(texto)
+                + _check_r8(texto)
+                + _check_r9(texto)
+                + _check_r3(texto)
             ):
                 mensagens.append(f"{rotulo}[{i}]: [{achado.regra}] {achado.mensagem}")
     for k, fonte in enumerate(course.fontes):

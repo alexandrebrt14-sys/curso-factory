@@ -13,6 +13,7 @@ from html.parser import HTMLParser
 @dataclass
 class HTMLError:
     """Erro de validação HTML."""
+
     tipo: str
     mensagem: str
     linha: int = 0
@@ -20,8 +21,20 @@ class HTMLError:
 
 REQUIRED_ELEMENTS = {"html", "head", "title", "body", "main", "h1"}
 VOID_ELEMENTS = {
-    "area", "base", "br", "col", "embed", "hr", "img", "input",
-    "link", "meta", "param", "source", "track", "wbr",
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
 }
 
 
@@ -58,17 +71,21 @@ class _HTMLChecker(HTMLParser):
             return
         line, _ = self.getpos()
         if not self.stack:
-            self.errors.append(HTMLError("tag_extra", f"Tag de fechamento sem abertura: </{tag}>", line))
+            self.errors.append(
+                HTMLError("tag_extra", f"Tag de fechamento sem abertura: </{tag}>", line)
+            )
             return
         open_tag, open_line = self.stack[-1]
         if open_tag == tag:
             self.stack.pop()
         else:
-            self.errors.append(HTMLError(
-                "tag_mismatch",
-                f"Esperado </{open_tag}> (aberto na linha {open_line}), encontrado </{tag}>",
-                line,
-            ))
+            self.errors.append(
+                HTMLError(
+                    "tag_mismatch",
+                    f"Esperado </{open_tag}> (aberto na linha {open_line}), encontrado </{tag}>",
+                    line,
+                )
+            )
 
 
 def validate_html(html: str) -> list[HTMLError]:

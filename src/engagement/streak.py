@@ -72,9 +72,7 @@ def record_activity(
         )
 
     if today < streak.last_activity:
-        raise ValueError(
-            f"today ({today}) é anterior à última atividade ({streak.last_activity})"
-        )
+        raise ValueError(f"today ({today}) é anterior à última atividade ({streak.last_activity})")
 
     delta = (today - streak.last_activity).days
 

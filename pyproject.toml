@@ -1,6 +1,6 @@
 [project]
 name = "curso-factory"
-version = "2.0.0"
+dynamic = ["version"]
 description = "Fábrica de cursos educacionais com 5 LLMs orquestrados — pipeline AAA com Jinja2 templates"
 readme = "README.md"
 license = {text = "MIT"}
@@ -14,8 +14,6 @@ dependencies = [
     "python-dotenv>=1.0",
     "pyyaml>=6.0",
     "jinja2>=3.1",
-    "click>=8.1",
-    "jsonschema>=4.21",
     "rich>=13.7",
 ]
 
@@ -26,8 +24,14 @@ certification = ["qrcode[pil]>=7.4"]
 tutor-api = ["fastapi>=0.110", "uvicorn>=0.27"]
 # Atalho para todas as features opcionais
 all = ["qrcode[pil]>=7.4", "fastapi>=0.110", "uvicorn>=0.27"]
-# Dev dependencies (testes, coverage)
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "pytest-cov>=5.0"]
+# Dev dependencies (testes, coverage, lint/format)
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5.0",
+    "jsonschema>=4.21",
+    "ruff>=0.15,<0.16",
+]
 
 [project.scripts]
 curso-factory = "cli:main"
@@ -43,15 +47,28 @@ Issues = "https://github.com/alexandrebrt14-sys/curso-factory/issues"
 requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+# `cli.py` fica na raiz: sem esta linha o console script `curso-factory`
+# instalava, mas falhava com ModuleNotFoundError: No module named 'cli'.
+py-modules = ["cli"]
+
 [tool.setuptools.packages.find]
 include = ["src*"]
+
+[tool.setuptools.package-data]
+# Prompts, templates Jinja2 e schema JSON viajam com o pacote.
+src = ["templates/**/*", "templates/**/.*", "schemas/*.json"]
+
+[tool.setuptools.dynamic]
+version = {attr = "src.__version__"}
 
 # ─────────────────────────── Qualidade de código ───────────────────────────
 [tool.ruff]
 target-version = "py311"
 line-length = 100
 # Scripts legados (scripts/legacy/) são congelados — não fazem parte do produto.
-extend-exclude = ["scripts/legacy", "output", "wiki"]
+# docs/ é prosa (versões novas do ruff formatam trechos Python em Markdown).
+extend-exclude = ["scripts/legacy", "output", "wiki", "docs"]
 
 [tool.ruff.lint]
 # E/W: pycodestyle · F: pyflakes · I: isort · UP: pyupgrade · B: flake8-bugbear
@@ -64,6 +81,8 @@ ignore = ["E501", "B008", "UP042"]
 [tool.ruff.lint.per-file-ignores]
 # Testes inserem o root no sys.path antes de importar src → E402 é intencional.
 "tests/*" = ["E402"]
+# Scripts utilitários inserem a raiz no sys.path antes de importar src.
+"scripts/*" = ["E402"]
 # course_indexer carrega .env (load_dotenv) antes de derivar constantes de módulo.
 "src/indexer/course_indexer.py" = ["E402"]
 

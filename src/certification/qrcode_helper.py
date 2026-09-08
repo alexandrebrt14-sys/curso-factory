@@ -12,10 +12,8 @@ A biblioteca ``qrcode`` (com Pillow) é opcional. Quando ausente, a
 função levanta ``RuntimeError`` claramente — o código de teste deve
 usar mock ou ``pytest.importorskip("qrcode")``.
 
-Não modificamos ``pyproject.toml`` neste quickwin (Wave 9 V0). A
-recomendação é adicionar ``qrcode[pil]>=7.4`` como dependência
-opcional ``[project.optional-dependencies] certification`` quando
-sair de V0.
+Instalação: ``pip install -e ".[certification]"`` (extra declarado em
+``pyproject.toml``).
 """
 
 from __future__ import annotations
@@ -46,8 +44,7 @@ def qr_to_base64_png(url: str, size: int = 200) -> str:
         import qrcode  # type: ignore[import-not-found]
     except ImportError as exc:  # pragma: no cover - depende do ambiente
         raise RuntimeError(
-            "Biblioteca 'qrcode' não está instalada. "
-            "Instale com: pip install qrcode[pil]>=7.4"
+            "Biblioteca 'qrcode' não está instalada. Instale com: pip install qrcode[pil]>=7.4"
         ) from exc
 
     # Calcula box_size a partir do tamanho desejado.

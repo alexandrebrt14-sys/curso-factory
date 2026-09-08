@@ -34,8 +34,9 @@ from __future__ import annotations
 
 import logging
 
-# Imports do FastAPI são lazy — o stub não deve quebrar `pytest tests/`
-# em ambientes onde fastapi não está instalado.
+# FastAPI é dependência opcional (`pip install -e ".[tutor-api]"`). Sem ela
+# este módulo falha no import com instrução clara; `pytest tests/` não o
+# importa, então a bateria não depende do FastAPI.
 try:
     from fastapi import FastAPI, HTTPException
     from pydantic import BaseModel
@@ -101,14 +102,13 @@ def tutor_endpoint(course_slug: str, payload: TutorRequest) -> TutorResponse:
     """
     try:
         mode = TutorMode(payload.mode)
-    except ValueError:
+    except ValueError as exc:
         raise HTTPException(
             status_code=400,
             detail=(
-                f"mode inválido: {payload.mode!r}. "
-                f"Valores aceitos: {[m.value for m in TutorMode]}."
+                f"mode inválido: {payload.mode!r}. Valores aceitos: {[m.value for m in TutorMode]}."
             ),
-        )
+        ) from exc
 
     memory = _get_memory(payload.student_id, course_slug)
 

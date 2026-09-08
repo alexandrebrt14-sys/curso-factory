@@ -67,13 +67,16 @@ def test_r1_aula_que_abre_com_h2_reprova() -> None:
     assert "R1" in _regras(texto)
 
 
-@pytest.mark.parametrize("bloco", [
-    "- item um\n- item dois",
-    "| a | b |\n|---|---|\n| 1 | 2 |",
-    "> citação em destaque",
-    "![legenda](fig.svg)",
-    "1. passo um\n2. passo dois",
-])
+@pytest.mark.parametrize(
+    "bloco",
+    [
+        "- item um\n- item dois",
+        "| a | b |\n|---|---|\n| 1 | 2 |",
+        "> citação em destaque",
+        "![legenda](fig.svg)",
+        "1. passo um\n2. passo dois",
+    ],
+)
 def test_r1_nada_antes_do_subtitulo(bloco: str) -> None:
     texto = f"# Aula 1.1: X\n\n{bloco}\n\nSubtítulo depois.\n\n{PROSA}"
     assert "R1" in _regras(texto)
@@ -102,32 +105,38 @@ def test_r1_nao_vale_para_texto_sem_h1_nem_para_trilha() -> None:
 # ─── R3, R5, R6, R8, R9 ─────────────────────────────────────────────────
 
 
-@pytest.mark.parametrize("cabecalho,regra", [
-    ("## Escolha seu caminho", "R3"),
-    ("## Se você é dono de salão, vá para a aula 3", "R3"),
-    ("## Aplique no seu negócio", "R5"),
-    ("## Como fica no seu negócio", "R5"),
-    ("## Faça agora", "R6"),
-    ("### Exercício 1: monte a tabela", "R6"),
-    ("## Mão na massa", "R6"),
-    ("## Sua vez", "R6"),
-    ("## Desafio da semana", "R6"),
-    ("## Checkpoint", "R8"),
-    ("## Recapitulando", "R8"),
-    ("## Quiz rápido", "R8"),
-    ("## Resumo do capítulo", "R8"),
-])
+@pytest.mark.parametrize(
+    "cabecalho,regra",
+    [
+        ("## Escolha seu caminho", "R3"),
+        ("## Se você é dono de salão, vá para a aula 3", "R3"),
+        ("## Aplique no seu negócio", "R5"),
+        ("## Como fica no seu negócio", "R5"),
+        ("## Faça agora", "R6"),
+        ("### Exercício 1: monte a tabela", "R6"),
+        ("## Mão na massa", "R6"),
+        ("## Sua vez", "R6"),
+        ("## Desafio da semana", "R6"),
+        ("## Checkpoint", "R8"),
+        ("## Recapitulando", "R8"),
+        ("## Quiz rápido", "R8"),
+        ("## Resumo do capítulo", "R8"),
+    ],
+)
 def test_bloco_proibido_em_cabecalho_reprova(cabecalho: str, regra: str) -> None:
     texto = AULA_OK + f"\n{cabecalho}\n\n{PROSA}\n"
     assert regra in _regras(texto), _mensagens(texto)
 
 
-@pytest.mark.parametrize("rotulo,regra", [
-    ("**Resultado esperado:** uma resposta enviada.", "R6"),
-    ("**Se travar:** peça ajuda.", "R6"),
-    ("> CHECKPOINT: revise os conceitos.", "R8"),
-    ("> EXERCÍCIO: abra a agenda.", "R6"),
-])
+@pytest.mark.parametrize(
+    "rotulo,regra",
+    [
+        ("**Resultado esperado:** uma resposta enviada.", "R6"),
+        ("**Se travar:** peça ajuda.", "R6"),
+        ("> CHECKPOINT: revise os conceitos.", "R8"),
+        ("> EXERCÍCIO: abra a agenda.", "R6"),
+    ],
+)
 def test_bloco_proibido_em_rotulo_ou_citacao_reprova(rotulo: str, regra: str) -> None:
     texto = AULA_OK + f"\n{rotulo}\n"
     assert regra in _regras(texto), _mensagens(texto)
@@ -150,16 +159,19 @@ def test_mencao_entre_aspas_nao_reprova_r6_nem_r8() -> None:
     assert "R6" not in regras and "R8" not in regras
 
 
-@pytest.mark.parametrize("trecho", [
-    "Este número requer verificação.",
-    "Dado a verificar com a equipe.",
-    "Taxa de 12% [verificar].",
-    "Fonte pendente para o dado de 2025.",
-    "Guarde os dados conforme a LGPD.",
-    "A Lei Geral de Proteção de Dados manda pedir consentimento.",
-    "Veja a Lei 13.709 antes de mandar mensagem.",
-    'Ele disse: "isso é assunto de LGPD".',
-])
+@pytest.mark.parametrize(
+    "trecho",
+    [
+        "Este número requer verificação.",
+        "Dado a verificar com a equipe.",
+        "Taxa de 12% [verificar].",
+        "Fonte pendente para o dado de 2025.",
+        "Guarde os dados conforme a LGPD.",
+        "A Lei Geral de Proteção de Dados manda pedir consentimento.",
+        "Veja a Lei 13.709 antes de mandar mensagem.",
+        'Ele disse: "isso é assunto de LGPD".',
+    ],
+)
 def test_r9_verificacao_e_lgpd_reprovam_mesmo_entre_aspas(trecho: str) -> None:
     assert "R9" in _regras(AULA_OK + f"\n{trecho}\n")
 
@@ -266,13 +278,15 @@ def _curso(secoes: list[dict], **extra) -> CourseDefinition:
         titulo="Curso de teste da abertura",
         descricao="Descrição do curso com mais de vinte caracteres.",
         descricao_curta="Subtítulo do curso em uma frase.",
-        steps=[{
-            "id": "modulo-um",
-            "title": "Módulo um",
-            "duration": "10 min",
-            "description": "Subtítulo do módulo em uma frase.",
-            "content": secoes,
-        }],
+        steps=[
+            {
+                "id": "modulo-um",
+                "title": "Módulo um",
+                "duration": "10 min",
+                "description": "Subtítulo do módulo em uma frase.",
+                "content": secoes,
+            }
+        ],
         autor_nome="Maria Silva",
         autor_credencial="Consultora",
         dominio="https://exemplo.com.br",
@@ -282,16 +296,27 @@ def _curso(secoes: list[dict], **extra) -> CourseDefinition:
     )
 
 
-TABELA = {"type": "dataTable", "value": "", "data": {
-    "columns": ["Régua", "Número"], "rows": [["Operador", "400"], ["Documento", "250"]],
-    "source": "IBGE, Pnad, 2025 https://www.ibge.gov.br/pnad"}}
+TABELA = {
+    "type": "dataTable",
+    "value": "",
+    "data": {
+        "columns": ["Régua", "Número"],
+        "rows": [["Operador", "400"], ["Documento", "250"]],
+        "source": "IBGE, Pnad, 2025 https://www.ibge.gov.br/pnad",
+    },
+}
 
 
 def test_definicao_reprova_marcador_pendente_e_termos_proibidos() -> None:
-    curso = _curso([
-        {"type": "text", "value": "Parágrafo de abertura [FALTA EVIDÊNCIA: taxa de retorno]."},
-        {"type": "tip", "value": "Faça agora: abra a agenda e conforme a LGPD peça consentimento."},
-    ])
+    curso = _curso(
+        [
+            {"type": "text", "value": "Parágrafo de abertura [FALTA EVIDÊNCIA: taxa de retorno]."},
+            {
+                "type": "tip",
+                "value": "Faça agora: abra a agenda e conforme a LGPD peça consentimento.",
+            },
+        ]
+    )
     msgs = check_abertura_definicao(curso)
     assert any("apuração pendente" in m for m in msgs)
     assert any("[R9]" in m for m in msgs)
@@ -322,7 +347,7 @@ def tsx() -> str:
 
 def test_template_abre_com_h1_subtitulo_e_modulos_nessa_ordem(tsx: str) -> None:
     """R1 e R2 no template: H1 antes do subtítulo, subtítulo antes dos módulos, sem botão no meio."""
-    corpo = tsx[tsx.index('<main id="main-content">'):]
+    corpo = tsx[tsx.index('<main id="main-content">') :]
     i_h1 = corpo.index("<h1")
     i_sub = corpo.index("Subtítulo do curso em uma frase.")
     i_steps = corpo.index("<StepCard")
@@ -343,7 +368,7 @@ def test_template_nao_emite_os_blocos_do_topo_carregado(tsx: str) -> None:
 
 def test_template_descricao_aparece_uma_vez_no_topo(tsx: str) -> None:
     """R4: a descrição do curso não se repete em card visível; o JSON-LD não conta."""
-    visivel = tsx[tsx.index('<main id="main-content">'):tsx.index("<Footer")]
+    visivel = tsx[tsx.index('<main id="main-content">') : tsx.index("<Footer")]
     assert visivel.count("Descrição do curso com mais de vinte caracteres.") == 1
 
 
@@ -354,14 +379,18 @@ def test_template_fontes_so_no_rodape_e_pequenas(tsx: str) -> None:
     inicio = tsx.index('aria-label="Fontes"')
     assert inicio > tsx.index("Perguntas frequentes")
     assert inicio < tsx.index("<Footer")
-    bloco = tsx[inicio:tsx.index("</section>", inicio)]
+    bloco = tsx[inicio : tsx.index("</section>", inicio)]
     assert "text-[0.8rem]" in bloco
     assert "Octadesk, CX Trends, maio de 2025." in bloco
     # O `source` da tabela subiu para o rodapé, e a URL virou link.
     assert "IBGE, Pnad, 2025" in bloco
-    assert re.search(r'<a href="https://www\.ibge\.gov\.br/pnad"[^>]*>https://www\.ibge\.gov\.br/pnad</a>', bloco)
+    assert re.search(
+        r'<a href="https://www\.ibge\.gov\.br/pnad"[^>]*>https://www\.ibge\.gov\.br/pnad</a>', bloco
+    )
     # Pré-requisitos viraram uma linha discreta no rodapé, não card no topo.
-    assert "Antes de começar:" in tsx and tsx.index("Antes de começar:") > tsx.index("Perguntas frequentes")
+    assert "Antes de começar:" in tsx and tsx.index("Antes de começar:") > tsx.index(
+        "Perguntas frequentes"
+    )
 
 
 def test_curso_sem_fontes_nao_desenha_o_bloco() -> None:
@@ -387,16 +416,26 @@ def test_espelho_1_6_0_traz_o_bloco_de_abertura() -> None:
     dados = json.loads((PROJECT_ROOT / "config" / "lexicos.json").read_text(encoding="utf-8"))
     assert dados["versao"] == "1.6.0"
     fam = familias_de_abertura()
-    for chave in ("percursoAlternativo", "mockup", "exercicioForte", "checkpointForte", "verificacaoExplicita", "lgpd"):
+    for chave in (
+        "percursoAlternativo",
+        "mockup",
+        "exercicioForte",
+        "checkpointForte",
+        "verificacaoExplicita",
+        "lgpd",
+    ):
         assert chave in fam, chave
     assert fam["subtituloMaxPalavras"] == 25
 
 
-@pytest.mark.parametrize("cabecalho,regra", [
-    ("## Hora de praticar", "R6"),          # só na fonte
-    ("## Teste seus conhecimentos", "R8"),  # só na fonte
-    ("## Se você tem pressa", "R3"),        # só na fonte
-])
+@pytest.mark.parametrize(
+    "cabecalho,regra",
+    [
+        ("## Hora de praticar", "R6"),  # só na fonte
+        ("## Teste seus conhecimentos", "R8"),  # só na fonte
+        ("## Se você tem pressa", "R3"),  # só na fonte
+    ],
+)
 def test_familias_da_fonte_somam_aos_padroes_do_modulo(cabecalho: str, regra: str) -> None:
     texto = AULA_OK + f"\n{cabecalho}\n\n{PROSA}\n"
     assert regra in _regras(texto), _mensagens(texto)

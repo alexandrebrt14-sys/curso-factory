@@ -233,7 +233,9 @@ class Humanizer(Agent):
                 logger.warning(
                     "Humanizer pass %d retornou texto suspeito (len=%d vs "
                     "original=%d) — preservando versao anterior",
-                    i + 1, len(rewritten or ""), len(current_text),
+                    i + 1,
+                    len(rewritten or ""),
+                    len(current_text),
                 )
                 result.motivo_parada = (
                     f"output truncado na iter {i + 1} — preservada versao anterior"

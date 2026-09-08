@@ -35,7 +35,6 @@ leitura: sem exercício, checkpoint, mockup, "requer verificação" nem LGPD
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 from collections.abc import Callable
@@ -43,6 +42,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from src import __version__ as PIPELINE_VERSION
 from src.agents.analyzer import Analyzer
 from src.agents.classifier import Classifier
 from src.agents.researcher import Researcher
@@ -59,6 +59,7 @@ from src.config import (
     TRAIL_RESEARCH_CHARS,
 )
 from src.cost_tracker import CostTracker
+from src.fsutil import quarantine_corrupt, read_json_or_none, write_json_atomic
 from src.models import Course, Module
 
 if TYPE_CHECKING:
@@ -66,6 +67,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+#: Diretório de rascunhos do cliente `default`. Os demais clientes gravam em
+#: `<client.output_dir>/drafts` (ver `Orchestrator.drafts_dir`), o mesmo lugar
+#: onde `cli certify` e `cli emit-llms-txt` os procuram.
 DRAFTS_DIR = OUTPUT_DIR / "drafts"
 
 #: Cabeçalho que abre cada aula no rascunho montado.
@@ -142,7 +146,7 @@ def dividir_em_unidades(texto: str) -> list[tuple[str, str]]:
     for ini in inicios:
         antes = texto[:ini].rstrip()
         m = MODULO_COMENTARIO_RE.search(antes)
-        ajustados.append(m.start() if m and not texto[m.end():ini].strip() else ini)
+        ajustados.append(m.start() if m and not texto[m.end() : ini].strip() else ini)
     unidades: list[tuple[str, str]] = []
     for k, ini in enumerate(ajustados):
         fim = ajustados[k + 1] if k + 1 < len(ajustados) else len(texto)
@@ -161,7 +165,7 @@ def separar_relatorio_de_revisao(saida: str) -> tuple[str, str]:
     m = RELATORIO_REVISAO_RE.search(saida)
     if not m:
         return saida.strip(), ""
-    return saida[: m.start()].strip(), saida[m.start():].strip().strip("-").strip()
+    return saida[: m.start()].strip(), saida[m.start() :].strip().strip("-").strip()
 
 
 def _contar_palavras(texto: str) -> int:
@@ -175,16 +179,23 @@ class Orchestrator:
         self,
         cost_tracker: CostTracker | None = None,
         client_context: ClientContext | None = None,
+        drafts_dir: Path | None = None,
     ) -> None:
         self.cost_tracker = cost_tracker or CostTracker()
         if client_context is None:
             from src.clients import load_client
+
             client_context = load_client("default")
         self.client_context = client_context
+        #: Rascunhos, checkpoints e resultados vão para o diretório do cliente,
+        #: para que dois clientes com o mesmo slug não colidam e para que os
+        #: comandos de publicação encontrem o que o pipeline gravou.
+        self.drafts_dir: Path = drafts_dir or (client_context.output_dir / "drafts")
         # B-019/D8: factory decide o backend: legado (default) ou
         # geo_orchestrator_sdk via CURSO_FACTORY_LLM_BACKEND=sdk (herda
         # timeout por task_type, fallback chain e FinOps do orquestrador).
         from src.llm_client import make_llm_client
+
         self.client = make_llm_client(self.cost_tracker)
         self.researcher = Researcher(self.client)
         self.writer = Writer(self.client)
@@ -195,27 +206,53 @@ class Orchestrator:
         #: entregues ao resultado quando a etapa fecha.
         self._avisos_pendentes: list[str] = []
 
+    # ── ciclo de vida ───────────────────────────────────────────────────
+
+    def close(self) -> None:
+        """Fecha o cliente LLM (conexões HTTP). Idempotente."""
+        fechar = getattr(self.client, "close", None)
+        if callable(fechar):
+            fechar()
+
+    def __enter__(self) -> Orchestrator:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
     # ── checkpoint ──────────────────────────────────────────────────────
 
     def _checkpoint_path(self, course_id: str) -> Path:
-        return DRAFTS_DIR / f"{course_id}_checkpoint.json"
+        return self.drafts_dir / f"{course_id}_checkpoint.json"
 
     def _save_checkpoint(self, course_id: str, result: PipelineResult, context: str = "") -> None:
-        """Salva checkpoint incremental após cada etapa concluída."""
+        """Salva checkpoint incremental após cada etapa concluída (escrita atômica)."""
         data = result.to_dict()
         data["_context"] = context
         path = self._checkpoint_path(course_id)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        try:
+            write_json_atomic(path, data)
+        except OSError as exc:
+            # Perder o checkpoint custa uma retomada; parar o pipeline custa o curso.
+            logger.error("Não consegui gravar o checkpoint %s: %s", path, exc)
+            return
         logger.info("Checkpoint salvo: %s (%d etapas)", path.name, len(result.etapas))
 
     def _load_checkpoint(self, course_id: str) -> tuple[PipelineResult, str] | None:
-        """Carrega checkpoint se existir, para resume após desconexão."""
+        """Carrega checkpoint se existir, para resume após desconexão.
+
+        Checkpoint corrompido (gravação interrompida em versão antiga) é posto
+        de lado com sufixo `.corrupt-*` e o pipeline recomeça do zero, em vez
+        de reprovar todo `create` daquele slug com `JSONDecodeError`.
+        """
         path = self._checkpoint_path(course_id)
-        if not path.exists():
+        data = read_json_or_none(path)
+        if data is None:
             return None
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
+        if not isinstance(data, dict):
+            logger.error("Checkpoint %s com formato inesperado; ignorado", path.name)
+            quarantine_corrupt(path)
+            return None
         result = PipelineResult(course_id)
         result.etapas = data.get("etapas", {})
         result.avisos = list(data.get("avisos", []))
@@ -312,15 +349,11 @@ class Orchestrator:
         return self._draft_modules_iterative(course, research)
 
     def _step_analyze(self, course: Course, draft: str) -> str:
-        return self.analyzer.execute(
-            draft, course_name=course.titulo, draft_content=draft
-        )
+        return self.analyzer.execute(draft, course_name=course.titulo, draft_content=draft)
 
     def _step_classify(self, course: Course, draft: str) -> str:
         conteudo = draft[:CLASSIFY_CONTEXT_CHARS]
-        return self.classifier.execute(
-            conteudo, course_name=course.titulo, content=conteudo
-        )
+        return self.classifier.execute(conteudo, course_name=course.titulo, content=conteudo)
 
     def _step_review(
         self, course: Course, draft: str, analysis: str, result: PipelineResult
@@ -329,7 +362,7 @@ class Orchestrator:
 
     def run(self, course: Course) -> PipelineResult:
         """Executa o pipeline completo para um curso, com resume de checkpoint."""
-        DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+        self.drafts_dir.mkdir(parents=True, exist_ok=True)
 
         # Achado F32: propaga course_id para todas as chamadas LLM, fazendo
         # com que o cost_tracker registre cada call sob o curso correto.
@@ -338,24 +371,39 @@ class Orchestrator:
         checkpoint = self._load_checkpoint(course.id)
         if checkpoint:
             result, _ = checkpoint
-            logger.info("Retomando pipeline de checkpoint com etapas: %s", list(result.etapas.keys()))
+            logger.info(
+                "Retomando pipeline de checkpoint com etapas: %s", list(result.etapas.keys())
+            )
         else:
             result = PipelineResult(course.id)
 
         etapas: list[tuple[str, str, Callable[[], str]]] = [
-            ("research", self.researcher.provider,
-             lambda: self._step_research(course)),
-            ("draft", self.writer.provider,
-             lambda: self._step_draft(course, result.etapas.get("research", ""))),
-            ("analyze", self.analyzer.provider,
-             lambda: self._step_analyze(course, result.etapas.get("draft", ""))),
-            ("classify", self.classifier.provider,
-             lambda: self._step_classify(course, result.etapas.get("draft", ""))),
-            ("review", self.reviewer.provider,
-             lambda: self._step_review(
-                 course, result.etapas.get("draft", ""),
-                 result.etapas.get("analyze", ""), result,
-             )),
+            ("research", self.researcher.provider, lambda: self._step_research(course)),
+            (
+                "draft",
+                self.writer.provider,
+                lambda: self._step_draft(course, result.etapas.get("research", "")),
+            ),
+            (
+                "analyze",
+                self.analyzer.provider,
+                lambda: self._step_analyze(course, result.etapas.get("draft", "")),
+            ),
+            (
+                "classify",
+                self.classifier.provider,
+                lambda: self._step_classify(course, result.etapas.get("draft", "")),
+            ),
+            (
+                "review",
+                self.reviewer.provider,
+                lambda: self._step_review(
+                    course,
+                    result.etapas.get("draft", ""),
+                    result.etapas.get("analyze", ""),
+                    result,
+                ),
+            ),
         ]
 
         for nome, provider, executar in etapas:
@@ -378,14 +426,18 @@ class Orchestrator:
                 if self._avisos_pendentes:
                     result.avisos.extend(self._avisos_pendentes)
                     self._avisos_pendentes.clear()
-                self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
+                self._registrar_procedencia(
+                    result, nome, provider, self._procedencia(marca, course.id)
+                )
                 logger.info("Etapa '%s' concluída (%d palavras)", nome, _contar_palavras(saida))
                 self._save_checkpoint(course.id, result, saida)
             except Exception as exc:
                 msg = f"Erro na etapa '{nome}': {exc}"
-                logger.error(msg)
+                logger.exception(msg)
                 result.erros.append(msg)
-                self._registrar_procedencia(result, nome, provider, self._procedencia(marca, course.id))
+                self._registrar_procedencia(
+                    result, nome, provider, self._procedencia(marca, course.id)
+                )
                 self._save_checkpoint(course.id, result)
                 break
         else:
@@ -397,11 +449,13 @@ class Orchestrator:
         self._save_result(course.id, result)
         cp = self._checkpoint_path(course.id)
         if result.sucesso and cp.exists():
-            cp.unlink()
+            cp.unlink(missing_ok=True)
             logger.info("Checkpoint removido (pipeline concluído com sucesso)")
-        logger.info("Pipeline %s para curso '%s'",
-                     "concluído com sucesso" if result.sucesso else "interrompido com erros",
-                     course.id)
+        logger.info(
+            "Pipeline %s para curso '%s'",
+            "concluído com sucesso" if result.sucesso else "interrompido com erros",
+            course.id,
+        )
         logger.info(self.cost_tracker.report())
         return result
 
@@ -479,8 +533,13 @@ class Orchestrator:
     ) -> str:
         """Escreve UMA aula, com a pesquisa inteira e o mapa das aulas vizinhas."""
         aula = aulas[indice]
-        anteriores = [f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[:indice])]
-        seguintes = [f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[indice + 1:], indice + 1)]
+        anteriores = [
+            f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas[:indice])
+        ]
+        seguintes = [
+            f"{numero_modulo}.{k + 1} {a['titulo']}"
+            for k, a in enumerate(aulas[indice + 1 :], indice + 1)
+        ]
         variaveis = {
             "course_name": course.titulo,
             "course_level": course.nivel.value,
@@ -508,9 +567,13 @@ class Orchestrator:
             and palavras < piso
             and self._pode_chamar(self.writer.provider, course.id)[0]
         ):
-            logger.info("%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso)
+            logger.info(
+                "%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso
+            )
             nota = self._nota_de_expansao(texto, palavras, variaveis)
-            expandido = self._normalizar_aula(self.writer.execute(nota + "\n\n" + contexto, **variaveis))
+            expandido = self._normalizar_aula(
+                self.writer.execute(nota + "\n\n" + contexto, **variaveis)
+            )
             palavras_exp = _contar_palavras(expandido)
             if palavras_exp > palavras:
                 self._avisos_pendentes.append(
@@ -535,7 +598,9 @@ class Orchestrator:
         """Instrução de expansão no idioma do redator, com o rascunho curto embutido."""
         from src.agents.lang_resolver import resolve_prompt_path
 
-        template = resolve_prompt_path("expand.md", self.writer.language).read_text(encoding="utf-8")
+        template = resolve_prompt_path("expand.md", self.writer.language).read_text(
+            encoding="utf-8"
+        )
         return template.format(
             palavras_atual=str(palavras),
             palavras_piso=variaveis["palavras_piso"],
@@ -551,7 +616,9 @@ class Orchestrator:
         escreve cada aula numa chamada própria, com a pesquisa inteira. Curso
         sem módulos declarados vira um módulo com o título do curso.
         """
-        modulos = course.modulos or [Module(titulo=course.titulo, descricao=course.descricao, ordem=1)]
+        modulos = course.modulos or [
+            Module(titulo=course.titulo, descricao=course.descricao, ordem=1)
+        ]
         partes: list[str] = []
 
         for i, modulo in enumerate(modulos, 1):
@@ -560,8 +627,13 @@ class Orchestrator:
                 logger.warning("%s antes do módulo %d. Parando draft.", motivo, i)
                 break
             aulas = self._plan_lessons(course, modulo, i, research_context)
-            logger.info("Módulo %d/%d '%s': %d aula(s) planejada(s)",
-                        i, len(modulos), modulo.titulo, len(aulas))
+            logger.info(
+                "Módulo %d/%d '%s': %d aula(s) planejada(s)",
+                i,
+                len(modulos),
+                modulo.titulo,
+                len(aulas),
+            )
             partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
             partes_do_modulo: list[str] = []
             for j in range(len(aulas)):
@@ -578,7 +650,9 @@ class Orchestrator:
             if not pode:
                 logger.warning("%s antes do fechamento da trilha %d. Parando draft.", motivo, i)
                 return "\n\n".join(partes)
-            trilha_md = self._close_trail(course, modulo, i, aulas, partes_do_modulo, research_context)
+            trilha_md = self._close_trail(
+                course, modulo, i, aulas, partes_do_modulo, research_context
+            )
             if trilha_md:
                 partes.append(trilha_md)
                 logger.info("Trilha %d fechada: %d palavras", i, _contar_palavras(trilha_md))
@@ -607,21 +681,30 @@ class Orchestrator:
         if not aulas_md:
             return ""
         try:
-            template = resolve_prompt_path("trail.md", self.writer.language).read_text(encoding="utf-8")
+            template = resolve_prompt_path("trail.md", self.writer.language).read_text(
+                encoding="utf-8"
+            )
         except FileNotFoundError:
-            logger.warning("Prompt trail.md ausente; a trilha %d fica sem fechamento", numero_modulo)
+            logger.warning(
+                "Prompt trail.md ausente; a trilha %d fica sem fechamento", numero_modulo
+            )
             return ""
         lessons = "\n\n".join(aulas_md)[:TRAIL_LESSONS_CHARS]
-        prompt = _safe_substitute(template, {
-            "course_name": course.titulo,
-            "course_level": course.nivel.value,
-            "module_number": str(numero_modulo),
-            "module_title": modulo.titulo,
-            "module_description": modulo.descricao or "conforme pesquisa",
-            "lesson_titles": "; ".join(f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas)),
-            "lessons": lessons,
-            "context": research_context[:TRAIL_RESEARCH_CHARS],
-        })
+        prompt = _safe_substitute(
+            template,
+            {
+                "course_name": course.titulo,
+                "course_level": course.nivel.value,
+                "module_number": str(numero_modulo),
+                "module_title": modulo.titulo,
+                "module_description": modulo.descricao or "conforme pesquisa",
+                "lesson_titles": "; ".join(
+                    f"{numero_modulo}.{k + 1} {a['titulo']}" for k, a in enumerate(aulas)
+                ),
+                "lessons": lessons,
+                "context": research_context[:TRAIL_RESEARCH_CHARS],
+            },
+        )
         texto = self.client.call(self.writer.provider, prompt, model=self.writer.model).strip()
         texto = TRILHA_H1_RE.sub("", texto, count=1).strip() if TRILHA_H1_RE.match(texto) else texto
         return f"# Trilha {numero_modulo}: {modulo.titulo}\n\n{texto}"
@@ -658,7 +741,7 @@ class Orchestrator:
                 aviso = f"{motivo} na revisão da unidade {k}; as seguintes ficam sem revisão."
                 logger.warning(aviso)
                 result.avisos.append(aviso)
-                revisadas.extend(t for _, t in unidades[k - 1:])
+                revisadas.extend(t for _, t in unidades[k - 1 :])
                 break
             logger.info("Revisão %d/%d: %s", k, len(unidades), titulo or "(unidade sem título)")
             saida = self.reviewer.execute(
@@ -690,6 +773,25 @@ class Orchestrator:
 
     # ── quality gate ao fim do pipeline ─────────────────────────────────
 
+    def _registrar_deteccao(self, gate_result: Any, course_id: str, rotulo: str) -> None:
+        """Alimenta o histórico que `cli detection-report` lê.
+
+        Até esta versão nada gravava o histórico: o comando existia e sempre
+        respondia "nenhum registro". Telemetria nunca derruba o pipeline.
+        """
+        try:
+            from src.detection_tracker import DetectionTracker
+
+            DetectionTracker().record_from_gate(
+                gate_result,
+                course_id=course_id,
+                module_name=rotulo,
+                client_id=getattr(self.client_context, "id", "default"),
+                pipeline_version=PIPELINE_VERSION,
+            )
+        except Exception as exc:
+            logger.warning("Histórico de detecção não gravado para '%s': %s", rotulo, exc)
+
     def _quality_gate(self, course: Course, result: PipelineResult) -> None:
         """Roda o quality gate aula a aula sobre o texto final e grava o veredito.
 
@@ -712,10 +814,16 @@ class Orchestrator:
         for titulo, bloco in dividir_em_unidades(final):
             rotulo = titulo or "unidade"
             try:
-                r = gate.check_text(bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False)
+                r = gate.check_text(
+                    bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False
+                )
             except Exception as exc:
-                logger.warning("Quality gate falhou em '%s': %s", rotulo, exc)
-                result.gate[rotulo] = {"aprovado": None, "erros": [f"gate falhou: {exc}"], "avisos": 0}
+                logger.warning("Quality gate falhou em '%s': %s", rotulo, exc, exc_info=True)
+                result.gate[rotulo] = {
+                    "aprovado": None,
+                    "erros": [f"gate falhou: {exc}"],
+                    "avisos": 0,
+                }
                 continue
             result.gate[rotulo] = {
                 "aprovado": bool(r.aprovado),
@@ -723,7 +831,10 @@ class Orchestrator:
                 "avisos": len(r.avisos),
                 "voice_guard_score": r.voice_guard_score,
             }
-            linhas.append(f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)")
+            self._registrar_deteccao(r, course.id, rotulo)
+            linhas.append(
+                f"{'OK  ' if r.aprovado else 'FAIL'} {rotulo}: {len(r.erros)} erro(s), {len(r.avisos)} aviso(s)"
+            )
             for e in r.erros:
                 linhas.append(f"      - {e}")
         # Camada GEO (fontes, estatísticas, citação, cápsula) sobre o curso
@@ -733,7 +844,7 @@ class Orchestrator:
             try:
                 geo_achados = gate.check_geo(final, "curso", geo_config)
             except Exception as exc:
-                logger.warning("Camada GEO falhou: %s", exc)
+                logger.warning("Camada GEO falhou: %s", exc, exc_info=True)
                 geo_achados = []
             erros_geo = [a.mensagem for a in geo_achados if a.tipo == "error"]
             result.gate["curso"] = {
@@ -741,8 +852,10 @@ class Orchestrator:
                 "erros": erros_geo,
                 "avisos": sum(1 for a in geo_achados if a.tipo == "warning"),
             }
-            linhas.append(f"{'OK  ' if not erros_geo else 'FAIL'} curso (GEO): {len(erros_geo)} erro(s), "
-                          f"{result.gate['curso']['avisos']} aviso(s)")
+            linhas.append(
+                f"{'OK  ' if not erros_geo else 'FAIL'} curso (GEO): {len(erros_geo)} erro(s), "
+                f"{result.gate['curso']['avisos']} aviso(s)"
+            )
             for e in erros_geo:
                 linhas.append(f"      - {e}")
         aprovadas = sum(1 for v in result.gate.values() if v.get("aprovado"))
@@ -794,7 +907,6 @@ class Orchestrator:
         """Salva o resultado do pipeline em JSON."""
         timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         filename = f"{course_id}_{timestamp}.json"
-        path = DRAFTS_DIR / filename
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(result.to_dict(), f, indent=2, ensure_ascii=False)
+        path = self.drafts_dir / filename
+        write_json_atomic(path, result.to_dict())
         logger.info("Resultado salvo em: %s", path)

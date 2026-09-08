@@ -36,14 +36,19 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from src.config import OUTPUT_DIR
+
 logger = logging.getLogger(__name__)
 
-_DEFAULT_HISTORY_PATH = Path("output/.detection/history.jsonl")
+#: Histórico ancorado na raiz do projeto (antes era relativo ao diretório de
+#: trabalho, e `cli detection-report` rodado de outra pasta lia um arquivo vazio).
+_DEFAULT_HISTORY_PATH = OUTPUT_DIR / ".detection" / "history.jsonl"
 
 
 @dataclass
 class DetectionEntry:
     """Linha JSONL no historico de deteccao."""
+
     ts: str
     course_id: str
     module_name: str
@@ -67,12 +72,15 @@ class DetectionTracker:
 
     def __init__(self, path: Path | None = None) -> None:
         self.path = path or _DEFAULT_HISTORY_PATH
-        self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def record(self, entry: DetectionEntry) -> None:
-        """Append-only no JSONL."""
-        with self.path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(asdict(entry), ensure_ascii=False) + "\n")
+        """Append-only no JSONL. Falha de disco vira log: o histórico é telemetria."""
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(asdict(entry), ensure_ascii=False) + "\n")
+        except OSError as exc:
+            logger.warning("Não consegui gravar o histórico de detecção em %s: %s", self.path, exc)
 
     def record_from_gate(
         self,
@@ -125,6 +133,7 @@ class DetectionTracker:
                     try:
                         ts = datetime.fromisoformat(ts_str)
                     except ValueError:
+                        logger.debug("Entrada com carimbo ilegível ignorada: %r", ts_str)
                         continue
                     if ts < since:
                         continue
@@ -133,9 +142,7 @@ class DetectionTracker:
                 out.append(d)
         return out
 
-    def report_text(
-        self, since: datetime | None = None, client_id: str | None = None
-    ) -> str:
+    def report_text(self, since: datetime | None = None, client_id: str | None = None) -> str:
         """Agregado por curso/cliente com medianas e tendencias."""
         entries = self.load_entries(since=since, client_id=client_id)
         if not entries:
@@ -173,12 +180,9 @@ class DetectionTracker:
             f"min={min(bursts) if bursts else 0:.3f}  "
             f"max={max(bursts) if bursts else 0:.3f}"
         )
+        lines.append(f"  voice_guard_score  mediana={med(vg_scores):.1f}")
         lines.append(
-            f"  voice_guard_score  mediana={med(vg_scores):.1f}"
-        )
-        lines.append(
-            f"  aprovados_gate:    {approved}/{len(entries)} "
-            f"({100 * approved / len(entries):.1f}%)"
+            f"  aprovados_gate:    {approved}/{len(entries)} ({100 * approved / len(entries):.1f}%)"
         )
 
         # Por cliente

@@ -60,6 +60,7 @@ if TYPE_CHECKING:
 @dataclass
 class VoiceGuardResult:
     """Resultado do voice_guard_check."""
+
     score: int  # 0 a 100
     aprovado: bool  # score >= min_score E sem erros críticos
     dimensoes: dict[str, int] = field(default_factory=dict)
@@ -156,6 +157,7 @@ def _score_naming(
     """
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     erros: list[str] = []
@@ -193,23 +195,18 @@ def _score_naming(
     # Aviso heurístico só se o cliente definiu naming canônico
     if canonical_company or canonical_founder:
         mentions_company_context = any(
-            kw in text_lower
-            for kw in ["consultoria", "geo", "empresa", "metodologia"]
+            kw in text_lower for kw in ["consultoria", "geo", "empresa", "metodologia"]
         )
         has_canonical_company = bool(canonical_company and canonical_company in text_lower)
         has_canonical_founder = bool(canonical_founder and canonical_founder in text_lower)
 
         if mentions_company_context and not (has_canonical_company or has_canonical_founder):
             marcador = f"'{vg.canonical.company}' nem '{vg.canonical.founder}'".strip()
-            avisos.append(
-                f"texto menciona consultoria/empresa mas nao referencia {marcador}"
-            )
+            avisos.append(f"texto menciona consultoria/empresa mas nao referencia {marcador}")
 
     if vg.canonical.credential_fragments:
         full_credential_count = sum(
-            1
-            for fragment in vg.canonical.credential_fragments
-            if fragment.lower() in text_lower
+            1 for fragment in vg.canonical.credential_fragments if fragment.lower() in text_lower
         )
         if full_credential_count >= 2:
             score = min(100, score + 5)
@@ -223,6 +220,7 @@ def _score_hbr_style(
     """Score de estilo HBR/MIT Sloan parametrizado por cliente."""
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     erros: list[str] = []
@@ -264,9 +262,7 @@ def _score_hbr_style(
 # ─── Score combinado ──────────────────────────────────────────────────────
 
 
-def voice_guard_check(
-    text: str, client: ClientContext | None = None
-) -> VoiceGuardResult:
+def voice_guard_check(text: str, client: ClientContext | None = None) -> VoiceGuardResult:
     """Roda todas as 4 dimensões parametrizadas pelo cliente.
 
     Sem `client`, usa o cliente "default" (backward-compat com versão
@@ -283,6 +279,7 @@ def voice_guard_check(
     if client is None:
         # Import tardio para evitar ciclo
         from src.clients import load_client
+
         client = load_client("default")
 
     if not client.voice_guard.enabled:

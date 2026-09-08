@@ -31,6 +31,7 @@ class CourseFactory:
     def __init__(self, client: ClientContext | None = None) -> None:
         if client is None:
             from src.clients import load_client
+
             client = load_client("default")
         self.client = client
         self.cost_tracker = CostTracker()
@@ -38,6 +39,16 @@ class CourseFactory:
             cost_tracker=self.cost_tracker,
             client_context=client,
         )
+
+    def close(self) -> None:
+        """Fecha o orquestrador (e o cliente HTTP dele). Idempotente."""
+        self.orchestrator.close()
+
+    def __enter__(self) -> CourseFactory:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
 
     def run(
         self,
@@ -77,6 +88,7 @@ class CourseFactory:
         modulos = []
         for i, m in enumerate(modulos_raw, 1):
             from src.models import Module
+
             modulos.append(Module(titulo=m["titulo"], descricao=m.get("descricao", ""), ordem=i))
 
         course = Course(
@@ -102,9 +114,7 @@ class CourseFactory:
         if result.sucesso:
             logger.info("Curso '%s' criado com sucesso", nome)
         else:
-            logger.error(
-                "Curso '%s' falhou com %d erros", nome, len(result.erros)
-            )
+            logger.error("Curso '%s' falhou com %d erros", nome, len(result.erros))
 
         return result
 

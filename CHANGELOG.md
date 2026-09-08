@@ -1,5 +1,54 @@
 # Changelog
 
+## 08/09/2026: v2.1.0, refatoração de robustez e organização
+
+Pedido do dono: deixar o repositório mais competente e organizado, higienizado e
+publicado. Auditoria em dois passes (núcleo e pacotes) e correção do que era bug
+real, duplicação ou arquivo que ninguém lia.
+
+- **I/O atômico e tolerante (`src/fsutil.py`).** Ledger de custos, cache e checkpoint
+  gravam em temporário e trocam com `os.replace`; arquivo corrompido é isolado como
+  `.corrupt-<carimbo>` em vez de ser sobrescrito. Antes um `costs.json` truncado
+  apagava o histórico inteiro na chamada seguinte, e um checkpoint truncado reprovava
+  todo `create` daquele slug com `JSONDecodeError`.
+- **Rascunhos por cliente.** O orquestrador gravava sempre em `output/drafts/`, e
+  `certify` e `emit-llms-txt` procuravam em `<output_dir>/drafts` do cliente: para
+  qualquer cliente que não fosse `default`, nunca achavam nada. Agora
+  `Orchestrator.drafts_dir` segue `ClientContext.output_dir`.
+- **Ciclo de vida.** `Orchestrator` e `CourseFactory` ganham `close()` e context
+  manager; a CLI fecha o cliente HTTP ao terminar. Dia do orçamento diário calculado
+  em UTC, o mesmo fuso dos carimbos.
+- **Base comum dos clientes LLM (`src/llm_base.py`).** `LLMClient` (httpx) e
+  `SDKLLMClient` (geo_orchestrator_sdk) herdam ciclo de vida, cache, registro de
+  custo e atalhos `call_<provider>()`; `make_llm_client` é anotado.
+- **Configuração num lugar só.** `HTTP_TIMEOUT`, `GEO_ORCHESTRATOR_PATH`,
+  `CURSO_FACTORY_LLM_BACKEND`, `CURSO_FACTORY_CLIENT` e `CERTIFICATE_SECRET` saem de
+  cinco módulos para `src/config.py`; `get_api_key` lê o ambiente na hora da chamada;
+  `.env.example` lista todas as variáveis e perde duas que não existiam.
+- **CLI.** Logging configurado uma vez para todos os comandos, com `-v`; YAML
+  inválido, arquivo ilegível e módulo sem título viram mensagem em vez de traceback;
+  `create` e `batch` compartilham a leitura da definição do curso; `--client`
+  ausente cai em `CURSO_FACTORY_CLIENT`; `detection-report` passa a ter dados (o
+  gate grava o histórico a cada aula; antes nada gravava).
+- **Pacote instalável.** O console script `curso-factory` instalava e falhava com
+  `No module named 'cli'` (`py-modules` ausente); versão única em
+  `src.__version__` (2.1.0); prompts, templates e schema viajam no wheel; `click`
+  removido (nunca importado); `jsonschema` e `ruff` em `[dev]`.
+- **Validadores.** `check_accents` deixa de ser quadrático e trata bloco de código
+  como `fix_accents`; contexto do erro é o da ocorrência certa; `REVIEW_MIN_RATIO`
+  tem uma fonte só (havia cópia fixa no conversor); rótulo de duração sem dígito não
+  derruba a conversão; `texto_corrigido` sempre preenchido; termos da fonte de
+  estilo escapados de forma uniforme e compilados uma vez.
+- **Organização.** `src/validators` e `src/agents` com `__init__` e `__all__`;
+  `build_validator` removido (zero chamadores); scripts utilitários com `main()` e
+  guarda de `__main__`; o E2E deixa de se chamar `test_*`; exemplo de certificado lê
+  o cliente em vez de autoria fixa; docstrings obsoletas corrigidas.
+- **CI.** Workflow `lint` (ruff check + format) e build do wheel instalado num venv
+  limpo com o console script rodando de fora do repositório. Repositório inteiro
+  formatado com `ruff format`.
+- **Testes.** 513 (eram 493): `tests/test_robustez_io.py` cobre JSON atômico, ledger
+  e checkpoint corrompidos, drafts por cliente, `close()`, acentos e duração.
+
 ## 08/09/2026: ressincronização com a fonte de estilo 1.6.0
 
 - `DIRETRIZ_EDITORIAL.md` e `GUIA_ESCRITA_HUMANIZADA.md` apontam para o hash

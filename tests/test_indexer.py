@@ -21,7 +21,7 @@ from src.indexer.course_indexer import (  # noqa: E402
 )
 
 # ─── Fixture: um page.tsx mínimo com dois cursos e ruído em volta ──────────
-SAMPLE_TSX = '''
+SAMPLE_TSX = """
 import { Foo } from "bar";
 
 const courses: CourseData[] = [
@@ -51,7 +51,7 @@ const courses: CourseData[] = [
 const faqItems = [
   { q: "O que é GEO?", a: "Generative Engine Optimization." },
 ];
-'''
+"""
 
 
 def _write_sample(tmp_path: Path, content: str = SAMPLE_TSX) -> Path:
@@ -61,6 +61,7 @@ def _write_sample(tmp_path: Path, content: str = SAMPLE_TSX) -> Path:
 
 
 # ─── _extract_str / _extract_int / _extract_tags ──────────────────────────
+
 
 def test_extract_str_basico() -> None:
     obj = 'id: "geo-101", title: "Fundamentos"'
@@ -83,6 +84,7 @@ def test_extract_tags_basico_e_vazio() -> None:
 
 
 # ─── parse_courses_from_tsx ────────────────────────────────────────────────
+
 
 def test_parse_courses_extrai_dois_cursos(tmp_path: Path) -> None:
     cursos = parse_courses_from_tsx(_write_sample(tmp_path))
@@ -114,10 +116,10 @@ def test_parse_courses_array_ausente_retorna_vazio(tmp_path: Path) -> None:
 
 def test_parse_courses_objeto_sem_id_e_ignorado(tmp_path: Path) -> None:
     tsx = (
-        'const courses: CourseData[] = [\n'
+        "const courses: CourseData[] = [\n"
         '  { title: "Sem id", modules: 3 },\n'
         '  { id: "valido", title: "Tem id", modules: 5, tags: [] },\n'
-        '];\n'
+        "];\n"
     )
     cursos = parse_courses_from_tsx(_write_sample(tmp_path, tsx))
     assert [c.id for c in cursos] == ["valido"]

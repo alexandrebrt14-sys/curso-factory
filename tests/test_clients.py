@@ -127,7 +127,9 @@ def test_voice_guard_isolates_clients():
     # Default bloqueia; acme não
     assert r_default.aprovado is False, "default deveria bloquear 'GEO Brasil'"
     assert any("GEO Brasil" in e for e in r_default.erros)
-    assert r_acme.aprovado is True, f"acme não deveria ter naming rule contra 'GEO Brasil' (r_acme.erros={r_acme.erros})"
+    assert r_acme.aprovado is True, (
+        f"acme não deveria ter naming rule contra 'GEO Brasil' (r_acme.erros={r_acme.erros})"
+    )
 
 
 def test_voice_guard_disabled_client_passes_all():
@@ -236,10 +238,16 @@ def test_tsx_render_isolates_clients_no_leaks():
 
     acme = load_client("acme")
     sb = SchemaBuilder()
-    lorem = ("Paragrafo profundo com conteudo educacional detalhado. " * 50)
+    lorem = "Paragrafo profundo com conteudo educacional detalhado. " * 50
     md = (
-        "## Modulo Um\n\n" + lorem + "\n\n> CHECKPOINT: Revise.\n\n" + lorem +
-        "\n\n## Modulo Dois\n\n" + lorem + "\n\n> CHECKPOINT: Aplique.\n\n" + lorem
+        "## Modulo Um\n\n"
+        + lorem
+        + "\n\n> CHECKPOINT: Revise.\n\n"
+        + lorem
+        + "\n\n## Modulo Dois\n\n"
+        + lorem
+        + "\n\n> CHECKPOINT: Aplique.\n\n"
+        + lorem
     )
     yaml_d = {
         "titulo": "Curso ACME",
@@ -275,6 +283,7 @@ def test_tsx_render_isolates_clients_no_leaks():
 
     # Variáveis Jinja2 que deveriam ser interpoladas e ficaram literais (bug raw)
     import re
+
     unrendered = [m.group() for m in re.finditer(r"\{\{\s+[a-z_]+\s+\}\}", page)]
     assert not unrendered, (
         f"Variáveis Jinja2 não renderizadas em page.tsx: {unrendered}. "

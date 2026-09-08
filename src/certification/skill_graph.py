@@ -99,6 +99,7 @@ def find_courses_by_skill(
 
     skill_id_norm = skill_id.strip().lower()
     return [
-        course for course in courses
+        course
+        for course in courses
         if any(tag.strip().lower() == skill_id_norm for tag in course.tags)
     ]

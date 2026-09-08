@@ -36,6 +36,7 @@ def _safe_substitute(template: str, substitutions: dict) -> str:
     Returns:
         Template with known placeholders substituted.
     """
+
     def replace_match(match: re.Match) -> str:
         key = match.group(1)
         if key in substitutions:
@@ -143,6 +144,7 @@ class Agent:
         result = self.client.call(self.provider, prompt, **llm_kwargs)
         logger.info(
             "Agente '%s' concluído (%d caracteres de resposta)",
-            self.nome, len(result),
+            self.nome,
+            len(result),
         )
         return result

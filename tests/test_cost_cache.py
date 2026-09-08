@@ -16,6 +16,7 @@ import src.cost_tracker as cost_tracker
 
 # ─── CostTracker ─────────────────────────────────────────────────────
 
+
 @pytest.fixture
 def isolated_costs(tmp_path, monkeypatch):
     """Redireciona o log de custos para tmp_path para isolar dos dados reais."""
@@ -46,9 +47,7 @@ def test_cost_tracker_get_course_total(isolated_costs) -> None:
     assert "anthropic" not in total_b
 
 
-def test_cost_tracker_check_before_call_bloqueia_acima_budget(
-    isolated_costs, monkeypatch
-) -> None:
+def test_cost_tracker_check_before_call_bloqueia_acima_budget(isolated_costs, monkeypatch) -> None:
     """Acima de CLAUDE_BUDGET_PER_COURSE, check_before_call retorna False."""
     monkeypatch.setattr(cost_tracker, "CLAUDE_BUDGET_PER_COURSE", 1.0)
     monkeypatch.setattr(cost_tracker, "TOTAL_BUDGET_PER_COURSE", 100.0)
@@ -100,6 +99,7 @@ def test_cost_tracker_report_sem_entries() -> None:
 
 
 # ─── Cache ───────────────────────────────────────────────────────────
+
 
 @pytest.fixture
 def isolated_cache(tmp_path, monkeypatch):

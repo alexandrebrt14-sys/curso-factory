@@ -94,8 +94,7 @@ class TestTiposVisuais(unittest.TestCase):
         self.assertNotIn("checkpoint", {t.value for t in SectionType})
 
     def test_tipos_de_prosa_nao_contam_como_visuais(self):
-        for tipo in (SectionType.TEXT, SectionType.CODE, SectionType.TIP,
-                     SectionType.WARNING):
+        for tipo in (SectionType.TEXT, SectionType.CODE, SectionType.TIP, SectionType.WARNING):
             self.assertNotIn(tipo, VISUAL_SECTION_TYPES)
 
 
@@ -117,8 +116,7 @@ class TestCargaObrigatoria(unittest.TestCase):
 
     def test_carga_com_forma_errada_e_recusada(self):
         with self.assertRaises(ValidationError):
-            CourseSection(type=SectionType.DATA_TABLE, value="",
-                          data={"columns": ["a", "b"]})
+            CourseSection(type=SectionType.DATA_TABLE, value="", data={"columns": ["a", "b"]})
 
     def test_tabela_torta_e_recusada(self):
         """Linha com menos células que colunas desenha tabela quebrada."""
@@ -205,7 +203,8 @@ class TestSchemaBateComOModelo(unittest.TestCase):
                     pelo_modelo = False
                 self.assertEqual(pelo_schema, esperado)
                 self.assertEqual(
-                    pelo_modelo, esperado,
+                    pelo_modelo,
+                    esperado,
                     f"schema e modelo divergem em {instancia['type']}",
                 )
 

@@ -8,7 +8,7 @@
 
 ---
 
-> **Status (2026-04-29):** refatoração profunda em 5 waves concluída. CLI 100% funcional (8 subcomandos), 74 testes verde, zero código morto, identidade do cliente 100% via `ClientContext` (sem hardcode). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+> **Status (2026-09-08, v2.1.0):** refatoração de robustez concluída. CLI com 11 subcomandos e console script `curso-factory` instalável; 513 testes verde; lint e formato (ruff) obrigatórios no CI; I/O de ledger, cache e checkpoint atômico e tolerante a arquivo corrompido; rascunhos por cliente. Identidade do cliente 100% via `ClientContext` (sem hardcode). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## O que é
 
@@ -383,8 +383,10 @@ Um curso completo com 10 módulos custa aproximadamente US$ 3,00 a US$ 8,00, dep
 git clone https://github.com/alexandrebrt14-sys/curso-factory.git
 cd curso-factory
 
-# Instalar dependências
+# Instalar dependências (com testes e lint: pip install -e ".[dev]")
 pip install -e .
+# Depois disso o comando `curso-factory` funciona de qualquer diretório
+# (equivale a `python cli.py`).
 
 # Configurar chaves de API
 cp .env.example .env
@@ -406,7 +408,7 @@ python cli.py create "Nome do Curso"
 python cli.py create "Nome do Curso" --client herreira
 
 # Criar múltiplos cursos em lote a partir de um YAML
-python cli.py batch --file config/courses.yaml
+python cli.py batch config/courses.yaml
 
 # Listar clientes configurados
 python cli.py clients
@@ -414,8 +416,10 @@ python cli.py clients
 # Validar rascunhos via QualityGate (diretório de drafts)
 python cli.py validate output/drafts/
 
-# Converter rascunhos markdown em páginas TSX
-python cli.py drafts-to-tsx --input-dir output/drafts/ --output-dir output/converted_from_drafts/
+# Converter rascunhos JSON em páginas TSX (defaults: <output_dir>/drafts e
+# <output_dir>/converted_from_drafts do cliente)
+python cli.py drafts-to-tsx
+python cli.py drafts-to-tsx --input output/drafts/ --output output/converted_from_drafts/
 
 # Emitir catálogo de cursos e llms.txt
 python cli.py emit-catalog --output-dir output/
@@ -430,7 +434,23 @@ python cli.py detection-report --since 2026-05-01 --client default
 
 # Limpar cache
 python cli.py cache-clear
+
+# Logging em DEBUG (tracebacks completos das etapas) em qualquer comando
+python cli.py -v create "Nome do Curso"
 ```
+
+Sem `--client`, a CLI lê `CURSO_FACTORY_CLIENT` e, na ausência, usa `default`.
+Todas as variáveis de ambiente estão documentadas em `.env.example` e declaradas
+em `src/config.py`.
+
+### Onde cada coisa é gravada
+
+| Artefato | Caminho |
+|---|---|
+| Rascunhos, checkpoints e resultados do pipeline | `<output_dir>/drafts/` (`output/drafts/` para `default`, `output/clients/<id>/drafts/` para os demais) |
+| Ledger de custos | `output/costs.json` (gravação atômica; arquivo corrompido é isolado como `costs.json.corrupt-<carimbo>`) |
+| Histórico de detecção (`detection-report`) | `output/.detection/history.jsonl` |
+| Cache de respostas LLM | `.cache/` (TTL `CACHE_TTL_SECONDS`, padrão 1 h) |
 
 ### Pipeline opcional: humanizer (multi-pass adversarial)
 
@@ -479,8 +499,7 @@ curso-factory/
 │   │       └── review.md     # (~160 linhas) Revisão e correção ativa
 │   ├── generators/
 │   │   ├── schema_builder.py # Builds CourseDefinition from pipeline output
-│   │   ├── metadata_sync.py  # Emits output/course_catalog.json (consumed externally, never writes to landing-page-geo)
-│   │   └── build_validator.py # TSX build validation + syntax check
+│   │   └── metadata_sync.py  # Emits output/course_catalog.json (consumed externally, never writes to landing-page-geo)
 │   ├── schemas/
 │   │   └── course.schema.json # JSON Schema para CourseDefinition
 │   └── validators/
@@ -530,8 +549,10 @@ curso-factory/
 - **Comandos CLI**: kebab-case (`create-module`, `run-step`, `cost-report`)
 - **HTTP**: httpx para todas as chamadas LLM (sem SDKs oficiais)
 - **Models**: Pydantic v2 para domínio, dataclass para infraestrutura
-- **Cache**: SHA-256 do input como chave, TTL 24h, em `output/.cache/`
-- **Custos**: registrados por chamada em `output/cost_history.jsonl`
+- **Cache**: SHA-256 de provider+modelo+prompt como chave, TTL de 1 h (`CACHE_TTL_SECONDS`), em `.cache/`
+- **Custos**: registrados por chamada em `output/costs.json` (gravação atômica)
+- **Lint e formato**: `ruff check .` e `ruff format --check .` verdes são exigidos pelo CI
+- **I/O de JSON**: sempre por `src/fsutil.py` (`write_json_atomic`, `read_json_or_none`); nunca `open(..., "w")` direto
 - **Templates**: Jinja2 para HTML/TSX, Markdown para prompts
 - **Prompts**: Arquivos externos em `src/templates/prompts/`, carregados automaticamente pelos agentes
 - **Sem emojis**: proibido em todo conteúdo de curso e documentação

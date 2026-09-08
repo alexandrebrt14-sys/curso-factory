@@ -38,6 +38,7 @@ def _tipos(secoes) -> list[str]:
 
 # ─── Tabela → dataTable ──────────────────────────────────────────────
 
+
 def test_tabela_vira_data_table_entre_duas_prosas() -> None:
     secoes = parse_module_to_sections(MD_TABELA, add_checkpoint_if_missing=False)
     uteis = [s for s in secoes if s.type in (SectionType.TEXT, SectionType.DATA_TABLE)]
@@ -76,12 +77,7 @@ def test_tabela_absorve_titulo_em_negrito_e_fonte() -> None:
 
 
 def test_tabela_com_celula_vazia_e_aceita() -> None:
-    md = (
-        "| Item | Nota |\n"
-        "|---|---|\n"
-        "| Alfa |  |\n"
-        "| Beta | Boa |\n"
-    )
+    md = "| Item | Nota |\n|---|---|\n| Alfa |  |\n| Beta | Boa |\n"
     secoes = parse_module_to_sections(md, add_checkpoint_if_missing=False)
     tabelas = [s for s in secoes if s.type == SectionType.DATA_TABLE]
     assert len(tabelas) == 1
@@ -124,6 +120,7 @@ def test_tabela_de_coluna_unica_continua_texto() -> None:
 
 # ─── CRLF ────────────────────────────────────────────────────────────
 
+
 def test_crlf_produz_o_mesmo_resultado_que_lf() -> None:
     lf = parse_module_to_sections(MD_TABELA, add_checkpoint_if_missing=False)
     crlf = parse_module_to_sections(
@@ -133,17 +130,7 @@ def test_crlf_produz_o_mesmo_resultado_que_lf() -> None:
 
 
 def test_crlf_preserva_code_fence_e_tabela_juntos() -> None:
-    md = (
-        "Texto.\r\n"
-        "\r\n"
-        "```python\r\n"
-        "x = 42\r\n"
-        "```\r\n"
-        "\r\n"
-        "| A | B |\r\n"
-        "|---|---|\r\n"
-        "| 1 | 2 |\r\n"
-    )
+    md = "Texto.\r\n\r\n```python\r\nx = 42\r\n```\r\n\r\n| A | B |\r\n|---|---|\r\n| 1 | 2 |\r\n"
     secoes = parse_module_to_sections(md, add_checkpoint_if_missing=False)
     tipos = _tipos(secoes)
     assert "code" in tipos
@@ -152,6 +139,7 @@ def test_crlf_preserva_code_fence_e_tabela_juntos() -> None:
 
 
 # ─── Imagem → figure ─────────────────────────────────────────────────
+
 
 def test_imagem_com_legenda_vira_figure() -> None:
     md = (
@@ -180,6 +168,7 @@ def test_imagem_sem_legenda_continua_no_texto() -> None:
 
 
 # ─── Lista numerada → stepGuide ──────────────────────────────────────
+
 
 def test_lista_de_procedimento_vira_step_guide() -> None:
     md = (
@@ -242,12 +231,7 @@ def test_lista_numerada_sem_sinal_de_procedimento_continua_texto() -> None:
 
 
 def test_lista_de_dois_itens_nao_vira_step_guide() -> None:
-    md = (
-        "Passo a passo mínimo:\n"
-        "\n"
-        "1. Abra o painel de controle.\n"
-        "2. Salve a configuração.\n"
-    )
+    md = "Passo a passo mínimo:\n\n1. Abra o painel de controle.\n2. Salve a configuração.\n"
     secoes = parse_module_to_sections(md, add_checkpoint_if_missing=False)
     assert SectionType.STEP_GUIDE not in [s.type for s in secoes]
     textos = " ".join(s.value for s in secoes if s.type == SectionType.TEXT)
@@ -268,6 +252,7 @@ def test_lista_numerada_sem_introducao_nenhuma_continua_texto() -> None:
 
 # ─── Convivência com o comportamento existente ───────────────────────
 
+
 def test_nenhum_checkpoint_sintetico_e_acrescentado() -> None:
     """R8 (08/09/2026): o parser não fabrica card de checkpoint."""
     secoes = parse_module_to_sections(MD_TABELA)
@@ -276,15 +261,7 @@ def test_nenhum_checkpoint_sintetico_e_acrescentado() -> None:
 
 
 def test_bloco_visual_convive_com_blockquote_especial() -> None:
-    md = (
-        "Abertura.\n"
-        "\n"
-        "| A | B |\n"
-        "|---|---|\n"
-        "| 1 | 2 |\n"
-        "\n"
-        "> DICA: confira a fonte antes de citar.\n"
-    )
+    md = "Abertura.\n\n| A | B |\n|---|---|\n| 1 | 2 |\n\n> DICA: confira a fonte antes de citar.\n"
     secoes = parse_module_to_sections(md, add_checkpoint_if_missing=False)
     tipos = _tipos(secoes)
     assert "dataTable" in tipos

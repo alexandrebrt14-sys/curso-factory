@@ -124,6 +124,7 @@ def _tipos_nao_prosa(regras: dict[str, Any]) -> set[str]:
 
 def _limpar_prosa(texto: str) -> str:
     """Retira do texto o que não é prosa, preservando as quebras de linha."""
+
     def _apagar(match: re.Match[str]) -> str:
         return re.sub(r"[^\n]", "", match.group(0))
 
@@ -185,36 +186,36 @@ def check_visual_density(
     regras = validation_section("visual_density")
 
     if not regras:
-        return [ContentError(
-            tipo="warning",
-            categoria=CATEGORIA,
-            mensagem=(
-                f"A camada 'visual_density' não foi encontrada em "
-                f"config/quality_rules.yaml: a densidade visual do módulo '{mod}' "
-                f"NÃO foi cobrada. Restaure a seção para voltar a medir teto de "
-                f"parágrafo, piso de blocos visuais e densidade."
-            ),
-            modulo=mod,
-        )]
+        return [
+            ContentError(
+                tipo="warning",
+                categoria=CATEGORIA,
+                mensagem=(
+                    f"A camada 'visual_density' não foi encontrada em "
+                    f"config/quality_rules.yaml: a densidade visual do módulo '{mod}' "
+                    f"NÃO foi cobrada. Restaure a seção para voltar a medir teto de "
+                    f"parágrafo, piso de blocos visuais e densidade."
+                ),
+                modulo=mod,
+            )
+        ]
 
     if not bool(regras.get("enabled", True)):
-        return [ContentError(
-            tipo="warning",
-            categoria=CATEGORIA,
-            mensagem=(
-                f"A camada 'visual_density' está desligada (enabled: false) em "
-                f"config/quality_rules.yaml: a densidade visual do módulo '{mod}' "
-                f"NÃO foi cobrada."
-            ),
-            modulo=mod,
-        )]
+        return [
+            ContentError(
+                tipo="warning",
+                categoria=CATEGORIA,
+                mensagem=(
+                    f"A camada 'visual_density' está desligada (enabled: false) em "
+                    f"config/quality_rules.yaml: a densidade visual do módulo '{mod}' "
+                    f"NÃO foi cobrada."
+                ),
+                modulo=mod,
+            )
+        ]
 
-    teto_paragrafo = _inteiro(
-        regras.get("max_paragraph_chars"), FALLBACK_MAX_PARAGRAPH_CHARS
-    )
-    piso_visual = _inteiro(
-        regras.get("min_visual_blocks_per_module"), FALLBACK_MIN_VISUAL_BLOCKS
-    )
+    teto_paragrafo = _inteiro(regras.get("max_paragraph_chars"), FALLBACK_MAX_PARAGRAPH_CHARS)
+    piso_visual = _inteiro(regras.get("min_visual_blocks_per_module"), FALLBACK_MIN_VISUAL_BLOCKS)
     chars_por_visual = _inteiro(
         regras.get("chars_per_visual_block"), FALLBACK_CHARS_PER_VISUAL_BLOCK
     )
@@ -251,18 +252,20 @@ def check_visual_density(
 
     # 1. Teto de parágrafo.
     for indice, tamanho, trecho in estouros:
-        erros.append(ContentError(
-            tipo=severidade,
-            categoria=CATEGORIA,
-            mensagem=(
-                f"Módulo '{mod}': parágrafo do bloco {indice} com {tamanho} caracteres, "
-                f"acima do teto de {teto_paragrafo} (max_paragraph_chars). "
-                f"Começa em \"{trecho}...\". Quebre o parágrafo na virada de assunto "
-                f"ou promova o trecho a bloco visual: enumeração vira 'stepGuide', "
-                f"contraste vira 'comparison', série de números vira 'statGrid'."
-            ),
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo=severidade,
+                categoria=CATEGORIA,
+                mensagem=(
+                    f"Módulo '{mod}': parágrafo do bloco {indice} com {tamanho} caracteres, "
+                    f"acima do teto de {teto_paragrafo} (max_paragraph_chars). "
+                    f'Começa em "{trecho}...". Quebre o parágrafo na virada de assunto '
+                    f"ou promova o trecho a bloco visual: enumeração vira 'stepGuide', "
+                    f"contraste vira 'comparison', série de números vira 'statGrid'."
+                ),
+                modulo=mod,
+            )
+        )
 
     # 2. Piso de blocos visuais, só para módulo que é capítulo de verdade.
     #
@@ -275,33 +278,37 @@ def check_visual_density(
     )
     if chars_prosa >= piso_a_partir_de and blocos_visuais < piso_visual:
         faltam = piso_visual - blocos_visuais
-        erros.append(ContentError(
-            tipo=severidade,
-            categoria=CATEGORIA,
-            mensagem=(
-                f"Módulo '{mod}': {blocos_visuais} bloco(s) visual(is) para um piso de "
-                f"{piso_visual} (min_visual_blocks_per_module). Faltam {faltam}. "
-                f"Acrescente 'dataTable', 'comparison', 'statGrid', 'stepGuide', "
-                f"'timeline' ou 'figure'. Tabela escrita dentro de um bloco 'text' "
-                f"não conta para o piso."
-            ),
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo=severidade,
+                categoria=CATEGORIA,
+                mensagem=(
+                    f"Módulo '{mod}': {blocos_visuais} bloco(s) visual(is) para um piso de "
+                    f"{piso_visual} (min_visual_blocks_per_module). Faltam {faltam}. "
+                    f"Acrescente 'dataTable', 'comparison', 'statGrid', 'stepGuide', "
+                    f"'timeline' ou 'figure'. Tabela escrita dentro de um bloco 'text' "
+                    f"não conta para o piso."
+                ),
+                modulo=mod,
+            )
+        )
 
     # 3. Densidade: um bloco visual a cada N caracteres de prosa.
     exigidos = math.ceil(chars_prosa / chars_por_visual) if chars_prosa else 0
     if blocos_visuais < exigidos:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria=CATEGORIA,
-            mensagem=(
-                f"Módulo '{mod}': {chars_prosa} caracteres de prosa para "
-                f"{blocos_visuais} bloco(s) visual(is); a régua de um bloco a cada "
-                f"{chars_por_visual} caracteres (chars_per_visual_block) pede "
-                f"{exigidos}. Acrescente {exigidos - blocos_visuais} bloco(s) visual(is) "
-                f"ou reduza a prosa do módulo."
-            ),
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria=CATEGORIA,
+                mensagem=(
+                    f"Módulo '{mod}': {chars_prosa} caracteres de prosa para "
+                    f"{blocos_visuais} bloco(s) visual(is); a régua de um bloco a cada "
+                    f"{chars_por_visual} caracteres (chars_per_visual_block) pede "
+                    f"{exigidos}. Acrescente {exigidos - blocos_visuais} bloco(s) visual(is) "
+                    f"ou reduza a prosa do módulo."
+                ),
+                modulo=mod,
+            )
+        )
 
     return erros

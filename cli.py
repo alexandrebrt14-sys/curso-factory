@@ -18,51 +18,89 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any
 
 
-def _setup_logging() -> None:
+def _setup_logging(verbose: bool = False) -> None:
+    """Configura o logging uma vez, para todos os subcomandos.
+
+    Antes só 4 dos 11 comandos chamavam isto, e os avisos dos validadores
+    sumiam em `certify`, `emit-llms-txt` e `drafts-to-tsx`.
+    """
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG if verbose else logging.INFO,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
 
 
 def _resolve_client(args: argparse.Namespace):
-    from src.clients import load_client
-    client_id = getattr(args, "client", None) or "default"
-    return load_client(client_id)
+    """Cliente pedido por `--client`, senão o da variável de ambiente, senão `default`."""
+    from src.clients import get_client_from_env, load_client
+
+    client_id = getattr(args, "client", None)
+    if client_id:
+        return load_client(client_id)
+    return get_client_from_env()
+
+
+def _erro(msg: str) -> int:
+    print(f"ERRO: {msg}", file=sys.stderr)
+    return 1
+
+
+def _course_config_from_yaml(entry: dict[str, Any]) -> dict[str, Any]:
+    """Converte uma entrada de `courses.yaml` (ou de um lote) no dicionário que o pipeline lê.
+
+    Aceita `estrutura_modulos` (nome canônico) ou `modulos` (lotes antigos) e
+    `prerequisitos` ou `pre_requisitos`. Módulo sem `titulo` reprova com
+    mensagem que aponta o índice, em vez de KeyError anônimo.
+    """
+    modulos_raw = entry.get("estrutura_modulos", entry.get("modulos", [])) or []
+    modulos: list[dict[str, str]] = []
+    for i, m in enumerate(modulos_raw, 1):
+        if not isinstance(m, dict) or not m.get("titulo"):
+            raise ValueError(f"módulo {i} sem 'titulo' na definição do curso")
+        modulos.append({"titulo": str(m["titulo"]), "descricao": str(m.get("descricao", ""))})
+    return {
+        "nivel": entry.get("nivel", "intermediario"),
+        "descricao": entry.get("descricao", ""),
+        "tags": list(entry.get("tags", []) or []),
+        "pre_requisitos": list(entry.get("prerequisitos", entry.get("pre_requisitos", [])) or []),
+        "modulos": modulos,
+    }
+
+
+def _load_yaml(path: Path) -> Any:
+    """Lê YAML com erro legível (arquivo e linha) em vez de traceback."""
+    import yaml
+
+    with path.open(encoding="utf-8") as fh:
+        return yaml.safe_load(fh)
 
 
 # ─── create ────────────────────────────────────────────────────────────
 
+
 def cmd_create(args: argparse.Namespace) -> int:
-    _setup_logging()
     from src.agents.pipeline import CourseFactory
     from src.config import load_courses
 
     try:
         client = _resolve_client(args)
     except FileNotFoundError as exc:
-        print(f"ERRO: {exc}", file=sys.stderr)
-        return 1
+        return _erro(str(exc))
 
     course_config: dict[str, Any] | None = None
-    for c in load_courses():
-        if args.nome.lower() in c.get("nome", "").lower():
-            course_config = {
-                "nivel": c.get("nivel", "intermediario"),
-                "descricao": c.get("descricao", ""),
-                "tags": c.get("tags", []),
-                "pre_requisitos": c.get("prerequisitos", []),
-                "modulos": [
-                    {"titulo": m["titulo"], "descricao": m.get("descricao", "")}
-                    for m in c.get("estrutura_modulos", [])
-                ],
-            }
-            break
+    try:
+        for c in load_courses():
+            if args.nome.lower() in str(c.get("nome", "")).lower():
+                course_config = _course_config_from_yaml(c)
+                break
+    except ValueError as exc:
+        return _erro(f"courses.yaml: {exc}")
 
     factory = CourseFactory(client=client)
     print(f"Iniciando criação do curso: {args.nome}")
@@ -71,8 +109,11 @@ def cmd_create(args: argparse.Namespace) -> int:
     try:
         result = factory.run(args.nome, course_config=course_config)
     except Exception as exc:
+        logging.getLogger(__name__).exception("Falha no pipeline de '%s'", args.nome)
         print(f"Erro ao criar curso: {exc}", file=sys.stderr)
         return 1
+    finally:
+        factory.close()
 
     custo_total = sum(factory.cost_tracker.get_session_total().values())
     status = "concluído com sucesso" if result.sucesso else "interrompido com erros"
@@ -92,6 +133,7 @@ def cmd_create(args: argparse.Namespace) -> int:
 
 
 # ─── clients ───────────────────────────────────────────────────────────
+
 
 def cmd_clients(args: argparse.Namespace) -> int:
     from src.clients import list_clients, load_client
@@ -120,16 +162,15 @@ def cmd_clients(args: argparse.Namespace) -> int:
 
 # ─── validate ──────────────────────────────────────────────────────────
 
+
 def cmd_validate(args: argparse.Namespace) -> int:
     """Roda o QualityGate (acentos + conteúdo + links + voice guard) num path."""
-    _setup_logging()
     from src.validators.quality_gate import QualityGate
 
     try:
         client = _resolve_client(args)
     except FileNotFoundError as exc:
-        print(f"ERRO: {exc}", file=sys.stderr)
-        return 1
+        return _erro(str(exc))
 
     path = Path(args.path)
     if not path.exists():
@@ -144,7 +185,13 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
     reprovados = 0
     for f in files:
-        text = f.read_text(encoding="utf-8")
+        try:
+            text = f.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            reprovados += 1
+            print(f"FAIL {f}")
+            print(f"     - leitura: {exc}")
+            continue
         result = gate.check_text(text, curso_id=f.stem)
         if result.aprovado:
             print(f"OK   {f}")
@@ -154,18 +201,21 @@ def cmd_validate(args: argparse.Namespace) -> int:
             for err in result.erros:
                 print(f"     - {err}")
 
-    print(f"\nTotal: {len(files)} arquivo(s); aprovados: {len(files) - reprovados}; reprovados: {reprovados}")
+    print(
+        f"\nTotal: {len(files)} arquivo(s); aprovados: {len(files) - reprovados}; reprovados: {reprovados}"
+    )
     return 0 if reprovados == 0 else 1
 
 
 # ─── cost-report ───────────────────────────────────────────────────────
+
 
 def cmd_cost_report(args: argparse.Namespace) -> int:
     """Relatório de custos a partir do log persistido em output/costs.json."""
     from src.cost_tracker import CostTracker
 
     tracker = CostTracker()
-    entries = tracker._entries  # leitura direta — fonte única do log
+    entries = tracker.entries()
     if not entries:
         print("Nenhum custo registrado em output/costs.json.")
         return 0
@@ -177,24 +227,28 @@ def cmd_cost_report(args: argparse.Namespace) -> int:
     total_cost = 0.0
 
     for e in entries:
-        prov = e["provider"]
+        prov = str(e.get("provider") or "(sem provedor)")
+        custo = float(e.get("custo_usd", 0.0) or 0.0)
+        tokens = int(e.get("tokens_in", 0) or 0) + int(e.get("tokens_out", 0) or 0)
         slot = by_provider.setdefault(prov, {"calls": 0, "tokens": 0, "cost": 0.0})
         slot["calls"] = int(slot["calls"]) + 1
-        slot["tokens"] = int(slot["tokens"]) + int(e.get("tokens_in", 0)) + int(e.get("tokens_out", 0))
-        slot["cost"] = float(slot["cost"]) + float(e["custo_usd"])
+        slot["tokens"] = int(slot["tokens"]) + tokens
+        slot["cost"] = float(slot["cost"]) + custo
 
         cid = e.get("course_id") or "(sem curso)"
-        by_course[cid] = by_course.get(cid, 0.0) + float(e["custo_usd"])
+        by_course[cid] = by_course.get(cid, 0.0) + custo
 
         total_calls += 1
-        total_tokens += int(e.get("tokens_in", 0)) + int(e.get("tokens_out", 0))
-        total_cost += float(e["custo_usd"])
+        total_tokens += tokens
+        total_cost += custo
 
     print("\n=== Relatório de Custos — Curso Factory ===\n")
     print(f"{'Provider':<15} {'Chamadas':>10} {'Tokens':>12} {'Custo (USD)':>14}")
     print("-" * 55)
     for prov, slot in sorted(by_provider.items()):
-        print(f"{prov:<15} {int(slot['calls']):>10} {int(slot['tokens']):>12} ${float(slot['cost']):>13.4f}")
+        print(
+            f"{prov:<15} {int(slot['calls']):>10} {int(slot['tokens']):>12} ${float(slot['cost']):>13.4f}"
+        )
     print("-" * 55)
     print(f"{'TOTAL':<15} {total_calls:>10} {total_tokens:>12} ${total_cost:>13.4f}")
 
@@ -208,9 +262,9 @@ def cmd_cost_report(args: argparse.Namespace) -> int:
 
 # ─── batch ─────────────────────────────────────────────────────────────
 
+
 def cmd_batch(args: argparse.Namespace) -> int:
     """Cria múltiplos cursos a partir de um YAML de lote."""
-    _setup_logging()
     import yaml
 
     from src.agents.pipeline import CourseFactory
@@ -218,18 +272,24 @@ def cmd_batch(args: argparse.Namespace) -> int:
     try:
         client = _resolve_client(args)
     except FileNotFoundError as exc:
-        print(f"ERRO: {exc}", file=sys.stderr)
-        return 1
+        return _erro(str(exc))
 
     config_path = Path(args.config)
     if not config_path.exists():
-        print(f"Arquivo de configuração não encontrado: {config_path}", file=sys.stderr)
-        return 1
+        return _erro(f"Arquivo de configuração não encontrado: {config_path}")
 
-    with config_path.open(encoding="utf-8") as fh:
-        batch_config = yaml.safe_load(fh) or {}
+    try:
+        batch_config = _load_yaml(config_path) or {}
+    except yaml.YAMLError as exc:
+        return _erro(f"YAML inválido em {config_path}: {exc}")
+    except OSError as exc:
+        return _erro(f"não consegui ler {config_path}: {exc}")
 
-    courses = batch_config.get("courses", batch_config) if isinstance(batch_config, dict) else batch_config
+    courses = (
+        batch_config.get("courses", batch_config)
+        if isinstance(batch_config, dict)
+        else batch_config
+    )
     if not courses:
         print("Nenhum curso definido no arquivo de configuração.", file=sys.stderr)
         return 1
@@ -238,29 +298,30 @@ def cmd_batch(args: argparse.Namespace) -> int:
     falhas = 0
 
     print(f"Processando {len(courses)} curso(s) em lote (cliente: {client.id})...\n")
-    for i, course in enumerate(courses, 1):
-        nome = course.get("nome") or course.get("name") or f"Curso {i}"
-        print(f"[{i}/{len(courses)}] {nome}")
-        course_config: dict[str, Any] = {
-            "nivel": course.get("nivel", "intermediario"),
-            "descricao": course.get("descricao", ""),
-            "tags": course.get("tags", []),
-            "pre_requisitos": course.get("prerequisitos", []),
-            "modulos": [
-                {"titulo": m["titulo"], "descricao": m.get("descricao", "")}
-                for m in course.get("estrutura_modulos", course.get("modulos", []))
-            ],
-        }
-        try:
-            result = factory.run(nome, course_config=course_config)
-            custo = sum(factory.cost_tracker.get_session_total().values())
-            status = "ok" if result.sucesso else "FALHOU"
-            print(f"  {status} — {len(result.etapas)} etapas — sessão até aqui: ${custo:.4f}")
-            if not result.sucesso:
+    try:
+        for i, course in enumerate(courses, 1):
+            if not isinstance(course, dict):
+                print(
+                    f"[{i}/{len(courses)}] entrada inválida (esperado mapeamento)", file=sys.stderr
+                )
                 falhas += 1
-        except Exception as exc:
-            print(f"  EXCEÇÃO: {exc}", file=sys.stderr)
-            falhas += 1
+                continue
+            nome = course.get("nome") or course.get("name") or f"Curso {i}"
+            print(f"[{i}/{len(courses)}] {nome}")
+            try:
+                course_config = _course_config_from_yaml(course)
+                result = factory.run(nome, course_config=course_config)
+                custo = sum(factory.cost_tracker.get_session_total().values())
+                status = "ok" if result.sucesso else "FALHOU"
+                print(f"  {status} — {len(result.etapas)} etapas — sessão até aqui: ${custo:.4f}")
+                if not result.sucesso:
+                    falhas += 1
+            except Exception as exc:
+                logging.getLogger(__name__).exception("Falha no curso '%s' do lote", nome)
+                print(f"  EXCEÇÃO: {exc}", file=sys.stderr)
+                falhas += 1
+    finally:
+        factory.close()
 
     print(f"\nLote concluído. Sucesso: {len(courses) - falhas} / Falhas: {falhas}")
     return 0 if falhas == 0 else 1
@@ -268,8 +329,8 @@ def cmd_batch(args: argparse.Namespace) -> int:
 
 # ─── emit-catalog ──────────────────────────────────────────────────────
 
+
 def cmd_emit_catalog(args: argparse.Namespace) -> int:
-    _setup_logging()
     from src.generators.metadata_sync import MetadataSync
 
     output_dir = Path(args.output_dir) if args.output_dir else None
@@ -287,17 +348,17 @@ def cmd_emit_catalog(args: argparse.Namespace) -> int:
 
 # ─── drafts-to-tsx ─────────────────────────────────────────────────────
 
+
 def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
     from src.converters.draft_to_course import convert_drafts_directory
 
     try:
         client = _resolve_client(args)
     except FileNotFoundError as exc:
-        print(f"ERRO: {exc}", file=sys.stderr)
-        return 1
+        return _erro(str(exc))
 
-    input_dir = Path(args.input)
-    output_dir = Path(args.output)
+    input_dir = Path(args.input) if args.input else client.output_dir / "drafts"
+    output_dir = Path(args.output) if args.output else client.output_dir / "converted_from_drafts"
 
     print(f"Convertendo drafts de {input_dir} -> {output_dir}")
     print(f"Cliente: {client.id} ({client.author.name})")
@@ -330,6 +391,7 @@ def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
 
 # ─── cache-clear ───────────────────────────────────────────────────────
 
+
 def cmd_cache_clear(args: argparse.Namespace) -> int:
     """Limpa o cache LLM em disco (.cache/)."""
     from src.cache import Cache
@@ -342,6 +404,7 @@ def cmd_cache_clear(args: argparse.Namespace) -> int:
 
 # ─── emit-llms-txt (Wave 10) ───────────────────────────────────────────
 
+
 def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
     """Gera llms.txt para 1 curso ou todos os cursos do cliente.
 
@@ -353,8 +416,7 @@ def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
     try:
         client = _resolve_client(args)
     except FileNotFoundError as exc:
-        print(f"ERRO: {exc}", file=sys.stderr)
-        return 1
+        return _erro(str(exc))
 
     output_dir = Path(args.output_dir) if args.output_dir else client.output_dir / "llms-txt"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -369,7 +431,9 @@ def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
     if args.slug:
         drafts = [d for d in drafts if d.stem.startswith(args.slug)]
         if not drafts:
-            print(f"Nenhum draft encontrado para slug '{args.slug}' em {drafts_dir}", file=sys.stderr)
+            print(
+                f"Nenhum draft encontrado para slug '{args.slug}' em {drafts_dir}", file=sys.stderr
+            )
             return 1
 
     gerados = 0
@@ -390,18 +454,17 @@ def cmd_emit_llms_txt(args: argparse.Namespace) -> int:
 
 # ─── certify (Wave 9) ──────────────────────────────────────────────────
 
+
 def cmd_certify(args: argparse.Namespace) -> int:
     """Gera certificado HTML verificável para um aluno."""
-    import os
-
     from src.certification.certificate import generate_certificate, render_html
+    from src.config import CERTIFICATE_SECRET_ENV_VAR
     from src.converters.draft_to_course import convert_draft_to_course
 
     try:
         client = _resolve_client(args)
     except FileNotFoundError as exc:
-        print(f"ERRO: {exc}", file=sys.stderr)
-        return 1
+        return _erro(str(exc))
 
     drafts_dir = client.output_dir / "drafts"
     matching = sorted(drafts_dir.glob(f"{args.slug}_*.json"))
@@ -415,10 +478,9 @@ def cmd_certify(args: argparse.Namespace) -> int:
         print(f"Falha ao parsear curso de {matching[-1]}", file=sys.stderr)
         return 1
 
-    secret = args.secret or os.environ.get("CERTIFICATE_SECRET", "")
+    secret = args.secret or os.environ.get(CERTIFICATE_SECRET_ENV_VAR, "")
     if not secret:
-        print("ERRO: --secret obrigatório (ou env CERTIFICATE_SECRET)", file=sys.stderr)
-        return 1
+        return _erro(f"--secret obrigatório (ou env {CERTIFICATE_SECRET_ENV_VAR})")
 
     try:
         cert = generate_certificate(
@@ -438,7 +500,10 @@ def cmd_certify(args: argparse.Namespace) -> int:
 
     html = render_html(cert, course)
     output_path = output_dir / f"{cert.id}.html"
-    output_path.write_text(html, encoding="utf-8")
+    try:
+        output_path.write_text(html, encoding="utf-8")
+    except OSError as exc:
+        return _erro(f"não consegui gravar {output_path}: {exc}")
 
     print(f"Certificado gerado: {output_path}")
     print(f"Hash: {cert.hash}")
@@ -447,6 +512,7 @@ def cmd_certify(args: argparse.Namespace) -> int:
 
 
 # ─── parser ────────────────────────────────────────────────────────────
+
 
 def _add_client_arg(sub: argparse.ArgumentParser) -> None:
     sub.add_argument(
@@ -484,6 +550,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="curso-factory",
         description="Fábrica de cursos educacionais com pipeline multi-LLM orquestrado.",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Logging em nível DEBUG (inclui tracebacks completos das etapas)",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -527,15 +599,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--input",
-        default="output/drafts",
+        default=None,
         metavar="DIR",
-        help="Diretório com drafts *.json (default: output/drafts)",
+        help="Diretório com drafts *.json (default: <output_dir>/drafts)",
     )
     p.add_argument(
         "--output",
-        default="output/converted_from_drafts",
+        default=None,
         metavar="DIR",
-        help="Diretório destino para os TSX (default: output/converted_from_drafts)",
+        help="Diretório destino para os TSX (default: <output_dir>/converted_from_drafts)",
     )
     _add_client_arg(p)
     p.set_defaults(func=cmd_drafts_to_tsx)
@@ -563,8 +635,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Gera llms.txt por curso (agent legibility, Wave 10)",
     )
     p.add_argument("--slug", default=None, help="Slug específico (default: todos)")
-    p.add_argument("--input", default=None, metavar="DIR", help="Diretório de drafts (default: <output_dir>/drafts)")
-    p.add_argument("--output-dir", dest="output_dir", default=None, metavar="DIR", help="Saída (default: <output_dir>/llms-txt)")
+    p.add_argument(
+        "--input",
+        default=None,
+        metavar="DIR",
+        help="Diretório de drafts (default: <output_dir>/drafts)",
+    )
+    p.add_argument(
+        "--output-dir",
+        dest="output_dir",
+        default=None,
+        metavar="DIR",
+        help="Saída (default: <output_dir>/llms-txt)",
+    )
     _add_client_arg(p)
     p.set_defaults(func=cmd_emit_llms_txt)
 
@@ -578,17 +661,30 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--name", required=True, help="Nome completo do aluno")
     p.add_argument("--score", type=float, required=True, help="Score (0.0 a 1.0)")
     p.add_argument("--secret", default=None, help="Secret HMAC (ou env CERTIFICATE_SECRET)")
-    p.add_argument("--pass-threshold", dest="pass_threshold", type=float, default=0.7, help="Mínimo para aprovar (default 0.7)")
-    p.add_argument("--output-dir", dest="output_dir", default=None, metavar="DIR", help="Saída (default: <output_dir>/certificates)")
+    p.add_argument(
+        "--pass-threshold",
+        dest="pass_threshold",
+        type=float,
+        default=0.7,
+        help="Mínimo para aprovar (default 0.7)",
+    )
+    p.add_argument(
+        "--output-dir",
+        dest="output_dir",
+        default=None,
+        metavar="DIR",
+        help="Saída (default: <output_dir>/certificates)",
+    )
     _add_client_arg(p)
     p.set_defaults(func=cmd_certify)
 
     return parser
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    _setup_logging(verbose=args.verbose)
     sys.exit(args.func(args))
 
 

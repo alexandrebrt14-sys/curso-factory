@@ -90,9 +90,7 @@ class DisclosureCheckResult:
         return "\n".join(lines)
 
 
-def disclosure_check(
-    text: str, client: ClientContext | None = None
-) -> DisclosureCheckResult:
+def disclosure_check(text: str, client: ClientContext | None = None) -> DisclosureCheckResult:
     """Verifica se o texto tem o bloco de disclosure exigido pelo cliente.
 
     Retorna sempre um DisclosureCheckResult; campos `aprovado` e `erros`
@@ -102,6 +100,7 @@ def disclosure_check(
 
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     disc: DisclosureConfig = client.disclosure
@@ -174,13 +173,10 @@ def disclosure_check(
             f"{', '.join(disc.required_by) if disc.required_by else 'cliente'}"
         )
     if not result.tem_autor_canonico:
-        erros_estruturais.append(
-            f"autor canonico '{client.author.name}' nao citado no texto"
-        )
+        erros_estruturais.append(f"autor canonico '{client.author.name}' nao citado no texto")
     if disc.required_by and not result.tem_norma_citada:
         erros_estruturais.append(
-            "nenhuma das normas regulatorias exigidas foi citada: "
-            f"{', '.join(disc.required_by)}"
+            f"nenhuma das normas regulatorias exigidas foi citada: {', '.join(disc.required_by)}"
         )
 
     if disc.block_if_missing:
@@ -207,6 +203,7 @@ def build_disclosure_block(client: ClientContext | None = None) -> str:
     """
     if client is None:
         from src.clients import load_client
+
         client = load_client("default")
 
     disc = client.disclosure

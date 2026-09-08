@@ -34,7 +34,9 @@ def test_exercicio_com_titulo_proprio_e_passos_numerados_e_reconhecido() -> None
 
 
 def test_resultado_esperado_em_prosa_conta() -> None:
-    texto = "## Faça agora\n\nSiga os passos.\n\nO resultado esperado é que você tenha um script novo."
+    texto = (
+        "## Faça agora\n\nSiga os passos.\n\nO resultado esperado é que você tenha um script novo."
+    )
     assert len(_find_exercises(texto)) >= 1
 
 

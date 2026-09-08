@@ -143,8 +143,7 @@ def _curso(secoes_extras: list[dict]) -> CourseDefinition:
         slug="teste-blocos-visuais",
         titulo="Teste dos blocos visuais",
         descricao=(
-            "Curso de teste para verificar a renderização dos seis blocos "
-            "visuais no template TSX."
+            "Curso de teste para verificar a renderização dos seis blocos visuais no template TSX."
         ),
         steps=[
             {

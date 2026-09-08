@@ -85,9 +85,7 @@ class TestTsxGenerator(unittest.TestCase):
     def test_course_definition_computed_fields(self) -> None:
         """Verifica que os campos computados do CourseDefinition estão corretos."""
         self.assertEqual(self.course.slug, "teste-geracao")
-        self.assertEqual(
-            self.course.local_storage_key, "teste-geracao-course-progress"
-        )
+        self.assertEqual(self.course.local_storage_key, "teste-geracao-course-progress")
         self.assertEqual(
             self.course.canonical_url,
             "https://alexandrecaramaschi.com/educacao/teste-geracao",

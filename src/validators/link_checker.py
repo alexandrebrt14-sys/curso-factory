@@ -16,6 +16,7 @@ from pathlib import Path
 @dataclass
 class LinkError:
     """Erro de validação de link."""
+
     tipo: str
     url: str
     mensagem: str
@@ -24,7 +25,7 @@ class LinkError:
 
 # Regex para extrair URLs de href, src e links Markdown
 HREF_PATTERN = re.compile(r'(?:href|src)=["\']([^"\']+)["\']', re.IGNORECASE)
-MARKDOWN_LINK_PATTERN = re.compile(r'\[.*?\]\(([^)]+)\)')
+MARKDOWN_LINK_PATTERN = re.compile(r"\[.*?\]\(([^)]+)\)")
 
 
 def _has_accented_chars(text: str) -> bool:
@@ -64,15 +65,17 @@ def check_links(
     for url, linha in urls:
         # Verificação crítica: acentos em URLs
         if _has_accented_chars(url):
-            errors.append(LinkError(
-                tipo="accent_in_url",
-                url=url,
-                mensagem=(
-                    "URL contém caracteres acentuados. "
-                    "Isso corrompe o link (ref: incidente 2026-03-27 com 55 hrefs corrompidos)"
-                ),
-                linha=linha,
-            ))
+            errors.append(
+                LinkError(
+                    tipo="accent_in_url",
+                    url=url,
+                    mensagem=(
+                        "URL contém caracteres acentuados. "
+                        "Isso corrompe o link (ref: incidente 2026-03-27 com 55 hrefs corrompidos)"
+                    ),
+                    linha=linha,
+                )
+            )
             continue
 
         # Links internos (não começam com http/https/mailto/#)
@@ -80,21 +83,25 @@ def check_links(
             if base_dir:
                 target = base_dir / url
                 if not target.exists():
-                    errors.append(LinkError(
-                        tipo="broken_internal",
-                        url=url,
-                        mensagem=f"Link interno aponta para arquivo inexistente: {target}",
-                        linha=linha,
-                    ))
+                    errors.append(
+                        LinkError(
+                            tipo="broken_internal",
+                            url=url,
+                            mensagem=f"Link interno aponta para arquivo inexistente: {target}",
+                            linha=linha,
+                        )
+                    )
 
         # URLs com espaços (geralmente erro)
         if " " in url and not url.startswith("mailto:"):
-            errors.append(LinkError(
-                tipo="invalid_url",
-                url=url,
-                mensagem="URL contém espaços não codificados",
-                linha=linha,
-            ))
+            errors.append(
+                LinkError(
+                    tipo="invalid_url",
+                    url=url,
+                    mensagem="URL contém espaços não codificados",
+                    linha=linha,
+                )
+            )
 
     return errors
 

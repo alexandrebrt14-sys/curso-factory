@@ -219,9 +219,7 @@ class Tutor(Agent):
             Resposta do tutor em texto plano.
         """
         if not isinstance(mode, TutorMode):
-            raise TypeError(
-                f"mode deve ser TutorMode (recebeu {type(mode).__name__})."
-            )
+            raise TypeError(f"mode deve ser TutorMode (recebeu {type(mode).__name__}).")
 
         history_str = self._format_history(student_history or [])
 
@@ -229,7 +227,8 @@ class Tutor(Agent):
         if self.dry_run:
             logger.info(
                 "Tutor.respond [dry_run] persona=%s mode=%s",
-                self.persona, mode.value,
+                self.persona,
+                mode.value,
             )
             return _DRY_RUN_RESPONSES[mode]
 
@@ -246,13 +245,13 @@ class Tutor(Agent):
 
         logger.info(
             "Tutor.respond persona=%s mode=%s prompt_len=%d",
-            self.persona, mode.value, len(prompt),
+            self.persona,
+            mode.value,
+            len(prompt),
         )
 
         if self.client is None:
-            raise RuntimeError(
-                "Tutor sem LLMClient não pode responder fora de dry_run."
-            )
+            raise RuntimeError("Tutor sem LLMClient não pode responder fora de dry_run.")
 
         return self.client.call(self.provider, prompt, model=self.model)
 
@@ -286,9 +285,6 @@ class Tutor(Agent):
                 "passo numerado, resultado observável."
             )
         if mode == TutorMode.QUIZ_ME:
-            return (
-                "Use o modo QUIZ_ME: faça uma pergunta aberta de Bloom 3+ "
-                "e NÃO dê a resposta."
-            )
+            return "Use o modo QUIZ_ME: faça uma pergunta aberta de Bloom 3+ e NÃO dê a resposta."
         # Defensive: enum exhausted.
         return ""

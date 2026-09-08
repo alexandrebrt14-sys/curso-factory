@@ -34,7 +34,6 @@ Taxonomia de erro, que decide o que fazer:
 from __future__ import annotations
 
 import logging
-import os
 import time
 from dataclasses import dataclass, field
 from typing import Any
@@ -42,8 +41,9 @@ from typing import Any
 import httpx
 
 from src.cache import Cache
-from src.config import MAX_TOKENS_PER_CALL, get_api_key
+from src.config import HTTP_TIMEOUT, MAX_TOKENS_PER_CALL, get_api_key, llm_backend
 from src.cost_tracker import CostTracker
+from src.llm_base import BaseLLMClient
 
 # Pricing, endpoints, modelos padrão e cadeias de fallback vêm de
 # config/providers.yaml via src.providers. Os dicts são re-exportados para
@@ -112,14 +112,28 @@ class FallbackExhaustedError(LLMError):
 
 #: Sinais no corpo da resposta de que o problema é cota ou crédito.
 _SINAIS_DE_COTA = (
-    "insufficient_quota", "credit_balance_exhausted", "exceeded your current quota",
-    "no credits remaining", "billing", "insufficient credits", "quota exceeded",
-    "out of credits", "plan and billing", "credit balance",
+    "insufficient_quota",
+    "credit_balance_exhausted",
+    "exceeded your current quota",
+    "no credits remaining",
+    "billing",
+    "insufficient credits",
+    "quota exceeded",
+    "out of credits",
+    "plan and billing",
+    "credit balance",
 )
 _SINAIS_DE_MODELO = (
-    "model not found", "does not exist", "not found for model", "unknown model",
-    "model_not_found", "is not supported", "decommissioned", "has been deprecated",
-    "no longer supported", "invalid model",
+    "model not found",
+    "does not exist",
+    "not found for model",
+    "unknown model",
+    "model_not_found",
+    "is not supported",
+    "decommissioned",
+    "has been deprecated",
+    "no longer supported",
+    "invalid model",
 )
 
 
@@ -197,13 +211,16 @@ def extrair_texto_google(provider: str, data: dict) -> str:
         raise ResponseFormatError(provider, f"resposta sem candidates: {str(data)[:160]}")
     cand = candidatos[0]
     partes = (cand.get("content") or {}).get("parts") or []
-    textos = [p["text"] for p in partes if isinstance(p, dict) and "text" in p and not p.get("thought")]
+    textos = [
+        p["text"] for p in partes if isinstance(p, dict) and "text" in p and not p.get("thought")
+    ]
     texto = "\n".join(t for t in textos if t).strip()
     if not texto:
         motivo = cand.get("finishReason")
         if motivo == "MAX_TOKENS":
             raise ResponseFormatError(
-                provider, "resposta sem texto: o raciocínio consumiu maxOutputTokens; aumente o teto"
+                provider,
+                "resposta sem texto: o raciocínio consumiu maxOutputTokens; aumente o teto",
             )
         if motivo in ("SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT"):
             raise RequestRejectedError(provider, f"resposta bloqueada ({motivo})")
@@ -219,6 +236,7 @@ def extrair_texto_google(provider: str, data: dict) -> str:
 @dataclass
 class CircuitState:
     """Circuit breaker de um provedor: só falha transitória conta."""
+
     failures: int = 0
     open_until: float = 0.0
     threshold: int = 3
@@ -246,6 +264,7 @@ class CircuitState:
 @dataclass
 class TokenBucket:
     """Rate limiter simples baseado em token bucket."""
+
     capacity: int = 10
     tokens: float = 10.0
     refill_rate: float = 1.0  # tokens por segundo
@@ -271,8 +290,8 @@ class TokenBucket:
 # ---------------------------------------------------------------------------
 
 
-class LLMClient:
-    """Cliente unificado para múltiplos providers LLM."""
+class LLMClient(BaseLLMClient):
+    """Cliente unificado para múltiplos providers LLM (transporte httpx próprio)."""
 
     def __init__(
         self,
@@ -280,25 +299,17 @@ class LLMClient:
         cache: Cache | None = None,
         use_cache: bool = True,
     ) -> None:
-        self.cost_tracker = cost_tracker or CostTracker()
-        self.cache = cache if cache is not None else (Cache() if use_cache else None)
+        super().__init__(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)
         self._circuits: dict[str, CircuitState] = {}
         self._buckets: dict[str, TokenBucket] = {}
         #: Provedores mortos nesta sessão (cota, chave, modelo): motivo por nome.
         self._indisponiveis: dict[str, str] = {}
-        # Timeout de leitura configurável via env (HTTP_TIMEOUT). 600 s: o prompt
+        # Timeout de leitura (config.HTTP_TIMEOUT, 600 s por padrão): o prompt
         # de research em sonar-deep-research passa de minutos, e geração densa
         # de aula não pode cair em fallback por pressa.
-        self._http = httpx.Client(timeout=float(os.getenv("HTTP_TIMEOUT", "600")))
-        # course_id ativo, setado pelo Orchestrator: toda chamada é tagueada
-        # no CostTracker com o curso (achado F32 da auditoria 2026-04-08).
-        self.current_course_id: str = ""
+        self._http = httpx.Client(timeout=HTTP_TIMEOUT)
 
     # --- ciclo de vida ------------------------------------------------------
-
-    def set_course_context(self, course_id: str) -> None:
-        """Define o curso ativo para fins de tracking de custo."""
-        self.current_course_id = course_id or ""
 
     def close(self) -> None:
         """Fecha o cliente HTTP subjacente. Idempotente."""
@@ -306,16 +317,12 @@ class LLMClient:
         if http is not None:
             http.close()
 
-    def __enter__(self) -> LLMClient:
-        return self
-
-    def __exit__(self, *exc_info: object) -> None:
-        self.close()
-
     def __del__(self) -> None:
+        # Rede de segurança para quem esqueceu o `with`/`close()`; o caminho
+        # normal é o Orchestrator fechar. Erros no destrutor não têm dono.
         try:
             self.close()
-        except Exception:  # noqa: BLE001
+        except Exception:  # noqa: BLE001 - no encerramento do interpretador tudo pode falhar
             pass
 
     # --- estado por provedor ------------------------------------------------
@@ -372,10 +379,9 @@ class LLMClient:
         """
         kwargs.pop("_fallback_depth", None)  # compat com chamadores antigos
         model_for_cache = kwargs.get("model") or DEFAULT_MODELS.get(provider, "")
-        if self.cache is not None:
-            cached = self.cache.get(prompt, provider, model_for_cache)
-            if cached is not None:
-                return cached
+        cached = self._cache_get(prompt, provider, model_for_cache)
+        if cached is not None:
+            return cached
 
         tentativas: list[str] = []
         for prov in self.cadeia(provider):
@@ -432,7 +438,11 @@ class LLMClient:
                 delay = base_delay * (2 ** (tentativas_transitorias - 1))
                 logger.warning(
                     "Tentativa %d/%d falhou para %s: %s. Aguardando %.1fs",
-                    tentativas_transitorias, max_retries, provider, exc.mensagem, delay,
+                    tentativas_transitorias,
+                    max_retries,
+                    provider,
+                    exc.mensagem,
+                    delay,
                 )
                 time.sleep(delay)
 
@@ -442,7 +452,9 @@ class LLMClient:
         model = kwargs.get("model", DEFAULT_MODELS.get(provider, ""))
         # Teto de saída: o do chamador, senão o do provedor (providers.yaml),
         # senão o global. Modelo que raciocina dentro do teto precisa de folga.
-        max_tokens = kwargs.get("max_tokens") or MAX_TOKENS_BY_PROVIDER.get(provider) or MAX_TOKENS_PER_CALL
+        max_tokens = (
+            kwargs.get("max_tokens") or MAX_TOKENS_BY_PROVIDER.get(provider) or MAX_TOKENS_PER_CALL
+        )
         try:
             if provider == "anthropic":
                 return self._call_anthropic(api_key, model, prompt, max_tokens)
@@ -458,7 +470,9 @@ class LLMClient:
         except LLMError:
             raise
         except (KeyError, IndexError, TypeError, ValueError) as exc:
-            raise ResponseFormatError(provider, f"resposta com formato inesperado: {exc!r}") from exc
+            raise ResponseFormatError(
+                provider, f"resposta com formato inesperado: {exc!r}"
+            ) from exc
 
     def _call_openai_compat(
         self, provider: str, api_key: str, model: str, prompt: str, max_tokens: int
@@ -524,43 +538,19 @@ class LLMClient:
     def _log_cost(self, provider: str, model: str, tokens_in: int, tokens_out: int) -> None:
         price_in, price_out = PRICING.get(provider, (0.0, 0.0))
         custo = (tokens_in / 1000 * price_in) + (tokens_out / 1000 * price_out)
-        self.cost_tracker.track(
-            provider, tokens_in, tokens_out, model, custo,
-            course_id=self.current_course_id,
-        )
-        logger.info(
-            "LLM %s/%s: %d tok_in, %d tok_out, USD %.4f (curso=%s)",
-            provider, model, tokens_in, tokens_out, custo,
-            self.current_course_id or "n/a",
-        )
-
-    # --- Métodos de conveniência por provider ---
-
-    def call_perplexity(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("perplexity", prompt, **kwargs)
-
-    def call_openai(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("openai", prompt, **kwargs)
-
-    def call_google(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("google", prompt, **kwargs)
-
-    def call_groq(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("groq", prompt, **kwargs)
-
-    def call_anthropic(self, prompt: str, **kwargs: Any) -> str:
-        return self.call("anthropic", prompt, **kwargs)
+        self._registrar_custo(provider, model, tokens_in, tokens_out, custo)
 
 
 # ---------------------------------------------------------------------------
 # Factory de backend (B-019/D8 — strangler pattern, 2026-07-09)
 # ---------------------------------------------------------------------------
 
+
 def make_llm_client(
     cost_tracker: CostTracker | None = None,
     cache: Cache | None = None,
     use_cache: bool = True,
-):
+) -> BaseLLMClient:
     """Retorna o cliente LLM do backend ativo.
 
     CURSO_FACTORY_LLM_BACKEND=sdk -> SDKLLMClient (geo_orchestrator_sdk):
@@ -568,16 +558,31 @@ def make_llm_client(
     breaker e FinOps unificado do orquestrador. Qualquer outro valor (ou
     ausente) -> LLMClient próprio, com a camada de resiliência deste módulo.
     """
-    if os.getenv("CURSO_FACTORY_LLM_BACKEND", "").strip().lower() == "sdk":
+    if llm_backend() == "sdk":
         from src.llm_client_sdk import SDKLLMClient
+
         return SDKLLMClient(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)
     return LLMClient(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)
 
 
 __all__ = [
-    "AuthError", "CircuitState", "FALLBACK_MAP", "FallbackExhaustedError", "LLMClient",
-    "LLMError", "ModelNotFoundError", "QuotaExhaustedError", "RateLimitError",
-    "RequestRejectedError", "ResponseFormatError", "TokenBucket", "TransientError",
-    "classificar_http", "extrair_texto_anthropic", "extrair_texto_google",
-    "extrair_texto_openai", "make_llm_client",
+    "AuthError",
+    "BaseLLMClient",
+    "CircuitState",
+    "FALLBACK_MAP",
+    "FallbackExhaustedError",
+    "LLMClient",
+    "LLMError",
+    "ModelNotFoundError",
+    "QuotaExhaustedError",
+    "RateLimitError",
+    "RequestRejectedError",
+    "ResponseFormatError",
+    "TokenBucket",
+    "TransientError",
+    "classificar_http",
+    "extrair_texto_anthropic",
+    "extrair_texto_google",
+    "extrair_texto_openai",
+    "make_llm_client",
 ]

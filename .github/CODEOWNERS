@@ -21,9 +21,6 @@
 # Cliente herreira (segmento varejo) — colaboradora do projeto
 /config/clients/herreira/          @alexandrebrt14-sys @analuiza-geo
 
-# Base de conhecimento GEO — review do Alexandre
-/docs/knowledge/geo-aeo/           @alexandrebrt14-sys
-
 # Templates de prompts — qualquer mudança afeta produção; review obrigatório
 /src/templates/prompts/            @alexandrebrt14-sys
 

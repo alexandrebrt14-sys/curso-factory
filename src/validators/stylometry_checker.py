@@ -89,9 +89,9 @@ class StylometryReport:
 
     sentences_total: int = 0
     words_total: int = 0
-    sentences_short: int = 0   # ≤ 6 palavras
+    sentences_short: int = 0  # ≤ 6 palavras
     sentences_medium: int = 0  # 7-22 palavras
-    sentences_long: int = 0    # 23+ palavras
+    sentences_long: int = 0  # 23+ palavras
 
     score: int = 0
     aprovado: bool = True
@@ -281,9 +281,7 @@ def try_compute_perplexity(text: str, model_id: str = "gpt2") -> float | None:
 # ─── Scoring ──────────────────────────────────────────────────────────────
 
 
-def _normalize_metric(
-    value: float, low: float, high: float, inverted: bool = False
-) -> int:
+def _normalize_metric(value: float, low: float, high: float, inverted: bool = False) -> int:
     """Mapeia value em [low, high] -> [0, 100].
 
     Se inverted=True, valores ALTOS resultam em score BAIXO (caso de
@@ -311,18 +309,18 @@ def _normalize_metric(
 #   canonico (Alexandre Caramaschi) totalizando ~40k palavras.
 # Para calibrar com mais rigor: ver PR-2.1 (corpus_calibration.py).
 DEFAULT_THRESHOLDS = {
-    "burstiness":           {"low": 0.30, "high": 0.90},
+    "burstiness": {"low": 0.30, "high": 0.90},
     "sentence_len_variance": {"low": 15.0, "high": 60.0},
-    "type_token_ratio":     {"low": 0.30, "high": 0.55},
-    "repetition_score":     {"low": 0.05, "high": 0.20, "inverted": True},
+    "type_token_ratio": {"low": 0.30, "high": 0.55},
+    "repetition_score": {"low": 0.05, "high": 0.20, "inverted": True},
 }
 
 # Pesos das 4 metricas no score combinado
 DEFAULT_WEIGHTS = {
-    "burstiness":           35,
+    "burstiness": 35,
     "sentence_len_variance": 25,
-    "type_token_ratio":     20,
-    "repetition_score":     20,
+    "type_token_ratio": 20,
+    "repetition_score": 20,
 }
 
 
@@ -356,8 +354,7 @@ def stylometry_check(
             score=0,
             aprovado=False,
             erros=[
-                f"texto com apenas {len(sentences)} sentencas — "
-                "stylometry exige >=5 para medir"
+                f"texto com apenas {len(sentences)} sentencas — stylometry exige >=5 para medir"
             ],
         )
 
@@ -411,13 +408,11 @@ def stylometry_check(
         )
     if ttr < 0.35:
         avisos.append(
-            f"type_token_ratio baixo ({ttr:.3f} < 0.35) — vocabulario "
-            "restrito ou repetitivo"
+            f"type_token_ratio baixo ({ttr:.3f} < 0.35) — vocabulario restrito ou repetitivo"
         )
     if rep_score > 0.12:
         erros.append(
-            f"repetition_score alto ({rep_score:.3f} > 0.12) — bigramas "
-            "boilerplate em excesso"
+            f"repetition_score alto ({rep_score:.3f} > 0.12) — bigramas boilerplate em excesso"
         )
     if short == 0:
         avisos.append(
@@ -442,10 +437,10 @@ def stylometry_check(
         score=score,
         aprovado=aprovado,
         dimensoes={
-            "burstiness (peso 35)":           sub_burstiness,
+            "burstiness (peso 35)": sub_burstiness,
             "sentence_len_variance (peso 25)": sub_len_var,
-            "type_token_ratio (peso 20)":     sub_ttr,
-            "repetition_score (peso 20)":     sub_rep,
+            "type_token_ratio (peso 20)": sub_ttr,
+            "repetition_score (peso 20)": sub_rep,
         },
         erros=erros,
         avisos=avisos,

@@ -23,11 +23,8 @@ CACHE_DIR = ROOT_DIR / ".cache"
 load_dotenv(ROOT_DIR / ".env")
 
 # --- Chaves de API ---
-OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
-GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
-PERPLEXITY_API_KEY: str = os.getenv("PERPLEXITY_API_KEY", "")
+# Não há cópia das chaves em constante de módulo: `get_api_key(provider)` lê o
+# ambiente na hora da chamada (rotação de chave e testes com monkeypatch).
 
 # --- Limites FinOps (em USD) ---
 # Teto diário por provedor. Só o relatório e `is_over_budget` o usam; o
@@ -48,9 +45,9 @@ DRAFT_RESEARCH_CONTEXT_CHARS: int = int(os.getenv("DRAFT_RESEARCH_CONTEXT_CHARS"
 #: rascunho curto e os números na mão. Motivo (03/09/2026): no teste real, cinco
 #: de seis aulas vieram entre 640 e 900 palavras contra alvo de 900 a 1.800, e a
 #: única reprovação do curso foi a aula de 641. Desligue com 0.
-DRAFT_EXPANSAO_ABAIXO_DO_PISO: bool = (
-    os.getenv("DRAFT_EXPANSAO_ABAIXO_DO_PISO", "1").strip().lower() not in ("0", "false", "nao", "não")
-)
+DRAFT_EXPANSAO_ABAIXO_DO_PISO: bool = os.getenv(
+    "DRAFT_EXPANSAO_ABAIXO_DO_PISO", "1"
+).strip().lower() not in ("0", "false", "nao", "não")
 # A classificação (Groq, 128 mil tokens de contexto) não precisa do curso inteiro.
 CLASSIFY_CONTEXT_CHARS: int = int(os.getenv("CLASSIFY_CONTEXT_CHARS", "60000"))
 # Trecho do relatório da análise (Gemini) que acompanha cada aula na revisão.
@@ -68,10 +65,9 @@ CLAUDE_BUDGET_PER_COURSE: float = float(os.getenv("CLAUDE_BUDGET_PER_COURSE", "5
 TOTAL_BUDGET_PER_COURSE: float = float(os.getenv("TOTAL_BUDGET_PER_COURSE", "10.00"))
 
 # --- Landing page integration ---
-LANDING_PAGE_DIR: Path = Path(os.getenv(
-    "LANDING_PAGE_DIR",
-    str(ROOT_DIR.parent / "landing-page-geo")
-))
+LANDING_PAGE_DIR: Path = Path(
+    os.getenv("LANDING_PAGE_DIR", str(ROOT_DIR.parent / "landing-page-geo"))
+)
 EDUCACAO_DIR: Path = LANDING_PAGE_DIR / "src" / "app" / "educacao"
 
 # --- Cache ---
@@ -79,6 +75,32 @@ CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
 
 # --- Modelo Claude (AAA = Opus) ---
 CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
+
+# --- Transporte e backend LLM ---
+# Timeout de leitura HTTP em segundos. 600 s: o research em sonar-deep-research
+# passa de minutos, e geração densa de aula não pode cair em fallback por pressa.
+HTTP_TIMEOUT: float = float(os.getenv("HTTP_TIMEOUT", "600"))
+# Clone do geo-orchestrator quando CURSO_FACTORY_LLM_BACKEND=sdk.
+GEO_ORCHESTRATOR_PATH: Path = Path(
+    os.getenv("GEO_ORCHESTRATOR_PATH", str(Path.home() / "geo-orchestrator"))
+).expanduser()
+
+
+def llm_backend() -> str:
+    """Backend LLM ativo: "sdk" (geo_orchestrator_sdk) ou "legacy" (httpx próprio).
+
+    É função, e não constante, para que a troca por variável de ambiente valha
+    dentro do mesmo processo (testes e sessões longas).
+    """
+    valor = os.getenv("CURSO_FACTORY_LLM_BACKEND", "").strip().lower()
+    return "sdk" if valor == "sdk" else "legacy"
+
+
+# --- Cliente e certificação ---
+# Cliente padrão quando a CLI não recebe --client (ver `clients.get_client_from_env`).
+CLIENT_ENV_VAR: str = "CURSO_FACTORY_CLIENT"
+# Segredo HMAC dos certificados (`cli certify`). Vazio = certificado sem assinatura.
+CERTIFICATE_SECRET_ENV_VAR: str = "CERTIFICATE_SECRET"
 
 
 def load_courses() -> list[dict[str, Any]]:
@@ -93,16 +115,24 @@ def load_courses() -> list[dict[str, Any]]:
     return data.get("courses", data) if isinstance(data, dict) else data
 
 
+#: Variável de ambiente que guarda a chave de cada provider.
+API_KEY_ENV_VARS: dict[str, str] = {
+    "openai": "OPENAI_API_KEY",
+    "anthropic": "ANTHROPIC_API_KEY",
+    "google": "GOOGLE_API_KEY",
+    "groq": "GROQ_API_KEY",
+    "perplexity": "PERPLEXITY_API_KEY",
+}
+
+
 def get_api_key(provider: str) -> str:
-    """Retorna a chave de API para o provider indicado."""
-    keys = {
-        "openai": OPENAI_API_KEY,
-        "anthropic": ANTHROPIC_API_KEY,
-        "google": GOOGLE_API_KEY,
-        "groq": GROQ_API_KEY,
-        "perplexity": PERPLEXITY_API_KEY,
-    }
-    key = keys.get(provider.lower(), "")
+    """Retorna a chave de API para o provider indicado.
+
+    Lê o ambiente na hora da chamada (não a cópia feita no import), para que
+    rotação de chave e `monkeypatch.setenv` em testes tenham efeito.
+    """
+    env_var = API_KEY_ENV_VARS.get(provider.lower(), "")
+    key = os.getenv(env_var, "") if env_var else ""
     if not key:
         raise ValueError(f"Chave de API não configurada para o provider: {provider}")
     return key

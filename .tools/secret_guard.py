@@ -75,7 +75,10 @@ SECRET_PATTERNS = [
     ("GitHub fine-grained PAT", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{82}\b")),
     ("AWS Access Key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
     # JWT (Supabase service_role) — header eyJ + payload eyJ + signature
-    ("JWT token (Supabase/Auth0)", re.compile(r"\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{20,}\.[A-Za-z0-9_\-]{20,}\b")),
+    (
+        "JWT token (Supabase/Auth0)",
+        re.compile(r"\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{20,}\.[A-Za-z0-9_\-]{20,}\b"),
+    ),
     # Private key blocks. Patterns construidos por concatenacao para
     # evitar auto-deteccao quando este proprio arquivo eh escaneado pelo
     # secret_guard (literais ----BEGIN ... PRIVATE KEY---- no source
@@ -277,8 +280,13 @@ def main(argv: list[str] | None = None) -> int:
             print(issue, file=sys.stderr)
         print(file=sys.stderr)
         print("=" * 70, file=sys.stderr)
-        print("Para forcar (NAO recomendado): SECRET_GUARD_BYPASS=1 git commit ...", file=sys.stderr)
-        print("Para corrigir: remova o segredo, adicione ao .gitignore, rotacione a chave", file=sys.stderr)
+        print(
+            "Para forcar (NAO recomendado): SECRET_GUARD_BYPASS=1 git commit ...", file=sys.stderr
+        )
+        print(
+            "Para corrigir: remova o segredo, adicione ao .gitignore, rotacione a chave",
+            file=sys.stderr,
+        )
         print("=" * 70, file=sys.stderr)
         return 1
 

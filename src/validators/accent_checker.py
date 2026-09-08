@@ -14,6 +14,7 @@ from dataclasses import dataclass
 @dataclass
 class AccentError:
     """Erro de acentuação encontrado."""
+
     linha: int
     palavra_errada: str
     correcao: str
@@ -335,7 +336,7 @@ ACCENT_MAP: dict[str, str] = {
     "permitira": "permitirá",
     "contribuira": "contribuirá",
     "garantira": "garantirá",
-    "e" : None,  # Não mapear "e" para "é": ambiguidade com a conjunção
+    "e": None,  # Não mapear "e" para "é": ambiguidade com a conjunção
 }
 
 # Remover entradas None (marcadores de exclusão)
@@ -357,15 +358,15 @@ ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if v is not None}
 # gramatical ("esta (verbo) -> está"). Ver wiki/decisions/
 # diretriz-editorial-v3-narrativa-sem-cota.md.
 AMBIGUOUS_HOMOGRAPHS: dict[str, str] = {
-    "nos": "nós",           # preposição/pronome "nos" vs pronome "nós"
-    "esta": "está",         # demonstrativo "esta" vs verbo "está"
-    "seria": "séria",       # futuro do pretérito "seria" vs adjetivo "séria"
-    "analise": "análise",   # subjuntivo/imperativo "analise" vs substantivo
-    "pratica": "prática",   # verbo "pratica" vs substantivo/adjetivo
-    "pratico": "prático",   # verbo "pratico" vs adjetivo
-    "publico": "público",   # verbo "publico" vs substantivo/adjetivo
-    "valido": "válido",     # verbo "valido" vs adjetivo
-    "ele": "ele",           # entrada no-op herdada: só gerava ruído
+    "nos": "nós",  # preposição/pronome "nos" vs pronome "nós"
+    "esta": "está",  # demonstrativo "esta" vs verbo "está"
+    "seria": "séria",  # futuro do pretérito "seria" vs adjetivo "séria"
+    "analise": "análise",  # subjuntivo/imperativo "analise" vs substantivo
+    "pratica": "prática",  # verbo "pratica" vs substantivo/adjetivo
+    "pratico": "prático",  # verbo "pratico" vs adjetivo
+    "publico": "público",  # verbo "publico" vs substantivo/adjetivo
+    "valido": "válido",  # verbo "valido" vs adjetivo
+    "ele": "ele",  # entrada no-op herdada: só gerava ruído
 }
 
 ACCENT_MAP = {k: v for k, v in ACCENT_MAP.items() if k not in AMBIGUOUS_HOMOGRAPHS}
@@ -393,41 +394,42 @@ def _mask_ignored(text: str) -> str:
     return masked
 
 
-def _is_in_code_block(lines: list[str], line_num: int) -> bool:
-    """Verifica se a linha está dentro de um bloco de código (```)."""
-    in_code = False
-    for i in range(line_num):
-        if lines[i].strip().startswith("```"):
-            in_code = not in_code
-    return in_code
-
-
 def check_accents(text: str) -> list[AccentError]:
     """Verifica acentuação PT-BR no texto.
 
-    Retorna lista de erros encontrados com linha, palavra e correção.
+    Retorna lista de erros encontrados com linha, palavra e correção. Blocos
+    de código (```) são pulados com a mesma regra de `fix_accents`: a linha
+    de abertura e a de fechamento também ficam de fora. Antes cada linha
+    rescaneava o texto desde o início (quadrático em cursos longos) e a
+    linha de fechamento era tratada como código, a de abertura não.
     """
     erros: list[AccentError] = []
-    linhas = text.split("\n")
+    in_code_block = False
 
-    for num_linha, linha in enumerate(linhas, start=1):
-        # Ignorar linhas dentro de blocos de código
-        if _is_in_code_block(linhas, num_linha - 1):
+    for num_linha, linha in enumerate(text.split("\n"), start=1):
+        if linha.strip().startswith("```"):
+            in_code_block = not in_code_block
+            continue
+        if in_code_block:
             continue
 
         masked = _mask_ignored(linha)
-        palavras = re.findall(r"\b([a-zA-Z]+)\b", masked)
-        for palavra in palavras:
+        for m in re.finditer(r"\b([a-zA-Z]+)\b", masked):
+            palavra = m.group(1)
             lower = palavra.lower()
-            if lower in ACCENT_MAP:
-                ctx_start = max(0, linha.lower().find(lower) - 20)
-                ctx_end = min(len(linha), linha.lower().find(lower) + len(lower) + 20)
-                erros.append(AccentError(
+            if lower not in ACCENT_MAP:
+                continue
+            # Contexto ao redor DESTA ocorrência (não da primeira da linha).
+            ctx_start = max(0, m.start() - 20)
+            ctx_end = min(len(linha), m.end() + 20)
+            erros.append(
+                AccentError(
                     linha=num_linha,
                     palavra_errada=palavra,
                     correcao=ACCENT_MAP[lower],
                     contexto=linha[ctx_start:ctx_end].strip(),
-                ))
+                )
+            )
 
     return erros
 

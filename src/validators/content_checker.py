@@ -59,6 +59,7 @@ from src.validators.rules_loader import rules_list, validation_section
 @dataclass
 class ContentError:
     """Erro ou aviso de qualidade de conteúdo."""
+
     tipo: str  # "error" ou "warning"
     categoria: str
     mensagem: str
@@ -181,18 +182,47 @@ FORBIDDEN_CLICHES = [
 
 # Verbos de Bloom proibidos em objetivos (níveis inferiores)
 BLOOM_FORBIDDEN_VERBS = [
-    "entender", "conhecer", "saber", "compreender",
-    "lembrar", "memorizar", "listar", "descrever",
-    "identificar", "reconhecer", "definir", "citar",
+    "entender",
+    "conhecer",
+    "saber",
+    "compreender",
+    "lembrar",
+    "memorizar",
+    "listar",
+    "descrever",
+    "identificar",
+    "reconhecer",
+    "definir",
+    "citar",
 ]
 
 # Verbos de Bloom aceitos (níveis superiores)
 BLOOM_ACCEPTED_VERBS = [
-    "analisar", "comparar", "diferenciar", "diagnosticar", "categorizar",
-    "avaliar", "justificar", "priorizar", "recomendar", "defender",
-    "criar", "projetar", "formular", "propor", "desenvolver",
-    "aplicar", "implementar", "executar", "demonstrar", "calcular",
-    "construir", "elaborar", "planejar", "sintetizar", "integrar",
+    "analisar",
+    "comparar",
+    "diferenciar",
+    "diagnosticar",
+    "categorizar",
+    "avaliar",
+    "justificar",
+    "priorizar",
+    "recomendar",
+    "defender",
+    "criar",
+    "projetar",
+    "formular",
+    "propor",
+    "desenvolver",
+    "aplicar",
+    "implementar",
+    "executar",
+    "demonstrar",
+    "calcular",
+    "construir",
+    "elaborar",
+    "planejar",
+    "sintetizar",
+    "integrar",
 ]
 
 
@@ -217,6 +247,7 @@ def _find_tables(text: str) -> int:
 
 #: Separador de parágrafo em Markdown: uma linha em branco.
 SEP_PARAGRAFO = "\n\n"
+
 
 def _find_figures(text: str) -> int:
     """Conta figuras Markdown (imagem com legenda) no texto."""
@@ -271,7 +302,10 @@ def _find_exercises(text: str) -> list[str]:
 
 
 #: Três ou mais itens numerados em sequência (1., 2., 3.), com linhas em branco ou não.
-_PASSOS_RE = re.compile(r"^\s*1[.)]\s.+(?:\n(?!\s*2[.)]).*)*\n\s*2[.)]\s.+(?:\n(?!\s*3[.)]).*)*\n\s*3[.)]\s", re.MULTILINE)
+_PASSOS_RE = re.compile(
+    r"^\s*1[.)]\s.+(?:\n(?!\s*2[.)]).*)*\n\s*2[.)]\s.+(?:\n(?!\s*3[.)]).*)*\n\s*3[.)]\s",
+    re.MULTILINE,
+)
 
 
 def _tem_passo_a_passo_sob_h2(text: str) -> bool:
@@ -322,12 +356,20 @@ def _sem_mencoes(text: str) -> str:
 # pesquisa carrega e o relatório do revisor não entram no texto publicado.
 #: Fallback mínimo quando o espelho da fonte não carrega.
 _BASTIDOR_FALLBACK = (
-    "verificamos que", "fontes consultadas", "esta aula foi", "este texto foi",
-    "segundo nossa metodologia", "estimativa calculada", "nota do revisor",
+    "verificamos que",
+    "fontes consultadas",
+    "esta aula foi",
+    "este texto foi",
+    "segundo nossa metodologia",
+    "estimativa calculada",
+    "nota do revisor",
 )
 _MULETA_LEGAL_FALLBACK = (
-    "consulte um advogado", "conforme a legislação vigente", "de acordo com a lgpd",
-    "não constitui aconselhamento", "isenção de responsabilidade",
+    "consulte um advogado",
+    "conforme a legislação vigente",
+    "de acordo com a lgpd",
+    "não constitui aconselhamento",
+    "isenção de responsabilidade",
 )
 #: Rótulo de confiança que o prompt de pesquisa põe em cada dado ([Alta], [Média],
 #: [Baixa]) e que só serve ao redator decidir o que usar; na aula é vazamento.
@@ -344,8 +386,9 @@ _RELATORIO_VAZADO_RE = re.compile(
 
 def _ocorrencias(text: str, expressoes) -> list[str]:
     baixo = text.lower()
-    return [e for e in expressoes
-            if re.search(r"(?<!\w)" + re.escape(e.lower()) + r"(?!\w)", baixo)]
+    return [
+        e for e in expressoes if re.search(r"(?<!\w)" + re.escape(e.lower()) + r"(?!\w)", baixo)
+    ]
 
 
 def _check_bastidor(text: str) -> list[str]:
@@ -441,10 +484,7 @@ def _check_heading_hierarchy(headings: list[tuple[int, str, str]]) -> list[str]:
     prev_level = 1  # Assume H1 como contexto
     for level, text, _raw in headings:
         if level > prev_level + 1:
-            errors.append(
-                f"Pulo de hierarquia: H{prev_level} → H{level} "
-                f"(título: '{text[:50]}')"
-            )
+            errors.append(f"Pulo de hierarquia: H{prev_level} → H{level} (título: '{text[:50]}')")
         prev_level = level
     return errors
 
@@ -480,23 +520,43 @@ def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
     return fora_da_faixa
 
 
+#: Faixas Unicode de emoji (início, fim), sem sobreposição. A versão anterior
+#: somava U+10000..U+10FFFF (todo o plano astral: CJK raro, símbolos matemáticos,
+#: notação musical) e U+24C2..U+1F251 (que engole ideogramas e Hangul): qualquer
+#: caractere fora do plano básico contava como emoji. A classe é montada a partir
+#: dos pontos de código, o que também poupa o CodeQL de ler escapes \U em string.
+_EMOJI_RANGES: tuple[tuple[int, int], ...] = (
+    (0x1F000, 0x1F02F),  # mahjong, dominó
+    (0x1F0A0, 0x1F0FF),  # cartas de baralho
+    (0x1F100, 0x1F1FF),  # alfanuméricos em quadrado, indicadores regionais
+    (0x1F200, 0x1F2FF),  # ideogramas em quadrado
+    (0x1F300, 0x1F5FF),  # símbolos e pictogramas diversos
+    (0x1F600, 0x1F64F),  # emoticons
+    (0x1F680, 0x1F6FF),  # transporte e mapas
+    (0x1F700, 0x1F77F),  # alquimia
+    (0x1F780, 0x1F7FF),  # formas geométricas estendidas
+    (0x1F800, 0x1F8FF),  # setas suplementares C
+    (0x1F900, 0x1F9FF),  # símbolos e pictogramas suplementares
+    (0x1FA00, 0x1FAFF),  # xadrez, pictogramas estendidos A
+    (0x2600, 0x26FF),  # símbolos diversos (sol, guarda-chuva, sinais)
+    (0x2700, 0x27BF),  # dingbats (tesoura, check, cruz)
+    (0x2300, 0x23FF),  # técnicos (relógio, ampulheta)
+    (0x2B00, 0x2BFF),  # setas e formas diversas (estrela)
+    (0x3030, 0x3030),  # sinais CJK usados como emoji
+    (0x303D, 0x303D),
+    (0x3297, 0x3297),
+    (0x3299, 0x3299),
+    (0x200D, 0x200D),  # zero-width joiner
+    (0xFE0F, 0xFE0F),  # seletor de apresentação
+)
+_EMOJI_RE = re.compile(
+    "[" + "".join(f"{re.escape(chr(a))}-{re.escape(chr(b))}" for a, b in _EMOJI_RANGES) + "]"
+)
+
+
 def _has_emoji(text: str) -> bool:
     """Detecta emojis no texto."""
-    emoji_pattern = re.compile(
-        "["
-        "\U0001F600-\U0001F64F"
-        "\U0001F300-\U0001F5FF"
-        "\U0001F680-\U0001F6FF"
-        "\U0001F1E0-\U0001F1FF"
-        "\U00002702-\U000027B0"
-        "\U000024C2-\U0001F251"
-        "\U0001f926-\U0001f937"
-        "\U00010000-\U0010ffff"
-        "\u200d\u2640-\u2642"
-        "]+",
-        flags=re.UNICODE,
-    )
-    return bool(emoji_pattern.search(text))
+    return bool(_EMOJI_RE.search(text))
 
 
 def _strip_noise(text: str) -> str:
@@ -540,9 +600,11 @@ def _count_statistics(text: str) -> int:
     """Conta dados quantitativos com contexto (estatísticas)."""
     clean = _strip_noise(text)
     count = 0
-    count += len(re.findall(r"\b\d{1,3}(?:[.,]\d+)?\s?%", clean))          # percentuais
-    count += len(re.findall(r"\b\d+(?:[.,]\d+)?\s?[x×](?![\w.])", clean))  # multiplicadores (3x, 4,1×)
-    count += len(re.findall(r"(?:R\$|US\$|€)\s?\d", clean))                # valores monetários
+    count += len(re.findall(r"\b\d{1,3}(?:[.,]\d+)?\s?%", clean))  # percentuais
+    count += len(
+        re.findall(r"\b\d+(?:[.,]\d+)?\s?[x×](?![\w.])", clean)
+    )  # multiplicadores (3x, 4,1×)
+    count += len(re.findall(r"(?:R\$|US\$|€)\s?\d", clean))  # valores monetários
     count += len(re.findall(r"\bde\s+\d[\d.,]*\s*%?\s+para\s+\d", clean))  # "de X para Y"
     return count
 
@@ -600,8 +662,8 @@ _UNRESOLVED_MARKER_RE = re.compile(
 
 # Sinais de que um percentual está ancorado em fonte verificável.
 _SOURCE_SIGNAL_RE = re.compile(
-    r"\([^)]*\b(?:19|20)\d{2}\b[^)]*\)"   # citação parentética: "(Gartner, 2026)"
-    r"|\b(?:19|20)\d{2}\b"                # ano solto na frase
+    r"\([^)]*\b(?:19|20)\d{2}\b[^)]*\)"  # citação parentética: "(Gartner, 2026)"
+    r"|\b(?:19|20)\d{2}\b"  # ano solto na frase
     r"|\bsegundo\b"
     r"|\bconforme\b"
     r"|\bde acordo com\b"
@@ -623,6 +685,7 @@ def _mask_uncheckable(text: str) -> str:
     comprimento e as quebras de linha ficam iguais aos do original, para que o
     número de linha reportado continue batendo com o arquivo.
     """
+
     def _blank(match: re.Match[str]) -> str:
         return re.sub(r"[^\n]", " ", match.group(0))
 
@@ -637,7 +700,7 @@ def _split_sentences(text: str) -> list[tuple[int, str]]:
     frases: list[tuple[int, str]] = []
     inicio = 0
     for match in _SENTENCE_BREAK_RE.finditer(text):
-        frases.append((inicio, text[inicio:match.end()]))
+        frases.append((inicio, text[inicio : match.end()]))
         inicio = match.end()
     if inicio < len(text):
         frases.append((inicio, text[inicio:]))
@@ -711,79 +774,93 @@ def check_content(
     piso = tetos["piso"]
     alvo_min, alvo_max = tetos["alvo"]
     if word_count < piso:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="profundidade",
-            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
-                     f"piso de {piso}. Abaixo do piso a peça apresenta o conceito e não o "
-                     f"explica: falta a narrativa (de onde vem a ideia, por que importa, o "
-                     f"que muda, o erro comum) ou o exemplo contado por inteiro. "
-                     f"Alvo: {alvo_min} a {alvo_max}.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="profundidade",
+                mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
+                f"piso de {piso}. Abaixo do piso a peça apresenta o conceito e não o "
+                f"explica: falta a narrativa (de onde vem a ideia, por que importa, o "
+                f"que muda, o erro comum) ou o exemplo contado por inteiro. "
+                f"Alvo: {alvo_min} a {alvo_max}.",
+                modulo=mod,
+            )
+        )
     elif word_count < alvo_min:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="profundidade",
-            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
-                     f"alvo de {alvo_min} a {alvo_max}. Verifique se a parte explicativa "
-                     f"(cerca de 60% das palavras) está desenvolvida.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="profundidade",
+                mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
+                f"alvo de {alvo_min} a {alvo_max}. Verifique se a parte explicativa "
+                f"(cerca de 60% das palavras) está desenvolvida.",
+                modulo=mod,
+            )
+        )
     elif word_count > tetos["erro"]:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="profundidade",
-            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, acima do teto "
-                     f"de {tetos['erro']}. Uma ideia por aula: divida em duas.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="profundidade",
+                mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, acima do teto "
+                f"de {tetos['erro']}. Uma ideia por aula: divida em duas.",
+                modulo=mod,
+            )
+        )
     elif word_count > tetos["aviso"]:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="profundidade",
-            mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, acima do "
-                     f"alvo de {alvo_min} a {alvo_max}. Confira se não entrou uma segunda "
-                     f"ideia que merece aula própria.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="profundidade",
+                mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, acima do "
+                f"alvo de {alvo_min} a {alvo_max}. Confira se não entrou uma segunda "
+                f"ideia que merece aula própria.",
+                modulo=mod,
+            )
+        )
 
     # 2. Apoios visuais: TETO, não piso. Tabela e figura entram só quando
     #    substituem texto; cobrá-los como obrigação produzia enfeite.
     headings = _find_headings(text)
     visuais = _find_tables(text) + _find_figures(text)
     if visuais > tetos["visuais_max"]:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="formatação",
-            mensagem=f"{visuais} apoios visuais, acima do teto de {tetos['visuais_max']} "
-                     f"por {nome_unidade}. Apoio visual entra quando SUBSTITUI texto "
-                     f"(comparação, sequência, conjunto de números); acima do teto ele "
-                     f"passa a competir com a leitura.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="formatação",
+                mensagem=f"{visuais} apoios visuais, acima do teto de {tetos['visuais_max']} "
+                f"por {nome_unidade}. Apoio visual entra quando SUBSTITUI texto "
+                f"(comparação, sequência, conjunto de números); acima do teto ele "
+                f"passa a competir com a leitura.",
+                modulo=mod,
+            )
+        )
 
     # 3. H2 e H3: 2 a 4 H2 por aula (explicar a ideia, contar o caso), até 2 H3
     #    por H2. O piso antigo de "3+ headings" não dizia de que nível.
     h2 = [h for h in headings if h[0] == 2]
     h2_min, h2_max = tetos["h2"]
     if len(h2) < h2_min:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="formatação",
-            mensagem=f"{len(h2)} H2 na {nome_unidade}, abaixo do mínimo de {h2_min}. "
-                     f"A sequência do molde pede ao menos: explicar a ideia e contar o "
-                     f"caso do ramo do aluno até o fim.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="formatação",
+                mensagem=f"{len(h2)} H2 na {nome_unidade}, abaixo do mínimo de {h2_min}. "
+                f"A sequência do molde pede ao menos: explicar a ideia e contar o "
+                f"caso do ramo do aluno até o fim.",
+                modulo=mod,
+            )
+        )
     elif len(h2) > h2_max:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="formatação",
-            mensagem=f"{len(h2)} H2 na {nome_unidade}, acima do teto de {h2_max}. "
-                     f"Mais seções do que isso costuma indicar duas ideias na mesma peça.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="formatação",
+                mensagem=f"{len(h2)} H2 na {nome_unidade}, acima do teto de {h2_max}. "
+                f"Mais seções do que isso costuma indicar duas ideias na mesma peça.",
+                modulo=mod,
+            )
+        )
 
     h3_por_h2 = tetos["h3_por_h2"]
     contagem_h3 = 0
@@ -793,22 +870,26 @@ def check_content(
         elif nivel == 3:
             contagem_h3 += 1
             if contagem_h3 > h3_por_h2:
-                erros.append(ContentError(
-                    tipo="warning",
-                    categoria="formatação",
-                    mensagem=f"Mais de {h3_por_h2} H3 sob o mesmo H2. "
-                             f"Acima disso o H2 já é duas seções.",
-                    modulo=mod,
-                ))
+                erros.append(
+                    ContentError(
+                        tipo="warning",
+                        categoria="formatação",
+                        mensagem=f"Mais de {h3_por_h2} H3 sob o mesmo H2. "
+                        f"Acima disso o H2 já é duas seções.",
+                        modulo=mod,
+                    )
+                )
                 break
 
     for err in _check_heading_hierarchy(headings):
-        erros.append(ContentError(
-            tipo="error",
-            categoria="formatação",
-            mensagem=err,
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="formatação",
+                mensagem=err,
+                modulo=mod,
+            )
+        )
 
     # 4. Negrito deixou de ter piso em 02/09/2026: cobrar "3 termos em
     #    negrito" produzia destaque por cota, e destaque em excesso anula o
@@ -820,12 +901,14 @@ def check_content(
     if bold_minimo > 0:
         bold_count = _find_bold_terms(text)
         if bold_count < bold_minimo:
-            erros.append(ContentError(
-                tipo="warning",
-                categoria="formatação",
-                mensagem=f"Apenas {bold_count} termos em negrito (recomendado: {bold_minimo}).",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo="warning",
+                    categoria="formatação",
+                    mensagem=f"Apenas {bold_count} termos em negrito (recomendado: {bold_minimo}).",
+                    modulo=mod,
+                )
+            )
 
     # 5. Exercício: desde 08/09/2026 a aula NÃO carrega exercício (R6, mandato
     #    de abertura direta). O piso só volta a agir se algum cliente ligar
@@ -835,35 +918,41 @@ def check_content(
     if minimo_ex > 0:
         exercises = _find_exercises(text)
         if len(exercises) < minimo_ex:
-            erros.append(ContentError(
-                tipo="error",
-                categoria="exercícios",
-                mensagem=f"{len(exercises)} exercício(s) detectado(s) na {nome_unidade} "
-                         f"(mínimo configurado: {minimo_ex}).",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo="error",
+                    categoria="exercícios",
+                    mensagem=f"{len(exercises)} exercício(s) detectado(s) na {nome_unidade} "
+                    f"(mínimo configurado: {minimo_ex}).",
+                    modulo=mod,
+                )
+            )
 
     # 7. Clichês proibidos
     cliches = _check_cliches(text)
     for cliche in cliches:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="editorial",
-            mensagem=f"Clichê proibido encontrado: '{cliche}'. "
-                     f"Substitua por informação concreta.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="editorial",
+                mensagem=f"Clichê proibido encontrado: '{cliche}'. "
+                f"Substitua por informação concreta.",
+                modulo=mod,
+            )
+        )
 
     # 8. Verbos de Bloom nos objetivos
     bloom_proibidos, bloom_aceitos = _check_bloom_objectives(text)
     for verbo in bloom_proibidos:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="andragogia",
-            mensagem=f"Verbo de Bloom nível inferior nos objetivos: '{verbo}'. "
-                     f"Use verbos de níveis 3-6: analisar, avaliar, criar, aplicar.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="andragogia",
+                mensagem=f"Verbo de Bloom nível inferior nos objetivos: '{verbo}'. "
+                f"Use verbos de níveis 3-6: analisar, avaliar, criar, aplicar.",
+                modulo=mod,
+            )
+        )
     # Objetivos de aprendizagem vivem no nível da trilha (molde D, bloco 1:
     # "uma frase do que vai aprender", sem lista de objetivos por aula). Aula
     # sem seção de objetivos é o esperado, então não há aviso por ausência;
@@ -873,24 +962,47 @@ def check_content(
     text_lower = text.lower()
     andragogy_markers = {
         "necessidade_saber": [
-            "por que", "por quê", "razão", "motivo", "necessidade",
-            "problema que", "problema real", "desafio que",
+            "por que",
+            "por quê",
+            "razão",
+            "motivo",
+            "necessidade",
+            "problema que",
+            "problema real",
+            "desafio que",
         ],
         "autoconceito": [
-            "considere", "analise como", "avalie se", "na sua experiência",
-            "como profissional", "na sua rotina", "na sua atuação",
+            "considere",
+            "analise como",
+            "avalie se",
+            "na sua experiência",
+            "como profissional",
+            "na sua rotina",
+            "na sua atuação",
         ],
         "experiencia_previa": [
-            "se você já", "experiência prévia", "experiência profissional",
-            "no seu dia a dia", "na sua rotina", "provavelmente já",
+            "se você já",
+            "experiência prévia",
+            "experiência profissional",
+            "no seu dia a dia",
+            "na sua rotina",
+            "provavelmente já",
         ],
         "prontidao": [
-            "aplique hoje", "aplicar imediatamente", "uso imediato",
-            "pode aplicar", "aplicação prática", "na próxima",
+            "aplique hoje",
+            "aplicar imediatamente",
+            "uso imediato",
+            "pode aplicar",
+            "aplicação prática",
+            "na próxima",
         ],
         "orientacao_problemas": [
-            "problema real", "cenário real", "caso real",
-            "situação real", "desafio real", "estudo de caso",
+            "problema real",
+            "cenário real",
+            "caso real",
+            "situação real",
+            "desafio real",
+            "estudo de caso",
         ],
     }
 
@@ -904,122 +1016,142 @@ def check_content(
     # com outras palavras reprovava por não usar a fórmula. O revisor humano
     # e o analyzer (Gemini) medem o princípio; o gate só aponta.
     if missing_principles:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="andragogia",
-            mensagem=f"Princípios andragógicos fracos: {', '.join(missing_principles)}. "
-                     f"Reforce a aplicação desses princípios.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="andragogia",
+                mensagem=f"Princípios andragógicos fracos: {', '.join(missing_principles)}. "
+                f"Reforce a aplicação desses princípios.",
+                modulo=mod,
+            )
+        )
 
     # 10. Parágrafos fora da faixa de 15 a 45 palavras (`tetos.D.paragrafo`).
     for line_num, palavras in _check_paragraph_length(text)[:5]:
         lado = "curto" if palavras < MIN_PARAGRAPH_WORDS else "longo"
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="formatação",
-            mensagem=f"Parágrafo {lado} com {palavras} palavras próximo à linha {line_num} "
-                     f"(faixa: {MIN_PARAGRAPH_WORDS} a {MAX_PARAGRAPH_WORDS}). "
-                     f"Parágrafo curto demais fatia o raciocínio; longo demais costuma "
-                     f"empilhar dois assuntos.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="formatação",
+                mensagem=f"Parágrafo {lado} com {palavras} palavras próximo à linha {line_num} "
+                f"(faixa: {MIN_PARAGRAPH_WORDS} a {MAX_PARAGRAPH_WORDS}). "
+                f"Parágrafo curto demais fatia o raciocínio; longo demais costuma "
+                f"empilhar dois assuntos.",
+                modulo=mod,
+            )
+        )
 
     # 11. Emojis
     if _has_emoji(text):
-        erros.append(ContentError(
-            tipo="error",
-            categoria="editorial",
-            mensagem="Emojis detectados no conteúdo. Proibido em conteúdo educacional.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="editorial",
+                mensagem="Emojis detectados no conteúdo. Proibido em conteúdo educacional.",
+                modulo=mod,
+            )
+        )
 
     # 11a. Bastidor fora da aula (erro): a aula não fala de si, da regra seguida,
     #      da verificação feita nem do método da estimativa. O prompt já proibia
     #      desde 08/2026; até 03/09/2026 nenhum código conferia.
     for trecho in _check_bastidor(text)[:8]:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="editorial",
-            mensagem=f"Bastidor no texto: '{trecho}'. O aluno recebe o fato e o passo; "
-                     f"técnica, regra seguida, verificação e método da estimativa ficam "
-                     f"fora da aula. Apague a frase inteira, sem substituto.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="editorial",
+                mensagem=f"Bastidor no texto: '{trecho}'. O aluno recebe o fato e o passo; "
+                f"técnica, regra seguida, verificação e método da estimativa ficam "
+                f"fora da aula. Apague a frase inteira, sem substituto.",
+                modulo=mod,
+            )
+        )
 
     # 11b. Rótulo de confiança da pesquisa vazado na aula (erro).
     m_rot = _ROTULO_PESQUISA_RE.search(text)
     if m_rot:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="editorial",
-            mensagem=f"Rótulo da pesquisa vazou para a aula: '{m_rot.group(0)}'. "
-                     f"[Alta]/[Média]/[Baixa] servem ao redator para escolher o dado; "
-                     f"na aula o número entra limpo ou não entra.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="editorial",
+                mensagem=f"Rótulo da pesquisa vazou para a aula: '{m_rot.group(0)}'. "
+                f"[Alta]/[Média]/[Baixa] servem ao redator para escolher o dado; "
+                f"na aula o número entra limpo ou não entra.",
+                modulo=mod,
+            )
+        )
 
     # 11c. Comentário HTML solto (erro): só o marcador de módulo do orquestrador.
     m_com = _COMENTARIO_SOLTO_RE.search(text)
     if m_com:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="editorial",
-            mensagem=f"Comentário de bastidor na aula: '{m_com.group(0)[:60]}'. "
-                     f"Nota de redator ou de revisor não vai para o texto publicado.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="editorial",
+                mensagem=f"Comentário de bastidor na aula: '{m_com.group(0)[:60]}'. "
+                f"Nota de redator ou de revisor não vai para o texto publicado.",
+                modulo=mod,
+            )
+        )
 
     # 11d. Relatório do revisor vazado (erro): a separação falhou ou o marcador
     #      veio em outro idioma; publicado, vira nota de bastidor no fim da aula.
     m_rel = _RELATORIO_VAZADO_RE.search(text)
     if m_rel:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="editorial",
-            mensagem=f"Relatório de revisão dentro da aula: '{m_rel.group(0)}'. "
-                     f"O relatório fica no registro da etapa, nunca no texto publicado.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="editorial",
+                mensagem=f"Relatório de revisão dentro da aula: '{m_rel.group(0)}'. "
+                f"O relatório fica no registro da etapa, nunca no texto publicado.",
+                modulo=mod,
+            )
+        )
 
     # 11d2. Autoapresentação (aviso): a aula se apresenta em vez de responder.
     for trecho in _check_autoapresentacao(text)[:3]:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="editorial",
-            mensagem=f"A aula se apresenta em vez de responder: '{trecho}'. Troque a frase "
-                     f"pelo que ela anuncia.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="editorial",
+                mensagem=f"A aula se apresenta em vez de responder: '{trecho}'. Troque a frase "
+                f"pelo que ela anuncia.",
+                modulo=mod,
+            )
+        )
 
     # 11e. Muleta legal (aviso): lei entra como fato com número quando muda a
     #      decisão do aluno; aviso genérico manda o aluno embora sem resposta.
     for trecho in _check_muleta_legal(text)[:5]:
-        erros.append(ContentError(
-            tipo="warning",
-            categoria="editorial",
-            mensagem=f"Aviso legal genérico: '{trecho}'. Se a lei muda a decisão, entre com "
-                     f"o número (lei, artigo, prazo, valor); se não muda, corte a frase.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="editorial",
+                mensagem=f"Aviso legal genérico: '{trecho}'. Se a lei muda a decisão, entre com "
+                f"o número (lei, artigo, prazo, valor); se não muda, corte a frase.",
+                modulo=mod,
+            )
+        )
 
     # 12. Anti-invenção: percentual sem fonte na mesma frase (aviso).
     #     Não bloqueia porque a heurística é textual e o falso positivo é
     #     barato de dispensar; bloquear aqui reprovaria conteúdo correto que
     #     cita a fonte no parágrafo anterior.
     anti_invencao = validation_section("anti_invencao")
-    if bool(anti_invencao.get(
-        "require_source_for_percentages", DEFAULT_REQUIRE_SOURCE_FOR_PERCENTAGES
-    )):
+    if bool(
+        anti_invencao.get("require_source_for_percentages", DEFAULT_REQUIRE_SOURCE_FOR_PERCENTAGES)
+    ):
         for linha, trecho in _check_percentages_have_source(text)[:MAX_PERCENTAGE_WARNINGS]:
-            erros.append(ContentError(
-                tipo="warning",
-                categoria="evidencia",
-                mensagem=f"Percentual sem fonte na mesma frase (linha {linha}): "
-                         f"\"{trecho}\". A conferência humana exige quatro coisas: "
-                         f"origem, data, método e denominador.",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo="warning",
+                    categoria="evidencia",
+                    mensagem=f"Percentual sem fonte na mesma frase (linha {linha}): "
+                    f'"{trecho}". A conferência humana exige quatro coisas: '
+                    f"origem, data, método e denominador.",
+                    modulo=mod,
+                )
+            )
 
     # 13. Anti-invenção: teto de marcadores de apuração em aberto (erro).
     marcadores = _count_unresolved_markers(text)
@@ -1031,15 +1163,17 @@ def check_content(
     except (TypeError, ValueError):
         teto_marcadores = DEFAULT_MAX_UNRESOLVED_MARKERS
     if marcadores > teto_marcadores:
-        erros.append(ContentError(
-            tipo="error",
-            categoria="evidencia",
-            mensagem=f"{marcadores} marcadores de apuração em aberto "
-                     f"([FALTA EVIDÊNCIA: / [PREENCHER-HUMANO:), acima do teto de "
-                     f"{teto_marcadores}. Acima do teto a peça não está pronta para "
-                     f"revisão: ela está pedindo apuração.",
-            modulo=mod,
-        ))
+        erros.append(
+            ContentError(
+                tipo="error",
+                categoria="evidencia",
+                mensagem=f"{marcadores} marcadores de apuração em aberto "
+                f"([FALTA EVIDÊNCIA: / [PREENCHER-HUMANO:), acima do teto de "
+                f"{teto_marcadores}. Acima do teto a peça não está pronta para "
+                f"revisão: ela está pedindo apuração.",
+                modulo=mod,
+            )
+        )
 
     # 14. Citabilidade GEO (opt-in via client.yaml geo_2026) — ver
     #     docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
@@ -1055,42 +1189,50 @@ def check_content(
 
         n_cite = _count_cite_sources(text)
         if n_cite < min_cite:
-            erros.append(ContentError(
-                tipo=geo_tipo,
-                categoria="geo",
-                mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
-                         f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo=geo_tipo,
+                    categoria="geo",
+                    mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
+                    f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
+                    modulo=mod,
+                )
+            )
 
         n_stats = _count_statistics(text)
         if n_stats < min_stats:
-            erros.append(ContentError(
-                tipo=geo_tipo,
-                categoria="geo",
-                mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
-                         f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo=geo_tipo,
+                    categoria="geo",
+                    mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
+                    f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
+                    modulo=mod,
+                )
+            )
 
         n_quotes = _count_quotations(text)
         if n_quotes < min_quotes:
-            erros.append(ContentError(
-                tipo=geo_tipo,
-                categoria="geo",
-                mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
-                         f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo=geo_tipo,
+                    categoria="geo",
+                    mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
+                    f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
+                    modulo=mod,
+                )
+            )
 
         if require_capsule and not _has_answer_capsule(text):
-            erros.append(ContentError(
-                tipo=geo_tipo,
-                categoria="geo",
-                mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
-                         "(40-60 palavras) detectado após um heading. Lift de citação 1,9×.",
-                modulo=mod,
-            ))
+            erros.append(
+                ContentError(
+                    tipo=geo_tipo,
+                    categoria="geo",
+                    mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
+                    "(40-60 palavras) detectado após um heading. Lift de citação 1,9×.",
+                    modulo=mod,
+                )
+            )
 
     # 15. Abertura e distração (R1 a R9, 08/09/2026): abertura em H1, subtítulo
     #     e parágrafo; sem "faça agora", "mockup no seu negócio", "checkpoint",
@@ -1101,7 +1243,9 @@ def check_content(
     return erros
 
 
-def erros_de_abertura(text: str, module_name: str = "", unidade: str = "aula") -> list[ContentError]:
+def erros_de_abertura(
+    text: str, module_name: str = "", unidade: str = "aula"
+) -> list[ContentError]:
     """Achados do `abertura_checker` no formato do relatório de conteúdo."""
     resultado = check_abertura(text, unidade=unidade)
     return [
