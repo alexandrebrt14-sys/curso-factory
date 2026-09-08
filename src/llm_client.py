@@ -41,7 +41,7 @@ from typing import Any
 import httpx
 
 from src.cache import Cache
-from src.config import HTTP_TIMEOUT, LLM_BACKEND, MAX_TOKENS_PER_CALL, get_api_key
+from src.config import HTTP_TIMEOUT, MAX_TOKENS_PER_CALL, get_api_key, llm_backend
 from src.cost_tracker import CostTracker
 from src.llm_base import BaseLLMClient
 
@@ -558,7 +558,7 @@ def make_llm_client(
     breaker e FinOps unificado do orquestrador. Qualquer outro valor (ou
     ausente) -> LLMClient próprio, com a camada de resiliência deste módulo.
     """
-    if LLM_BACKEND() == "sdk":
+    if llm_backend() == "sdk":
         from src.llm_client_sdk import SDKLLMClient
 
         return SDKLLMClient(cost_tracker=cost_tracker, cache=cache, use_cache=use_cache)

@@ -89,7 +89,7 @@ GEO_ORCHESTRATOR_PATH: Path = Path(
 ).expanduser()
 
 
-def LLM_BACKEND() -> str:  # noqa: N802 - lido em tempo de chamada, por isso função
+def llm_backend() -> str:
     """Backend LLM ativo: "sdk" (geo_orchestrator_sdk) ou "legacy" (httpx próprio).
 
     É função, e não constante, para que a troca por variável de ambiente valha
