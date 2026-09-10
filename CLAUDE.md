@@ -1,5 +1,12 @@
 # curso-factory — Instruções Claude Code
 
+## Atualização editorial de 10/09/2026
+
+A fonte vigente é `escrita-empreendedor` 1.7.1, declarada em `DIRETRIZ_EDITORIAL.md`.
+Leia `docs/ESCRITA_SEO_GEO.md` e `AGENTS.md` para aplicar fidelidade de trechos, pesquisa
+orientada à decisão e preservação de fatos no pipeline em português. Esta orientação vence
+os resumos históricos de v4 sobre abertura, número como prova e métricas de estilo.
+
 ## Memória de decisões do projeto
 
 Decisões de arquitetura, erros-a-evitar e insights vivem em `wiki/decisions/` como

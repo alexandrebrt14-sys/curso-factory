@@ -1,5 +1,5 @@
 {
-  "versao": "1.6.0",
+  "versao": "1.7.1",
   "limiares": {
     "fraseMaxPalavras": 28,
     "fraseToleranciaPalavras": 60,
@@ -211,8 +211,8 @@
     "CPC": "quanto você paga por cada clique no anúncio",
     "CPM": "quanto você paga por mil vezes que o anúncio aparece",
     "ROAS": "quanto volta em venda para cada real gasto em anúncio",
-    "SEO": "fazer o Google mostrar o seu negócio quando alguém procura",
-    "GEO": "fazer o ChatGPT e o Google citarem o seu negócio na resposta",
+    "SEO": "melhorar a presença do negócio nos resultados dos buscadores",
+    "GEO": "ajudar buscadores com IA a compreender e citar seu negócio",
     "palavra-chave": "o que o cliente digita na busca, como \"oficina perto de mim\"",
     "pixel": "um código no site que conta quem entrou e o que fez",
     "UTM": "etiqueta no link que diz de onde veio o clique",

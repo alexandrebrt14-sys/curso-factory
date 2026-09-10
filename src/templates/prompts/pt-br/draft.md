@@ -32,12 +32,29 @@ mercado relata"); tirar o argumento do centro; cortar o trecho. Só depois disso
 Teto de 3 marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
 própria frase ("suponha um faturamento de R$ 40 mil no mês").
 
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
 ## O molde da aula
 
 A aula ensina UMA ideia até o fim e é LEITURA: o aluno termina sabendo o que muda no negócio
 dele e qual é o próximo passo, dito em prosa. Extensão: de {palavras_alvo_min} a
-{palavras_alvo_max} palavras. Abaixo de {palavras_piso} a ideia ficou sem explicação; acima de
-{palavras_aviso} entrou uma segunda ideia, que pertence a outra aula.
+{palavras_alvo_max} palavras. Abaixo de {palavras_piso}, confira se faltou explicação;
+acima de {palavras_aviso}, confira se entrou outra ideia. A contagem orienta a revisão,
+mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
 
 Cabeçalhos: **{h2_min} a {h2_max} H2**, e o normal são dois, um por bloco abaixo. H3 só quando
 um H2 passa de 350 palavras e precisa de duas partes (no máximo {h3_por_h2} por H2). Nada de
@@ -157,8 +174,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   ("Atenção:", "Importante:"), rótulo de confiança sobre o próprio dado.
 - Travessão em prosa, title case em título, vírgula antes do "e" em enumeração simples,
   gerundismo ("vamos estar enviando").
-- Dado com fonte dentro da frase de leitura. O número entra limpo; a fonte vai para a lista de
-  fontes da trilha.
+- Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
+  fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
 
 ## Antes de entregar, confira
 

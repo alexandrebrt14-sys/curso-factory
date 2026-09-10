@@ -1,8 +1,8 @@
 # Diretriz editorial deste repositório (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 2fc0817a84c052e2931bfab470c822cd72b24e33ab2204d0db85433e1435c55d
-sincronizado-em: 2026-09-08
+hash-fonte: 999d02ddc87cfa2897cb0fafda4f6b5fdd170103fddd74c14c7750f96f91beae
+sincronizado-em: 2026-09-10
 
 A régua de escrita, os moldes de página, a tabela de tetos, o perfil do leitor e o glossário
 vivem na fonte acima. Este arquivo não repete nenhum número nem nenhuma lista. Quando algo aqui
@@ -40,8 +40,8 @@ três passadas, vícios de português, estruturas proibidas — passou a viver n
 
 Pedido do dono dos repositórios em 08/09/2026, literal na decisão
 `wiki/decisions/abertura-direta-sem-distracao-20260908.md`: o topo carregado dispersa o leitor
-e o card no meio compete com a leitura. A fonte de estilo 1.6.0 (ponteiro acima, ressincronizado
-em 08/09/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
+e o card no meio compete com a leitura. A fonte de estilo 1.7.1 (ponteiro acima, ressincronizado
+em 10/09/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
 `config/lexicos.json`, que o `abertura_checker` lê e soma aos padrões próprios; esta seção é o
 resumo local, e em divergência a fonte vence.
 
@@ -74,6 +74,13 @@ Onde cada regra é garantida: prompts (`src/templates/prompts/*/draft.md`, `revi
 `src/generators/tsx_generator.py`) e gate (`src/validators/abertura_checker.py`, chamado
 por `content_checker.check_content` e por `TsxGenerator.render_page`, que levanta
 `AberturaError`). R2 e R4 são cobradas no template por teste (`tests/test_abertura_sem_distracao.py`).
+
+## Compatibilidade editorial de 10/09/2026
+
+Fonte consultada e incorporada no commit `2479179e199f768c4e96aebbadfa5d864523b34e`, versão 1.7.1.
+A aplicação de SEO e GEO às etapas de pesquisa, escrita, revisão e humanização está em
+`docs/ESCRITA_SEO_GEO.md`. A fonte §10 rege a fidelidade; os prompts da raiz e de `pt-br/`
+executam essa orientação sem alterar o formato de retorno do pipeline.
 
 ## Como sincronizar
 

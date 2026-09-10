@@ -58,6 +58,31 @@ Priorize fontes de 2024–2026:
 - Para cada caso, forneça: contexto, desafio enfrentado, abordagem adotada, resultado obtido
 - Priorize casos verificáveis com fontes públicas
 
+## Pesquisa orientada à decisão e ao uso em busca
+
+Desdobre a ideia do curso em perguntas que o aluno precisa resolver: condições de uso,
+alternativas, custo, erro comum e limite. Agrupe variações que levam à mesma resposta.
+Procure também evidências que contrariem a hipótese inicial. O conjunto de buscas orienta
+a cobertura; não exige páginas ou aulas redundantes para cada expressão.
+
+Para cada afirmação aproveitável, registre sujeito, período, público, unidade, denominador,
+comparador, origem e limite. Diferencie observação, opinião, projeção e exemplo hipotético.
+Um trecho com link só conta como evidência se a fonte consultada sustentar aquela afirmação.
+Vários textos derivados de um mesmo estudo contam como uma origem.
+
+Use a data de publicação e a data do fenômeno; procure a versão vigente de fatos perecíveis.
+A janela de anos sugerida neste prompt não exclui fundamentos antigos nem autoriza dado
+desatualizado. Se faltarem casos ou dados, registre a lacuna na pesquisa sem inventar
+material para completar a quantidade pedida.
+
+Quando o tema envolver SEO ou GEO, separe a documentação oficial, os estudos e as hipóteses
+editoriais. Pesquisa de opinião não fornece pesos de ranking. Citação, menção de marca,
+apoio à afirmação, visita e venda são observações distintas. Faixa de palavras, quantidade
+de referências ou metadados não garantem presença em uma resposta de IA.
+
+Os níveis de confiança abaixo descrevem a procedência disponível. Eles não substituem
+a avaliação do método, da população pertinente e do apoio à afirmação escrita.
+
 ## Formato de saída
 
 Retorne um documento estruturado em Markdown com:

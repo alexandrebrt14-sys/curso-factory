@@ -1,5 +1,14 @@
 # Changelog
 
+## 10/09/2026: fidelidade na escrita para SEO e GEO
+
+- Fonte `escrita-empreendedor` 1.7.1 sincronizada por hash e léxico exportado.
+- Pesquisa, redação, revisão e humanização da raiz e de `pt-br/` preservam público, período,
+  condição e natureza da afirmação. Exemplo de humanização passa a ser hipotético e fiel
+  ao texto recebido; deixa de acrescentar caso empresarial e causalidade sem suporte.
+- `docs/ESCRITA_SEO_GEO.md`, instruções de agentes e README conectam os critérios ao pipeline.
+  Tetos, variáveis de prompts e formatos de retorno preservados; sem geração paga de aulas.
+
 ## 08/09/2026: v2.1.0, refatoração de robustez e organização
 
 Pedido do dono: deixar o repositório mais competente e organizado, higienizado e
