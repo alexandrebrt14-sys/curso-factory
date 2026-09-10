@@ -10,6 +10,10 @@
 
 > **Status (2026-09-08, v2.1.0):** refatoração de robustez concluída. CLI com 11 subcomandos e console script `curso-factory` instalável; 513 testes verde; lint e formato (ruff) obrigatórios no CI; I/O de ledger, cache e checkpoint atômico e tolerante a arquivo corrompido; rascunhos por cliente. Identidade do cliente 100% via `ClientContext` (sem hardcode). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+A revisão editorial de 10/09/2026 está em [Escrita de cursos com evidência](docs/ESCRITA_SEO_GEO.md).
+Os prompts em português aplicam os critérios de fidelidade da fonte 1.7.1, sem alterar
+tetos ou contratos do pipeline.
+
 ## O que é
 
 O curso-factory é uma fábrica de cursos educacionais de altíssima qualidade, construída sobre um pipeline de 5 LLMs orquestrados. O sistema recebe a definição de um curso em YAML, executa um pipeline de 5 etapas (pesquisa, redação, análise, classificação, revisão) e entrega módulos completos, validados e prontos para deploy.

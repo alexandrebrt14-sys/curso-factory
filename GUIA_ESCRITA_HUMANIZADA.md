@@ -1,8 +1,8 @@
 # Guia de escrita humanizada (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 2fc0817a84c052e2931bfab470c822cd72b24e33ab2204d0db85433e1435c55d
-sincronizado-em: 2026-09-08
+hash-fonte: 999d02ddc87cfa2897cb0fafda4f6b5fdd170103fddd74c14c7750f96f91beae
+sincronizado-em: 2026-09-10
 
 O diagnóstico de ritmo, as técnicas de narrativa, a tabela de vícios de português gerado por
 LLM, o orçamento de formatação, o fluxo de revisão em três passadas e a lista do que não fazer
@@ -23,6 +23,13 @@ número nem nenhuma lista. Quando algo aqui contradiz a fonte, a fonte vence.
 - **Lacuna declarada.** Não existe, até julho de 2026, estudo de corpus acadêmico sobre
   marcadores de LLM específicos do português brasileiro. Quando aparecer, a fonte é que deve ser
   revisada contra ele, não este ponteiro.
+
+## Compatibilidade editorial de 10/09/2026
+
+Fonte consultada e incorporada no commit `2479179e199f768c4e96aebbadfa5d864523b34e`, versão 1.7.1.
+A aplicação de SEO e GEO às etapas de pesquisa, escrita, revisão e humanização está em
+`docs/ESCRITA_SEO_GEO.md`. A fonte §10 rege a fidelidade; os prompts da raiz e de `pt-br/`
+executam essa orientação sem alterar o formato de retorno do pipeline.
 
 ## Como sincronizar
 

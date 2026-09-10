@@ -94,9 +94,26 @@ programada de frase curta e longa.
 Todo número precisa de origem na pesquisa ou rótulo de exemplo ilustrativo na própria frase.
 Percentual sem origem vira `[FALTA EVIDÊNCIA: ...]` ou afirmação reduzida ao que se sabe.
 Marcadores abertos acima de 3 na aula: reprove no relatório, mas devolva o texto mesmo assim.
-Fonte e data não entram na frase de leitura; ficam na lista de fontes da trilha. Nunca
+A referência completa fica na lista de fontes da trilha. Preserve no corpo sujeito,
+período e condição sempre que mudarem a interpretação do fato. Nunca
 transforme "o mercado entende" em "67% das empresas, segundo a McKinsey" sem que o número
 esteja na pesquisa.
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
 
 ## Formato de saída
 
