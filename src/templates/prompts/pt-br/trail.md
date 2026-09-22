@@ -38,8 +38,10 @@ ferramenta) ou já saber. Se a trilha não depende de nada, escreva uma linha di
 ## Glossário
 
 Os termos técnicos que as aulas usam, em ordem alfabética, cada um com glosa de até 12
-palavras e uma comparação do dia a dia dele. Formato: `**termo**: glosa`. Entre cinco e doze
-termos; só o que as aulas de fato usam.
+palavras e uma comparação do dia a dia dele, no molde "spring: jeito de animar que imita uma
+mola: em vez de mandar o movimento durar um tempo fixo, você diz o quanto ele é firme e o
+quanto desacelera". Formato: `**termo**: glosa`. Entre cinco e doze termos; só o que as aulas
+de fato usam. Nome de API cru sem a explicação prática não entra.
 
 ## Perguntas frequentes
 
@@ -54,6 +56,12 @@ houver, o link logo depois, só com o que as aulas ou a pesquisa trazem. De uma 
 É o ÚLTIMO bloco da trilha e o único lugar do curso onde fonte aparece (R7): cada linha tem até
 25 palavras, sem comentário, sem card, sem citação em destaque. Ela é desenhada no rodapé da
 página, em corpo pequeno.
+
+## Subtítulo da trilha
+
+Se o pipeline pedir a descrição da trilha, ela é UMA promessa em até 25 palavras, sem fórmula
+fixa ("Você sai com...") e sem corrente de vírgulas empilhando as promessas de cada aula. As
+trilhas de um curso não podem começar todas com as mesmas duas palavras.
 
 ## Antes de entregar, confira
 

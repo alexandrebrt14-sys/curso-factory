@@ -16,6 +16,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from src.models import CourseDefinition
 from src.validators.abertura_checker import AberturaError, check_abertura_definicao
+from src.validators.didatica_checker import check_didatica_definicao
 
 logger = logging.getLogger(__name__)
 
@@ -149,6 +150,8 @@ class TsxGenerator:
     """Gera arquivos page.tsx e layout.tsx a partir de CourseDefinition."""
 
     def __init__(self) -> None:
+        #: Achados de didática da última renderização (só leitura; nunca reprova).
+        self.achados_didatica: list[str] = []
         self.env = Environment(
             loader=FileSystemLoader(str(TEMPLATES_DIR)),
             # Templates são código (.tsx.j2) — select_autoescape mantém escape
@@ -190,6 +193,13 @@ class TsxGenerator:
         if achados_abertura:
             raise AberturaError(achados_abertura)
         self._cobrar_peso_visual(course, cobrar_peso_visual)
+        # Didática (22/09/2026): título como promessa, subtítulo sem fórmula,
+        # cadência, fecho, jargão e fichas. Nunca recusa a renderização: o
+        # achado vai para o log e para `achados_didatica`, e o julgamento é
+        # de leitura. O que reprova é o gate da aula.
+        self.achados_didatica = check_didatica_definicao(course)
+        for achado in self.achados_didatica:
+            logger.warning("didática: %s", achado)
         template = self.env.get_template("page.tsx.j2")
 
         flat_steps = []

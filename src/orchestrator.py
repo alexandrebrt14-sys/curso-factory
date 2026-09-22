@@ -74,6 +74,9 @@ DRAFTS_DIR = OUTPUT_DIR / "drafts"
 
 #: Cabeçalho que abre cada aula no rascunho montado.
 AULA_H1_RE = re.compile(r"^#\s+Aula\s+(\d+)\.(\d+)\s*[:.\-]\s*(.+?)\s*$", re.MULTILINE)
+#: Linha `TÍTULO: ...` que o redator emite quando o título planejado é índice de
+#: técnico (22/09/2026, didática): a proposta vira o título da aula e a linha sai.
+TITULO_PROPOSTO_RE = re.compile(r"^\s*T[ÍI]TULO\s*:\s*(?P<titulo>.+?)\s*$", re.IGNORECASE)
 #: Cabeçalho do fechamento da trilha (objetivos, pré-requisitos, glossário,
 #: FAQ e fontes), emitido uma vez por módulo, depois da última aula.
 TRILHA_H1_RE = re.compile(r"^#\s+Trilha\s+(\d+)\s*[:.\-]\s*(.+?)\s*$", re.MULTILINE)
@@ -555,7 +558,18 @@ class Orchestrator:
             **self._tetos_da_aula(),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
-        texto = self._normalizar_aula(self.writer.execute(contexto, **variaveis))
+        titulo_proposto, bruto = self._extrair_titulo_proposto(
+            self.writer.execute(contexto, **variaveis)
+        )
+        if titulo_proposto:
+            logger.info(
+                'Aula %s: título "%s" trocado pela promessa "%s"',
+                variaveis["lesson_number"],
+                aula["titulo"],
+                titulo_proposto,
+            )
+            aula["titulo"] = titulo_proposto
+        texto = self._normalizar_aula(bruto)
         rotulo = f"Aula {numero_modulo}.{indice + 1}"
         palavras = _contar_palavras(texto)
         piso = int(variaveis["palavras_piso"])
@@ -586,6 +600,24 @@ class Orchestrator:
                     f"primeiro rascunho ficou."
                 )
         return f"# {rotulo}: {aula['titulo']}\n\n{texto}"
+
+    @staticmethod
+    def _extrair_titulo_proposto(texto: str) -> tuple[str | None, str]:
+        """Separa a linha `TÍTULO: ...` do topo do rascunho, se o redator a emitiu.
+
+        O prompt pede a proposta quando o título planejado é rótulo de índice
+        (dois-pontos, substantivos empilhados, jargão que a aula ainda vai
+        ensinar). Só a primeira linha não vazia conta, para que um "Título:"
+        no meio da prosa não seja confundido com a proposta.
+        """
+        linhas = texto.strip().splitlines()
+        if not linhas:
+            return None, texto
+        m = TITULO_PROPOSTO_RE.match(linhas[0])
+        if not m:
+            return None, texto
+        titulo = m.group("titulo").strip().strip("*\"'")
+        return (titulo or None), "\n".join(linhas[1:]).lstrip("\n")
 
     @staticmethod
     def _normalizar_aula(texto: str) -> str:

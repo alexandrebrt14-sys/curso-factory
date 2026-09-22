@@ -45,6 +45,7 @@ import re
 from dataclasses import dataclass
 
 from src.validators.abertura_checker import check_abertura
+from src.validators.didatica_checker import check_didatica
 from src.validators.lexicos_loader import (
     expressoes_de_bastidor,
     expressoes_de_muleta_legal,
@@ -70,14 +71,14 @@ class ContentError:
 #
 # Fallbacks: espelham `tetos.D` de config/lexicos.json na data acima. Só valem
 # quando o espelho não carrega.
-FALLBACK_PALAVRAS_PISO = 900
-FALLBACK_PALAVRAS_ALVO = (1200, 2400)
+FALLBACK_PALAVRAS_PISO = 700
+FALLBACK_PALAVRAS_ALVO = (900, 1800)
 FALLBACK_PALAVRAS_AVISO = 2400
 FALLBACK_PALAVRAS_ERRO = 3600
 FALLBACK_H2 = (2, 4)
-FALLBACK_H3_POR_H2 = 2
+FALLBACK_H3_POR_H2 = 1
 FALLBACK_VISUAIS_MAX = 3
-FALLBACK_PARAGRAFO = (15, 45)
+FALLBACK_PARAGRAFO = (20, 80)
 
 #: Faixa de aulas por módulo, para o modo de compatibilidade.
 FALLBACK_AULAS_POR_MODULO = (4, 6)
@@ -490,14 +491,16 @@ def _check_heading_hierarchy(headings: list[tuple[int, str, str]]) -> list[str]:
 
 
 def _check_paragraph_length(text: str) -> list[tuple[int, int]]:
-    """Encontra parágrafos fora da faixa de 15 a 45 palavras.
+    """Encontra parágrafos fora da faixa de palavras da fonte (`tetos.D.paragrafo`).
 
     A régua trocou de unidade em 27/08/2026. Contar LINHAS media a largura da
     janela de quem escreveu, não o fôlego do parágrafo: o mesmo texto dava 4
     linhas num editor e 9 em outro. A fonte de estilo mede palavras, e a faixa
-    do tipo D é 15 a 45 (`tetos.D.paragrafo`). Abaixo de 15 o parágrafo é
-    fragmento de texto fatiado, que é a assinatura de conteúdo de máquina;
-    acima de 45 costuma empilhar dois assuntos.
+    do tipo D está em `tetos.D.paragrafo` (20 a 80 na fonte 1.7.1). Abaixo do
+    piso o parágrafo é fragmento de texto fatiado, assinatura de conteúdo de
+    máquina; acima do teto costuma empilhar dois assuntos. Parágrafo de UMA
+    frase é legítimo quando a ideia cabe nela (fonte §3.7): por isso o achado
+    é sempre aviso, nunca erro.
 
     Returns:
         Lista de (número da linha, palavras no parágrafo), só para os que estão
@@ -1026,7 +1029,7 @@ def check_content(
             )
         )
 
-    # 10. Parágrafos fora da faixa de 15 a 45 palavras (`tetos.D.paragrafo`).
+    # 10. Parágrafos fora da faixa da fonte (`tetos.D.paragrafo`), só aviso.
     for line_num, palavras in _check_paragraph_length(text)[:5]:
         lado = "curto" if palavras < MIN_PARAGRAPH_WORDS else "longo"
         erros.append(
@@ -1240,7 +1243,29 @@ def check_content(
     #     bloqueante, porque cada um desses blocos foi pedido fora pelo dono.
     erros.extend(erros_de_abertura(text, mod, unidade="trilha" if unidade == "trilha" else "aula"))
 
+    # 16. Didática (22/09/2026): cadência de abertura de parágrafo, jargão sem
+    #     glosa, fecho com ação e critério, enxurrada de versão, título como
+    #     promessa e subtítulo sem fórmula. Quase tudo aviso; erro só o tique
+    #     comprovado. Regras em `validation.didatica` do YAML.
+    erros.extend(erros_de_didatica(text, mod, unidade="trilha" if unidade == "trilha" else "aula"))
+
     return erros
+
+
+def erros_de_didatica(
+    text: str, module_name: str = "", unidade: str = "aula"
+) -> list[ContentError]:
+    """Achados do `didatica_checker` no formato do relatório de conteúdo."""
+    resultado = check_didatica(text, unidade=unidade)
+    return [
+        ContentError(
+            tipo=a.tipo,
+            categoria="didatica",
+            mensagem=f"[{a.regra}] {a.mensagem}",
+            modulo=module_name or unidade,
+        )
+        for a in resultado.achados
+    ]
 
 
 def erros_de_abertura(

@@ -54,6 +54,18 @@ aparição? Frases longas empilhadas, parágrafos de uma linha em série, ou blo
 Subdivisão em excesso (H3 em seção curta, H4, subtítulo por linha terminada em dois-pontos)?
 Frase que culpa o aluno pela falha?
 
+### 4b. Cadência e superfícies fora da prosa
+
+Parágrafos vizinhos abrindo com a mesma palavra ou com "O"/"A" mais sujeito em série? Frases
+justapostas em vez de ligadas (o que é, por que importa, o que fazer)? Enxurrada de número de
+versão que não decide nada? Título de aula que é índice de técnico (dois-pontos, substantivos
+empilhados, jargão que a aula ainda vai ensinar) em vez de promessa com verbo? Subtítulo com
+fórmula fixa ("Você sai com...") ou com quatro promessas numa corrente de vírgulas? Aulas
+seguidas sem frase de passagem entre elas? Fecho sem verbo no imperativo ou sem critério de
+acerto? E as superfícies que não são parágrafo (ficha, dica, caso, legenda, tabela): falam com
+o aluno, glosam o termo com analogia, ou são ficha técnica em terceira pessoa, com nome de API
+cru e conferência que se protege ("confira na versão instalada")? Aponte a aula e o trecho.
+
 ### 5. Evidência
 
 Cada número tem origem na pesquisa ou rótulo de exemplo ilustrativo? Há atribuição vaga

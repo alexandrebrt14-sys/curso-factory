@@ -6,7 +6,15 @@ Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (o
 clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
 celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
 com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
-ganha explicação de até 12 palavras na primeira vez que aparece, com comparação do dia a dia.
+ganha explicação de até 12 palavras na primeira vez que aparece, com comparação do dia a dia,
+no molde "spring: jeito de animar que imita uma mola: em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera". Esse molde vale para TODA
+superfície que você escrever: prosa, legenda, ficha, dica, tabela.
+
+Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
+na mesma passagem: o que é, por que importa para o negócio dele e o que fazer com isso. Versão
+de ferramenta ou de biblioteca só entra quando muda a decisão do aluno; a enxurrada de número
+de versão que não decide nada fica fora, e a referência vai para a lista de fontes da trilha.
 
 O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
 
@@ -62,10 +70,15 @@ H4, nada de linha terminada em dois-pontos como subtítulo.
 
 **Abertura, nesta ordem exata, sem nada no meio (regra R1).** O pipeline insere o título
 (H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até 25 palavras**, que diz o
-que o aluno vai conseguir fazer ao terminar. Depois de uma linha em branco, **dois ou três
-parágrafos de abertura**, diretos ao ponto, que prendem a atenção: o problema que ele vive
-hoje, o que custa não resolver e o que muda ao terminar a aula. O primeiro elemento depois do
-subtítulo é sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
+que o aluno vai conseguir fazer ao terminar. Uma promessa só, sem corrente de vírgulas, e sem
+fórmula fixa de abertura: "Você sai com...", "Você aprende...", "Nesta aula..." viraram tique
+e o gate aponta. Comece pelo resultado, pelo problema ou pela decisão, e mude a forma a cada
+aula. Depois de uma linha em branco, **dois ou três parágrafos de abertura**, diretos ao ponto,
+que prendem a atenção: o problema que ele vive hoje, o que custa não resolver e o que muda ao
+terminar a aula. Quando existe aula anterior, a primeira frase pode ser a ponte de entrada, em
+uma linha: o que ficou resolvido lá e por que este pedaço vem agora ("Com o cadastro no ar,
+falta decidir quem recebe a primeira mensagem"). O primeiro elemento depois do subtítulo é
+sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
 módulo", sem lista de objetivos, sem "o que você vai aprender", sem "para quem é", sem índice,
 sem botão, sem card, sem tabela antes do primeiro parágrafo.
 
@@ -85,7 +98,9 @@ negócio", "aplique no seu negócio" nem "mockup".
 
 **Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
 dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
-objeto visível: abra, anote, liste, calcule, publique). Não resuma o que ele acabou de ler.
+objeto visível: abra, anote, liste, calcule, publique) com o critério que diz se deu certo
+(número, prazo ou condição: "quando três clientes responderem", "em uma semana", "se o custo
+passar de R$ 40"). Não resuma o que ele acabou de ler.
 
 Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
 uma vez; não entram na aula.
@@ -115,13 +130,30 @@ com a leitura. O gate reprova cada item abaixo, e a página não é publicada co
   entra como conduta prática ("peça autorização antes de mandar a primeira mensagem"), sem
   nomear a lei.
 
+## Título da aula: promessa do aluno, não índice de técnico
+
+O título que o pipeline insere é o que está em "Esta aula". Se ele for rótulo de índice
+(dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
+primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
+conseguir fazer, com verbo e em até 12 palavras: "Escolher a base do site sem pagar duas
+vezes" no lugar de "Astro ou Next.js pelo tipo de página e o custo da troca". O pipeline usa
+a sua proposta e apaga a linha.
+
 ## Parágrafo, frase, ritmo
 
-- Parágrafo com uma ideia, de {paragrafo_min} a {paragrafo_max} palavras, em 2 a 4 frases.
-  Nem parágrafo de uma linha empilhado, nem bloco de dez linhas.
-- Frase com até 28 palavras, em ordem direta na maior parte das vezes. O tamanho vem do
-  sentido: causa e ressalva juntas pedem frase maior; a virada pede frase curta. Nunca alterne
-  curta e longa por programa.
+- Parágrafo com uma ideia, de {paragrafo_min} a {paragrafo_max} palavras como faixa de
+  orientação, em 2 a 4 frases na maior parte das vezes. Parágrafo de uma frase é legítimo
+  quando a ideia cabe nela; o defeito é a página picada em série, e o outro é o bloco de dez
+  linhas com dois assuntos. A faixa orienta a revisão, não decide sozinha.
+- Frase de até 28 palavras na maior parte das vezes, em ordem direta. Enumeração que não
+  parte, exemplo contado de uma vez ou número com condição podem ir até 60; acima disso não há
+  caso. O tamanho vem do sentido: causa e ressalva juntas pedem frase maior; a virada pede
+  frase curta. Nunca alterne curta e longa por programa.
+- Frases ligadas em raciocínio, não justapostas: o que é, por que importa para o negócio dele,
+  o que fazer. Quando dois parágrafos vizinhos podem trocar de lugar sem perda, falta o fio.
+- Parágrafos vizinhos não começam com a mesma palavra nem com a mesma construção, e a maioria
+  não começa por "O" ou "A" mais sujeito. Comece alguns pela condição ("Quando o orçamento
+  demora"), pelo número ("Três dias depois") ou pelo verbo ("Anote o valor").
 - Verbo com sujeito e voz ativa. "Otimizar a captação" vira "captar melhor".
 - Quando a frase fala de uma falha, o sujeito é o processo ou o artefato, nunca o aluno: "o
   lembrete não saiu", não "você esqueceu de mandar".
@@ -140,6 +172,17 @@ contam como apoio visual e não têm cota.
 Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
 mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
 numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
+
+## Blocos auxiliares: ficha, dica, caso, legenda
+
+Tudo que não é parágrafo corrido (ficha de recurso, dica, caso numerado, legenda de figura,
+célula de tabela) sai no MESMO registro da aula: fala com o aluno ("você"), glosa o termo na
+primeira aparição, traz o exemplo do negócio pequeno e diz o que ele vê na tela quando
+acertou. Ficha que fala sobre o assunto em terceira pessoa, que abre sempre com a mesma palavra
+("Confira", "Teste", "Num") ou que se protege ("confira na versão instalada", "a documentação
+atual pode conter mudanças") reprova. Mais de seis fichas seguidas pedem, entre os grupos,
+uma frase de prosa que diga o que ficou resolvido, por que o próximo grupo vem agora e onde o
+aluno pode parar.
 
 ## Liberdade de forma
 
@@ -187,11 +230,14 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
 7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
 8. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
-9. Parágrafos de {paragrafo_min} a {paragrafo_max} palavras; frases até 28.
+9. Parágrafos na faixa de {paragrafo_min} a {paragrafo_max} palavras na maior parte das vezes;
+   frases até 28 na maior parte das vezes, e nenhuma acima de 60.
 10. Até {figuras_max} apoios visuais, todos substituindo texto.
 11. Nada da lista "O que nunca entra".
-12. Fecho pelo exemplo, com uma ponte para a próxima aula.
+12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
 13. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
+14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
+    todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
 
 Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
 módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.

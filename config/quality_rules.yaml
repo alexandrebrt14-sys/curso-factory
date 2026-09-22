@@ -46,9 +46,11 @@ validation:
   # config/lexicos.json (espelho gerado da fonte, bloco `tetos.D`), lido em
   # runtime por src/validators/lexicos_loader.py. Repetir o número aqui criaria
   # a segunda cópia que o PLANO_DE_MIGRACAO.md proíbe. Para referência humana,
-  # hoje `tetos.D` diz: piso 900 · alvo 1.200-2.400 · aviso 2.400 · erro 3.600
-  # palavras; 2 a 4 H2; até 2 H3 por H2; até 3 figuras; parágrafo 15-45
-  # palavras. Se este comentário divergir do JSON, o JSON vence.
+  # hoje `tetos.D` (fonte 1.7.1) diz: piso 700 · alvo 900-1.800 · aviso 2.400 ·
+  # erro 3.600 palavras; 2 a 4 H2; 1 H3 por H2; até 3 figuras; parágrafo 20-80
+  # palavras. Se este comentário divergir do JSON, o JSON vence. Piso e faixa
+  # de parágrafo são AVISO, nunca erro (fonte §1: piso rígido é motor de
+  # enchimento).
   #
   # As chaves abaixo são o que é específico do curso-factory e não existe na
   # fonte. Cada uma é lida em runtime por content_checker.py.
@@ -306,6 +308,80 @@ validation:
     # LIDO EM RUNTIME — content_checker.py::_check_percentages_have_source
     # (aviso não-bloqueante, teto de 5 por documento). Default no código: true.
     require_source_for_percentages: true  # Todo "%" deve ter fonte próxima
+
+  # Camada 2c: Didática das superfícies que a régua de forma não mede
+  # (22/09/2026, docs/ESPECIFICACAO_DIDATICA_20260922.md). LIDA EM RUNTIME por
+  # src/validators/didatica_checker.py. A auditoria do curso de frontends e dos
+  # portais mediu cinco defeitos invisíveis para o gate: ficha de recurso em
+  # registro impessoal (sem "você", API crua, "Confira" em série, conferência
+  # que manda "consultar a documentação"), paredão de fichas sem frase de
+  # ligação, capítulo colado sem passagem e fecho que resume, subtítulo com a
+  # fórmula "Você sai" e quatro promessas em corrente de vírgulas, título de
+  # aula que é índice de técnico, e parágrafos vizinhos abrindo com a mesma
+  # palavra. Quase tudo é aviso: didática se julga lendo. Erro só o tique
+  # comprovado (série de 3 parágrafos iguais, fórmula em 3 subtítulos,
+  # conferência de fuga). Mudar um número aqui muda o veredito no próximo run.
+  didatica:
+    enabled: true
+    aberturas:
+      # Pares de parágrafos vizinhos com a mesma primeira palavra: aviso a
+      # partir deste tanto; série de N seguidos é erro.
+      pares_iguais_aviso: 2
+      serie_igual_erro: 3
+      # Fração de parágrafos que abrem com artigo definido (O, A, Os, As)
+      # acima da qual a cadência é de máquina. Só mede a partir do mínimo.
+      artigo_definido_max_fracao: 0.5
+      minimo_de_paragrafos: 6
+    glosa:
+      # A janela vem de lexicos.json (limiares.glosaJanelaCaracteres); este é
+      # o fallback. termos_extra soma ao `jargao` da fonte, que é a lista.
+      janela_caracteres: 140
+      termos_extra: []
+      max_achados: 8
+    fecho:
+      # O último parágrafo manda fazer (imperativo) e diz como conferir
+      # (número, prazo, condição).
+      exigir_acao: true
+      exigir_criterio: true
+    versoes:
+      # Números de versão por mil palavras acima disto é enxurrada de versão
+      # que não decide nada.
+      por_mil_palavras_aviso: 4
+    titulo:
+      # Teto vem de lexicos.json (limiares.h1MaxPalavras); fallback aqui.
+      # Dois-pontos e ausência de verbo avisam: título é promessa, não índice.
+      max_palavras: 12
+    subtitulo:
+      max_palavras: 25
+      virgulas_max: 2
+      formulas:
+        - "Você sai"
+        - "Você vai sair"
+        - "Você descobre"
+        - "Você aprende"
+        - "Você vai aprender"
+        - "Você entende"
+        - "Nesta aula"
+        - "Neste módulo"
+      # A mesma dupla de palavras abrindo este tanto de subtítulos do curso: erro.
+      formula_repetida_erro: 3
+    fichas:
+      # "você" por mil palavras abaixo disto é registro de ficha técnica.
+      voce_por_mil_min: 5
+      # Mais fichas que isto abrindo o mesmo campo com a mesma palavra: aviso.
+      abertura_repetida_max: 2
+      # Fichas seguidas sem frase de ligação acima disto: paredão por acúmulo.
+      seguidas_max: 6
+      # Conferência que se protege em vez de ensinar: erro.
+      fuga:
+        - "versão instalada"
+        - "documentação atual"
+        - "documentação oficial"
+        - "pode conter"
+        - "consulte a documentação"
+        - "verifique na documentação"
+        - "posteriores ao recorte"
+        - "podem ter mudado"
 
   # Camada 3: Links
   link_check:

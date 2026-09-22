@@ -8,6 +8,13 @@ continuam importáveis pelo caminho completo.
 from src.validators.abertura_checker import check_abertura, check_abertura_definicao
 from src.validators.accent_checker import AccentError, check_accents, fix_accents
 from src.validators.content_checker import ContentError, check_content
+from src.validators.didatica_checker import (
+    Ficha,
+    ResultadoDidatica,
+    check_didatica,
+    check_didatica_definicao,
+    check_fichas,
+)
 from src.validators.disclosure_checker import DisclosureCheckResult, disclosure_check
 from src.validators.html_validator import HTMLError, validate_html
 from src.validators.link_checker import LinkError, check_links
@@ -20,6 +27,8 @@ __all__ = [
     "AccentError",
     "ContentError",
     "DisclosureCheckResult",
+    "Ficha",
+    "ResultadoDidatica",
     "GateResult",
     "HTMLError",
     "LinkError",
@@ -30,6 +39,9 @@ __all__ = [
     "check_abertura_definicao",
     "check_accents",
     "check_content",
+    "check_didatica",
+    "check_didatica_definicao",
+    "check_fichas",
     "check_links",
     "check_visual_density",
     "disclosure_check",

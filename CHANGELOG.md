@@ -1,5 +1,33 @@
 # Changelog
 
+## 22/09/2026: didática, explicar em vez de detalhar
+
+Pedido do dono: a régua de máquina aprovava aula que o aluno abandona, porque media dentro
+do parágrafo e nada entre os blocos nem nas superfícies ao redor. Diagnóstico medido nos
+portais /educacao e Leadlovers e especificação em `docs/ESPECIFICACAO_DIDATICA_20260922.md`.
+
+- **Gate novo** `src/validators/didatica_checker.py`, categoria `didatica` no
+  `content_checker` e no `QualityGate`: cadência de abertura de parágrafo (série de três é
+  erro), jargão da fonte sem glosa, fecho sem imperativo ou sem critério, enxurrada de versão,
+  título-índice (dois-pontos, sem verbo), subtítulo com fórmula ("Você sai") ou corrente de
+  vírgulas (fórmula em três subtítulos é erro), fichas em registro impessoal, API crua,
+  conferência de fuga (erro) e paredão sem frase de ligação. Números em
+  `config/quality_rules.yaml > validation.didatica`; janela de glosa e teto de título em
+  `config/lexicos.json > limiares`.
+- **Gerador**: `check_didatica_definicao` mede o `CourseDefinition` montado e grava em
+  `TsxGenerator.achados_didatica`, com aviso no log, sem recusar a renderização.
+- **Orquestrador**: o redator pode propor `TÍTULO: ...` no topo da aula quando o título
+  planejado é rótulo de índice; `_extrair_titulo_proposto` troca o título e apaga a linha.
+- **Prompts** (raiz e `pt-br/`): `draft.md` com o molde da glosa ("spring: jeito de animar
+  que imita uma mola"), os três movimentos ligados, o corte da enxurrada de versão, ponte de
+  entrada, fecho com critério, régua flexível de parágrafo e frase (até 60 quando enumeração
+  ou número com condição pedem), cadência de abertura e blocos auxiliares no registro da aula;
+  `review.md`, `trail.md` e `analyze.md` com as mesmas regras.
+- **Régua sincronizada**: fallbacks do `content_checker` e comentários do YAML passam a dizer
+  o que a fonte 1.7.1 diz (piso 700, alvo 900 a 1.800, 1 H3 por H2, parágrafo 20 a 80).
+- Testes: `tests/test_didatica_checker.py` (24 casos). Decisão em
+  `wiki/decisions/didatica-explicar-em-vez-de-detalhar-20260922.md`.
+
 ## 10/09/2026: fidelidade na escrita para SEO e GEO
 
 - Fonte `escrita-empreendedor` 1.7.1 sincronizada por hash e léxico exportado.
