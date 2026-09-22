@@ -52,19 +52,44 @@ acentue URL, slug, código, variável ou atributo HTML.
   um caminho só.
 - Fonte no meio da aula (linha "Fonte:", cabeçalho "Fontes", citação em card) sai; o dado
   fica limpo na frase e a fonte pertence ao rodapé da trilha (R7).
-- Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula. Fecho que resume o que
-  foi lido é reescrito como consequência.
+- Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula, verbo no imperativo e
+  critério de acerto (número, prazo ou condição). Fecho que resume o que foi lido é reescrito
+  como consequência. Quando existe aula anterior, a primeira frase pode ser a ponte de
+  entrada, em uma linha: o que ficou resolvido lá e por que este pedaço vem agora.
+- Título e subtítulo como promessa do aluno. Título com dois-pontos, substantivos empilhados ou
+  jargão que a aula ainda vai ensinar vira frase com verbo, em até 12 palavras. Subtítulo com
+  fórmula fixa ("Você sai com...", "Nesta aula...") ou com quatro promessas em corrente de
+  vírgulas vira UMA promessa, começando pelo resultado, pelo problema ou pela decisão.
 - Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).
   Peça decorativa sai; comparação escondida em prosa vira tabela. Tabela precisa de linha de
   separação e o mesmo número de células em todas as linhas. Não há cota de tabela, blockquote,
   negrito ou figura.
 
-### 4. Parágrafo e frase
+### 4. Parágrafo, frase e cadência
 
-Parágrafo com uma ideia, em 2 a 4 frases. Junte a sequência de parágrafos de uma frase que fatia
-um raciocínio; separe o bloco de dez linhas que carrega dois assuntos. Frase acima de 28
-palavras se parte quando dá para partir sem perder a condição. Nunca aplique alternância
-programada de frase curta e longa.
+Parágrafo com uma ideia, em 2 a 4 frases na maior parte das vezes; parágrafo de uma frase fica
+quando a ideia cabe nela. Junte a sequência de parágrafos de uma frase que fatia um raciocínio;
+separe o bloco de dez linhas que carrega dois assuntos. Frase acima de 28 palavras se parte
+quando dá para partir sem perder a condição; enumeração, exemplo contado de uma vez e número com
+condição podem ir até 60. Nunca aplique alternância programada de frase curta e longa.
+
+Cadência: parágrafos vizinhos que começam com a mesma palavra ou com a mesma construção (sujeito
+"O"/"A" antes de tudo) ganham entrada diferente em metade deles: condição, número, verbo, adjunto
+de tempo. Frases justapostas viram raciocínio ligado: o que é, por que importa para o negócio,
+o que fazer. Número de versão que não muda a decisão do aluno sai da prosa.
+
+Glosa: todo termo técnico ganha, na primeira aparição, explicação de até 12 palavras com
+analogia do cotidiano, no molde "spring: jeito de animar que imita uma mola". Nome de API cru
+(Dialog.Root, createTheme) sem explicação prática logo em seguida recebe a explicação ou sai.
+
+### 4b. Superfícies fora da prosa
+
+Ficha, dica, caso numerado, legenda e célula de tabela saem no mesmo registro da aula: "você",
+glosa, exemplo do negócio pequeno e conferência que diz o que o aluno vê na tela quando acertou.
+Conferência que se protege ("confira na versão instalada", "a documentação pode conter
+mudanças") é reescrita como conferência de verdade. Fichas que abrem sempre com a mesma palavra
+ganham entrada variada, e mais de seis seguidas recebem, entre os grupos, uma frase de prosa que
+diga o que ficou resolvido e por que o próximo grupo vem agora.
 
 ### 5. Léxico vetado (corrija cada ocorrência)
 
@@ -130,6 +155,7 @@ Palavras recebidas / devolvidas: [n] / [n]
 Correções de acentuação: [n]
 Correções de estrutura (abertura R1, H2/H3, blocos R5 a R9 removidos, fecho): [n]
 Correções de léxico vetado: [n]
+Correções de didática (título, subtítulo, cadência, glosa, fecho, fichas): [n]
 Substância acrescentada ou marcada: [o que faltava, ou "completa"]
 Marcadores [FALTA EVIDÊNCIA] abertos: [n]
 Aprovado para publicação: sim/não

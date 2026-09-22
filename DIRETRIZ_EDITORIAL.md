@@ -75,6 +75,24 @@ Onde cada regra é garantida: prompts (`src/templates/prompts/*/draft.md`, `revi
 por `content_checker.check_content` e por `TsxGenerator.render_page`, que levanta
 `AberturaError`). R2 e R4 são cobradas no template por teste (`tests/test_abertura_sem_distracao.py`).
 
+## Didática: explicar em vez de detalhar (22/09/2026)
+
+Pedido do dono, literal na decisão `wiki/decisions/didatica-explicar-em-vez-de-detalhar-20260922.md`:
+a régua de máquina aprovava aula que o aluno abandona. Régua de tamanho é teto, nunca alvo. A
+aula troca minúcia por explicação sem inchar: glosa com analogia do cotidiano na primeira
+aparição de cada termo, frases ligadas em raciocínio (o que é, por que importa para o negócio,
+o que fazer), corte da enxurrada de versão, exemplo do negócio pequeno contado inteiro, fecho
+com verbo no imperativo e critério de acerto. Ficha, dica, caso, legenda, título, subtítulo e
+a passagem entre aulas saem no mesmo registro da aula. Norma de origem: DIRETRIZ §18 do
+`Escrita-Empresarial`; especificação, medição e nomes de regra em
+`docs/ESPECIFICACAO_DIDATICA_20260922.md`.
+
+Onde vira máquina: prompts (`draft.md`, `review.md`, `trail.md`, `analyze.md`), gate
+(`src/validators/didatica_checker.py`, categoria `didatica`, quase tudo aviso), gerador
+(`check_didatica_definicao`, só log) e orquestrador (linha `TÍTULO:`). Os números vivem em
+`config/quality_rules.yaml > validation.didatica`; a janela de glosa e o teto do título vêm
+de `config/lexicos.json > limiares`.
+
 ## Compatibilidade editorial de 10/09/2026
 
 Fonte consultada e incorporada no commit `2479179e199f768c4e96aebbadfa5d864523b34e`, versão 1.7.1.

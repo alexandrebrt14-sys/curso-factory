@@ -50,11 +50,16 @@ def _aula(palavras: int, h2: int = 3, exercicios: int = 0) -> str:
         partes += [f"## Seção {i + 1}", ""]
     for i in range(exercicios):
         partes += [f"### Exercício {i + 1}: aplique no seu negócio", ""]
+    # A primeira palavra de cada parágrafo varia, porque desde 22/09/2026 o
+    # gate de didática reprova três parágrafos vizinhos com a mesma entrada.
+    entradas = ("palavra", "texto", "prosa", "frase")
     faltam = palavras - len(" ".join(partes).split())
+    k = 0
     while faltam > 0:
         n = min(30, faltam)
-        partes += [" ".join(["palavra"] * n), ""]
+        partes += [" ".join([entradas[k % len(entradas)]] + ["palavra"] * (n - 1)), ""]
         faltam -= n
+        k += 1
     return "\n".join(partes)
 
 

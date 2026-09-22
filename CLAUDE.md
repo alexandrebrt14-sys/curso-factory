@@ -214,6 +214,23 @@ e `wiki/decisions/abertura-direta-sem-distracao-20260908.md`. Em resumo:
   bloqueante; `AberturaError` em `TsxGenerator.render_page`). Teste:
   `tests/test_abertura_sem_distracao.py`
 
+### Didática: explicar em vez de detalhar (22/09/2026) — LEIA antes de mexer em prompt ou gate
+Pedido do dono: a régua de forma aprovava aula que o aluno abandona. Régua de tamanho é teto,
+nunca alvo; a aula troca minúcia por explicação sem inchar. Regras, medição e nomes de achado
+em `docs/ESPECIFICACAO_DIDATICA_20260922.md` e na decisão
+`wiki/decisions/didatica-explicar-em-vez-de-detalhar-20260922.md`. Em resumo:
+- Glosa com analogia na primeira aparição de todo termo (molde "spring: jeito de animar que
+  imita uma mola"); frases ligadas: o que é, por que importa para o negócio, o que fazer
+- Parágrafos vizinhos não abrem com a mesma palavra; a maioria não abre por "O"/"A" mais sujeito
+- Título é promessa com verbo (sem dois-pontos, sem substantivo empilhado); o redator propõe
+  `TÍTULO:` e o orquestrador troca. Subtítulo é UMA promessa, sem "Você sai" nem vírgulas em série
+- Fecho com imperativo e critério de acerto; ponte de entrada em uma linha quando há aula anterior
+- Ficha, dica, caso e legenda no registro da aula ("você", glosa, exemplo, conferência que diz o
+  que aparece na tela); mais de seis fichas seguidas pedem frase de ligação
+- Gate: `src/validators/didatica_checker.py`, categoria `didatica` (quase tudo aviso; erro só
+  série de 3 aberturas iguais, fórmula em 3 subtítulos e conferência de fuga). Números em
+  `config/quality_rules.yaml > validation.didatica`
+
 ### Molde da aula (unidade de geração desde 02/09/2026)
 - A unidade que o pipeline escreve, revisa e mede é a AULA, uma por chamada de LLM
   (`Orchestrator._draft_lesson`), com a pesquisa inteira no prompt
