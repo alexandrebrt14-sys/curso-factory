@@ -47,14 +47,14 @@ ou citação. Os tetos recebidos são critérios editoriais locais, não pesos d
 
 ## O molde da aula
 
-A aula ensina UMA ideia até o fim e é LEITURA: o aluno termina sabendo o que muda no negócio
-dele e qual é o próximo passo, dito em prosa. Extensão: de {palavras_alvo_min} a
+A aula ensina UMA coisa a fazer, até o fim, e é LEITURA: o aluno termina sabendo fazer, sabendo
+como conferir que deu certo e qual é o próximo passo. Extensão: de {palavras_alvo_min} a
 {palavras_alvo_max} palavras. Abaixo de {palavras_piso}, confira se faltou explicação;
 acima de {palavras_aviso}, confira se entrou outra ideia. A contagem orienta a revisão,
 mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
 
-Cabeçalhos: **{h2_min} a {h2_max} H2**, e o normal são três, um por bloco abaixo (dois passam
-quando o terceiro não tem o que acrescentar). H3 só quando
+Cabeçalhos: **{h2_min} a {h2_max} H2**, promessas com verbo e nunca o nome de uma parte do
+molde; o normal é um H2 para o porquê e um ou dois para o como fazer. H3 só quando
 um H2 passa de {h3_acima_de_palavras} palavras e precisa de duas partes (no máximo {h3_por_h2} por H2). Nada de
 H4, nada de linha terminada em dois-pontos como subtítulo.
 
@@ -72,32 +72,34 @@ sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
 módulo", sem lista de objetivos, sem "o que você vai aprender", sem "para quem é", sem índice,
 sem botão, sem card, sem tabela antes do primeiro parágrafo.
 
-**H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
-tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
-disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
-(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
-(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
-Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
-primeira não explicou.
+**O corpo é um guia de como fazer.** O aluno sai da aula sabendo fazer uma coisa e consegue
+repetir sozinho, sem voltar ao texto. A explicação do porquê vem curta e apoiada em fonte da
+pesquisa; o peso da aula está no procedimento: os passos na ordem em que ele executa, cada um
+com verbo no imperativo, o que fazer, como saber que deu certo e o erro mais comum com o
+conserto. Onde a resposta muda com a situação, escreva "se isto, faça aquilo"; "depende" não
+decide nada. Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma
+analogia do cotidiano do ramo dele ajuda a entender o conceito; ela não substitui o passo.
 
-**H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
-quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois,
-com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
-caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
-negócio", "aplique no seu negócio" nem "mockup".
+{bloco_molde_da_aula}
 
-**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
-acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
-numeradas de exercício e sem campo para preencher (R6).
+**Exemplo, não história.** O exemplo existe para mostrar os passos funcionando no ramo do
+aluno, com número rotulado como exemplo ("suponha 40 orçamentos no mês"). Ele é curto e
+percorre o procedimento; personagem com nome é opcional, e a aula não é conduzida por ele.
+Sem cena, sem hora do dia, sem diálogo, sem "o que aconteceu depois" que não ensine um passo.
+Cabeçalho nunca "como fica no seu negócio", "aplique no seu negócio" nem "mockup".
 
-**Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
-dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
-objeto visível: abra, anote, liste, calcule, publique) com o critério que diz se deu certo
-(número, prazo ou condição: "quando três clientes responderem", "em uma semana", "se o custo
-passar de R$ 40"). Não resuma o que ele acabou de ler.
+{bloco_narrativa}
 
-Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
-uma vez; não entram na aula.
+**Fecho, sem cabeçalho, em 3 a 5 linhas.** O critério de pronto (como ele sabe que terminou:
+número, prazo ou condição observável, "quando três clientes responderem", "em uma semana", "se
+o custo passar de R$ 40") e uma única ponte para a próxima aula, com verbo no imperativo e
+objeto visível (abra, anote, liste, calcule, publique). Não resuma o que ele acabou de ler e
+não volte ao personagem do exemplo.
+
+Objetivos formais, glossário, FAQ e a lista de fontes vivem no nível da trilha, uma vez. O
+pré-requisito da aula entra nela só quando o primeiro passo depende dele, numa frase.
+
+{bloco_fontes_recentes}
 
 ## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
 
@@ -113,7 +115,8 @@ com a leitura. O gate reprova cada item abaixo, e a página não é publicada co
   "simule no seu negócio", "maquete") como seção ou rótulo.
 - R6. Exercício: "faça agora", "exercício", "mão na massa", "sua vez", "pratique", "tarefa",
   "desafio", "checklist de ação", "Resultado esperado:", "Se travar:". A aula é leitura, não
-  workbook. O próximo passo entra em prosa, no fecho.
+  workbook. O passo a passo do procedimento é conteúdo da aula (lista numerada, sem rótulo),
+  com a verificação e o conserto em prosa dentro do passo; o próximo passo entra no fecho.
 - R7. Fonte no meio da aula: linha "Fonte:", cabeçalho "Fontes", citação em card ou callout.
   A fonte vai para o bloco "Fontes" do rodapé da trilha, uma linha curta por fonte.
 - R8. Card de "checkpoint", "ponto de verificação", "recapitulando", "resumo do capítulo",
@@ -185,9 +188,9 @@ aluno pode parar.
 ## Liberdade de forma
 
 O molde acima fixa o que a aula precisa ter, não como dizer. Analogia do cotidiano do ramo do
-aluno, cena de duas frases dentro do H2 2, contraste entre o jeito antigo e o novo, a pergunta
-que ele faria em voz alta, humor leve, primeira pessoa quando a empresa fala: use o que encurta
-o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
+aluno, contraste entre o jeito antigo e o novo, a pergunta que ele faria em voz alta, tabela
+com dois caminhos e o que cada um custa (incluindo não fazer nada), risco dito junto da saída,
+humor leve, primeira pessoa quando a empresa fala: use o que encurta o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
 vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 
 ## O que nunca entra
@@ -226,7 +229,9 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 
 1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.
 2. Logo depois do subtítulo vem um parágrafo, e depois dele mais um ou dois, antes do primeiro H2.
-3. Uma ideia só, explicada até o fim; o exemplo é um e vai do começo ao fim, com número.
+3. Uma ideia só; o procedimento em passos numerados, cada um com verbo no imperativo, o que
+   fazer e como saber que deu certo; ao menos uma decisão "se isto, faça aquilo"; o exemplo é
+   curto e percorre os passos.
 4. {h2_min} a {h2_max} H2; H3 só em H2 longo; nenhum H4.
 5. Extensão entre {palavras_alvo_min} e {palavras_alvo_max} palavras.
 6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
@@ -236,7 +241,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
    frases até {frase_max_palavras} na maior parte das vezes, e nenhuma acima de {frase_tolerancia_palavras}.
 10. Até {figuras_max} apoios visuais, todos substituindo texto.
 11. Nada da lista "O que nunca entra".
-12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
+12. Fecho com critério de pronto, verbo no imperativo e uma ponte para a próxima aula, sem
+    voltar à história do exemplo.
 13. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
 14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
     todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.

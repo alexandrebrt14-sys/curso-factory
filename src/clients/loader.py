@@ -20,7 +20,10 @@ from src.clients.context import (
     Domain,
     Editorial,
     EngagementConfig,
+    FontesRecentesConfig,
     Geo2026Config,
+    GuiaAplicavelConfig,
+    NarrativaConfig,
     PipelineConfig,
     TutorConfig,
     VisualConfig,
@@ -248,6 +251,9 @@ def load_client(client_id: str = "default") -> ClientContext:
         geo=geo_cfg,
         crosslinks=crosslinks_cfg,
         visual=visual_cfg,
+        guia_aplicavel=GuiaAplicavelConfig.de_dict(data.get("guia_aplicavel")),
+        narrativa=NarrativaConfig.de_dict(data.get("narrativa")),
+        fontes_recentes=FontesRecentesConfig.de_dict(data.get("fontes_recentes")),
         language=client_language,
     )
 

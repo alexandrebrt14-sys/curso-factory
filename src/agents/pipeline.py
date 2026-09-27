@@ -100,6 +100,7 @@ class CourseFactory:
             pre_requisitos=config.get("pre_requisitos", []),
             modulos=modulos,
             visual=config.get("visual"),
+            fontes_recentes=config.get("fontes_recentes"),
         )
 
         logger.info(

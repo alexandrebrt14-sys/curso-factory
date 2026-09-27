@@ -84,6 +84,11 @@ class Course(BaseModel):
         description="Peso visual por aula que sobrepõe o do cliente (min_por_aula, "
         "max_por_aula, min_tipos_por_aula, max_paragrafos_sem_peca)",
     )
+    fontes_recentes: dict[str, Any] | None = Field(
+        default=None,
+        description="Recência das fontes que sobrepõe a do cliente (janela_meses, "
+        "parcela_min_recente, estado_atual_max_meses, data_de_referencia, severidade)",
+    )
     # Wave 6 (engagement): badges que o curso destrava
     badges_alvo: list[str] = Field(default_factory=list, description="IDs do catálogo de badges")
     # Wave 9 (skill graph): skills tagueadas com schema.org URIs

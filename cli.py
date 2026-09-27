@@ -72,6 +72,10 @@ def _course_config_from_yaml(entry: dict[str, Any]) -> dict[str, Any]:
         "modulos": modulos,
         # Peso visual por aula declarado no curso (27/09/2026); ausente = o do cliente.
         "visual": entry.get("visual") if isinstance(entry.get("visual"), dict) else None,
+        # Recência das fontes declarada no curso (27/09/2026); ausente = a do cliente.
+        "fontes_recentes": (
+            entry.get("fontes_recentes") if isinstance(entry.get("fontes_recentes"), dict) else None
+        ),
     }
 
 

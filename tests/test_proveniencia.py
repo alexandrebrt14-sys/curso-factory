@@ -76,7 +76,10 @@ def test_codigo_fica_fora_e_celula_de_tabela_entra() -> None:
 
 def test_tabela_traz_colunas_de_fonte_e_os_crosslinks() -> None:
     tabela = tabela_de_proveniencia(AULA)
-    assert "| Frase da aula | Tipo | URL primária | Trecho lido | Data de acesso |" in tabela
+    assert (
+        "| Frase da aula | Tipo | URL primária | Data de publicação | Trecho lido | Data de acesso |"
+        in tabela
+    )
     assert "## Aula 1.1: Escolher o computador" in tabela
     assert "/educacao/orquestracao-llm-local-desktop" in tabela
 

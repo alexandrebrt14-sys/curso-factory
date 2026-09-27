@@ -51,11 +51,15 @@ prosa logo abaixo.
 
 ## Fontes
 
-Uma linha por fonte, no formato `Nome da fonte, título ou relatório, mês e ano` e, quando
-houver, o link logo depois, só com o que as aulas ou a pesquisa trazem. De uma a oito fontes.
+Uma linha por fonte, no formato `Nome da fonte, título ou relatório, data de publicação` (dia,
+mês e ano; mês e ano quando o documento não traz o dia) e, quando houver, o link logo depois, só
+com o que as aulas ou a pesquisa trazem. Fonte que é a origem do conceito (artigo fundador,
+norma) leva "(origem do conceito)" depois da data. De uma a oito fontes.
 É o ÚLTIMO bloco da trilha e o único lugar do curso onde fonte aparece (R7): cada linha tem até
 {fonte_max_palavras} palavras, sem comentário, sem card, sem citação em destaque. Ela é desenhada no rodapé da
 página, em corpo pequeno.
+
+{bloco_fontes_recentes}
 
 ## Subtítulo da trilha
 

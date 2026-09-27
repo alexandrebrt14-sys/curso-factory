@@ -55,7 +55,14 @@ def test_c12_sem_o_limiar_no_espelho_nada_muda(tmp_path, monkeypatch) -> None:
 
 
 def test_c2_molde_da_aula_tem_tres_h2_em_todos_os_idiomas() -> None:
-    marcas = {"pt-br": "o normal são três", "en": "three is the norm", "es": "lo normal son tres"}
+    # Desde 27/09/2026 (aula-guia aplicável) o pt-br deixa de fixar o H2 do caso
+    # contado: um H2 para o porquê e um ou dois para o como fazer. en e es, que
+    # nenhum agente de produção carrega (auditoria B1), seguem no molde antigo.
+    marcas = {
+        "pt-br": "um ou dois para o como fazer",
+        "en": "three is the norm",
+        "es": "lo normal son tres",
+    }
     for idioma, marca in marcas.items():
         for nome in ("draft.md", "review.md"):
             assert marca in (PROMPTS / idioma / nome).read_text(encoding="utf-8"), (idioma, nome)

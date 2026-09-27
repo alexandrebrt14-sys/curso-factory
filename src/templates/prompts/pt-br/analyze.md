@@ -8,9 +8,10 @@ diagnóstico que o revisor vai usar aula a aula. Você não reescreve; aponta, c
 trecho.
 
 O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular. O
-molde da aula: subtítulo em uma frase e dois ou três parágrafos diretos ao ponto (R1); UMA ideia
-explicada até o fim (origem, por que importa, o que muda, erro comum); um exemplo do ramo dele
-contado por inteiro, com número; fecho pelo exemplo com ponte para a próxima aula. A aula é
+molde da aula: subtítulo em uma frase e dois ou três parágrafos diretos ao ponto (R1); UMA coisa
+a fazer, com o porquê curto e apoiado em fonte datada; o procedimento em passos com verbo no
+imperativo, verificação e erro comum com conserto; decisões "se isto, faça aquilo"; um exemplo
+curto que percorre os passos; fecho com critério de pronto e ponte para a próxima aula. A aula é
 leitura: sem exercício, sem checkpoint, sem mockup, sem "requer verificação", sem LGPD, sem
 fonte no meio (R5 a R9). Objetivos, pré-requisitos, glossário, FAQ e fontes vivem no nível da
 trilha.
@@ -32,10 +33,19 @@ explica nenhuma até o fim (apresenta o conceito e para). A abertura diz, na pri
 que o aluno vai conseguir fazer, ou abre em cena, definição, contexto histórico ou "neste
 módulo"?
 
-### 2. Exemplo e abertura sem distração
+### 2. Guia aplicável, narrativa e abertura sem distração
 
-O exemplo é do ramo do aluno, contado do começo ao fim, com número? Ou são três exemplos
-mencionados? A aula abre com subtítulo de uma frase e parágrafo, sem nada no meio? Aponte, com a
+{bloco_molde_da_aula}
+
+A aula ensina a fazer? Aponte a aula sem procedimento em passos, o passo sem verbo no
+imperativo, o passo sem "como saber que deu certo", a aula sem erro comum com conserto, sem
+decisão "se isto, faça aquilo" ou sem critério de pronto. Aponte também a história que não
+carrega passo: cena, personagem que conduz a aula, fecho que volta ao personagem, exemplo que
+ocupa mais espaço que o procedimento.
+
+{bloco_narrativa}
+
+A aula abre com subtítulo de uma frase e parágrafo, sem nada no meio? Aponte, com a
 aula, cada bloco que o dono pediu fora (R5 a R9): exercício "faça agora", "mockup"/"no seu
 negócio" como seção, card "checkpoint"/"recapitulando"/"quiz", marcador "requer
 verificação", menção à LGPD, linha "Fonte:" ou cabeçalho "Fontes" dentro da aula, percurso
@@ -70,6 +80,10 @@ cru e conferência que se protege ("confira na versão instalada")? Aponte a aul
 
 Cada número tem origem na pesquisa ou rótulo de exemplo ilustrativo? Há atribuição vaga
 ("especialistas apontam"), caso apresentado como real sem fonte, ou percentual sem origem?
+O conceito central tem fonte primária com data? Alguma frase de estado atual ("hoje",
+"atualmente") se apoia em fonte antiga?
+
+{bloco_fontes_recentes}
 Conte os marcadores `[FALTA EVIDÊNCIA:` e `[PREENCHER-HUMANO:` por aula: acima de {marcadores_max_aula} numa aula,
 `aprovado` é false.
 
@@ -95,10 +109,10 @@ possível, o trecho.
   "aprovado": true/false,
   "dimensoes": {
     "uma_ideia_por_aula": {"nota": 0-10, "aulas_com_duas_ideias": ["..."], "aulas_sem_explicacao": ["..."], "aberturas_fora_do_molde": ["..."], "observacoes": "..."},
-    "exemplo_e_abertura": {"nota": 0-10, "aulas_sem_exemplo_inteiro": ["..."], "aulas_com_bloco_proibido": ["Aula 1.2: [R6] faça agora"], "aulas_com_abertura_fora_de_R1": ["..."], "observacoes": "..."},
+    "guia_e_abertura": {"nota": 0-10, "aulas_sem_procedimento": ["..."], "passos_sem_verificacao": ["..."], "aulas_sem_decisao": ["..."], "narrativa_sem_passo": ["..."], "aulas_com_bloco_proibido": ["Aula 1.2: [R6] faça agora"], "aulas_com_abertura_fora_de_R1": ["..."], "observacoes": "..."},
     "progressao": {"nota": 0-10, "repeticoes": ["..."], "saltos": ["..."], "observacoes": "..."},
     "linguagem": {"nota": 0-10, "jargao_sem_glosa": ["..."], "subdivisao_em_excesso": ["..."], "observacoes": "..."},
-    "evidencia": {"nota": 0-10, "marcadores_por_aula": {"Aula 1.1": 0}, "atribuicoes_vagas": ["..."], "observacoes": "..."},
+    "evidencia": {"nota": 0-10, "marcadores_por_aula": {"Aula 1.1": 0}, "atribuicoes_vagas": ["..."], "fontes_sem_data_ou_antigas": ["..."], "observacoes": "..."},
     "lexico_vetado": {"nota": 0-10, "ocorrencias": ["Aula 1.2: 'não se trata de'"]},
     "acentuacao": {"nota": 0-10, "erros_encontrados": ["..."]}
   },

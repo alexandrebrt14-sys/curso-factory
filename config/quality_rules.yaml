@@ -555,13 +555,13 @@ validation:
       curso inteiro fica entre {aulas_min} e {aulas_max} aulas; aula que não muda uma decisão
       do aluno sai. As {iniciais} primeiras aulas do curso são as mais curtas e as mais
       práticas, com um ganho no primeiro dia. Teoria densa só da metade do curso em diante, e
-      sempre depois de um caso contado inteiro. Nenhuma aula é apêndice de instalação: o passo
-      de instalação entra como passo a passo curto dentro da aula que precisa dele. Este é o
-      módulo {modulo} do curso.
+      sempre depois de um procedimento que o aluno já aplicou. Nenhuma aula é apêndice de
+      instalação: o passo de instalação entra como passo a passo curto dentro da aula que
+      precisa dele. Este é o módulo {modulo} do curso.
     instrucao_aula: |
       A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
-      maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
-      critério de acerto; ele não guarda a informação principal.
+      maior parte dos leitores não chega ao fim da página. O fecho dá o critério de pronto e o
+      próximo passo; ele não guarda a informação principal.
     instrucao_aula_inicial: |
       Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
       práticas: no máximo {palavras_max} palavras, com um ganho que o aluno aplica no mesmo
@@ -588,6 +588,246 @@ validation:
       - "por exemplo, um"
       - "digamos que"
       - "número de exemplo"
+
+  # Camada 2j: Aula-guia aplicável (pedido do dono, 27/09/2026). A aula ensina a
+  # fazer: resposta primeiro, porquê com fonte, pré-requisitos, passos com
+  # verbo no imperativo, verificação e erro comum com conserto, decisões "se
+  # isto, faça aquilo", exemplo curto amarrado aos passos, critério de pronto.
+  # Origem: DIRETRIZ §11 e §14 e MOLDES_DE_GENERO do Escrita-Empresarial.
+  # Diagnóstico em docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md.
+  #   - esqueleto / instrucao_prompt: viram {bloco_molde_da_aula} em draft.md,
+  #     review.md e analyze.md (pt-br); instrucao_plano entra no planejamento de
+  #     aulas. Sem a seção, os blocos saem vazios.
+  #   - tipos_de_aula: pisos da medição e frase do prompt, por tipo. O tipo e a severidade vêm do
+  #     bloco `guia_aplicavel` do client.yaml; cliente sem o bloco não é medido.
+  #   - os marcadores são expressões regulares (Python), casadas sem caixa.
+  # LIDA EM RUNTIME por src/validators/guia_aplicavel_checker.py (categoria
+  # "guia aplicável").
+  guia_aplicavel:
+    esqueleto:
+      - parte: "Resposta"
+        instrucao: >-
+          a primeira frase depois do subtítulo diz o que o aluno sai sabendo fazer, e a primeira
+          frase de cada H2 é a conclusão dele.
+      - parte: "O que é e por que importa"
+        instrucao: >-
+          poucas linhas, com o conceito apoiado numa fonte datada da pesquisa (atribuição curta
+          na frase, referência completa no rodapé) e o que custa não saber, na unidade do aluno.
+      - parte: "O que precisa estar pronto antes"
+        instrucao: >-
+          a conta, o dado, a ferramenta ou a permissão sem os quais o primeiro passo não sai;
+          só quando existe, numa frase.
+      - parte: "Como fazer"
+        instrucao: >-
+          lista numerada de passos na ordem em que o aluno executa, cada um abrindo com verbo
+          no imperativo e dizendo o que fazer, como saber que deu certo e, quando houver, o
+          erro mais comum com o conserto, tudo em prosa dentro do passo, sem rótulo.
+      - parte: "Decisões do caminho"
+        instrucao: >-
+          onde a resposta muda com a situação, a forma "se isto, faça aquilo", nunca
+          "depende"; quando há escolha de compra ou de ferramenta, dois ou três caminhos com o
+          que cada um custa, incluindo não fazer nada, e o risco dito junto da saída.
+      - parte: "Exemplo aplicado"
+        instrucao: >-
+          um exemplo curto, do ramo do aluno, que percorre os passos acima com número rotulado
+          como exemplo; personagem é opcional, e a história não conduz a aula.
+      - parte: "Critério de pronto e próximo passo"
+        instrucao: >-
+          no fecho, sem cabeçalho: como o aluno sabe que terminou (número, prazo ou condição
+          observável) e o próximo passo, com verbo no imperativo e a ponte para a próxima aula.
+      - parte: "Fontes"
+        instrucao: >-
+          só no bloco de fontes do rodapé da trilha, com data de publicação; a aula não conta
+          como a fonte foi checada.
+    instrucao_prompt: |
+      A aula é um guia aplicável: o aluno termina sabendo fazer uma coisa e consegue repetir
+      sozinho. O esqueleto abaixo diz o que ela precisa ter, nesta ordem. Uma parte só entra
+      quando tem conteúdo, nenhuma ganha cabeçalho com o nome da parte, e os cabeçalhos são
+      promessas com verbo; o normal é um H2 para o porquê e um ou dois para o como fazer. A
+      lista de passos é conteúdo da aula, nunca exercício: sem "faça agora", sem "Resultado
+      esperado:", sem "Se travar:", sem campo para preencher.
+      {esqueleto}
+    instrucao_plano: |
+      Cada aula ensina a fazer uma coisa que o aluno repete sozinho. O título diz o que ele faz,
+      com verbo; a ideia em uma frase nomeia o procedimento e o resultado que ele confere.
+    tipos_de_aula:
+      pratica:
+        instrucao: >-
+          O verificador automático mede se esta aula ensina a fazer: ao menos {passos_min}
+          passos numerados, {verificacoes_min} verificação de "deu certo", {erros_comuns_min}
+          erro comum com conserto, {condicionais_min} decisão "se isto, faça aquilo" e o
+          critério de pronto no fecho.
+        passos_min: 3
+        imperativo_min_parcela: 1.0
+        verificacoes_min: 1
+        erros_comuns_min: 1
+        condicionais_min: 1
+        aplicacao_min: 1
+        criterio_de_pronto: true
+      conceitual:
+        instrucao: >-
+          Esta aula é de conceito: o verificador automático espera ao menos um procedimento
+          curto ou uma decisão "se isto, faça aquilo" que diga o que o aluno faz com o conceito,
+          e o critério de pronto no fecho.
+        passos_min: 0
+        imperativo_min_parcela: 1.0
+        verificacoes_min: 0
+        erros_comuns_min: 0
+        condicionais_min: 0
+        # Aula conceitual nunca fica sem orientação de aplicação: conta um
+        # procedimento de ao menos `passos_para_aplicacao` passos ou cada decisão
+        # condicional.
+        aplicacao_min: 1
+        criterio_de_pronto: true
+    passos_para_aplicacao: 2
+    # Linha que abre passo fora de lista numerada ("Passo 1.", "**Passo 2:**").
+    bloco_de_passos: "^\\s*(?:\\*\\*)?passo\\s+(\\d+)\\s*[.:)]?(?:\\*\\*)?\\s*(.*)$"
+    # Palavras que podem vir antes do verbo do passo ("Depois, abra").
+    antes_do_verbo: [não, nunca, depois, agora, primeiro, em seguida, então, antes, por fim, hoje]
+    # Imperativos aceitos além de `verbosDeAcao` do espelho config/lexicos.json.
+    verbos_imperativos: [abra, acesse, acrescente, adicione, agende, altere, anote, apague,
+      aperte, aponte, apresente, arraste, ative, atualize, avise, baixe, busque, calcule,
+      cheque, clique, cole, combine, comece, compare, compartilhe, confira, confirme,
+      conecte, configure, conte, converse, copie, corrija, corte, crie, defina, deixe,
+      desative, descreva, desligue, digite, divida, entre, envie, escolha, escreva, espere,
+      exporte, faça, feche, filtre, fixe, gere, grave, guarde, habilite, identifique,
+      importe, imprima, inclua, informe, insira, instale, junte, leia, libere, ligue, limpe,
+      liste, localize, marque, meça, mande, mantenha, monte, mova, mude, nomeie, observe,
+      ofereça, organize, ordene, pague, passe, peça, pergunte, pesquise, planeje, ponha,
+      prepare, preencha, publique, pule, reduza, registre, reinicie, remova, renomeie,
+      repita, responda, reveja, revise, rode, saia, salve, selecione, separe, siga, solicite,
+      some, suba, substitua, teste, tire, toque, traga, transforme, troque, use, valide,
+      veja, verifique, volte]
+    verificacao:
+      - "\\bdeu certo\\b"
+      - "\\b(?:está|estará|fica|ficou) pront[oa]\\b"
+      - "\\bvocê (?:vê|verá|deve ver|vai ver)\\b"
+      - "\\b(?:aparece|aparecem|aparecer|surge|chega|chegar)\\b"
+      - "\\bconfira se\\b"
+      - "\\bo sinal de que\\b"
+      - "\\bfuncion(?:a|ou|ar)\\b"
+      - "\\bconfirma(?:ção|r)?\\b"
+    erro_comum:
+      - "\\berro (?:mais )?comum\\b"
+      - "\\bo erro\\b"
+      - "\\bse (?:der errado|falhar|não (?:aparecer|funcionar|chegar|abrir|responder))\\b"
+      - "\\bquando (?:falha|dá errado|não aparece)\\b"
+      - "\\bconserto\\b"
+      - "\\bpara corrigir\\b"
+      - "\\bcorrija\\b"
+    condicional:
+      - "(?:^|(?<=[.!?:;]\\s)|(?<=\\d[.)]\\s))(?:se|caso)\\s+[^.!?\\n]{3,200}?,\\s+\\w+"
+      - "\\bcom\\s+[^.!?\\n]{3,80}?,\\s+[^.!?\\n]{3,200}?;\\s+sem\\s+[^.!?\\n]{3,80}?,"
+    criterio_de_pronto:
+      - "\\b(?:está|estará|fica) pront[oa] quando\\b"
+      - "\\bpront[oa] quando\\b"
+      - "\\b(?:terminou|acertou|concluiu) quando\\b"
+      - "\\bdeu certo quando\\b"
+      - "\\bestá feit[oa] quando\\b"
+      - "\\bconsidere (?:pront[oa]|feit[oa])\\b"
+      - "\\bcritério de pronto\\b"
+
+  # Camada 2k: Orçamento de narrativa (pedido do dono, 27/09/2026). Caso,
+  # personagem e cena só entram quando carregam o procedimento. O medidor é
+  # determinístico e barato: conta, por parágrafo de prosa, verbos no
+  # pretérito, marcas de cena e nome próprio que volta com verbo no passado.
+  # Ele NÃO entende se o exemplo carrega um passo, não separa história
+  # necessária de gratuita e não vê narrativa escrita no presente; por isso é
+  # aviso por padrão. O teto (parcela máxima) e a severidade vivem no bloco
+  # `narrativa` do client.yaml; aqui moram os marcadores e o texto do prompt.
+  # LIDA EM RUNTIME por src/validators/narrativa_checker.py.
+  orcamento_narrativa:
+    # Verbos no pretérito perfeito e imperfeito, por terminação.
+    preterito: "\\b[a-zà-ú]{3,}(?:ou|eu|iu|ava|avam|aram|eram|iram)\\b"
+    # Formas irregulares ou curtas que a terminação não pega.
+    preterito_formas: [foi, foram, era, eram, fez, fizeram, disse, disseram, teve, tiveram,
+      tinha, tinham, estava, estavam, havia, fazia, faziam, pôs, quis, veio, vieram, deu,
+      viu, soube, pôde, trouxe, perdia, vendia, atendia, recebia, sabia, podia, queria]
+    # Palavras que casam a terminação e não são pretérito.
+    preterito_excecoes: [estou, museu, europeu, troféu, chapéu, oitava, separam, comparam,
+      preparam, disparam, declaram, amparam, reparam, esperam, operam, geram, consideram,
+      recuperam, alteram, superam, toleram, retiram, admiram, inspiram, aspiram, também,
+      liberam, moderam, aceleram, enumeram, cooperam, deliberam, param, encaram]
+    # Parágrafo com ao menos este número de verbos no pretérito é narrativo.
+    preterito_em_serie_min: 3
+    # Marcas de cena: hora, dia da semana, "naquela manhã", fala de personagem.
+    cena:
+      - "\\b\\d{1,2}h\\d{2}\\b"
+      - "\\bàs \\d{1,2}h\\b"
+      - "\\b(?:segunda|terça|quarta|quinta|sexta)-feira (?:de manhã|à tarde|à noite)\\b"
+      - "\\bnum(?:a)? (?:segunda|terça|quarta|quinta|sexta|sábado|domingo)\\b"
+      - "\\bnaquel[ae] (?:manhã|tarde|noite|dia|semana)\\b"
+      - "\\bcerta (?:manhã|tarde|noite|vez)\\b"
+      - "\\bera uma vez\\b"
+      - "\\b(?:disse|contou|perguntou|respondeu|lembrou|explicou|suspirou)\\s+(?:ela|ele|a dona|o dono)\\b"
+    # Na abertura, soma as marcas `aberturaEmCena` do espelho da fonte.
+    usar_espelho_na_abertura: true
+    # Personagem: palavra com inicial maiúscula que volta em ao menos
+    # `personagem_paragrafos_min` parágrafos (o começo de frase não conta).
+    personagem_nome: "\\b([A-ZÁÉÍÓÚÂÊÔÃÕ][a-zà-ú]{2,})\\b"
+    personagem_paragrafos_min: 2
+    # Nomes com maiúscula que não são personagem (marcas, meses, lugares comuns).
+    nomes_ignorados: [Google, WhatsApp, Instagram, Facebook, Microsoft, Apple, Android,
+      Windows, Excel, Word, Gmail, Pix, Brasil, São, Paulo, Rio, Janeiro, Fevereiro, Março,
+      Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro, Sebrae, Você,
+      Receita, Federal, Instituto, Universidade]
+    # Aula com menos parágrafos de prosa que isto não tem parcela medida.
+    paragrafos_min_para_medir: 5
+    instrucao_prompt: |
+      Caso, personagem e cena só entram quando carregam o procedimento. O exemplo percorre os
+      passos da aula, é curto e ocupa no máximo {parcela} dos parágrafos; personagem com nome é
+      opcional, nunca obrigatório, e não volta no fecho. A aula nunca abre por cena, hora do
+      dia ou história; ela abre pela resposta. História que não mostra um passo sendo feito sai.
+
+  # Camada 2l: Fonte recente (pedido do dono, 27/09/2026). Todo conceito
+  # central apoiado em fonte primária, com data de publicação; em tema que
+  # muda rápido, fonte dos últimos meses; fonte antiga só como origem do
+  # conceito, dita como tal. A janela, a parcela mínima, o teto de idade da
+  # alegação de "estado atual", a data de referência e a severidade vivem no
+  # bloco `fontes_recentes` do client.yaml (ou do curso, em courses.yaml).
+  # Aqui moram os formatos de data e os marcadores. Fonte sem data conta como
+  # não recente. LIDA EM RUNTIME por src/validators/fontes_recentes_checker.py
+  # e pela coluna "Data de publicação" de src/validators/proveniencia.py.
+  fontes_recentes:
+    # Formatos de data, do mais preciso ao menos; grupos nomeados dia, mes,
+    # mesnome e ano. O primeiro que casar vale.
+    formatos_de_data:
+      - "(?P<ano>(?:19|20)\\d{2})-(?P<mes>\\d{1,2})-(?P<dia>\\d{1,2})"
+      - "(?P<dia>\\d{1,2})/(?P<mes>\\d{1,2})/(?P<ano>(?:19|20)\\d{2})"
+      - "(?P<dia>\\d{1,2})º?\\s+de\\s+(?P<mesnome>[a-zç]+)\\.?\\s+de\\s+(?P<ano>(?:19|20)\\d{2})"
+      - "(?P<mesnome>[a-zç]+)\\.?\\s+(?:de\\s+)?(?P<ano>(?:19|20)\\d{2})"
+      - "(?P<mes>\\d{1,2})/(?P<ano>(?:19|20)\\d{2})"
+      - "\\b(?P<ano>(?:19|20)\\d{2})\\b"
+    meses: {janeiro: 1, jan: 1, fevereiro: 2, fev: 2, março: 3, marco: 3, mar: 3, abril: 4,
+      abr: 4, maio: 5, mai: 5, junho: 6, jun: 6, julho: 7, jul: 7, agosto: 8, ago: 8,
+      setembro: 9, set: 9, outubro: 10, out: 10, novembro: 11, nov: 11, dezembro: 12,
+      dez: 12}
+    # Fonte com só o ano conta como publicada neste mês (1 = janeiro, a
+    # leitura que não exagera a recência).
+    mes_quando_so_ano: 1
+    # Marcas de fonte de origem do conceito (artigo fundador, norma): fica
+    # fora da conta de recência.
+    marcadores_de_origem: ["origem do conceito", "artigo fundador", "texto fundador", "norma"]
+    # Frase que afirma o estado atual das coisas.
+    marcadores_de_estado_atual: ["hoje", "atualmente", "hoje em dia", "no momento", "agora",
+      "a versão atual", "o padrão atual", "passou a", "já aceita", "já oferece", "o mais recente"]
+    # Atribuição curta com data no corpo da aula: "(Microsoft, julho de 2026)".
+    atribuicao_no_corpo: "\\(([^()]{2,80}?),\\s*([^()]{4,40}?)\\)"
+    instrucao_pesquisa: |
+      Cada conceito central do curso precisa de uma fonte primária com data de publicação
+      registrada (dia, mês e ano; mês e ano quando o documento não traz o dia). A data de
+      referência desta pesquisa é {data_referencia}. Em tema que muda rápido (ferramenta,
+      modelo, preço, regra de plataforma), procure primeiro o que saiu nos últimos {janela}
+      meses. Fonte mais antiga só entra quando é a origem do conceito (artigo fundador,
+      norma), e a referência diz isso. Nenhuma alegação sobre o estado atual se apoia em fonte
+      com mais de {estado_atual} meses. Fonte sem data não conta como recente.
+    instrucao_prompt: |
+      Cada conceito central da aula se apoia em fonte primária da pesquisa, com data de
+      publicação. A data de referência é {data_referencia}: ao menos {parcela} das fontes da
+      aula têm até {janela} meses, e nada que a aula diga sobre o estado atual ("hoje",
+      "atualmente", "a versão atual") se apoia em fonte com mais de {estado_atual} meses.
+      Fonte antiga só como origem do conceito, dita como tal na lista de fontes. A fonte
+      entra no rodapé, com a data; a aula não conta como ela foi checada.
 
   # Revisão dirigida pelo gate (27/09/2026). O gate determinístico roda sobre
   # cada aula ANTES da chamada paga de revisão, e os erros que ele achar entram

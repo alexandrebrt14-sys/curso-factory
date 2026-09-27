@@ -8,8 +8,10 @@ Sem proveniência, o fato sai do texto.
 O formato de retorno do pipeline não muda: o redator devolve só a aula, e o
 revisor devolve a aula e o relatório no contrato existente. A tabela é montada
 depois, a partir do texto final, por este módulo. Ela lista cada frase com
-número, data, versão ou nome de produto, com as colunas de fonte, trecho lido e
-data de acesso em branco para quem confere preencher, e os crosslinks da aula.
+número, data, versão ou nome de produto, com as colunas de fonte, data de
+publicação, trecho lido e data de acesso em branco para quem confere preencher,
+e os crosslinks da aula. Preenchida, ela alimenta a conferência de recência
+(`fontes_recentes_checker.py`, 27/09/2026).
 É arquivo de trabalho: nunca vai para a página.
 
 Onde aparece:
@@ -125,8 +127,10 @@ def tabela_de_proveniencia(texto: str) -> str:
     partes = [
         "# Proveniência (arquivo de trabalho, não vai para a página)",
         "",
-        "Cada frase abaixo só fica na aula com a fonte primária aberta: URL, trecho lido e data "
-        "de acesso. Frase sem fonte sai do texto. Exemplo rotulado dispensa fonte.",
+        "Cada frase abaixo só fica na aula com a fonte primária aberta: URL, data de publicação, "
+        "trecho lido e data de acesso. Frase sem fonte sai do texto. Exemplo rotulado dispensa "
+        "fonte. A data de publicação alimenta a conferência de recência "
+        "(`fontes_recentes_checker.py`).",
     ]
     for k, (inicio, titulo) in enumerate(inicios):
         fim = inicios[k + 1][0] if k + 1 < len(inicios) else len(texto)
@@ -138,12 +142,12 @@ def tabela_de_proveniencia(texto: str) -> str:
         partes += ["", f"## {titulo}", ""]
         if frases:
             partes += [
-                "| Frase da aula | Tipo | URL primária | Trecho lido | Data de acesso |",
-                "|---|---|---|---|---|",
+                "| Frase da aula | Tipo | URL primária | Data de publicação | Trecho lido | Data de acesso |",
+                "|---|---|---|---|---|---|",
             ]
             for f in frases:
                 url = "exemplo rotulado, sem fonte" if f.exemplo else ""
-                partes.append(f"| {_celula(f.frase)} | {', '.join(f.tipos)} | {url} |  |  |")
+                partes.append(f"| {_celula(f.frase)} | {', '.join(f.tipos)} | {url} |  |  |  |")
         else:
             partes.append("Nenhuma frase com número, data, versão ou nome de produto.")
         internos = [(a, c) for a, c in links if c.startswith("/")]

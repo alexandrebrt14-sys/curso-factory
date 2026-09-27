@@ -126,6 +126,27 @@ output:
 #   require_answer_capsule: true       # parágrafo resposta-primeiro após heading
 #   schema_authority_stack_enabled: false
 
+# Aula-guia aplicável, orçamento de narrativa e fonte recente. Default OFF:
+# desligados, o gate não mede nada disso e os prompts não recebem pisos, teto de
+# narrativa nem janela de recência (o esqueleto de aula-guia do
+# quality_rules.yaml continua no prompt). Ver o client.yaml do cliente default.
+# guia_aplicavel:
+#   enabled: true
+#   tipo_de_aula: pratica            # pratica | conceitual
+#   severidade: aviso                # aviso | erro
+# narrativa:
+#   enabled: true
+#   parcela_max: 0.20
+#   abertura_sem_narrativa: true
+#   severidade: aviso
+# fontes_recentes:
+#   enabled: true
+#   janela_meses: 12
+#   parcela_min_recente: 0.5
+#   estado_atual_max_meses: 18
+#   severidade: aviso
+#   data_de_referencia: "2026-09-27" # ausente, vale a data da execução
+
 # Crosslinks por aula para outros cursos do portal do cliente. Default OFF:
 # desligado, nada é cobrado e o prompt de redação não muda. Ligado, cada aula
 # liga para de min_por_aula a max_por_aula cursos diferentes do catálogo, o

@@ -131,7 +131,7 @@ entre exemplo e passo fica com o prompt e com a revisão.
   apoiada em fonte com mais de 18 meses. Os 12 meses cobrem a janela que o `PLANO_DE_INCREMENTOS`
   precisou para corrigir as aulas de 27/09; os 18 meses dão folga para relatório anual que ainda
   não teve sucessor. A fonte de origem do conceito fica fora da conta.
-- Completude, aula prática: ao menos três passos, 80% deles abrindo com verbo no imperativo, uma
+- Completude, aula prática: ao menos três passos, todos abrindo com verbo no imperativo, uma
   verificação, um erro comum com conserto, uma decisão condicional e um critério de pronto. Aula
   conceitual: dois passos ou uma decisão condicional, e o critério de pronto.
 

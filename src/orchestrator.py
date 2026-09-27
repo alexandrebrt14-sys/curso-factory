@@ -38,7 +38,7 @@ from __future__ import annotations
 import logging
 import re
 from collections.abc import Callable
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -392,6 +392,39 @@ class Orchestrator:
             "bloco_apuracao": instrucao_de_apuracao(),
         }
 
+    def _fontes_do_curso(self, course: Course):
+        """Bloco `fontes_recentes` do cliente sobreposto, chave a chave, pelo do curso."""
+        from src.clients.context import FontesRecentesConfig
+
+        do_cliente = getattr(self.client_context, "fontes_recentes", None) or FontesRecentesConfig()
+        return do_cliente.sobreposto_por(getattr(course, "fontes_recentes", None))
+
+    def _referencia(self, course: Course) -> date:
+        """Data de referência da recência: a declarada ou, sem ela, a da execução."""
+        from src.validators.fontes_recentes_checker import data_de_referencia
+
+        return data_de_referencia(self._fontes_do_curso(course), date.today())
+
+    def _blocos_guia(self, course: Course) -> dict[str, str]:
+        """Molde de aula-guia, orçamento de narrativa e fonte recente (27/09/2026).
+
+        O molde vem de `validation.guia_aplicavel` e entra sempre que a seção
+        existe; os pisos da medição, o teto de narrativa e a janela de recência
+        só entram quando o cliente (ou o curso) liga a regra. Sem nada disso,
+        os três blocos saem vazios.
+        """
+        from src.validators.fontes_recentes_checker import instrucao_para_prompt as fontes
+        from src.validators.guia_aplicavel_checker import instrucao_para_prompt as molde
+        from src.validators.narrativa_checker import instrucao_para_prompt as narrativa
+
+        return {
+            "bloco_molde_da_aula": molde(getattr(self.client_context, "guia_aplicavel", None)),
+            "bloco_narrativa": narrativa(getattr(self.client_context, "narrativa", None)),
+            "bloco_fontes_recentes": fontes(
+                self._fontes_do_curso(course), self._referencia(course)
+            ),
+        }
+
     def _bloco_crosslinks(self, course: Course) -> str:
         """Instrução de crosslinks da aula, vazia quando o cliente não liga a regra."""
         from src.validators.crosslink_checker import instrucao_para_prompt
@@ -440,7 +473,11 @@ class Orchestrator:
 
     def _step_analyze(self, course: Course, draft: str) -> str:
         return self.analyzer.execute(
-            draft, course_name=course.titulo, draft_content=draft, **self._tetos_da_aula()
+            draft,
+            course_name=course.titulo,
+            draft_content=draft,
+            **self._tetos_da_aula(),
+            **self._blocos_guia(course),
         )
 
     def _step_classify(self, course: Course, draft: str) -> str:
@@ -580,10 +617,11 @@ class Orchestrator:
                 for e in modulo.etapas
             ]
 
+        from src.validators.guia_aplicavel_checker import instrucao_do_plano as guia_do_plano
         from src.validators.planejamento_checker import instrucao_do_plano
 
         minimo, maximo = self._aulas_por_modulo()
-        ordem = instrucao_do_plano(numero)
+        ordem = "\n\n".join(t for t in (guia_do_plano(), instrucao_do_plano(numero)) if t)
         prompt = (
             f"Você planeja as aulas de um curso em português do Brasil, com "
             f"acentuação completa.\n\n"
@@ -657,6 +695,7 @@ class Orchestrator:
             "bloco_ordem_do_curso": self._bloco_ordem_do_curso(),
             "bloco_expansao": "",
             **self._variaveis_de_peso_visual(course),
+            **self._blocos_guia(course),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
         titulo_proposto, bruto = self._extrair_titulo_proposto(
@@ -875,6 +914,7 @@ class Orchestrator:
                 "lessons": lessons,
                 "context": research_context[:TRAIL_RESEARCH_CHARS],
                 **self._tetos_da_aula(),
+                "bloco_fontes_recentes": self._blocos_guia(course)["bloco_fontes_recentes"],
             },
         )
         texto = self.client.call(self.writer.provider, prompt, model=self.writer.model).strip()
@@ -898,7 +938,11 @@ class Orchestrator:
         if not unidades:
             return ""
         resumo_analise = (analysis or "")[:REVIEW_ANALYSIS_CHARS]
-        blocos = {**self._tetos_da_aula(), **self._blocos_de_instrucao()}
+        blocos = {
+            **self._tetos_da_aula(),
+            **self._blocos_de_instrucao(),
+            **self._blocos_guia(course),
+        }
         revisadas: list[str] = []
         self._destinos_anteriores = set()
         relatorios: list[str] = []
@@ -997,6 +1041,15 @@ class Orchestrator:
                 crosslinks_config=getattr(self.client_context, "crosslinks", None),
                 visual_config=self._visual_do_curso(course),
             )
+            from src.validators.quality_gate import QualityGate
+
+            achados += QualityGate.check_guia(
+                texto,
+                titulo,
+                self.client_context,
+                fontes=self._fontes_do_curso(course),
+                referencia=self._referencia(course),
+            )
         except Exception as exc:  # o gate nunca derruba a revisão
             logger.warning("Gate antes da revisão falhou em '%s': %s", titulo, exc)
             return ""
@@ -1058,6 +1111,8 @@ class Orchestrator:
                     unidade="aula",
                     geo=False,
                     visual=self._visual_do_curso(course),
+                    fontes_recentes=self._fontes_do_curso(course),
+                    referencia=self._referencia(course),
                 )
             except Exception as exc:
                 logger.warning("Quality gate falhou em '%s': %s", rotulo, exc, exc_info=True)
@@ -1134,10 +1189,15 @@ class Orchestrator:
             modulos_list = "\n".join(f"  - {m.titulo}: {m.descricao}" for m in course.modulos)
         else:
             modulos_list = "A definir conforme pesquisa"
+        from src.validators.fontes_recentes_checker import instrucao_para_prompt
+
         return {
             "course_name": course.titulo,
             "course_description": course.descricao or f"Curso completo sobre {course.titulo}",
             "target_modules": modulos_list,
+            "bloco_fontes_recentes_pesquisa": instrucao_para_prompt(
+                self._fontes_do_curso(course), self._referencia(course), "instrucao_pesquisa"
+            ),
         }
 
     def _build_template_vars(self, nome: str, course: Course, context: str) -> dict:

@@ -1,11 +1,11 @@
 Quality gate: 1 de 5 unidade(s) aprovada(s)
-FAIL Aula 1.1: Por que o cliente some: 2 erro(s), 15 aviso(s)
-      - Conteúdo [profundidade]: Aula com 641 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica: falta a narrativa (de onde vem a ideia, por que importa, o que muda, o erro comum) ou o exemplo contado por inteiro. Alvo: 900 a 1800.
+FAIL Aula 1.1: Por que o cliente some: 2 erro(s), 21 aviso(s)
+      - Conteúdo [profundidade]: Aula com 641 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica nem ensina a fazer: falta o porquê com fonte, o procedimento em passos com a verificação e o erro comum, ou o critério de pronto. Alvo: 900 a 1800.
       - Conteúdo [crosslinks]: [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
-FAIL Aula 1.2: Responder em cinco minutos: 2 erro(s), 13 aviso(s)
-      - Conteúdo [profundidade]: Aula com 633 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica: falta a narrativa (de onde vem a ideia, por que importa, o que muda, o erro comum) ou o exemplo contado por inteiro. Alvo: 900 a 1800.
+FAIL Aula 1.2: Responder em cinco minutos: 2 erro(s), 19 aviso(s)
+      - Conteúdo [profundidade]: Aula com 633 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica nem ensina a fazer: falta o porquê com fonte, o procedimento em passos com a verificação e o erro comum, ou o critério de pronto. Alvo: 900 a 1800.
       - Conteúdo [crosslinks]: [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
-OK   Trilha 1: Resposta rápida: 0 erro(s), 2 aviso(s)
+OK   Trilha 1: Resposta rápida: 0 erro(s), 3 aviso(s)
 FAIL curso (GEO): 2 erro(s), 0 aviso(s)
       - Cite Sources: 1 fonte(s) externa(s) atribuída(s) (mínimo GEO: 3). Lift de citação +40% (até +115% fora do top-1).
       - Answer capsule ausente: nenhum parágrafo resposta-primeiro (18 a 75 palavras) detectado após um heading. Lift de citação 1,9×.

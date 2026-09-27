@@ -188,6 +188,30 @@ crosslinks:
   prefixos_validos: ["/educacao/"]
   catalogo: "config/clients/default/crosslinks_catalogo.json"
 
+# Aula-guia aplicável, orçamento de narrativa e fonte recente (pedido do dono,
+# 27/09/2026): a aula ensina a fazer, a história só entra quando carrega o
+# procedimento e todo conceito se apoia em fonte datada e recente. Marcadores,
+# esqueleto e textos dos prompts vivem em config/quality_rules.yaml
+# (guia_aplicavel, orcamento_narrativa, fontes_recentes); aqui ficam os números
+# e a severidade. Tudo nasce como aviso: sobe a erro depois de três cursos
+# reais aprovados. Decisão: wiki/decisions/guia-aplicavel-e-fonte-recente-20260927.md.
+guia_aplicavel:
+  enabled: true
+  tipo_de_aula: pratica        # pratica | conceitual (pisos em quality_rules.yaml)
+  severidade: aviso
+narrativa:
+  enabled: true
+  parcela_max: 0.20            # até 20% dos parágrafos de prosa com marcas de história
+  abertura_sem_narrativa: true
+  severidade: aviso
+fontes_recentes:
+  enabled: true
+  janela_meses: 12             # fonte recente: até 12 meses
+  parcela_min_recente: 0.5     # ao menos metade das fontes recentes
+  estado_atual_max_meses: 18   # "hoje", "atualmente" nunca com fonte acima de 18 meses
+  severidade: aviso
+  # data_de_referencia: "2026-09-27"   # ausente, vale a data da execução
+
 # Output — onde os artefatos gerados para este cliente são salvos
 output:
   # "output" para o cliente padrão mantém layout legado (output/drafts, approved, deployed).
