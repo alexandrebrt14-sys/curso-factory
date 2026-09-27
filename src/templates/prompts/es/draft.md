@@ -138,7 +138,9 @@ nunca la figura.
 - Bastidor: cualquier frase sobre la propia lección, la regla que seguiste, la verificación que
   hiciste o el método de la estimación ("esta lección fue", "los datos fueron verificados",
   "según nuestra metodología", "estimación calculada", "nota del revisor"). El alumno recibe el
-  hecho y el paso.
+  hecho y el paso. Lo mismo vale para narrar la verificación ("confirmado en la fuente
+  primaria", "no fue posible confirmar", "descartamos por falta de certeza"): la verificación
+  decide qué entra, y el lector recibe solo el resultado.
 - Rótulo de la investigación ([Alta], [Media], [Baja], "nivel de confianza"): te sirve para
   elegir el dato; en la lección el número entra limpio o no entra.
 - Aviso legal genérico ("consulte a un abogado", "conforme a la legislación vigente", "exención

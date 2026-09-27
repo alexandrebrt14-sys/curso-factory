@@ -348,9 +348,13 @@ class Orchestrator:
         e o prompt segue como antes. O texto e os números vêm do YAML; o prompt
         só marca o lugar (`{bloco_vocabulario}`).
         """
+        from src.validators.content_checker import instrucao_de_apuracao
         from src.validators.vocabulario_checker import instrucao_para_prompt
 
-        return {"bloco_vocabulario": instrucao_para_prompt()}
+        return {
+            "bloco_vocabulario": instrucao_para_prompt(),
+            "bloco_apuracao": instrucao_de_apuracao(),
+        }
 
     # ── etapas ──────────────────────────────────────────────────────────
 

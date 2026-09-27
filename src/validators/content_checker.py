@@ -393,11 +393,57 @@ def _ocorrencias(text: str, expressoes) -> list[str]:
     ]
 
 
+def _apuracao_narrada() -> tuple[list[str], list[re.Pattern[str]]]:
+    """Padrões de `validation.apuracao_narrada` (27/09/2026): (literais, expressões).
+
+    Sem a seção, ou com `enabled: false`, devolve listas vazias e o bastidor
+    fica exatamente como era antes. Item com prefixo `re:` é expressão regular;
+    expressão inválida é ignorada, nunca derruba o gate.
+    """
+    secao = validation_section("apuracao_narrada")
+    if not secao or not bool(secao.get("enabled", True)):
+        return [], []
+    literais: list[str] = []
+    expressoes: list[re.Pattern[str]] = []
+    for item in rules_list("apuracao_narrada", "padroes"):
+        if item.startswith("re:"):
+            try:
+                expressoes.append(re.compile(item[3:], re.IGNORECASE))
+            except re.error:
+                continue
+        else:
+            literais.append(item)
+    return literais, expressoes
+
+
+def instrucao_de_apuracao() -> str:
+    """Bloco `{bloco_apuracao}` dos prompts, montado de `validation.apuracao_narrada`."""
+    secao = validation_section("apuracao_narrada")
+    texto = secao.get("instrucao_prompt") if secao else None
+    literais, _ = _apuracao_narrada()
+    if not isinstance(texto, str) or not texto.strip() or not literais:
+        return ""
+    exemplos = ", ".join(f'"{lit}"' for lit in literais)
+    return texto.strip().replace("{exemplos}", exemplos)
+
+
 def _check_bastidor(text: str) -> list[str]:
-    """Expressões e construções em que a aula fala de si ou do próprio processo."""
+    """Expressões e construções em que a aula fala de si ou do próprio processo.
+
+    Soma três origens: as famílias de bastidor do espelho da fonte, o
+    `metalinguagemRx` da fonte e, desde 27/09/2026, os padrões de
+    `validation.apuracao_narrada` do YAML (a aula que narra a checagem).
+    """
     corpo = _sem_mencoes(text)
-    lista = expressoes_de_bastidor() or list(_BASTIDOR_FALLBACK)
+    literais_apuracao, expressoes_apuracao = _apuracao_narrada()
+    lista = list(expressoes_de_bastidor() or _BASTIDOR_FALLBACK)
+    vistos_lista = {e.lower() for e in lista}
+    lista += [lit for lit in literais_apuracao if lit.lower() not in vistos_lista]
     achados = _ocorrencias(corpo, lista)
+    for padrao_apuracao in expressoes_apuracao:
+        m = padrao_apuracao.search(corpo)
+        if m and m.group(0).lower() not in {a.lower() for a in achados}:
+            achados.append(m.group(0).strip())
     padrao = regex_de_metalinguagem()
     if padrao:
         try:
@@ -407,7 +453,14 @@ def _check_bastidor(text: str) -> list[str]:
                     achados.append(trecho)
         except re.error:
             pass
-    return achados
+    # Uma ocorrência, uma cobrança: "verificamos" dentro de "verificamos que"
+    # sai, fica a expressão mais longa.
+    minusculas = [a.lower() for a in achados]
+    return [
+        a
+        for a, chave in zip(achados, minusculas, strict=True)
+        if not any(chave != outra and chave in outra for outra in minusculas)
+    ]
 
 
 def _check_autoapresentacao(text: str) -> list[str]:

@@ -108,6 +108,9 @@ diga o que ficou resolvido e por que o próximo grupo vem agora.
   entra", "cada vez mais", "em constante evolução"): corte ou diga o fato.
 - Meta-discurso de verificação, alerta rotulado ("Atenção:", "Importante:") e rótulo de
   confiança sobre o próprio dado: o fato fica, a moldura sai.
+
+{bloco_apuracao}
+
 - Vícios de máquina: gerundismo, "endereçar" por "tratar de", "suportar" por "aceitar",
   "eventualmente" por "no fim", "impactar" por "aumentar/reduzir", "alavancar", "agregar
   valor", nominalização ("a implementação de" vira "implementar").

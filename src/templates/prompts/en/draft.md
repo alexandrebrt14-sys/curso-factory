@@ -137,7 +137,9 @@ never the figure.
 - Backstage: any sentence about the lesson itself, the rule you followed, the verification you
   did or the method behind an estimate ("this lesson was", "the data was verified", "according
   to our methodology", "calculated estimate", "reviewer's note"). The student gets the fact
-  and the step.
+  and the step. The same goes for narrating the fact-check ("confirmed in the primary source",
+  "we could not confirm", "discarded for lack of certainty"): the check decides what enters,
+  and the reader gets only the result.
 - Research labels ([High], [Medium], [Low], "confidence level"): they help you choose the data;
   in the lesson the number enters clean or not at all.
 - Generic legal disclaimers ("consult a lawyer", "according to current legislation",

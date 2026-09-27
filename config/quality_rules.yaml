@@ -431,6 +431,38 @@ validation:
       a frase afirma o fato; quando precisar de outra, troque pelo sentido:
       {familias}
 
+  # Camada 2e: A aula não narra a própria apuração (pedido do dono, 27/09/2026).
+  # ESTENDE o bastidor que já existe: content_checker._check_bastidor soma estes
+  # padrões às famílias `bastidorDeVerificacao`, `rotuloDeConfianca` e
+  # `metalinguagemDeProcesso` do espelho config/lexicos.json e ao
+  # `metalinguagemRx` da fonte. Mesma severidade (erro, categoria editorial) e
+  # mesma exceção: menção entre aspas não conta. A R9 do abertura_checker
+  # continua cuidando do MARCADOR visível ("requer verificação", "fonte
+  # pendente"); aqui mora a FRASE que conta ao leitor o que o redator checou.
+  # Cada item é texto literal; prefixe com "re:" para expressão regular. Os
+  # literais entram também como exemplos na instrução dos prompts
+  # ({bloco_apuracao} em draft.md e review.md, pt-br e raiz).
+  apuracao_narrada:
+    enabled: true
+    padroes:
+      - "confirmado na fonte primária"
+      - "confirmada na fonte primária"
+      - "verificamos"
+      - "conferido em"
+      - "conferida em"
+      - "não há fonte para"
+      - "descartamos por falta de certeza"
+      - "segundo o que apuramos"
+      - "re:\\bn[ãa]o (?:foi|é|seria) poss[íi]vel (?:confirmar|verificar|checar|conferir)\\b"
+      - "re:\\bn[ãa]o p[ôo]de ser (?:checad|verificad|confirmad|conferid)[oa]s?\\b"
+      - "re:\\bconfirmad[oa]s? (?:na|em) fonte\\b"
+      - "re:\\bverificou-se\\b"
+    instrucao_prompt: |
+      A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+      como {exemplos}. A checagem decide o que entra; o leitor recebe só o resultado, e a
+      fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+      aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
   # Camada 3: Links
   link_check:
     enabled: true
