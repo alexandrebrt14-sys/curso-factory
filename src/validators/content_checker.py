@@ -722,7 +722,7 @@ MAX_PERCENTAGE_WARNINGS = 5
 # Marcadores que o redator deixa para o revisor humano resolver. A grafia sem
 # acento entra porque o marcador é digitado à mão no meio do texto.
 _UNRESOLVED_MARKER_RE = re.compile(
-    r"\[\s*(?:FALTA\s+EVID[ÊE]NCIA|PREENCHER-HUMANO)\s*:",
+    r"\[\s*(?:FALTA\s+EVID[ÊE]NCIA|PREENCHER-HUMANO|MISSING\s+EVIDENCE)\s*:",
     re.IGNORECASE,
 )
 

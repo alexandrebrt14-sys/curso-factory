@@ -53,7 +53,9 @@ class Reviewer(Agent):
         "- Corrija: travessão, construção 'não é X, é Y' recorrente, tríade usada como "
         "ritmo, fecho que só resume, conectivo batido de abertura de parágrafo\n"
         "- Sem emojis\n\n"
-        "Retorne o conteúdo revisado e corrigido NA ÍNTEGRA, com um bloco final de resumo.\n\n"
+        "Retorne o conteúdo revisado e corrigido NA ÍNTEGRA. Depois dele, separado por uma "
+        "linha com três hífens, o relatório começando por 'REVISÃO CONCLUÍDA' (o pipeline "
+        "separa o relatório por esse marcador; sem ele, o resumo vai para dentro da aula).\n\n"
         "--- CONTEÚDO PARA REVISÃO ---\n{context}"
     )
 

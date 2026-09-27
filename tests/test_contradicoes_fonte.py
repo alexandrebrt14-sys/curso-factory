@@ -85,3 +85,21 @@ def test_capsula_mensagem_e_codigo_usam_a_mesma_faixa() -> None:
     erros = check_content("## Título\n\n- item solto\n", "x", geo_config=cfg, unidade="modulo")
     msg = next(e.mensagem for e in erros if "capsule" in e.mensagem.lower())
     assert f"{CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras" in msg
+
+
+def test_marcador_em_ingles_conta_no_teto() -> None:
+    """O en/draft.md manda usar [MISSING EVIDENCE:, que o content_checker não contava."""
+    from src.validators.content_checker import _count_unresolved_markers
+
+    assert _count_unresolved_markers("[MISSING EVIDENCE: x] [FALTA EVIDENCIA: y]") == 2
+
+
+def test_fallback_do_revisor_pede_o_marcador_que_o_pipeline_separa() -> None:
+    from src.agents.reviewer import Reviewer
+    from src.orchestrator import separar_relatorio_de_revisao
+
+    assert "REVISÃO CONCLUÍDA" in Reviewer.TEMPLATE
+    texto, relatorio = separar_relatorio_de_revisao(
+        "# Aula 1.1: X\n\nTexto.\n\n---\nREVISÃO CONCLUÍDA\nAprovado para publicação: sim"
+    )
+    assert relatorio and "REVISÃO" not in texto
