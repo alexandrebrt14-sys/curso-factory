@@ -32,6 +32,12 @@ e distração continuam no ponteiro editorial e em `src/validators/abertura_chec
 Metadados representam a aula, e fontes seguem o rodapé da trilha conforme o molde vigente.
 Conserve autoria, referências e condições ao transferir a prova entre esses lugares.
 
+Toda frase com número, data, versão ou nome de produto tem fonte primária aberta, com trecho
+lido e data de acesso, numa tabela de proveniência que é arquivo de trabalho e nunca vai para
+a página. O redator do pipeline devolve só a aula; a tabela sai do texto final
+(`result.etapas["proveniencia"]` ou `python cli.py proveniencia <arquivo>`), e quem redige
+fora do pipeline entrega a mesma tabela junto com a aula. Frase sem fonte sai do texto.
+
 Revise substância, estrutura e linguagem. Ganho de informação é o que a explicação acrescenta
 à decisão do aluno, sem quota de dados ou garantia de visibilidade. Acentuação PT-BR completa,
 sem emoji, sem travessão estilístico e sem cota de ritmo. Teste os contratos afetados e o

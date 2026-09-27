@@ -558,6 +558,28 @@ validation:
       práticas: no máximo {palavras_max} palavras, com um ganho que o aluno aplica no mesmo
       dia, sem panorama histórico, sem taxonomia e sem teoria densa.
 
+  # Camada 2i: Tabela de proveniência (27/09/2026). Arquivo de trabalho, nunca
+  # página: lista as frases da aula com número, data, versão ou nome de
+  # produto, para quem confere preencher URL primária, trecho lido e data de
+  # acesso. LIDA EM RUNTIME por src/validators/proveniencia.py, chamado pelo
+  # orquestrador ao fim do pipeline (result.etapas["proveniencia"]) e por
+  # `python cli.py proveniencia <arquivo>`. O formato de retorno do redator e
+  # do revisor não muda. `padroes` são expressões regulares por tipo;
+  # `rotulos_de_exemplo` marcam a frase de exemplo, que dispensa fonte.
+  proveniencia:
+    enabled: true
+    padroes:
+      numero: "\\d"
+      data: "(?i)\\b(?:janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\\b|\\b\\d{1,2}/\\d{1,2}(?:/\\d{2,4})?\\b|\\b(?:19|20)\\d{2}\\b"
+      versao: "(?i)\\bv\\d+(?:\\.\\d+)*\\b|(?<!R\\$ )\\b(?!\\d{1,3}(?:\\.\\d{3})+\\b)\\d+\\.\\d+(?:\\.\\d+)?\\b(?!\\s*%)|\\bvers[ãa]o\\s+\\d+"
+      produto: "\\b[A-Z][a-z]+[A-Z][A-Za-z]+\\b|\\b[A-Z][A-Za-z]*[- ]\\d+(?:\\.\\d+)*\\b|\\b[A-Z]{1,4}\\d{1,3}\\b"
+    rotulos_de_exemplo:
+      - "suponha"
+      - "imagine"
+      - "por exemplo, um"
+      - "digamos que"
+      - "número de exemplo"
+
   # Camada 3: Links
   link_check:
     enabled: true

@@ -165,6 +165,26 @@ def cmd_clients(args: argparse.Namespace) -> int:
 # ─── validate ──────────────────────────────────────────────────────────
 
 
+def cmd_proveniencia(args: argparse.Namespace) -> int:
+    """Monta a tabela de proveniência de um rascunho: arquivo de trabalho, nunca página."""
+    from src.validators.proveniencia import tabela_de_proveniencia
+
+    origem = Path(args.path)
+    try:
+        texto = origem.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return _erro(f"leitura de {origem}: {exc}")
+    tabela = tabela_de_proveniencia(texto)
+    if not tabela:
+        return _erro("validation.proveniencia ausente ou desligada em config/quality_rules.yaml")
+    if args.saida:
+        Path(args.saida).write_text(tabela, encoding="utf-8", newline="\n")
+        print(f"Tabela de proveniência gravada em {args.saida}")
+    else:
+        print(tabela)
+    return 0
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     """Roda o QualityGate (acentos + conteúdo + links + voice guard) num path."""
     from src.validators.quality_gate import QualityGate
@@ -573,6 +593,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("path", metavar="PATH", help="Arquivo ou diretório com rascunhos")
     _add_client_arg(p)
     p.set_defaults(func=cmd_validate)
+
+    p = sub.add_parser(
+        "proveniencia",
+        help="Lista as frases com número, data, versão ou produto de um rascunho, para conferência",
+    )
+    p.add_argument("path", help="Arquivo Markdown do rascunho ou da aula")
+    p.add_argument("--saida", default="", help="Grava a tabela neste arquivo em vez de imprimir")
+    p.set_defaults(func=cmd_proveniencia)
 
     p = sub.add_parser("cost-report", help="Relatório de custos por provider e por curso")
     p.set_defaults(func=cmd_cost_report)

@@ -503,6 +503,7 @@ class Orchestrator:
 
         if result.sucesso:
             self._quality_gate(course, result)
+            self._registrar_proveniencia(result)
 
         self._save_result(course.id, result)
         cp = self._checkpoint_path(course.id)
@@ -898,6 +899,25 @@ class Orchestrator:
             )
         except Exception as exc:
             logger.warning("Histórico de detecção não gravado para '%s': %s", rotulo, exc)
+
+    def _registrar_proveniencia(self, result: PipelineResult) -> None:
+        """Grava a tabela de proveniência do texto final em `etapas["proveniencia"]`.
+
+        É arquivo de trabalho (27/09/2026): as frases com número, data, versão
+        ou nome de produto, com as colunas de fonte em branco para conferência,
+        e os crosslinks de cada aula. Não muda o formato de retorno de nenhuma
+        etapa e nunca vai para a página. Falha aqui não derruba o pipeline.
+        """
+        from src.validators.proveniencia import tabela_de_proveniencia
+
+        final = result.etapas.get("review") or result.etapas.get("draft") or ""
+        try:
+            tabela = tabela_de_proveniencia(final)
+        except Exception as exc:
+            logger.warning("Tabela de proveniência não montada: %s", exc)
+            return
+        if tabela:
+            result.etapas["proveniencia"] = tabela
 
     def _quality_gate(self, course: Course, result: PipelineResult) -> None:
         """Roda o quality gate aula a aula sobre o texto final e grava o veredito.
