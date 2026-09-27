@@ -369,6 +369,24 @@ class Orchestrator:
             anteriores=self._destinos_anteriores,
         )
 
+    def _visual_do_curso(self, course: Course):
+        """Bloco `visual` do cliente sobreposto, campo a campo, pelo do curso."""
+        from src.clients.context import VisualConfig
+
+        do_cliente = getattr(self.client_context, "visual", None) or VisualConfig()
+        do_curso = VisualConfig.de_dict(course.visual) if course.visual else None
+        return do_cliente.sobreposto_por(do_curso)
+
+    def _variaveis_de_peso_visual(self, course: Course) -> dict[str, str]:
+        """`{bloco_peso_visual}` e, quando o teto é declarado, `{figuras_max}`."""
+        from src.validators.peso_visual_aula import instrucao_para_prompt
+
+        visual = self._visual_do_curso(course)
+        variaveis = {"bloco_peso_visual": instrucao_para_prompt(visual)}
+        if visual.max_por_aula is not None:
+            variaveis["figuras_max"] = str(visual.max_por_aula)
+        return variaveis
+
     # ── etapas ──────────────────────────────────────────────────────────
 
     def _step_research(self, course: Course) -> str:
@@ -587,6 +605,7 @@ class Orchestrator:
             **self._tetos_da_aula(),
             **self._blocos_de_instrucao(),
             "bloco_crosslinks": self._bloco_crosslinks(course),
+            **self._variaveis_de_peso_visual(course),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
         titulo_proposto, bruto = self._extrair_titulo_proposto(
@@ -887,7 +906,12 @@ class Orchestrator:
             rotulo = titulo or "unidade"
             try:
                 r = gate.check_text(
-                    bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False
+                    bloco,
+                    curso_id=course.id,
+                    module_name=rotulo,
+                    unidade="aula",
+                    geo=False,
+                    visual=self._visual_do_curso(course),
                 )
             except Exception as exc:
                 logger.warning("Quality gate falhou em '%s': %s", rotulo, exc, exc_info=True)

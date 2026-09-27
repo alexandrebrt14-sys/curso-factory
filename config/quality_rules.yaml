@@ -502,6 +502,25 @@ validation:
       Destinos disponíveis (caminho: nome):
       {destinos}
 
+  # Camada 2g: Peso visual por aula declarado (27/09/2026). O cliente
+  # (client.yaml, bloco `visual`) ou o curso (config/courses.yaml, chave
+  # `visual`) podem sobrepor o teto padrão do espelho (tetos.D.figuras_max)
+  # com min_por_aula, max_por_aula, min_tipos_por_aula e
+  # max_paragrafos_sem_peca; o curso vence o cliente campo a campo. Medido por
+  # src/validators/peso_visual_aula.py (categoria "peso visual"). Sem bloco
+  # declarado, vale o teto do espelho, como antes. Aqui mora só o texto da
+  # instrução que entra em draft.md ({bloco_peso_visual}, pt-br e raiz);
+  # {min}, {max}, {tipos} e {paragrafos} são trocados pelos valores declarados.
+  peso_visual:
+    instrucao_prompt: |
+      Neste curso a regra de apoio visual muda: cada aula leva de {min} a {max} peças visuais,
+      de pelo menos {tipos} tipos diferentes, e nenhuma sequência de mais de {paragrafos}
+      parágrafos sem uma peça. A primeira peça vem logo depois dos parágrafos de abertura,
+      nunca antes deles. Cada peça carrega informação própria: substitui ou completa o texto,
+      nunca repete o parágrafo de cima, e a legenda afirma um fato. Do Markdown saem três
+      tipos: tabela (comparação com critérios), lista numerada de passos (processo em que a
+      ordem importa) e imagem com legenda (conceito que pede figura).
+
   # Camada 3: Links
   link_check:
     enabled: true

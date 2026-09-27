@@ -203,3 +203,27 @@ O piso só vale para módulo que passa de `min_prose_chars_for_floor` caracteres
 ### O que continua pendente
 
 `content_quality.max_paragraph_lines` era constante fixa em `src/validators/content_checker.py`, com um comentário pedindo sincronia manual com o YAML. Esse é o mecanismo exato pelo qual configuração apodrece, e por isso passou a ser lido do arquivo. Vale a advertência da `DIRETRIZ_EDITORIAL.md`, literalmente: configuração que ninguém lê não protege nada.
+
+## 13. Peso visual declarado por cliente ou por curso (27/09/2026)
+
+O padrão da aula continua sendo o teto de apoios visuais do espelho da fonte de estilo (`tetos.D.figuras_max` em `config/lexicos.json`), com a peça entrando só quando substitui texto. Esse padrão serve à maior parte dos cursos, lidos no celular por quem tem pouco tempo, e não muda.
+
+Há cursos em que o dono pede o contrário: muitas peças por aula, de tipos variados, porque o tema é visual por natureza ou porque o curso de referência (o de frontends, com figuras, tabelas e laboratórios em quase todo capítulo) mostrou que a aula carregada de peças segura o leitor. Para esses casos, o cliente ou o curso declaram o bloco `visual`, sem tocar no espelho:
+
+```yaml
+visual:
+  min_por_aula: 5              # abaixo, a aula reprova (erro)
+  max_por_aula: 7              # acima, aviso; também vira o teto que o redator recebe
+  min_tipos_por_aula: 3        # tipos diferentes de peça; abaixo, aviso
+  max_paragrafos_sem_peca: 3   # maior sequência de parágrafos sem peça; acima, aviso
+```
+
+**Onde declarar.** No `client.yaml`, vale para todo curso do cliente. Em `config/courses.yaml`, na entrada do curso, vale só para ele e vence o cliente campo a campo. Campo ausente não é cobrado. Sem bloco nenhum, vale o teto do espelho, exatamente como antes.
+
+**Quando usar.** Só quando o curso tem motivo para fugir do padrão e alguém vai produzir as peças: figura autoral, tabela com dado real, passo a passo que o leitor segue. Declarar piso alto num curso em que o redator não tem o que desenhar produz enfeite, e enfeite é o defeito que o teto existe para impedir.
+
+**A regra que não muda.** Cada peça carrega informação própria. Ela substitui ou completa o texto, nunca repete o parágrafo de cima, e a legenda afirma um fato. O piso declarado aumenta o número de peças; não autoriza peça que só decora.
+
+**O que o gerador consegue emitir.** A contagem usa o mesmo parser do pipeline (`parse_module_to_sections`), e do Markdown saem três tipos: tabela (`dataTable`), lista de procedimento (`stepGuide`) e imagem com legenda (`figure`). Um piso de tipos acima de três só se cumpre com autoria explícita dos demais blocos ou na montagem da landing.
+
+Implementação: `src/validators/peso_visual_aula.py` (categoria `peso visual` no `content_checker`), `VisualConfig` em `src/clients/context.py`, resolução cliente mais curso em `Orchestrator._visual_do_curso`, instrução do redator em `config/quality_rules.yaml > validation.peso_visual`. Teste: `tests/test_peso_visual_aula.py`.

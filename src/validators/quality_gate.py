@@ -100,6 +100,7 @@ class QualityGate:
         module_name: str = "",
         unidade: str = "modulo",
         geo: bool = True,
+        visual=None,
     ) -> GateResult:
         """Valida texto puro (Markdown) com todas as verificações.
 
@@ -113,6 +114,8 @@ class QualityGate:
                 acervo. Quando o gerador passar a emitir aula, o chamador
                 passa `unidade="aula"` e a régua fica a do molde D sem
                 multiplicador. Ver `content_checker.tetos_da_unidade`.
+            visual: `VisualConfig` já resolvido para o curso (cliente sobreposto
+                pelo curso). Ausente, vale o bloco `visual` do cliente.
         """
         result = GateResult()
 
@@ -151,7 +154,12 @@ class QualityGate:
         #    docs/GEO_REDACAO_CHECKLIST_2026.md)
         geo_config = getattr(self.client, "geo", None) if geo else None
         content_errors = self._check_content_por_unidade(
-            working_text, module_name, geo_config, unidade, client=self.client
+            working_text,
+            module_name,
+            geo_config,
+            unidade,
+            client=self.client,
+            visual=visual if visual is not None else getattr(self.client, "visual", None),
         )
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
@@ -234,7 +242,7 @@ class QualityGate:
 
     @staticmethod
     def _check_content_por_unidade(
-        text: str, module_name: str, geo_config, unidade: str, client=None
+        text: str, module_name: str, geo_config, unidade: str, client=None, visual=None
     ):
         """Mede aula a aula quando o texto vem montado pelo orquestrador.
 
@@ -262,6 +270,7 @@ class QualityGate:
                 geo_config=geo_config,
                 unidade=unidade,
                 crosslinks_config=crosslinks,
+                visual_config=visual,
             )
         achados = []
         for titulo, bloco in dividir_em_unidades(text):
@@ -274,7 +283,12 @@ class QualityGate:
             # e citação vivem no nível da trilha e do curso (molde D).
             achados.extend(
                 check_content(
-                    bloco, rotulo, geo_config=None, unidade="aula", crosslinks_config=crosslinks
+                    bloco,
+                    rotulo,
+                    geo_config=None,
+                    unidade="aula",
+                    crosslinks_config=crosslinks,
+                    visual_config=visual,
                 )
             )
         if geo_config is not None:

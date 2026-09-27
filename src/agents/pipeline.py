@@ -99,6 +99,7 @@ class CourseFactory:
             tags=config.get("tags", []),
             pre_requisitos=config.get("pre_requisitos", []),
             modulos=modulos,
+            visual=config.get("visual"),
         )
 
         logger.info(

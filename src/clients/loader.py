@@ -23,6 +23,7 @@ from src.clients.context import (
     Geo2026Config,
     PipelineConfig,
     TutorConfig,
+    VisualConfig,
     VoiceGuardCanonical,
     VoiceGuardConfig,
     VoiceGuardForbidden,
@@ -221,6 +222,9 @@ def load_client(client_id: str = "default") -> ClientContext:
         catalogo=_resolve_path(cl_d.get("catalogo"), _ROOT),
     )
 
+    # Peso visual por aula (27/09/2026); ausente = teto do espelho, como antes
+    visual_cfg = VisualConfig.de_dict(data.get("visual"))
+
     # Wave 8 — idioma default do cliente
     client_language = ed_d.get("language", "pt-br")
 
@@ -243,6 +247,7 @@ def load_client(client_id: str = "default") -> ClientContext:
         pipeline=pipeline_cfg,
         geo=geo_cfg,
         crosslinks=crosslinks_cfg,
+        visual=visual_cfg,
         language=client_language,
     )
 

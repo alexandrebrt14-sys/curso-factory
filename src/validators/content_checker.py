@@ -55,6 +55,7 @@ from src.validators.lexicos_loader import (
     regex_de_metalinguagem,
     tetos_da_aula,
 )
+from src.validators.peso_visual_aula import check_peso_visual_aula
 from src.validators.rules_loader import rules_list, validation_section
 from src.validators.vocabulario_checker import check_vocabulario
 
@@ -803,6 +804,7 @@ def check_content(
     geo_config=None,
     unidade: str = "aula",
     crosslinks_config=None,
+    visual_config=None,
 ) -> list[ContentError]:
     """Valida qualidade de conteúdo educacional contra os tetos do molde D.
 
@@ -818,6 +820,9 @@ def check_content(
         crosslinks_config: `CrosslinksConfig` do cliente, opcional. Ligado, mede
             os crosslinks da aula (categoria `crosslinks`); ausente ou
             desligado, nada muda.
+        visual_config: `VisualConfig` resolvido (cliente sobreposto pelo
+            curso), opcional. Declarado, a aula é medida contra ele (categoria
+            `peso visual`) no lugar do teto do espelho; ausente, vale o teto.
 
     Verifica: extensão, número de H2 e de H3 por H2, hierarquia de títulos,
     teto de apoios visuais, exercício aplicado, clichês, verbos de Bloom,
@@ -885,7 +890,8 @@ def check_content(
     #    substituem texto; cobrá-los como obrigação produzia enfeite.
     headings = _find_headings(text)
     visuais = _find_tables(text) + _find_figures(text)
-    if visuais > tetos["visuais_max"]:
+    visual_declarado = bool(getattr(visual_config, "declarado", False)) and unidade == "aula"
+    if not visual_declarado and visuais > tetos["visuais_max"]:
         erros.append(
             ContentError(
                 tipo="warning",
@@ -1316,6 +1322,19 @@ def check_content(
     #     client.yaml. Só na aula: a trilha é fechamento, não leitura corrida.
     if unidade == "aula":
         erros.extend(erros_de_crosslinks(text, mod, crosslinks_config))
+
+    # 19. Peso visual declarado pelo cliente ou pelo curso (27/09/2026): piso,
+    #     teto, tipos e ritmo de peças na aula, no lugar do teto do espelho.
+    if visual_declarado:
+        erros.extend(
+            ContentError(
+                tipo=a.tipo,
+                categoria="peso visual",
+                mensagem=f"[{a.regra}] {a.mensagem}",
+                modulo=mod,
+            )
+            for a in check_peso_visual_aula(text, visual_config)
+        )
 
     return erros
 

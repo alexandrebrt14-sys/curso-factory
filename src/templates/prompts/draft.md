@@ -175,6 +175,8 @@ Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de s
 mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
 numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
 
+{bloco_peso_visual}
+
 ## Blocos auxiliares: ficha, dica, caso, legenda
 
 Tudo que não é parágrafo corrido (ficha de recurso, dica, caso numerado, legenda de figura,
