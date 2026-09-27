@@ -30,7 +30,9 @@ def _aula(orq, respostas: list[str]) -> tuple[str, list[str]]:
     fila = iter(respostas)
 
     def execute(contexto: str, **variaveis) -> str:
-        chamadas.append(contexto)
+        # Desde 27/09/2026 a nota de expansão vai no fim do prompt, pela variável
+        # {bloco_expansao}, e a pesquisa continua sendo o contexto.
+        chamadas.append(contexto + "\n\n" + variaveis.get("bloco_expansao", ""))
         return next(fila)
 
     orq.writer.execute = execute

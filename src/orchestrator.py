@@ -623,6 +623,7 @@ class Orchestrator:
             **self._blocos_de_instrucao(),
             "bloco_crosslinks": self._bloco_crosslinks(course),
             "bloco_ordem_do_curso": self._bloco_ordem_do_curso(),
+            "bloco_expansao": "",
             **self._variaveis_de_peso_visual(course),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
@@ -653,8 +654,10 @@ class Orchestrator:
                 "%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso
             )
             nota = self._nota_de_expansao(texto, palavras, variaveis)
+            # A nota vai no fim do prompt ({bloco_expansao}), depois da pesquisa:
+            # antes dela, quebrava o prefixo que as outras aulas compartilham.
             expandido = self._normalizar_aula(
-                self.writer.execute(nota + "\n\n" + contexto, **variaveis)
+                self.writer.execute(contexto, **{**variaveis, "bloco_expansao": nota})
             )
             palavras_exp = _contar_palavras(expandido)
             if palavras_exp > palavras:

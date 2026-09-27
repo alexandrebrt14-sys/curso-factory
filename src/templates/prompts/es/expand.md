@@ -14,4 +14,4 @@ la lección reescrita.
 --- LECCIÓN CORTA ---
 {lesson_md}
 
---- INVESTIGACIÓN (la misma de la primera versión) ---
+La investigación es la misma de la primera versión y está arriba, en "DATOS DE LA INVESTIGACIÓN".

@@ -195,3 +195,5 @@ module title and no comment about this prompt.
 
 --- RESEARCH DATA ---
 {context}
+
+{bloco_expansao}

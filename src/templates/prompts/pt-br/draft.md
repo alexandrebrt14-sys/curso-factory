@@ -1,4 +1,4 @@
-# Prompt: redação de UMA aula (GPT-4o)
+# Prompt: redação de UMA aula
 
 ## Quem escreve, para quem
 
@@ -18,18 +18,6 @@ de ferramenta ou de biblioteca só entra quando muda a decisão do aluno; a enxu
 de versão que não decide nada fica fora, e a referência vai para a lista de fontes da trilha.
 
 O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
-
-## O que você está escrevendo agora
-
-- Curso: {course_name} (nível {course_level})
-- Módulo {module_number}: {module_title}. {module_description}
-- Esta aula: **{lesson_number}: {lesson_title}** ({lesson_position})
-- A ideia única desta aula: {lesson_idea}
-- Aulas anteriores do módulo: {previous_lessons}
-- Aulas seguintes do módulo: {next_lessons}
-
-Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
-quando precisar. Não antecipe as seguintes.
 
 ## Anti-invenção (inviolável)
 
@@ -111,10 +99,6 @@ passar de R$ 40"). Não resuma o que ele acabou de ler.
 Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
 uma vez; não entram na aula.
 
-{bloco_ordem_do_curso}
-
-{bloco_crosslinks}
-
 ## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
 
 Pedido do dono, de 08/09/2026: o topo carregado dispersa o leitor e o card no meio compete
@@ -142,7 +126,7 @@ com a leitura. O gate reprova cada item abaixo, e a página não é publicada co
 
 ## Título da aula: promessa do aluno, não índice de técnico
 
-O título que o pipeline insere é o que está em "Esta aula". Se ele for rótulo de índice
+O título que o pipeline insere é o que está em "Esta aula", no fim deste prompt. Se ele for rótulo de índice
 (dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
 primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
 conseguir fazer, com verbo e em até {titulo_max_palavras} palavras: "Escolher a base do site sem pagar duas
@@ -257,8 +241,28 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
     todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
 
-Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
-módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
-
 --- DADOS DA PESQUISA ---
 {context}
+
+--- ESTA AULA ---
+
+## O que você está escrevendo agora
+
+- Curso: {course_name} (nível {course_level})
+- Módulo {module_number}: {module_title}. {module_description}
+- Esta aula: **{lesson_number}: {lesson_title}** ({lesson_position})
+- A ideia única desta aula: {lesson_idea}
+- Aulas anteriores do módulo: {previous_lessons}
+- Aulas seguintes do módulo: {next_lessons}
+
+Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
+quando precisar. Não antecipe as seguintes.
+
+{bloco_ordem_do_curso}
+
+{bloco_crosslinks}
+
+{bloco_expansao}
+
+Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.

@@ -115,3 +115,21 @@ def test_prompts_e_gate_do_pipeline_batem_com_a_referencia(tmp_path, monkeypatch
     prompts, gate = _rodar(tmp_path, monkeypatch)
     _comparar("prompts_do_pipeline.txt", prompts)
     _comparar("relatorio_do_gate.txt", gate)
+
+
+def test_prompt_de_aula_guarda_o_prefixo_estavel_para_o_cache(tmp_path, monkeypatch) -> None:
+    """Regras e pesquisa primeiro, o que muda por aula no fim (27/09/2026).
+
+    O cache automático de prompt só aproveita prefixo idêntico. Com as
+    variáveis da aula no topo, cada aula pagava de novo as regras e a pesquisa.
+    Aqui se prova que duas aulas do mesmo curso compartilham tudo até
+    "--- ESTA AULA ---", e que nenhuma variável da aula aparece antes disso.
+    """
+    prompts, _ = _rodar(tmp_path, monkeypatch)
+    chamadas = prompts.split("\n\n======== CHAMADA ========\n\n")
+    aulas = [c for c in chamadas if c.startswith("[openai]") and "--- ESTA AULA ---" in c]
+    assert len(aulas) >= 2
+    corte = aulas[0].index("--- ESTA AULA ---")
+    assert aulas[1][:corte] == aulas[0][:corte]
+    assert "Esta aula: **" not in aulas[0][:corte]
+    assert corte > 0.8 * len(aulas[0])

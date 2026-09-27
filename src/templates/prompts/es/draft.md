@@ -195,3 +195,5 @@ inserta), sin título de módulo y sin comentario sobre este prompt.
 
 --- DATOS DE LA INVESTIGACIÓN ---
 {context}
+
+{bloco_expansao}
