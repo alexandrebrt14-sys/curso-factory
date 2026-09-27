@@ -1,8 +1,8 @@
 # Guia de escrita humanizada (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 999d02ddc87cfa2897cb0fafda4f6b5fdd170103fddd74c14c7750f96f91beae
-sincronizado-em: 2026-09-10
+hash-fonte: 6547f0ee6548d56a177b09c61984235e01fb5bf6b48617672368443cfdc28623
+sincronizado-em: 2026-09-27
 
 O diagnóstico de ritmo, as técnicas de narrativa, a tabela de vícios de português gerado por
 LLM, o orçamento de formatação, o fluxo de revisão em três passadas e a lista do que não fazer
@@ -30,6 +30,11 @@ Fonte consultada e incorporada no commit `2479179e199f768c4e96aebbadfa5d864523b3
 A aplicação de SEO e GEO às etapas de pesquisa, escrita, revisão e humanização está em
 `docs/ESCRITA_SEO_GEO.md`. A fonte §10 rege a fidelidade; os prompts da raiz e de `pt-br/`
 executam essa orientação sem alterar o formato de retorno do pipeline.
+
+## Compatibilidade editorial de 27/09/2026
+
+Espelho regerado a partir do commit `12d1baec475d161ae3ffae2213bd894bd2a606f0`, versão 1.8.0.
+Detalhe e cuidado com o nome do pacote em `DIRETRIZ_EDITORIAL.md`, "Como sincronizar".
 
 ## Como sincronizar
 

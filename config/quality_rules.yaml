@@ -49,7 +49,7 @@ validation:
   # config/lexicos.json (espelho gerado da fonte, bloco `tetos.D`), lido em
   # runtime por src/validators/lexicos_loader.py. Repetir o número aqui criaria
   # a segunda cópia que o PLANO_DE_MIGRACAO.md proíbe. Para referência humana,
-  # hoje `tetos.D` (fonte 1.7.1) diz: piso 700 · alvo 900-1.800 · aviso 2.400 ·
+  # hoje `tetos.D` (fonte 1.8.0, igual à 1.7.1) diz: piso 700 · alvo 900-1.800 · aviso 2.400 ·
   # erro 3.600 palavras; 2 a 4 H2; 1 H3 por H2; até 3 figuras; parágrafo 20-80
   # palavras. Se este comentário divergir do JSON, o JSON vence. Piso e faixa
   # de parágrafo são AVISO, nunca erro (fonte §1: piso rígido é motor de

@@ -4,7 +4,7 @@
 
 A aula precisa explicar uma ideia com precisão suficiente para orientar uma decisão. SEO e GEO entram no cuidado com a pergunta, o exemplo e as condições da afirmação. O aluno recebe a explicação; a equipe conserva a origem e o registro de revisão.
 
-A fonte de estilo é `escrita-empreendedor` 1.7.1, apontada em `DIRETRIZ_EDITORIAL.md`. Esta aplicação preserva os tetos, o formato de aula e o contrato de retorno do pipeline. As orientações executáveis desta rodada estão na raiz dos prompts e no caminho padrão `pt-br/`.
+A fonte de estilo é `escrita-empreendedor` 1.8.0, apontada em `DIRETRIZ_EDITORIAL.md`. Esta aplicação preserva os tetos, o formato de aula e o contrato de retorno do pipeline. As orientações executáveis desta rodada estão na raiz dos prompts e no caminho padrão `pt-br/`.
 
 ## O que cada etapa confere?
 
