@@ -1,5 +1,27 @@
 # Changelog
 
+## 27/09/2026: boas práticas de escrita da produção do curso de super agentes
+
+Pedidos do dono e dados de uso do portal, registrados durante a produção do curso de super
+agentes pessoais, viram configuração lida por código, com teste de leitura e de
+retrocompatibilidade. Decisão em `wiki/decisions/boas-praticas-de-escrita-20260927.md`.
+
+- **Palavras de uso exagerado**: limite por aula para quatro famílias de palavras, com trocas
+  sugeridas (`validation.palavras_de_uso_exagerado`, `vocabulario_checker.py`).
+- **Apuração fora da aula**: a frase que conta como o dado foi checado reprova como bastidor
+  (`validation.apuracao_narrada`, estendendo `_check_bastidor`).
+- **Crosslinks por aula**, opt-in por cliente (`crosslinks` no `client.yaml`), com destino e
+  capítulo conferidos contra o catálogo do portal (`crosslink_checker.py`,
+  `scripts/gerar_catalogo_crosslinks.py`); ligado no default com piso 2 e teto 4.
+- **Peso visual declarado** por cliente ou curso (`visual`), sem mexer no espelho
+  (`peso_visual_aula.py`; `docs/DOUTRINA_VISUAL_CURSOS.md`, seção 13).
+- **Tamanho e ordem do curso** no planejamento e na redação, com aviso para curso fora da faixa
+  e aula inicial longa (`validation.planejamento`, `planejamento_checker.py`).
+- **Tabela de proveniência** como arquivo de trabalho (`proveniencia.py`,
+  `python cli.py proveniencia`, `etapas["proveniencia"]`), sem mudar o retorno do pipeline.
+- **Contradições com a fonte** corrigidas (C1, C2, C4, C8, C11, C12, C13, C16, C18).
+- **Espelho do léxico** regerado na 1.8.0; ponteiros com hash e data novos.
+
 ## 22/09/2026: didática, explicar em vez de detalhar
 
 Pedido do dono: a régua de máquina aprovava aula que o aluno abandona, porque media dentro
