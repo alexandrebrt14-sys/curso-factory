@@ -95,6 +95,17 @@ RELATORIO_REVISAO_RE = re.compile(
 PLANO_LINHA_RE = re.compile(r"^\s*(\d{1,2})[.)]\s*(.+?)(?:\s*\|\s*(.+?))?\s*$")
 
 
+class EtapaInterrompida(RuntimeError):
+    """A etapa parou no meio (orçamento esgotado) e NÃO é gravada como concluída.
+
+    Até 27/09/2026, parar por orçamento devolvia o rascunho parcial como saída
+    normal da etapa: o checkpoint marcava a etapa como feita, a retomada a
+    pulava, e análise e revisão eram pagas sobre um curso incompleto. Agora a
+    etapa fica aberta, e o que já foi pago está em `Orchestrator._parciais`,
+    gravado no checkpoint a cada aula, para a retomada não pagar de novo.
+    """
+
+
 class PipelineResult:
     """Resultado completo de uma execução do pipeline."""
 
@@ -208,6 +219,12 @@ class Orchestrator:
         #: Avisos produzidos dentro de uma etapa (ex.: expansão de aula curta) e
         #: entregues ao resultado quando a etapa fecha.
         self._avisos_pendentes: list[str] = []
+        #: Resultado de cada chamada paga já concluída dentro de uma etapa
+        #: (plano, aula, trilha, revisão), gravado no checkpoint a cada passo.
+        #: `{"draft": {"plano:1": [...], "aula:1.2": "...", "trilha:1": "..."},
+        #: "review": {"aula:1.2": "..."}}`.
+        self._parciais: dict[str, dict[str, Any]] = {}
+        self._resultado_atual: PipelineResult | None = None
         #: Destinos de crosslink da aula recém-escrita, para a seguinte variar.
         self._destinos_anteriores: set[str] = set()
         #: Posição da aula no curso inteiro (1, 2, 3...), contada na redação.
@@ -236,6 +253,7 @@ class Orchestrator:
         """Salva checkpoint incremental após cada etapa concluída (escrita atômica)."""
         data = result.to_dict()
         data["_context"] = context
+        data["_parciais"] = self._parciais
         path = self._checkpoint_path(course_id)
         try:
             write_json_atomic(path, data)
@@ -266,8 +284,20 @@ class Orchestrator:
         result.provedores = dict(data.get("provedores", {}))
         result.erros = []  # Limpa erros anteriores para retry
         context = data.get("_context", "")
+        parciais = data.get("_parciais")
+        self._parciais = dict(parciais) if isinstance(parciais, dict) else {}
         logger.info("Checkpoint carregado: %d etapas concluídas anteriormente", len(result.etapas))
         return result, context
+
+    def _parcial(self, etapa: str, chave: str) -> Any:
+        """O que já foi pago nesta etapa, numa execução anterior, ou `None`."""
+        return self._parciais.get(etapa, {}).get(chave)
+
+    def _guardar_parcial(self, course_id: str, etapa: str, chave: str, valor: Any) -> None:
+        """Guarda o resultado de uma chamada paga e grava o checkpoint na hora."""
+        self._parciais.setdefault(etapa, {})[chave] = valor
+        if self._resultado_atual is not None:
+            self._save_checkpoint(course_id, self._resultado_atual)
 
     # ── orçamento e procedência ─────────────────────────────────────────
 
@@ -430,6 +460,7 @@ class Orchestrator:
         # com que o cost_tracker registre cada call sob o curso correto.
         self.client.set_course_context(course.id)
 
+        self._parciais = {}
         checkpoint = self._load_checkpoint(course.id)
         if checkpoint:
             result, _ = checkpoint
@@ -438,6 +469,7 @@ class Orchestrator:
             )
         else:
             result = PipelineResult(course.id)
+        self._resultado_atual = result
 
         etapas: list[tuple[str, str, Callable[[], str]]] = [
             ("research", self.researcher.provider, lambda: self._step_research(course)),
@@ -751,11 +783,13 @@ class Orchestrator:
         self._destinos_anteriores = set()
 
         for i, modulo in enumerate(modulos, 1):
-            pode, motivo = self._pode_chamar(self.writer.provider, course.id)
-            if not pode:
-                logger.warning("%s antes do módulo %d. Parando draft.", motivo, i)
-                break
-            aulas = self._plan_lessons(course, modulo, i, research_context)
+            aulas = self._parcial("draft", f"plano:{i}")
+            if aulas is None:
+                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                if not pode:
+                    raise EtapaInterrompida(f"{motivo} antes do plano do módulo {i}")
+                aulas = self._plan_lessons(course, modulo, i, research_context)
+                self._guardar_parcial(course.id, "draft", f"plano:{i}", aulas)
             logger.info(
                 "Módulo %d/%d '%s': %d aula(s) planejada(s)",
                 i,
@@ -766,24 +800,30 @@ class Orchestrator:
             partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
             partes_do_modulo: list[str] = []
             for j in range(len(aulas)):
-                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
-                if not pode:
-                    logger.warning("%s na aula %d.%d. Parando draft.", motivo, i, j + 1)
-                    return "\n\n".join(partes)
-                logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
                 self._aula_no_curso += 1
-                aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
+                aula_md = self._parcial("draft", f"aula:{i}.{j + 1}")
+                if aula_md is None:
+                    pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                    if not pode:
+                        raise EtapaInterrompida(f"{motivo} na aula {i}.{j + 1}")
+                    logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
+                    aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
+                    self._guardar_parcial(course.id, "draft", f"aula:{i}.{j + 1}", aula_md)
+                else:
+                    logger.info("Aula %d.%d reaproveitada do checkpoint", i, j + 1)
                 self._destinos_anteriores = self._destinos_da_aula(aula_md)
                 partes.append(aula_md)
                 partes_do_modulo.append(aula_md)
                 logger.info("Aula %d.%d gerada: %d palavras", i, j + 1, _contar_palavras(aula_md))
-            pode, motivo = self._pode_chamar(self.writer.provider, course.id)
-            if not pode:
-                logger.warning("%s antes do fechamento da trilha %d. Parando draft.", motivo, i)
-                return "\n\n".join(partes)
-            trilha_md = self._close_trail(
-                course, modulo, i, aulas, partes_do_modulo, research_context
-            )
+            trilha_md = self._parcial("draft", f"trilha:{i}")
+            if trilha_md is None:
+                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                if not pode:
+                    raise EtapaInterrompida(f"{motivo} antes do fechamento da trilha {i}")
+                trilha_md = self._close_trail(
+                    course, modulo, i, aulas, partes_do_modulo, research_context
+                )
+                self._guardar_parcial(course.id, "draft", f"trilha:{i}", trilha_md)
             if trilha_md:
                 partes.append(trilha_md)
                 logger.info("Trilha %d fechada: %d palavras", i, _contar_palavras(trilha_md))
@@ -870,13 +910,16 @@ class Orchestrator:
                 # risco de invenção. Passa como saiu do writer.
                 revisadas.append(texto)
                 continue
+            chave = f"{k}:{titulo}"
+            pronta = self._parcial("review", chave)
+            if pronta is not None:
+                logger.info("Revisão %d/%d reaproveitada do checkpoint", k, len(unidades))
+                revisadas.append(pronta)
+                self._destinos_anteriores = self._destinos_da_aula(pronta)
+                continue
             pode, motivo = self._pode_chamar(self.reviewer.provider, course.id)
             if not pode:
-                aviso = f"{motivo} na revisão da unidade {k}; as seguintes ficam sem revisão."
-                logger.warning(aviso)
-                result.avisos.append(aviso)
-                revisadas.extend(t for _, t in unidades[k - 1 :])
-                break
+                raise EtapaInterrompida(f"{motivo} na revisão da unidade {k}")
             logger.info("Revisão %d/%d: %s", k, len(unidades), titulo or "(unidade sem título)")
             saida = self.reviewer.execute(
                 texto,
@@ -902,9 +945,11 @@ class Orchestrator:
                 result.avisos.append(aviso)
                 revisadas.append(texto)
                 self._destinos_anteriores = self._destinos_da_aula(texto)
+                self._guardar_parcial(course.id, "review", chave, texto)
                 continue
             revisadas.append(texto_revisado)
             self._destinos_anteriores = self._destinos_da_aula(texto_revisado)
+            self._guardar_parcial(course.id, "review", chave, texto_revisado)
 
         if relatorios:
             result.etapas["review_report"] = "\n\n".join(relatorios)
