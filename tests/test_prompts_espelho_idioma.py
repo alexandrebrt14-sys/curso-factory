@@ -83,29 +83,34 @@ def _titulos(caminho: Path) -> list[str]:
     return [linha.lstrip("#").strip() for linha in linhas if linha.startswith("#")]
 
 
-class TestCopiaPorIdiomaNaoPerdeSecao(unittest.TestCase):
-    """Nenhuma seção da raiz pode sumir na cópia de um idioma."""
+class TestRaizSoGuardaOQueCarrega(unittest.TestCase):
+    """Desde 27/09/2026 a raiz de `prompts/` não tem cópia de prompt com pasta por idioma.
 
-    def test_pt_br_nao_perde_secao_da_raiz(self):
-        """`pt-br` é o caminho padrão: perder seção aqui é perder na prática."""
-        pasta = PROMPTS / "pt-br"
-        self.assertTrue(pasta.is_dir(), "a pasta pt-br precisa existir")
+    O quase acidente que criou este arquivo foi uma regra editada só na raiz,
+    inerte porque `pt-br/` vence a cascata. A cura deixou de ser comparar as
+    duas cópias: a cópia de raiz saiu. Aqui se prova que ela não volta e que
+    todo agente resolve o prompt dentro de `pt-br/` (ou do idioma dele).
+    """
 
-        for arquivo in sorted(pasta.glob("*.md")):
-            raiz = PROMPTS / arquivo.name
-            if not raiz.exists():
-                continue
-            with self.subTest(prompt=arquivo.name):
-                da_raiz = _titulos(raiz)
-                do_idioma = set(_titulos(arquivo))
-                faltando = [t for t in da_raiz if t not in do_idioma]
-                self.assertEqual(
-                    faltando,
-                    [],
-                    f"pt-br/{arquivo.name} perdeu seção(ões) que existem na raiz: "
-                    f"{faltando}. A cópia por idioma pode acrescentar, nunca perder, "
-                    "e ela sombreia a raiz na geração em português.",
-                )
+    def test_raiz_nao_duplica_prompt_de_pasta_de_idioma(self):
+        duplicados = [p.name for p in PROMPTS.glob("*.md") if (PROMPTS / "pt-br" / p.name).exists()]
+        self.assertEqual(duplicados, [], f"cópia de raiz que nunca carrega: {duplicados}")
+
+    def test_todo_agente_resolve_dentro_de_pt_br(self):
+        from src.agents import analyzer, classifier, humanizer, researcher, reviewer, writer
+        from src.agents.lang_resolver import resolve_prompt_path
+
+        for modulo in (analyzer, classifier, humanizer, researcher, reviewer, writer):
+            classe = next(
+                v
+                for v in vars(modulo).values()
+                if isinstance(v, type)
+                and getattr(v, "prompt_file", "")
+                and v.__module__ == modulo.__name__
+            )
+            with self.subTest(agente=classe.__name__):
+                caminho = resolve_prompt_path(classe.prompt_file, "pt-br")
+                self.assertEqual(caminho.parent.name, "pt-br")
 
 
 class TestVariaveisDaAulaChegaramAosIdiomas(unittest.TestCase):
@@ -117,7 +122,7 @@ class TestVariaveisDaAulaChegaramAosIdiomas(unittest.TestCase):
     """
 
     def _alvos(self, nome: str) -> list[Path]:
-        alvos = [PROMPTS / nome] + [PROMPTS / idioma / nome for idioma in IDIOMAS]
+        alvos = [PROMPTS / idioma / nome for idioma in IDIOMAS]
         return [c for c in alvos if c.exists()]
 
     def test_draft_recebe_as_variaveis_da_aula(self):

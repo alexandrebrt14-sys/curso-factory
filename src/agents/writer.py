@@ -3,7 +3,7 @@
 Gera conteúdo dos módulos do curso usando os dados
 da etapa de pesquisa como base.
 
-Prompt externo: src/templates/prompts/draft.md
+Prompt externo: src/templates/prompts/pt-br/draft.md
 """
 
 from __future__ import annotations

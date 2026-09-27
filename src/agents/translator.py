@@ -4,7 +4,7 @@ Wave 8 — Multi-idioma. Recebe o conteúdo aprovado pelo revisor e
 produz uma versão fiel no idioma alvo, preservando Markdown, tabelas,
 blockquotes, listas e padrões editoriais HSM/HBR/MIT Sloan.
 
-Prompt externo: ``src/templates/prompts/translate.md`` (versões traduzidas
+Prompt externo: ``src/templates/prompts/pt-br/translate.md`` (versões traduzidas
 em ``src/templates/prompts/<lang>/translate.md``).
 """
 

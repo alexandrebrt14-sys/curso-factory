@@ -197,8 +197,8 @@ def test_instrucao_do_prompt_lista_destinos_e_exclui_o_proprio_curso() -> None:
 
 def test_prompt_de_redacao_traz_o_lugar_do_bloco() -> None:
     prompts = PROJECT_ROOT / "src" / "templates" / "prompts"
-    for pasta in (prompts, prompts / "pt-br"):
-        assert "{bloco_crosslinks}" in (pasta / "draft.md").read_text(encoding="utf-8")
+    for nome in ("draft.md", "review.md"):
+        assert "{bloco_crosslinks}" in (prompts / "pt-br" / nome).read_text(encoding="utf-8")
 
 
 def test_capitulo_do_catalogo_passa_e_capitulo_imaginado_reprova() -> None:

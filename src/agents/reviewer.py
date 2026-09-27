@@ -3,7 +3,7 @@
 Faz revisão completa do conteúdo com foco especial em
 acentuação PT-BR e consistência editorial.
 
-Prompt externo: src/templates/prompts/review.md
+Prompt externo: src/templates/prompts/pt-br/review.md
 """
 
 from __future__ import annotations

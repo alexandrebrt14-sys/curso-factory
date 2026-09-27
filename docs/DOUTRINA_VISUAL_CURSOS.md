@@ -179,7 +179,7 @@ Registro honesto do que existe hoje, para que ninguém confunda regra escrita co
 | `validation.visual_density` em `config/quality_rules.yaml` | **Lido e cobrado** por `src/validators/visual_density.py` |
 | Vocabulário de blocos visuais no gerador | **Seis tipos**, ver seção 3 |
 | Cobrança na geração | `TsxGenerator.render_page` reprova antes de escrever o arquivo |
-| Prompt de escrita | Pede as peças e ensina a marcação em `src/templates/prompts/draft.md` |
+| Prompt de escrita | Pede as peças e ensina a marcação em `src/templates/prompts/pt-br/draft.md` |
 | Portão de peso visual do acervo publicado | Na landing (`scripts/gate-peso-visual.mjs`), com linha de base congelada |
 
 ### Onde a régua morde

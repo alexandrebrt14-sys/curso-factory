@@ -14,8 +14,8 @@ O detalhe da apuração fica no material de pesquisa; o limite que muda a decis�
 
 ## Prompts e contratos
 
-O resolvedor lê `src/templates/prompts/pt-br/` antes da raiz no idioma padrão.
-Ao alterar orientação executável em português, confira os dois caminhos. Preserve variáveis,
+O resolvedor lê `src/templates/prompts/pt-br/`; a raiz de `prompts/` guarda só o `tutor.md`
+(as cópias de raiz dos demais prompts saíram em 27/09/2026, porque nunca carregavam). Preserve variáveis,
 marcadores e o formato de retorno; a revisão devolve a aula e o relatório no contrato existente.
 Os demais idiomas conservam seus próprios prompts e precisam de revisão própria ao estender
 a orientação para eles.

@@ -31,7 +31,7 @@ com [[andragogia-knowles]] e [[taxonomia-bloom]].
 
 ## Prompt externo
 
-`src/templates/prompts/draft.md` (~150 linhas). Modificar este
+`src/templates/prompts/pt-br/draft.md` (~150 linhas). Modificar este
 arquivo altera comportamento do writer sem mexer em código Python.
 Versões i18n em `src/templates/prompts/{pt-br,en,es}/draft.md`.
 

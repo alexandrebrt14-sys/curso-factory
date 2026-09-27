@@ -102,5 +102,4 @@ def test_instrucao_do_prompt_lista_os_literais_do_yaml() -> None:
 def test_prompts_pt_br_e_raiz_trazem_o_lugar_do_bloco() -> None:
     prompts = PROJECT_ROOT / "src" / "templates" / "prompts"
     for nome in ("draft.md", "review.md"):
-        for pasta in (prompts, prompts / "pt-br"):
-            assert "{bloco_apuracao}" in (pasta / nome).read_text(encoding="utf-8")
+        assert "{bloco_apuracao}" in (prompts / "pt-br" / nome).read_text(encoding="utf-8")

@@ -42,7 +42,7 @@ partir da wave 2026-05-24.
 ## Aplicação no pipeline
 
 - **[[entities/gpt-4o-writer]]** — prompt externo
-  `src/templates/prompts/draft.md` inclui as 5 regras AutoGEO como
+  `src/templates/prompts/pt-br/draft.md` inclui as 5 regras AutoGEO como
   bloco obrigatório para tags `geo-2026`.
 - **[[clients/default]]** — `client.yaml` campo
   `geo_2026_pos_io.autogeo_enabled: true` (proposto na wave

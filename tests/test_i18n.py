@@ -112,10 +112,8 @@ def test_resolve_prompt_path_returns_target_language_when_present() -> None:
 def test_resolve_prompt_path_falls_back_to_pt_br_for_unsupported() -> None:
     """Idioma não suportado (ja) cai para pt-br ou raiz, nunca falha."""
     path = resolve_prompt_path("draft.md", "ja")
-    # Aceita tanto pt-br/ quanto raiz (cascata 2 ou 3).
-    expected_pt_br = PROMPTS_DIR / "pt-br" / "draft.md"
-    expected_root = PROMPTS_DIR / "draft.md"
-    assert path in (expected_pt_br, expected_root)
+    # Desde 27/09/2026 a raiz só guarda o tutor.md: cai sempre em pt-br/.
+    assert path == PROMPTS_DIR / "pt-br" / "draft.md"
     assert path.is_file()
 
 

@@ -59,7 +59,6 @@ def test_c2_molde_da_aula_tem_tres_h2_em_todos_os_idiomas() -> None:
     for idioma, marca in marcas.items():
         for nome in ("draft.md", "review.md"):
             assert marca in (PROMPTS / idioma / nome).read_text(encoding="utf-8"), (idioma, nome)
-    assert marcas["pt-br"] in (PROMPTS / "draft.md").read_text(encoding="utf-8")
 
 
 def test_c1_fallback_inline_nao_pede_cena_nem_registro_hbr() -> None:

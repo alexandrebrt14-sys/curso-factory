@@ -403,7 +403,7 @@ validation:
   # número de ocorrências além do limite: a partir de `excesso_para_aviso` sai
   # aviso; a partir de `excesso_para_erro`, erro. Código, nome de arquivo,
   # chave de configuração, destino de link e menção entre aspas ficam fora.
-  # `instrucao_prompt` entra em draft.md e review.md (pt-br e raiz) pela
+  # `instrucao_prompt` entra em draft.md e review.md (pt-br) pela
   # variável {bloco_vocabulario}; `{limite}` e `{familias}` são trocados pelos
   # valores abaixo. Sem esta seção, nada é cobrado nem instruído.
   palavras_de_uso_exagerado:
@@ -450,7 +450,7 @@ validation:
   # pendente"); aqui mora a FRASE que conta ao leitor o que o redator checou.
   # Cada item é texto literal; prefixe com "re:" para expressão regular. Os
   # literais entram também como exemplos na instrução dos prompts
-  # ({bloco_apuracao} em draft.md e review.md, pt-br e raiz).
+  # ({bloco_apuracao} em draft.md e review.md, pt-br).
   apuracao_narrada:
     enabled: true
     padroes:
@@ -518,7 +518,7 @@ validation:
   # max_paragrafos_sem_peca; o curso vence o cliente campo a campo. Medido por
   # src/validators/peso_visual_aula.py (categoria "peso visual"). Sem bloco
   # declarado, vale o teto do espelho, como antes. Aqui mora só o texto da
-  # instrução que entra em draft.md ({bloco_peso_visual}, pt-br e raiz);
+  # instrução que entra em draft.md ({bloco_peso_visual}, pt-br);
   # {min}, {max}, {tipos} e {paragrafos} são trocados pelos valores declarados.
   peso_visual:
     instrucao_prompt: |
@@ -591,7 +591,7 @@ validation:
 
   # Revisão dirigida pelo gate (27/09/2026). O gate determinístico roda sobre
   # cada aula ANTES da chamada paga de revisão, e os erros que ele achar entram
-  # no prompt do revisor ({bloco_correcoes} em review.md, pt-br e raiz) como a
+  # no prompt do revisor ({bloco_correcoes} em review.md, pt-br) como a
   # lista do que corrigir primeiro. Antes, o revisor trabalhava às cegas e o
   # gate só media no fim, depois de todas as chamadas pagas. `max_itens`
   # limita a lista; sem a seção, o bloco sai vazio e a revisão fica como antes.

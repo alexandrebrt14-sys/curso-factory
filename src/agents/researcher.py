@@ -3,7 +3,7 @@
 Busca dados atualizados sobre o tema do curso para
 fundamentar a criação de conteúdo educacional.
 
-Prompt externo: src/templates/prompts/research.md
+Prompt externo: src/templates/prompts/pt-br/research.md
 """
 
 from __future__ import annotations

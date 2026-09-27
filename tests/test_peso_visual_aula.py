@@ -154,5 +154,4 @@ def test_courses_yaml_leva_o_bloco_ate_o_curso() -> None:
 
 def test_prompt_de_redacao_traz_o_lugar_do_bloco() -> None:
     prompts = PROJECT_ROOT / "src" / "templates" / "prompts"
-    for pasta in (prompts, prompts / "pt-br"):
-        assert "{bloco_peso_visual}" in (pasta / "draft.md").read_text(encoding="utf-8")
+    assert "{bloco_peso_visual}" in (prompts / "pt-br" / "draft.md").read_text(encoding="utf-8")

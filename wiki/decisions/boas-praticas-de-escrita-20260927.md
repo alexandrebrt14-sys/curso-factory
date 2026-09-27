@@ -22,7 +22,7 @@ retrocompatibilidade (sem a configuração, o comportamento anterior fica igual)
 
 As instruções dos prompts saem do mesmo YAML, pelos blocos `{bloco_vocabulario}`,
 `{bloco_apuracao}`, `{bloco_crosslinks}`, `{bloco_peso_visual}` e `{bloco_ordem_do_curso}` em
-`draft.md` e `review.md` (pt-br e raiz). Em inglês e espanhol, entra a regra geral, sem lista.
+`draft.md` e `review.md` (pt-br). Em inglês e espanhol, entra a regra geral, sem lista.
 Nenhum número ou lista dessas regras mora no código do validador.
 
 Contradições entre documentos (briefing do redator, seção 13): onde o erro estava no

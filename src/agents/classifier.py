@@ -3,7 +3,7 @@
 Classifica nível, tags, pré-requisitos e duração estimada
 do curso com base no conteúdo analisado.
 
-Prompt externo: src/templates/prompts/classify.md
+Prompt externo: src/templates/prompts/pt-br/classify.md
 """
 
 from __future__ import annotations
