@@ -50,7 +50,7 @@ Em **toda** decisão de arquitetura do orquestrador, escolha de prompts por agen
 - [`docs/SEO_GEO_INCREMENT_20260520.md`](docs/SEO_GEO_INCREMENT_20260520.md) — novo, 20-05-2026. Síntese executável de 3 documentos canônicos sobre SEO+GEO+AEO+B2A pós Google I/O 2026 (15-mai-2026). Inclui: (a) **Master Prompt 5 Ondas** unificado e executável para auditoria de portal editorial (Fundação técnica → Arquitetura/Entidade → Conteúdo/Information Gain → Citabilidade/Schema → Autoridade/B2A); (b) **Stack técnico de 38 camadas** com 570+ itens mapeados por onda; (c) **Princeton GEO playbook** com lifts mensurados (Cite Sources +115%, Statistics +41%, Quotation +28% — Aggarwal et al. KDD 2024 arXiv:2311.09735); (d) **Two-Phase JSON-LD theory** que resolve o debate Ahrefs (upstream Knowledge Graph lê schema; runtime RAG lê apenas HTML visível); (e) **Entity Boundary Drift** com cosine similarity ≥0,95 entre canais; (f) **8 Query Fan-Out variant types** de Michael King (iPullRank); (g) **Camada ASO** (Agentic Search Optimization) e roadmap B2A com NLWeb/MCP/OpenAPI (Gartner 2026: 90% B2B intermediado por agentes em 2028, $15T); (h) **Catálogo de bots IA atualizado mai/2026** incluindo OAI-AdsBot novo, Pay-Per-Crawl HTTP 402 da Cloudflare, crawl-to-referral ratios benchmarks; (i) **Anti-padrões 2026** (llms.txt como requisito = falso pelo Google AI Optimization Guide; schema como silver bullet = falso pelo estudo Ahrefs; FAQ rich results descontinuados 7-mai-2026). Templates prontos em [`docs/templates/seo-geo-2026/`](docs/templates/seo-geo-2026/): `robots-2026.txt` (20+ user-agents), `news-article-schema.jsonld` (@graph aninhado com Wikidata), `paywall-schema.jsonld` (regras Google 2026), `breadcrumb-schema.jsonld`, `llms.txt.template` (defensivo, não obrigatório). Fontes preservadas em [`docs/research/seogeo-20260520/`](docs/research/seogeo-20260520/). **Quando usar:** auditar portal editorial cliente, criar curso "GEO/SEO 2026", ajustar prompt do `writer.py` com Princeton checklist obrigatória (Cite Sources ≥3, Stats ≥5, Quotes ≥1).
 
 **Incremento canônico jun/2026 (operacionaliza a redação para GEO):**
-- [`docs/GEO_REDACAO_CHECKLIST_2026.md`](docs/GEO_REDACAO_CHECKLIST_2026.md) — novo, 03-06-2026. **Rubrica de redação empírica de 13 técnicas com lift de citação medido** (Aggarwal/Princeton, AutoGEO ICLR 2026, GEO-SFE/Berkeley), mapeada para módulos de curso. É a fonte que o prompt `draft.md` carimba e que o `content_checker.py` valida por contagem (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule). **Referência obrigatória para qualquer módulo que deva competir por citação em LLM.**
+- [`docs/GEO_REDACAO_CHECKLIST_2026.md`](docs/GEO_REDACAO_CHECKLIST_2026.md) — novo, 03-06-2026. **Rubrica de redação empírica de 13 técnicas com lift de citação medido** (Aggarwal/Princeton, AutoGEO ICLR 2026, GEO-SFE/Berkeley), mapeada para módulos de curso. É a fonte que o prompt `draft.md` carimba e que o `content_checker.py` valida por contagem sobre o curso inteiro, nunca por aula (mínimos no bloco `geo_2026` do `client.yaml`; no default, citação direta tem piso 0 desde 03/09/2026). **Referência obrigatória para qualquer módulo que deva competir por citação em LLM.**
 - [`docs/GEO_KNOWLEDGE_BASE_2026_V3.md`](docs/GEO_KNOWLEDGE_BASE_2026_V3.md) — novo, 03-06-2026 (V3, delta sobre a V2). Consolida o que a literatura/mercado produziram entre 20-mai e 03-jun: **AutoGEO (GEO Score/GEU Score, +50,99%)**, **earned media 84%** (Muck Rack), **Selection Rate × Absorption Rate** (SIGIR 2026), super-geo (severidade Blocker/High/Med/Low + 4 tiers de agent-readiness), Karpathy LLM Wiki (ingest/query/lint), Multi-LLM Sampling Wave, os **13 conceitos novos (51-63)**, papers Q2 2026 (FeatGEO, GhostCite 14-95% citações fabricadas, SIGIR AIO 51,5%) e descobertas pós-I/O.
 - [`docs/GEO_EARNED_MEDIA_2026.md`](docs/GEO_EARNED_MEDIA_2026.md) — novo, 03-06-2026. Evidência dura de que **earned media = 84% das citações de IA** (paid = 0,3%, GEO-morto); framework EMGE de 5 estágios, técnicas de colocação, KPIs K-EM-001 a 006, gap de PR de ~2%. Deriva o item 13 da rubrica e o Conceito 63.
 
@@ -144,7 +144,7 @@ Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**. Desde 27/08/2026 a obr
 - Exceção: código, variáveis, commits, nomes de arquivo em inglês
 
 ### Nomenclatura (cliente `default`)
-- Credencial canônica: "Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil"
+- Credencial oficial: "Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil" (com vírgula: travessão em texto de leitura reprova)
 - NUNCA usar: "Especialista #1", "GEO Brasil", "Source Rank"
 - Domínios válidos: alexandrecaramaschi.com, brasilgeo.ai
 - NUNCA referenciar: geobrasil.com.br, sourcerank.ai
@@ -178,12 +178,15 @@ O cliente LLM (`src/llm_client.py`) classifica toda falha (cota, chave, modelo, 
 
 Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/2026) e o anexo [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md). Em conflito, a diretriz prevalece sobre o resumo desta seção.
 
-### Estilo HSM/HBR/MIT Sloan
-- Tom analítico, direto, orientado por dados, sem jargão vazio
+### Registro: linguagem simples, com rigor de evidência
+- O registro da aula é o da fonte de estilo: linguagem simples e jornalismo de serviço para o
+  dono de pequeno negócio, no celular. HBR, MIT Sloan e HSM valem só como referência de rigor
+  de evidência e de "resposta primeiro", nunca como registro (C1 de 27/09/2026)
+- Tom direto, orientado por dados, sem jargão vazio
 - Uma ideia central por parágrafo, desenvolvida até a ideia terminar. O ritmo vem do conteúdo: período longo para raciocínio com causa e ressalva, frase curta quando houver o que enfatizar. PROIBIDA qualquer cota de ritmo (frase curta por parágrafo, alternância programada, teto fixo de linhas), que produz staccato de manchete
 - Dados e estatísticas para sustentar argumentos, nunca afirmar sem evidência
 - Evitar superlativos sem evidência ("o melhor", "revolucionário")
-- Narrativa obrigatória: abrir em situação concreta com tensão explícita, conduzir por um caso nomeado, cumprir a promessa da abertura e fechar retomando esse caso (diretriz §3)
+- Abertura direta (R1 e fonte §2 regra 2): subtítulo de uma frase e parágrafos que dizem o problema do leitor em segunda pessoa, o que custa não resolver e o que muda; sem cena, sem hora do dia, sem personagem na abertura. O caso nomeado entra no H2 do exemplo e o fecho o retoma
 
 ### Andragogia (6 Princípios de Knowles) — OBRIGATÓRIO
 1. Necessidade de saber — POR QUE antes do COMO
@@ -238,9 +241,9 @@ em `docs/ESPECIFICACAO_DIDATICA_20260922.md` e na decisão
   espelho da fonte de estilo `escrita-empreendedor`, e entram no prompt como variáveis
   (`{palavras_alvo_min}`, `{figuras_max}`...). NUNCA repita número de régua em prompt ou doc
 - Abertura na ordem R1: subtítulo em uma frase (vira `description` do step) e dois ou três
-  parágrafos diretos ao ponto; 2 a 4 H2 (o normal são dois: por que a ideia muda o resultado;
-  um caso do ramo, do começo ao fim); H3 só em H2 acima de 350 palavras; nada de H4 nem
-  subtítulo por linha terminada em dois-pontos
+  parágrafos diretos ao ponto; 2 a 4 H2 (o normal são três, como no molde D da fonte: por que
+  a ideia muda o resultado; um caso do ramo, do começo ao fim; o que muda na semana do aluno);
+  H3 só em H2 longo; nada de H4 nem subtítulo por linha terminada em dois-pontos
 - NENHUM exercício por aula desde 08/09/2026 (R6): o próximo passo entra em prosa, no fecho.
   `min_exercises_per_lesson: 0` no YAML; o bloco "faça agora" reprova
 - Apoio visual é TETO (até `figuras_max` por aula), só quando substitui texto. Sem piso de
@@ -396,7 +399,7 @@ python cli.py batch config/courses.yaml --client X   # Lote sob cliente X
 
 ## Padrão editorial obrigatório
 
-Antes de produzir qualquer texto de leitura humana neste repositório (documentação, cursos, páginas, relatórios, descrições de PR, mensagens longas de commit), leia e aplique [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) na raiz (versão 4, 11/08/2026) e consulte o anexo prático [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md), com exemplos antes e depois, heurísticas mensuráveis e fontes. Esta é a fonte única do padrão editorial do repositório: os prompts do pipeline (`src/templates/prompts/`) e o resumo da seção "Padrão Editorial" acima se subordinam a ela, e a duplicação de camadas editoriais divergentes foi o que degradou a qualidade entre julho e agosto de 2026 (ver `wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`).
+Antes de produzir qualquer texto de leitura humana neste repositório (documentação, cursos, páginas, relatórios, descrições de PR, mensagens longas de commit), leia e aplique [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) na raiz (ponteiro para a fonte `escrita-empreendedor`) e consulte o anexo prático [`GUIA_ESCRITA_HUMANIZADA.md`](GUIA_ESCRITA_HUMANIZADA.md), com exemplos antes e depois, heurísticas mensuráveis e fontes. Esta é a fonte única do padrão editorial do repositório: os prompts do pipeline (`src/templates/prompts/`) e o resumo da seção "Padrão Editorial" acima se subordinam a ela, e a duplicação de camadas editoriais divergentes foi o que degradou a qualidade entre julho e agosto de 2026 (ver `wiki/decisions/diretriz-editorial-v3-narrativa-sem-cota.md`).
 
 Antes de qualquer regra de evitação vem o piso de substância (diretriz §2.1), porque os gates automáticos deste repo medem forma e nenhum deles mede argumento: texto raso e uniforme passa em todos. Toda peça precisa ter tese identificável, evidência ligada à tese, ganho de informação, critério de decisão explícito onde houver alternativas, arco de leitura e consequência executável para o leitor. Aprovação no gate não é aprovação editorial, e em conflito entre proibição e piso de substância o piso vence.
 
@@ -404,6 +407,6 @@ Antes da primeira frase vem a prova (diretriz §2.2). Levante o material de evid
 
 Promessa e tensão são escritas antes do esqueleto (§3.1), o esqueleto segue a ordem do gênero (§3.2), o pedido é um só por peça com as quatro peças da fórmula (§3.6), e toda porcentagem dispara quatro conferências na mesma frase: origem, data, método e denominador (§13).
 
-O essencial, em uma passada: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; storytelling obrigatório em conteúdo longo (abertura em situação, tensão antes da solução, caso condutor, promessa cumprida, fechamento com callback, mostrar em vez de qualificar); ritmo nascido do sentido, com o teste do bloco de dez frases servindo de diagnóstico depois de escrever e nunca de cota durante a escrita; proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); tabela, matriz de decisão e checklist usados sempre que houver comparação, escolha ou passo verificável, e prosa sempre que houver raciocínio encadeado; dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta.
+O essencial, em uma passada: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; caso condutor contado inteiro no H2 do exemplo, promessa cumprida e fecho que retoma o caso, com abertura direta e sem cena (fonte §2 regra 2); ritmo nascido do sentido, com o teste do bloco de dez frases servindo de diagnóstico depois de escrever e nunca de cota durante a escrita; proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); tabela, matriz de decisão e checklist usados sempre que houver comparação, escolha ou passo verificável, e prosa sempre que houver raciocínio encadeado; dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta.
 
 Sub-agentes que geram copy longa recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md` carimbado no prompt. Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.

@@ -6,9 +6,10 @@ Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (o
 clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
 celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
 com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
-ganha explicação de até 12 palavras na primeira vez que aparece, com comparação do dia a dia,
-no molde "spring: jeito de animar que imita uma mola: em vez de mandar o movimento durar um
-tempo fixo, você diz o quanto ele é firme e o quanto desacelera". Esse molde vale para TODA
+ganha, colada a ele na primeira vez que aparece, uma explicação de até 12 palavras com
+comparação do dia a dia ("spring: jeito de animar que imita uma mola"); a analogia pode seguir
+na frase seguinte, começando pelo termo ("Com o spring, em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera"). Esse molde vale para TODA
 superfície que você escrever: prosa, legenda, ficha, dica, tabela.
 
 Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
@@ -64,7 +65,8 @@ dele e qual é o próximo passo, dito em prosa. Extensão: de {palavras_alvo_min
 acima de {palavras_aviso}, confira se entrou outra ideia. A contagem orienta a revisão,
 mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
 
-Cabeçalhos: **{h2_min} a {h2_max} H2**, e o normal são dois, um por bloco abaixo. H3 só quando
+Cabeçalhos: **{h2_min} a {h2_max} H2**, e o normal são três, um por bloco abaixo (dois passam
+quando o terceiro não tem o que acrescentar). H3 só quando
 um H2 passa de 350 palavras e precisa de duas partes (no máximo {h3_por_h2} por H2). Nada de
 H4, nada de linha terminada em dois-pontos como subtítulo.
 
@@ -85,9 +87,9 @@ sem botão, sem card, sem tabela antes do primeiro parágrafo.
 **H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
 tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
 disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
-(comportamento observável, antes e depois) e o erro mais comum de quem ignora, marcado como
-**Armadilha comum:**. Comece pelo problema e chegue à ideia; nunca abra com "a definição de X
-é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
+(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
+Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
 primeira não explicou.
 
 **H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
@@ -95,6 +97,10 @@ quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que acont
 com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
 caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
 negócio", "aplique no seu negócio" nem "mockup".
+
+**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
+acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
+numeradas de exercício e sem campo para preencher (R6).
 
 **Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
 dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
@@ -167,10 +173,12 @@ a sua proposta e apaga a linha.
 ## Apoio visual (teto, não piso)
 
 Até {figuras_max} apoios visuais na aula, e só quando substituem texto: tabela para comparar
-duas ou mais opções em dois ou mais critérios (opções nas colunas, critérios nas linhas); lista
+opções em dois ou mais critérios (opções nas colunas, critérios nas linhas, no máximo três
+colunas de texto curto para caber no celular: a coluna do critério e duas opções); lista
 numerada para processo em que a ordem importa (um verbo por passo, resultado observável no
 mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
-Aula sem apoio visual passa; peça decorativa, não. Blockquote, negrito e bloco de código não
+Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
+decorativa reprova sempre. Blockquote, negrito e bloco de código não
 contam como apoio visual e não têm cota.
 
 Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o

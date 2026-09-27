@@ -32,7 +32,10 @@ branding:
   hero_gradient_to: "#0176d3"
   badge_color: "#0176d3"
 
-# Padrão editorial — HSM / HBR / MIT Sloan + andragogia de Knowles
+# Padrão editorial. O registro da aula é o da fonte de estilo (linguagem simples,
+# dono de pequeno negócio no celular); HSM, HBR e MIT Sloan ficam como referência
+# de rigor de evidência. `style` e `words_per_module_*` só aparecem na listagem de
+# `python cli.py clients`: os tetos da aula vêm de config/lexicos.json (tetos.D).
 editorial:
   style: "hsm_hbr_mit_sloan"
   reference_publications:

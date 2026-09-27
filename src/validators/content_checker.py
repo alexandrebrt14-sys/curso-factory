@@ -48,6 +48,7 @@ from src.validators.abertura_checker import check_abertura
 from src.validators.crosslink_checker import check_crosslinks_aula
 from src.validators.didatica_checker import check_didatica
 from src.validators.lexicos_loader import (
+    carregar_lexicos,
     expressoes_de_bastidor,
     expressoes_de_muleta_legal,
     expressoes_vetadas,
@@ -900,6 +901,30 @@ def check_content(
                 f"por {nome_unidade}. Apoio visual entra quando SUBSTITUI texto "
                 f"(comparação, sequência, conjunto de números); acima do teto ele "
                 f"passa a competir com a leitura.",
+                modulo=mod,
+            )
+        )
+    # 2b. Aula longa sem nenhum apoio (27/09/2026): a fonte avisa acima de
+    #     `limiares.semVisualAcimaDePalavras` do espelho, e até esta data o
+    #     limiar existia no JSON sem nenhum código que o lesse. Sem a chave, nada.
+    limiares = carregar_lexicos().get("limiares")
+    sem_visual_acima = (
+        _inteiro(limiares.get("semVisualAcimaDePalavras"), 0) if isinstance(limiares, dict) else 0
+    )
+    if (
+        unidade == "aula"
+        and not visual_declarado
+        and sem_visual_acima
+        and visuais == 0
+        and word_count > sem_visual_acima
+    ):
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="formatação",
+                mensagem=f"Aula com {word_count} palavras e nenhum apoio visual; acima de "
+                f"{sem_visual_acima} palavras, uma tabela, um passo a passo ou uma figura que "
+                f"substitua texto costuma ajudar a leitura no celular.",
                 modulo=mod,
             )
         )

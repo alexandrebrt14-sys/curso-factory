@@ -62,6 +62,8 @@ validation:
     # Trilha = 4 a 6 aulas (MOLDES_DE_PAGINA.md seção 6), 30-60 min.
     min_lessons_per_trail: 4
     max_lessons_per_trail: 6
+    # Descritivas: nenhum código lê as duas chaves abaixo (27/09/2026).
+    # O tamanho do curso é orientado por validation.planejamento.aulas_por_curso.
     min_trails_per_course: 5
     max_trails_per_course: 8
     # Compatibilidade com o pipeline atual, que ainda entrega "módulo": um

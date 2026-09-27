@@ -40,8 +40,8 @@ acentue URL, slug, código, variável ou atributo HTML.
   própria, depois dois ou três parágrafos diretos ao ponto. Se o subtítulo faltar, escreva-o a
   partir da primeira frase. Cena, hora do dia, personagem, "neste módulo", lista de
   objetivos, "o que você vai aprender", "para quem é", índice e card saem do topo.
-- 2 a 4 H2 (o normal são dois: por que a ideia muda o resultado; um caso do ramo, do começo
-  ao fim). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
+- 2 a 4 H2 (o normal são três: por que a ideia muda o resultado; um caso do ramo, do começo
+  ao fim; o que muda na semana do aluno, em prosa). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
   dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
 - Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
   "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",

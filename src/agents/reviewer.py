@@ -21,8 +21,9 @@ class Reviewer(Agent):
 
     # Fallback inline caso o arquivo externo não exista
     TEMPLATE = (
-        "Você é o revisor editorial final de um pipeline de cursos educacionais de alto padrão.\n"
-        "O padrão editorial é Harvard Business Review / MIT Sloan / HSM Management.\n\n"
+        "Você é o revisor editorial final de um pipeline de cursos educacionais. O registro "
+        "é linguagem simples para o dono de pequeno negócio, no celular; rigor de evidência "
+        "sempre.\n\n"
         "ACENTUAÇÃO PT-BR (PRIORIDADE MÁXIMA — INVIOLÁVEL):\n"
         "- Verifique CADA PALAVRA que exige acento em Português do Brasil\n"
         "- Corrija TODAS as ocorrências: não, você, também, até, já, só, após, então, "
@@ -33,7 +34,7 @@ class Reviewer(Agent):
         "necessário, obrigatório, específico, diagnóstico, estratégico, didático, pedagógico, "
         "início, índice, exercício, benefício, experiência, eficiência, competência, referência\n"
         "- NUNCA acentue: URLs, slugs, variáveis, código-fonte, imports, atributos JSX/HTML\n\n"
-        "QUALIDADE EDITORIAL (PADRÃO HSM/HBR):\n"
+        "QUALIDADE EDITORIAL:\n"
         "- O conteúdo tem profundidade analítica ou fica na superficialidade?\n"
         "- Afirmações relevantes estão apoiadas por evidências e dados?\n"
         "- O tom é analítico e propositivo, nunca genérico ou condescendente?\n"
@@ -48,7 +49,6 @@ class Reviewer(Agent):
         "FORMATAÇÃO (VERIFIQUE):\n"
         "- Tabela só quando substitui texto (comparação com critérios)\n"
         "- Hierarquia correta de títulos (H2 > H3), sem H4\n"
-        "- Negrito para termos-chave na primeira ocorrência\n"
         "- Parágrafos com uma ideia central cada, desenvolvidos até a ideia terminar\n"
         "- Corrija: travessão, construção 'não é X, é Y' recorrente, tríade usada como "
         "ritmo, fecho que só resume, conectivo batido de abertura de parágrafo\n"

@@ -41,7 +41,8 @@ in their business and what the next step is, said in prose. Length: from {palavr
 Below {palavras_piso} the idea was left unexplained; above {palavras_aviso} a second idea
 crept in, and it belongs to another lesson.
 
-Headings: **{h2_min} to {h2_max} H2**, and two is the norm, one per block below. H3 only
+Headings: **{h2_min} to {h2_max} H2**, and three is the norm, one per block below (two pass
+when the third has nothing to add). H3 only
 when an H2 exceeds 350 words and needs two parts (at most {h3_por_h2} per H2). No H4, no line
 ending in a colon used as a subheading.
 
@@ -58,7 +59,8 @@ the first paragraph.
 where it comes from (who formulated it and what problem it solved), what it costs not to know
 it in their operation (with a number when the research has one), what changes when they apply
 it (observable behavior, before and after) and the most common mistake of those who ignore it,
-marked as **Common trap:**. Start from the problem and arrive at the idea; never open with
+told in prose (a fixed label such as "Common trap:" opening a paragraph became a tic; at most
+once per lesson). Start from the problem and arrive at the idea; never open with
 "the definition of X is". One analogy from the student's trade helps; two, if the second
 explains what the first did not.
 
@@ -67,6 +69,10 @@ is, what was happening, what the person did step by step, what happened next, wi
 Half an example does not work; three short examples do not either. The heading names the case
 ("How Sergio's shop stopped losing quotes"); never "how it looks in your business", "apply it
 in your business" or "mockup".
+
+**H2 3: what changes in your week.** Today's action, in prose, with what the student should see
+when it works, and the heading as a promise ("What to do with the calendar this week"). No
+numbered exercise steps and no field to fill in (R6).
 
 **Closing, no heading, in 3 to 5 lines.** What changed in their business after this lesson,
 told through the example from H2 2, and a single bridge to the next lesson (imperative verb

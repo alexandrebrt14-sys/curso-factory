@@ -41,7 +41,8 @@ en su negocio y cuál es el próximo paso, dicho en prosa. Extensión: de {palav
 Por debajo de {palavras_piso} la idea quedó sin explicar; por encima de {palavras_aviso} entró
 una segunda idea, que pertenece a otra lección.
 
-Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son dos, uno por bloque. H3 solo cuando
+Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son tres, uno por bloque (dos pasan cuando
+el tercero no tiene qué agregar). H3 solo cuando
 un H2 pasa de 350 palabras y necesita dos partes (como máximo {h3_por_h2} por H2). Nada de H4,
 nada de línea terminada en dos puntos como subtítulo.
 
@@ -57,8 +58,9 @@ sin tabla antes del primer párrafo.
 **H2 1: por qué [la idea] cambia tu resultado.** Explica la idea en prosa corrida, sin
 viñetas: de dónde viene (quién la formuló y qué problema resolvía), qué cuesta no saberla en su
 operación (con número cuando la investigación lo tenga), qué cambia cuando la aplica
-(comportamiento observable, antes y después) y el error más común de quien la ignora, marcado
-como **Trampa común:**. Empieza por el problema y llega a la idea; nunca abras con "la
+(comportamiento observable, antes y después) y el error más común de quien la ignora, dicho en
+prosa (un rótulo fijo como "Trampa común:" abriendo párrafo se volvió tic; como máximo una vez
+por lección). Empieza por el problema y llega a la idea; nunca abras con "la
 definición de X es". Una analogía del día a día del ramo del alumno ayuda; dos, si la
 segunda explica lo que la primera no explicó.
 
@@ -67,6 +69,10 @@ entero: quién es, qué estaba pasando, qué hizo la persona paso a paso, qué p
 número. Medio ejemplo no sirve; tres ejemplos cortos tampoco. El encabezado nombra el caso
 ("Cómo el taller de Sergio dejó de perder presupuestos"); nunca "cómo queda en tu negocio",
 "aplícalo en tu negocio" ni "mockup".
+
+**H2 3: qué cambia en tu semana.** La acción de hoy, en prosa, con lo que el alumno debe ver
+cuando acierta, y el encabezado como promesa ("Qué hacer con la agenda esta semana"). Sin pasos
+numerados de ejercicio y sin campo para llenar (R6).
 
 **Cierre, sin encabezado, en 3 a 5 líneas.** Qué cambió en su negocio después de esta lección,
 dicho por el ejemplo del H2 2, y un único puente hacia la siguiente lección (verbo en imperativo

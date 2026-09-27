@@ -38,8 +38,8 @@ decided by context. Never add accents to URLs, slugs, code, variables or HTML at
   line, then two or three paragraphs straight to the point. If the subtitle is missing, write
   it from the first sentence. Scene, time of day, character, "in this module", lists of
   objectives, "what you will learn", "who this is for", index and cards leave the top.
-- 2 to 4 H2 (two is the norm: why the idea changes the result; one case from the trade,
-  beginning to end). H3 only in an H2 above 350 words. H4 and subheadings made of a line
+- 2 to 4 H2 (three is the norm: why the idea changes the result; one case from the trade,
+  beginning to end; what changes in the student's week, in prose). H3 only in an H2 above 350 words. H4 and subheadings made of a line
   ending in a colon become prose or disappear. Sections that deal with the same subject merge.
 - Forbidden blocks (R5 to R9) GO, with no replacement: exercises ("do it now", "exercise",
   "hands on", "your turn", "practice", "task", "challenge", "Expected result:", "If
