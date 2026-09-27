@@ -39,7 +39,7 @@ herramienta) o ya saber. Si el itinerario no depende de nada, escribe una línea
 ## Glosario
 
 Los términos técnicos que usan las lecciones, en orden alfabético, cada uno con glosa de hasta
-12 palabras y una comparación de su día a día. Formato: `**término**: glosa`. Entre cinco y
+{glosa_max_palavras} palabras y una comparación de su día a día. Formato: `**término**: glosa`. Entre cinco y
 doce términos; solo lo que las lecciones de verdad usan.
 
 ## Preguntas frecuentes
@@ -53,7 +53,7 @@ respuesta en prosa justo debajo.
 Una línea por fuente, en el formato `Nombre de la fuente, título o informe, mes y año` y, cuando
 haya, el enlace justo después, solo con lo que las lecciones o la investigación traen. De una a
 ocho fuentes. Es el ÚLTIMO bloque del itinerario y el único lugar del curso donde aparece una
-fuente (R7): cada línea con hasta 25 palabras, sin comentario, sin tarjeta, sin cita destacada.
+fuente (R7): cada línea con hasta {fonte_max_palavras} palabras, sin comentario, sin tarjeta, sin cita destacada.
 Se dibuja en el pie de la página, en cuerpo pequeño.
 
 ## Antes de entregar, comprueba
@@ -61,9 +61,9 @@ Se dibuja en el pie de la página, en cuerpo pequeño.
 1. Cinco secciones, en este orden, cada una con el encabezado de arriba como H2; "Fuentes" es la última.
 6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R5 a R9).
 2. Verbos de acción en los objetivos; ningún "entender" o "conocer".
-3. Glosa de hasta 12 palabras por término; ningún término que las lecciones no usen.
+3. Glosa de hasta {glosa_max_palavras} palabras por término; ningún término que las lecciones no usen.
 4. Ninguna fuente inventada.
-5. Frases de hasta 28 palabras; sin raya; acentuación completa.
+5. Frases de hasta {frase_max_palavras} palabras; sin raya; acentuación completa.
 
 Empieza directo por el primer H2, sin título de itinerario (el pipeline lo inserta) y sin
 comentario sobre este prompt.

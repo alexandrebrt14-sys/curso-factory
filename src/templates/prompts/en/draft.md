@@ -7,7 +7,7 @@ a store, a restaurant, a freelancer). The reader is a layperson in marketing and
 reads on a phone and gives each lesson a few minutes. Write the way you would explain at the
 counter: direct sentences, verbs with subjects, examples with the name of a real thing
 (calendar, cash register, inventory, WhatsApp). A technical term gets an explanation of up to
-12 words the first time it appears, with a comparison from daily life.
+{glosa_max_palavras} words the first time it appears, with a comparison from daily life.
 
 The text is written in the target language of the course, with no emoji and no em dash.
 
@@ -30,7 +30,7 @@ this prompt. What is not there does not enter as fact. Before leaving a gap, try
 order: search the research again; reduce the claim to what is known ("three clients reported"
 instead of "the market reports"); move the argument away from the center; cut the passage.
 Only after that use the marker `[MISSING EVIDENCE: what needs to be found]`, in place of the
-DATA and never in place of the section. Ceiling of 3 markers per lesson. An example with an
+DATA and never in place of the section. Ceiling of {marcadores_max_aula} markers per lesson. An example with an
 invented number is allowed only when labeled in the sentence itself ("suppose a monthly
 revenue of R$ 40,000").
 
@@ -43,11 +43,11 @@ crept in, and it belongs to another lesson.
 
 Headings: **{h2_min} to {h2_max} H2**, and three is the norm, one per block below (two pass
 when the third has nothing to add). H3 only
-when an H2 exceeds 350 words and needs two parts (at most {h3_por_h2} per H2). No H4, no line
+when an H2 exceeds {h3_acima_de_palavras} words and needs two parts (at most {h3_por_h2} per H2). No H4, no line
 ending in a colon used as a subheading.
 
 **Opening, in this exact order, nothing in between (rule R1).** The pipeline inserts the title
-(H1). You start with the **subtitle: ONE sentence, on its own line, up to 25 words**, saying what
+(H1). You start with the **subtitle: ONE sentence, on its own line, up to {subtitulo_max_palavras} words**, saying what
 the student will be able to do when done. After a blank line, **two or three opening
 paragraphs**, straight to the point: the problem they live today, what it costs not to solve it
 and what changes by the end of the lesson. The first element after the subtitle is always a
@@ -107,7 +107,7 @@ with the reading. The gate rejects each item below and the page is not published
 
 - A paragraph carries one idea, from {paragrafo_min} to {paragrafo_max} words, in 2 to 4
   sentences. Neither stacked one-line paragraphs nor ten-line blocks.
-- Sentences up to 28 words, in direct order most of the time. Length follows meaning: cause
+- Sentences up to {frase_max_palavras} words, in direct order most of the time. Length follows meaning: cause
   and caveat together call for a longer sentence; the turn calls for a short one. Never
   alternate short and long by program.
 - Verb with subject and active voice. "Optimizing acquisition" becomes "acquire better".
@@ -183,8 +183,8 @@ never the figure.
 5. Length between {palavras_alvo_min} and {palavras_alvo_max} words.
 6. No exercise, checkpoint, mockup, "needs verification" or data-protection law by name (R1 to R9).
 7. No "Source:" line and no "Sources" heading inside the lesson.
-8. No number without origin in the research; at most 3 `[MISSING EVIDENCE]` markers.
-9. Paragraphs of {paragrafo_min} to {paragrafo_max} words; sentences up to 28.
+8. No number without origin in the research; at most {marcadores_max_aula} `[MISSING EVIDENCE]` markers.
+9. Paragraphs of {paragrafo_min} to {paragrafo_max} words; sentences up to {frase_max_palavras}.
 10. Up to {figuras_max} visual supports, all replacing text.
 11. Nothing from the "What never goes in" list.
 12. Closing through the example, with one bridge to the next lesson.

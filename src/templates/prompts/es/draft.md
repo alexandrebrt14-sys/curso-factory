@@ -6,7 +6,7 @@ Escribes una lección de curso para el dueño de un pequeño negocio (taller, sa
 tienda, restaurante, profesional autónomo). Es lego en marketing y tecnología, lee en el
 celular y dedica pocos minutos a cada lección. Escribe como quien explica en el mostrador:
 frase directa, verbo con sujeto, ejemplo con nombre de cosa real (agenda, caja, inventario,
-WhatsApp). El término técnico recibe una explicación de hasta 12 palabras la primera vez que
+WhatsApp). El término técnico recibe una explicación de hasta {glosa_max_palavras} palabras la primera vez que
 aparece, con una comparación de la vida diaria.
 
 El texto sale en el idioma del curso, con acentuación completa, sin emoji y sin raya.
@@ -30,7 +30,7 @@ prompt. Lo que no esté allí no entra como hecho. Antes de dejar un hueco, inte
 orden: buscar de nuevo en la investigación; reducir la afirmación a lo que se sabe ("tres
 clientes reportaron" en lugar de "el mercado reporta"); sacar el argumento del centro; cortar
 el pasaje. Solo después usa el marcador `[FALTA EVIDENCIA: qué hay que buscar]`, en lugar del
-DATO y nunca en lugar de la sección. Techo de 3 marcadores por lección. Un ejemplo con número
+DATO y nunca en lugar de la sección. Techo de {marcadores_max_aula} marcadores por lección. Un ejemplo con número
 inventado se permite solo cuando va rotulado en la propia frase ("supón una facturación de
 R$ 40 mil al mes").
 
@@ -43,11 +43,11 @@ una segunda idea, que pertenece a otra lección.
 
 Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son tres, uno por bloque (dos pasan cuando
 el tercero no tiene qué agregar). H3 solo cuando
-un H2 pasa de 350 palabras y necesita dos partes (como máximo {h3_por_h2} por H2). Nada de H4,
+un H2 pasa de {h3_acima_de_palavras} palabras y necesita dos partes (como máximo {h3_por_h2} por H2). Nada de H4,
 nada de línea terminada en dos puntos como subtítulo.
 
 **Apertura, en este orden exacto, sin nada en medio (regla R1).** El pipeline inserta el título
-(H1). Tú empiezas por el **subtítulo: UNA frase, en línea propia, de hasta 25 palabras**, que
+(H1). Tú empiezas por el **subtítulo: UNA frase, en línea propia, de hasta {subtitulo_max_palavras} palabras**, que
 dice qué va a poder hacer el alumno al terminar. Después de una línea en blanco, **dos o tres
 párrafos de apertura**, directos al punto: el problema que vive hoy, qué cuesta no resolverlo y
 qué cambia al terminar la lección. El primer elemento después del subtítulo es siempre un
@@ -108,7 +108,7 @@ compite con la lectura. El gate rechaza cada ítem de abajo y la página no se p
 
 - Párrafo con una idea, de {paragrafo_min} a {paragrafo_max} palabras, en 2 a 4 frases. Ni
   párrafos de una línea apilados, ni bloques de diez líneas.
-- Frase de hasta 28 palabras, en orden directo la mayor parte de las veces. El tamaño viene del
+- Frase de hasta {frase_max_palavras} palabras, en orden directo la mayor parte de las veces. El tamaño viene del
   sentido: causa y salvedad juntas piden frase mayor; el giro pide frase corta. Nunca alternes
   corta y larga por programa.
 - Verbo con sujeto y voz activa. "Optimizar la captación" se vuelve "captar mejor".
@@ -183,8 +183,8 @@ nunca la figura.
 5. Extensión entre {palavras_alvo_min} y {palavras_alvo_max} palabras.
 6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R1 a R9).
 7. Ninguna línea "Fuente:" y ningún encabezado "Fuentes" dentro de la lección.
-8. Ningún número sin origen en la investigación; como máximo 3 marcadores `[FALTA EVIDENCIA]`.
-9. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta 28.
+8. Ningún número sin origen en la investigación; como máximo {marcadores_max_aula} marcadores `[FALTA EVIDENCIA]`.
+9. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta {frase_max_palavras}.
 10. Hasta {figuras_max} apoyos visuales, todos sustituyendo texto.
 11. Nada de la lista "Lo que nunca entra".
 12. Cierre por el ejemplo, con un puente hacia la siguiente lección.

@@ -38,8 +38,8 @@ por el contexto. Nunca acentúes URL, slug, código, variable o atributo HTML.
   propia, después dos o tres párrafos directos al punto. Si el subtítulo falta, escríbelo a
   partir de la primera frase. Escena, hora del día, personaje, "en este módulo", lista de
   objetivos, "qué vas a aprender", "para quién es", índice y tarjeta salen del inicio.
-- 2 a 4 H2 (lo normal son tres: por qué la idea cambia el resultado; un caso del rubro, de
-  principio a fin; qué cambia en la semana del alumno, en prosa). H3 solo en H2 de más de 350 palabras. H4 y subtítulo por línea terminada
+- {h2_min} a {h2_max} H2 (lo normal son tres: por qué la idea cambia el resultado; un caso del rubro, de
+  principio a fin; qué cambia en la semana del alumno, en prosa). H3 solo en H2 de más de {h3_acima_de_palavras} palabras. H4 y subtítulo por línea terminada
   en dos puntos se vuelven prosa o desaparecen. Las secciones que tratan el mismo asunto se
   funden.
 - Los bloques prohibidos (R5 a R9) SALEN, sin sustituto: ejercicio ("hazlo ahora",
@@ -62,7 +62,7 @@ por el contexto. Nunca acentúes URL, slug, código, variable o atributo HTML.
 
 Párrafo con una idea, en 2 a 4 frases. Junta la secuencia de párrafos de una frase que
 fragmenta un razonamiento; separa el bloque de diez líneas que carga dos asuntos. La frase de
-más de 28 palabras se parte cuando se puede partir sin perder la condición. Nunca apliques
+más de {frase_max_palavras} palabras se parte cuando se puede partir sin perder la condición. Nunca apliques
 alternancia programada de frase corta y larga.
 
 ### 5. Léxico vetado (corrige cada ocurrencia)
@@ -95,7 +95,7 @@ alternancia programada de frase corta y larga.
 
 Todo número necesita origen en la investigación o rótulo de ejemplo ilustrativo en la propia
 frase. El porcentaje sin origen se vuelve `[FALTA EVIDENCIA: ...]` o afirmación reducida a lo
-que se sabe. Marcadores abiertos por encima de 3 en la lección: repruébalo en el informe, pero
+que se sabe. Marcadores abiertos por encima de {marcadores_max_aula} en la lección: repruébalo en el informe, pero
 devuelve el texto igual. Fuente y fecha no entran en la frase de lectura; quedan en la lista de
 fuentes del itinerario. Nunca transformes "el mercado entiende" en "el 67% de las empresas,
 según McKinsey" sin que el número esté en la investigación.

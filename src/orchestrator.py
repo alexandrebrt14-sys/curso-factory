@@ -324,6 +324,7 @@ class Orchestrator:
         carrega número nenhum: quem muda a régua na fonte muda o prompt.
         """
         from src.validators.content_checker import tetos_da_unidade
+        from src.validators.numeros_dos_prompts import numeros_dos_prompts
 
         t = tetos_da_unidade("aula")
         alvo_min, alvo_max = t["alvo"]
@@ -342,6 +343,7 @@ class Orchestrator:
             "paragrafo_min": str(par_min),
             "paragrafo_max": str(par_max),
             "minutos_alvo": str(max(5, round(alvo_max / 180))),
+            **numeros_dos_prompts(),
         }
 
     @staticmethod
@@ -407,7 +409,9 @@ class Orchestrator:
         return self._draft_modules_iterative(course, research)
 
     def _step_analyze(self, course: Course, draft: str) -> str:
-        return self.analyzer.execute(draft, course_name=course.titulo, draft_content=draft)
+        return self.analyzer.execute(
+            draft, course_name=course.titulo, draft_content=draft, **self._tetos_da_aula()
+        )
 
     def _step_classify(self, course: Course, draft: str) -> str:
         conteudo = draft[:CLASSIFY_CONTEXT_CHARS]
@@ -809,6 +813,7 @@ class Orchestrator:
                 ),
                 "lessons": lessons,
                 "context": research_context[:TRAIL_RESEARCH_CHARS],
+                **self._tetos_da_aula(),
             },
         )
         texto = self.client.call(self.writer.provider, prompt, model=self.writer.model).strip()
@@ -832,7 +837,7 @@ class Orchestrator:
         if not unidades:
             return ""
         resumo_analise = (analysis or "")[:REVIEW_ANALYSIS_CHARS]
-        blocos = self._blocos_de_instrucao()
+        blocos = {**self._tetos_da_aula(), **self._blocos_de_instrucao()}
         revisadas: list[str] = []
         relatorios: list[str] = []
 

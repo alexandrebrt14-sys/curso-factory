@@ -37,7 +37,7 @@ ferramenta) ou já saber. Se a trilha não depende de nada, escreva uma linha di
 
 ## Glossário
 
-Os termos técnicos que as aulas usam, em ordem alfabética, cada um com glosa de até 12
+Os termos técnicos que as aulas usam, em ordem alfabética, cada um com glosa de até {glosa_max_palavras}
 palavras e uma comparação do dia a dia dele, no molde "spring: jeito de animar que imita uma
 mola: em vez de mandar o movimento durar um tempo fixo, você diz o quanto ele é firme e o
 quanto desacelera". Formato: `**termo**: glosa`. Entre cinco e doze termos; só o que as aulas
@@ -54,12 +54,12 @@ prosa logo abaixo.
 Uma linha por fonte, no formato `Nome da fonte, título ou relatório, mês e ano` e, quando
 houver, o link logo depois, só com o que as aulas ou a pesquisa trazem. De uma a oito fontes.
 É o ÚLTIMO bloco da trilha e o único lugar do curso onde fonte aparece (R7): cada linha tem até
-25 palavras, sem comentário, sem card, sem citação em destaque. Ela é desenhada no rodapé da
+{fonte_max_palavras} palavras, sem comentário, sem card, sem citação em destaque. Ela é desenhada no rodapé da
 página, em corpo pequeno.
 
 ## Subtítulo da trilha
 
-Se o pipeline pedir a descrição da trilha, ela é UMA promessa em até 25 palavras, sem fórmula
+Se o pipeline pedir a descrição da trilha, ela é UMA promessa em até {subtitulo_max_palavras} palavras, sem fórmula
 fixa ("Você sai com...") e sem corrente de vírgulas empilhando as promessas de cada aula. As
 trilhas de um curso não podem começar todas com as mesmas duas palavras.
 
@@ -68,9 +68,9 @@ trilhas de um curso não podem começar todas com as mesmas duas palavras.
 1. Cinco seções, nesta ordem, cada uma com o cabeçalho acima como H2; "Fontes" é a última.
 6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem menção à LGPD (R5 a R9).
 2. Verbos de ação nos objetivos; nenhum "entender" ou "conhecer".
-3. Glosa de até 12 palavras por termo; nenhum termo que as aulas não usem.
+3. Glosa de até {glosa_max_palavras} palavras por termo; nenhum termo que as aulas não usem.
 4. Nenhuma fonte inventada.
-5. Frases de até 28 palavras; sem travessão; acentuação completa.
+5. Frases de até {frase_max_palavras} palavras; sem travessão; acentuação completa.
 
 Comece direto pelo primeiro H2, sem título de trilha (o pipeline o insere) e sem comentário
 sobre este prompt.

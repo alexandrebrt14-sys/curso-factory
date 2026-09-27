@@ -294,6 +294,9 @@ validation:
   # é texto literal; prefixe com "re:" para passar uma expressão regular.
   abertura:
     enabled: true
+    # R7: palavras por linha de fonte no rodapé da trilha. Lido pelo
+    # abertura_checker e pelo prompt da trilha ({fonte_max_palavras}).
+    fonte_max_palavras: 25
     termos:
       R3: []
       R5_qualquer: []
@@ -309,6 +312,10 @@ validation:
     # LIDO EM RUNTIME — content_checker.py::check_content (erro bloqueante).
     # Também conta "[PREENCHER-HUMANO:". Default no código: 5.
     fail_if_unresolved_markers_above: 5  # Mais que 5 marcadores sobrando = reprovar
+    # LIDO EM RUNTIME — numeros_dos_prompts.py: o teto que o redator e o revisor
+    # recebem no prompt ({marcadores_max_aula}). É mais baixo que o do gate de
+    # propósito: o rascunho mira abaixo do ponto em que o gate reprova.
+    marcadores_por_aula_no_rascunho: 3
     ban_vague_attribution: true  # "especialistas apontam" sem citação = erro
     # LIDO EM RUNTIME — content_checker.py::_check_percentages_have_source
     # (aviso não-bloqueante, teto de 5 por documento). Default no código: true.
