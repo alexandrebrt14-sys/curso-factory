@@ -37,6 +37,15 @@ O espelho `config/lexicos.json` foi regerado na 1.8.0 com o comando documentado.
 caminho sem instalar nada é apontar o `PYTHONPATH` para o clone (ver `DIRETRIZ_EDITORIAL.md`,
 "Como sincronizar").
 
+Na mesma rodada, por pedido do dono, o pipeline foi auditado e refatorado
+(`docs/AUDITORIA_PIPELINE_20260927.md`, 53 achados). O que mudou no comportamento: o prompt de
+aula guarda regras e pesquisa num prefixo estável para o cache de prompt; o gate determinístico
+roda antes de cada revisão e dirige a correção; a retomada reaproveita cada aula e cada revisão
+já pagas, e parada por orçamento deixa a etapa aberta em vez de fingir sucesso; a expansão das
+primeiras aulas respeita o teto delas. Refatoração pura, provada pela saída de referência
+(`tests/test_saida_de_referencia.py`): números dos prompts com origem única, cópias de raiz dos
+prompts removidas, camada GEO sem rodar o gate inteiro de novo, `CLAUDE.md` enxuto.
+
 **Pendências para o dono decidir**
 
 1. O bloco `didatica` da fonte 1.8.0 está no espelho e o `didatica_checker` ainda lê os números
@@ -49,7 +58,12 @@ caminho sem instalar nada é apontar o `PYTHONPATH` para o clone (ver `DIRETRIZ_
    super agentes. Confirmar para todo curso do default.
 4. Cadência de regeração do catálogo de crosslinks (hoje do commit `a0f834b4` da landing, de
    26/09): curso novo só vira destino depois de publicado e de o catálogo ser regerado.
-5. Segunda rodada: `TECNICAS_ADICIONAIS.md` (Parte C, acréscimos ao léxico, que pertencem à
+5. Da auditoria: tirar ou tornar determinística a classificação, que não tem consumidor e
+   pode interromper o pipeline antes da revisão (E4); teto da sessão de US$ 5 abaixo do custo
+   estimado de um curso de 16 aulas (G3); faixa da cápsula da fonte (25 a 60) no lugar da do
+   código (18 a 75), que muda o veredito GEO (A10); congelar ou regenerar os prompts en e es (B1
+   a B3).
+6. Segunda rodada: `TECNICAS_ADICIONAIS.md` (Parte C, acréscimos ao léxico, que pertencem à
    fonte e não a este repositório) e `visual/GUIA_VISUAL.md` (legenda de 12 a 40 palavras,
    tabela que vira cartão no celular) chegaram durante esta rodada e não viraram regra aqui.
 
@@ -66,3 +80,5 @@ Relacionadas: [[didatica-explicar-em-vez-de-detalhar-20260922]],
   que não narra a apuração, crosslinks em toda aula, cinco a sete peças por aula num curso,
   proveniência de cada número) viraram configuração, validador e teste. Contradições C1, C2,
   C4, C8, C11, C12, C13, C16 e C18 corrigidas no curso-factory; espelho do léxico na 1.8.0.
+  Auditoria e refatoração do pipeline no mesmo dia: 11 achados resolvidos, 12 em parte e 30
+  como proposta.

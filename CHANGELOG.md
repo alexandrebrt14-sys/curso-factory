@@ -22,6 +22,24 @@ retrocompatibilidade. Decisão em `wiki/decisions/boas-praticas-de-escrita-20260
 - **Contradições com a fonte** corrigidas (C1, C2, C4, C8, C11, C12, C13, C16, C18).
 - **Espelho do léxico** regerado na 1.8.0; ponteiros com hash e data novos.
 
+Auditoria e refatoração do pipeline (`docs/AUDITORIA_PIPELINE_20260927.md`, 53 achados):
+
+- **Números dos prompts** saem da mesma configuração dos validadores
+  (`src/validators/numeros_dos_prompts.py`); saída idêntica.
+- **Cópias de raiz dos prompts** removidas (931 linhas que nunca carregavam); fica o `tutor.md`.
+- **Prompt de aula com prefixo estável** para o cache de prompt: regras e pesquisa primeiro, a
+  aula no fim; a nota de expansão deixou de ir antes da pesquisa.
+- **Revisão dirigida pelo gate**, que roda antes da chamada paga; o revisor recebe os destinos
+  de crosslink e a regra de não apagar link nem peça visual.
+- **Retomada aula a aula** pelo checkpoint e parada por orçamento que deixa a etapa aberta.
+- **Expansão das primeiras aulas** mira o teto de aula curta.
+- **Camada GEO** sem rodar o gate inteiro de novo (426 ms para 7 ms num curso de 16 aulas).
+- **Fallback do revisor** pede o marcador que o pipeline separa; `[MISSING EVIDENCE:` conta
+  no teto de marcadores.
+- **`CLAUDE.md`** de 62 para 28 KB, com o índice das waves em `docs/BASE_DE_CONHECIMENTO_GEO.md`.
+- Código morto e dois testes que não provavam o que diziam; saída de referência do pipeline em
+  `tests/test_saida_de_referencia.py`.
+
 ## 22/09/2026: didática, explicar em vez de detalhar
 
 Pedido do dono: a régua de máquina aprovava aula que o aluno abandona, porque media dentro
