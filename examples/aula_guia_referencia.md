@@ -17,7 +17,9 @@ deixa a escolha da hora com você.
 A chave de acesso (em inglês, passkey: um par de chaves em que a parte secreta nunca sai do seu
 aparelho) funciona como uma fechadura que só abre com a chave que fica no seu bolso. O serviço
 de e-mail guarda só a parte pública; na hora de entrar, o seu aparelho prova que tem a parte
-secreta, e você destrava essa prova com a digital, o rosto ou o PIN. O padrão que sustenta
+secreta, e você destrava essa prova com a digital, o rosto ou o PIN.
+
+O padrão que sustenta
 isso é o WebAuthn, recomendação do W3C de março de 2019, e ele amarra cada chave ao endereço
 do serviço: uma página falsa, em outro endereço, não recebe nada que sirva para entrar.
 
