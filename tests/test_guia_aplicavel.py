@@ -366,3 +366,19 @@ def test_prompts_pt_br_nao_exigem_mais_caso_contado_nem_fecho_pelo_personagem() 
         texto = (pasta / nome).read_text(encoding="utf-8")
         for frase in vetadas:
             assert frase not in texto, (nome, frase)
+
+
+def test_linha_de_comando_confere_as_fontes_com_referencia_injetada(capsys) -> None:
+    import cli
+
+    with pytest.raises(SystemExit) as saida:
+        cli.main(
+            [
+                "fontes-recentes",
+                str(EXEMPLOS / "aula_narrativa_antes.md"),
+                "--referencia",
+                "2026-09-27",
+            ]
+        )
+    assert saida.value.code == 0
+    assert "estado-atual-com-fonte-antiga" in capsys.readouterr().out

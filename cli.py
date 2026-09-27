@@ -189,6 +189,43 @@ def cmd_proveniencia(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_fontes_recentes(args: argparse.Namespace) -> int:
+    """Confere data, recência e estado atual das fontes de uma aula (27/09/2026).
+
+    Lê o bloco de fontes e a atribuição no corpo; com `--proveniencia`, também a
+    tabela de proveniência preenchida. A data de referência vem de `--referencia`,
+    do `data_de_referencia` do cliente ou, por fim, do dia da execução.
+    """
+    from datetime import date
+
+    from src.clients import load_client
+    from src.validators.fontes_recentes_checker import check_fontes_recentes, data_de_referencia
+
+    try:
+        texto = Path(args.path).read_text(encoding="utf-8")
+        tabela = Path(args.proveniencia).read_text(encoding="utf-8") if args.proveniencia else None
+    except (OSError, UnicodeDecodeError) as exc:
+        return _erro(f"leitura: {exc}")
+    cliente = args.client or "default"
+    config = load_client(cliente).fontes_recentes
+    if not config.enabled:
+        return _erro(f"fontes_recentes desligado no client.yaml do cliente '{cliente}'")
+    try:
+        referencia = (
+            date.fromisoformat(args.referencia)
+            if args.referencia
+            else data_de_referencia(config, date.today())
+        )
+    except ValueError:
+        return _erro(f"data de referência ilegível: {args.referencia} (use AAAA-MM-DD)")
+    achados = check_fontes_recentes(texto, config, referencia, tabela)
+    for a in achados:
+        print(f"{'ERRO ' if a.tipo == 'error' else 'AVISO'} [{a.regra}] {a.mensagem}")
+    if not achados:
+        print(f"Fontes em dia em {referencia.strftime('%d/%m/%Y')}.")
+    return 1 if any(a.tipo == "error" for a in achados) else 0
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     """Roda o QualityGate (acentos + conteúdo + links + voice guard) num path."""
     from src.validators.quality_gate import QualityGate
@@ -605,6 +642,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("path", help="Arquivo Markdown do rascunho ou da aula")
     p.add_argument("--saida", default="", help="Grava a tabela neste arquivo em vez de imprimir")
     p.set_defaults(func=cmd_proveniencia)
+
+    p = sub.add_parser(
+        "fontes-recentes",
+        help="Confere data, recência e estado atual das fontes de uma aula",
+    )
+    p.add_argument("path", help="Arquivo Markdown da aula ou da trilha")
+    p.add_argument("--proveniencia", default="", help="Tabela de proveniência preenchida")
+    p.add_argument("--referencia", default="", help="Data de referência, AAAA-MM-DD")
+    _add_client_arg(p)
+    p.set_defaults(func=cmd_fontes_recentes)
 
     p = sub.add_parser("cost-report", help="Relatório de custos por provider e por curso")
     p.set_defaults(func=cmd_cost_report)
