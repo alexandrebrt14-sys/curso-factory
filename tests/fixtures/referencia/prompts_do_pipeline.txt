@@ -2046,6 +2046,51 @@ Motivo (se não): ...
 ---
 ```
 
+Links para outros cursos do portal e peças visuais (tabela, lista de passos, figura com
+legenda) que o redator pôs ficam na aula: corrija a forma deles, nunca os apague.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+O verificador automático já mediu esta aula e achou os problemas abaixo. Corrija cada um
+primeiro, sem criar outro: um crosslink que falta entra na prosa, só com destino da lista
+de destinos disponíveis deste prompt; peça visual que falta substitui um trecho de texto,
+nunca enfeita.
+- [profundidade] Aula com 641 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica: falta a narrativa (de onde vem a ideia, por que importa, o que muda, o erro comum) ou o exemplo contado por inteiro. Alvo: 900 a 1800.
+- [crosslinks] [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
+
 --- AULA PARA REVISÃO ---
 <!-- Módulo 1: Resposta rápida -->
 
@@ -2250,6 +2295,51 @@ Aprovado para publicação: sim/não
 Motivo (se não): ...
 ---
 ```
+
+Links para outros cursos do portal e peças visuais (tabela, lista de passos, figura com
+legenda) que o redator pôs ficam na aula: corrija a forma deles, nunca os apague.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+O verificador automático já mediu esta aula e achou os problemas abaixo. Corrija cada um
+primeiro, sem criar outro: um crosslink que falta entra na prosa, só com destino da lista
+de destinos disponíveis deste prompt; peça visual que falta substitui um trecho de texto,
+nunca enfeita.
+- [profundidade] Aula com 633 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica: falta a narrativa (de onde vem a ideia, por que importa, o que muda, o erro comum) ou o exemplo contado por inteiro. Alvo: 900 a 1800.
+- [crosslinks] [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
 
 --- AULA PARA REVISÃO ---
 # Aula 1.2: Responder em cinco minutos

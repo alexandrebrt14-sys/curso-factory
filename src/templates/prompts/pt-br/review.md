@@ -170,5 +170,12 @@ Motivo (se não): ...
 ---
 ```
 
+Links para outros cursos do portal e peças visuais (tabela, lista de passos, figura com
+legenda) que o redator pôs ficam na aula: corrija a forma deles, nunca os apague.
+
+{bloco_crosslinks}
+
+{bloco_correcoes}
+
 --- AULA PARA REVISÃO ---
 {context}

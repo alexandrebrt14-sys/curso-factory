@@ -133,3 +133,16 @@ def test_prompt_de_aula_guarda_o_prefixo_estavel_para_o_cache(tmp_path, monkeypa
     assert aulas[1][:corte] == aulas[0][:corte]
     assert "Esta aula: **" not in aulas[0][:corte]
     assert corte > 0.8 * len(aulas[0])
+
+
+def test_revisao_recebe_os_erros_do_gate_antes_da_chamada_paga(tmp_path, monkeypatch) -> None:
+    """27/09/2026: o gate determinístico roda antes da revisão e dirige a correção."""
+    prompts, _ = _rodar(tmp_path, monkeypatch)
+    revisoes = [
+        c for c in prompts.split("\n\n======== CHAMADA ========\n\n") if c.startswith("[anthropic]")
+    ]
+    assert revisoes
+    for revisao in revisoes:
+        assert "O verificador automático já mediu esta aula" in revisao
+        assert "crosslink-piso" in revisao
+        assert "{bloco_correcoes}" not in revisao

@@ -589,6 +589,22 @@ validation:
       - "digamos que"
       - "número de exemplo"
 
+  # Revisão dirigida pelo gate (27/09/2026). O gate determinístico roda sobre
+  # cada aula ANTES da chamada paga de revisão, e os erros que ele achar entram
+  # no prompt do revisor ({bloco_correcoes} em review.md, pt-br e raiz) como a
+  # lista do que corrigir primeiro. Antes, o revisor trabalhava às cegas e o
+  # gate só media no fim, depois de todas as chamadas pagas. `max_itens`
+  # limita a lista; sem a seção, o bloco sai vazio e a revisão fica como antes.
+  revisao_dirigida:
+    enabled: true
+    max_itens: 12
+    instrucao_prompt: |
+      O verificador automático já mediu esta aula e achou os problemas abaixo. Corrija cada um
+      primeiro, sem criar outro: um crosslink que falta entra na prosa, só com destino da lista
+      de destinos disponíveis deste prompt; peça visual que falta substitui um trecho de texto,
+      nunca enfeita.
+      {itens}
+
   # Camada 3: Links
   link_check:
     enabled: true

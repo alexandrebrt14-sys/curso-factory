@@ -860,6 +860,7 @@ class Orchestrator:
         resumo_analise = (analysis or "")[:REVIEW_ANALYSIS_CHARS]
         blocos = {**self._tetos_da_aula(), **self._blocos_de_instrucao()}
         revisadas: list[str] = []
+        self._destinos_anteriores = set()
         relatorios: list[str] = []
 
         for k, (titulo, texto) in enumerate(unidades, 1):
@@ -884,6 +885,8 @@ class Orchestrator:
                 unit_position=f"{k} de {len(unidades)}",
                 analysis_summary=resumo_analise,
                 **blocos,
+                bloco_crosslinks=self._bloco_crosslinks(course),
+                bloco_correcoes=self._bloco_correcoes(course, texto, titulo),
             )
             texto_revisado, relatorio = separar_relatorio_de_revisao(saida)
             if relatorio:
@@ -898,8 +901,10 @@ class Orchestrator:
                 logger.warning(aviso)
                 result.avisos.append(aviso)
                 revisadas.append(texto)
+                self._destinos_anteriores = self._destinos_da_aula(texto)
                 continue
             revisadas.append(texto_revisado)
+            self._destinos_anteriores = self._destinos_da_aula(texto_revisado)
 
         if relatorios:
             result.etapas["review_report"] = "\n\n".join(relatorios)
@@ -925,6 +930,40 @@ class Orchestrator:
             )
         except Exception as exc:
             logger.warning("Histórico de detecção não gravado para '%s': %s", rotulo, exc)
+
+    def _bloco_correcoes(self, course: Course, texto: str, titulo: str) -> str:
+        """Erros do gate determinístico na aula, para o revisor corrigir primeiro.
+
+        Roda ANTES da chamada paga de revisão (27/09/2026). Só erros entram,
+        até `validation.revisao_dirigida.max_itens`; sem a seção, vazio.
+        """
+        from src.validators.content_checker import check_content
+        from src.validators.rules_loader import validation_section
+
+        secao = validation_section("revisao_dirigida")
+        modelo = secao.get("instrucao_prompt") if secao else None
+        if not secao or not bool(secao.get("enabled", True)) or not isinstance(modelo, str):
+            return ""
+        try:
+            achados = check_content(
+                texto,
+                titulo,
+                unidade="aula",
+                crosslinks_config=getattr(self.client_context, "crosslinks", None),
+                visual_config=self._visual_do_curso(course),
+            )
+        except Exception as exc:  # o gate nunca derruba a revisão
+            logger.warning("Gate antes da revisão falhou em '%s': %s", titulo, exc)
+            return ""
+        erros = [a for a in achados if a.tipo == "error"]
+        try:
+            limite = max(1, int(secao.get("max_itens", len(erros)) or len(erros)))
+        except (TypeError, ValueError):
+            limite = len(erros)
+        if not erros:
+            return ""
+        itens = "\n".join(f"- [{a.categoria}] {a.mensagem}" for a in erros[:limite])
+        return modelo.strip().replace("{itens}", itens)
 
     def _registrar_proveniencia(self, result: PipelineResult) -> None:
         """Grava a tabela de proveniência do texto final em `etapas["proveniencia"]`.
