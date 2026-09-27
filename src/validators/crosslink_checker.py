@@ -170,7 +170,19 @@ def check_crosslinks_aula(texto: str, config: Any) -> list[AchadoCrosslink]:
     else:
         validos = []
         for link in links:
-            if link.caminho in catalogo:
+            entrada = catalogo.get(link.caminho)
+            ancoras = entrada.get("ancoras") if isinstance(entrada, dict) else None
+            if entrada is not None and link.fragmento and isinstance(ancoras, list):
+                if link.fragmento not in ancoras:
+                    achados.append(
+                        AchadoCrosslink(
+                            "crosslink-capitulo",
+                            f"Capítulo '#{link.fragmento}' não existe em '{link.caminho}'. O "
+                            f"link abriria o curso no topo; use um id de capítulo do catálogo.",
+                        )
+                    )
+                    continue
+            if entrada is not None:
                 validos.append(link)
             else:
                 achados.append(

@@ -199,3 +199,14 @@ def test_prompt_de_redacao_traz_o_lugar_do_bloco() -> None:
     prompts = PROJECT_ROOT / "src" / "templates" / "prompts"
     for pasta in (prompts, prompts / "pt-br"):
         assert "{bloco_crosslinks}" in (pasta / "draft.md").read_text(encoding="utf-8")
+
+
+def test_capitulo_do_catalogo_passa_e_capitulo_imaginado_reprova() -> None:
+    dados = json.loads(CATALOGO.read_text(encoding="utf-8"))["destinos"]
+    com_ancora = next(d for d in dados if d.get("ancoras"))
+    real = f"{com_ancora['caminho']}#{com_ancora['ancoras'][0]}"
+    outro = next(d["caminho"] for d in dados if d["caminho"] != com_ancora["caminho"])
+    assert check_crosslinks_aula(_aula([("Real", real), ("Outro", outro)]), _config()) == []
+    falso = f"{com_ancora['caminho']}#capitulo-que-nao-existe"
+    regras = _regras(check_crosslinks_aula(_aula([("Falso", falso), ("Outro", outro)]), _config()))
+    assert "crosslink-capitulo" in regras

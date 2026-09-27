@@ -22,6 +22,69 @@
         "3D",
         "Edição de vídeo",
         "API"
+      ],
+      "ancoras": [
+        "animar-interfaces",
+        "astra-animar-interfaces",
+        "assincronia-e-steering",
+        "astra-assincronia-e-steering",
+        "avaliar-interface",
+        "astra-avaliar-interface",
+        "blender-e-arquitetura",
+        "astra-blender-e-arquitetura",
+        "briefing-e-referencias",
+        "astra-briefing-e-referencias",
+        "consistencia-de-marca",
+        "astra-consistencia-de-marca",
+        "construir-jogos",
+        "astra-construir-jogos",
+        "custo-e-comparativos",
+        "astra-custo-e-comparativos",
+        "dados-e-dashboards",
+        "astra-dados-e-dashboards",
+        "direcao-de-arte",
+        "astra-direcao-de-arte",
+        "dirigir-iteracoes",
+        "astra-dirigir-iteracoes",
+        "documentos-e-slides",
+        "astra-documentos-e-slides",
+        "editar-com-referencias",
+        "astra-editar-com-referencias",
+        "editar-material-bruto",
+        "astra-editar-material-bruto",
+        "escolher-superficie",
+        "astra-escolher-superficie",
+        "esteira-governada",
+        "explorar-3d",
+        "astra-explorar-3d",
+        "ferramentas-e-mcp",
+        "astra-ferramentas-e-mcp",
+        "figma-e-canva",
+        "astra-figma-e-canva",
+        "gerar-fotografias",
+        "astra-gerar-fotografias",
+        "iniciar-com-astra",
+        "astra-iniciar-com-astra",
+        "layout-composicao",
+        "astra-layout-composicao",
+        "organizar-contexto",
+        "astra-organizar-contexto",
+        "planejar-video",
+        "astra-planejar-video",
+        "profundidade-no-scroll",
+        "astra-profundidade-no-scroll",
+        "projeto-final",
+        "astra-projeto-final",
+        "publicar-com-sites",
+        "astra-publicar-com-sites",
+        "responses-api",
+        "astra-responses-api",
+        "responsividade",
+        "astra-responsividade",
+        "tipografia-cor",
+        "astra-tipografia-cor",
+        "ux-estados",
+        "astra-ux-estados"
       ]
     },
     {
@@ -36,6 +99,20 @@
         "Privacidade",
         "Iniciantes",
         "Conceitual"
+      ],
+      "ancoras": [
+        "visao-geral",
+        "conceitos",
+        "orquestracao",
+        "tarefas",
+        "equipamento",
+        "ferramentas",
+        "primeiro-dia",
+        "vibecoding",
+        "problemas",
+        "privacidade",
+        "faq",
+        "glossario"
       ]
     },
     {
@@ -49,6 +126,26 @@
         "Executivos",
         "MCP",
         "VS Code"
+      ],
+      "ancoras": [
+        "contexto-executivo",
+        "gmail",
+        "vscode",
+        "github",
+        "claude-account",
+        "claude-code-install",
+        "permissions",
+        "seguranca-privacidade",
+        "modelos-por-tarefa-e-custo",
+        "combinar-modelos-com-governanca",
+        "vscode-integration",
+        "claude-md",
+        "mcp-chrome",
+        "hooks",
+        "subagents",
+        "first-project",
+        "python",
+        "nodejs"
       ]
     },
     {
@@ -63,6 +160,22 @@
         "Apple Silicon",
         "Homebrew",
         "MCP"
+      ],
+      "ancoras": [
+        "gmail",
+        "vscode",
+        "github",
+        "python",
+        "nodejs",
+        "claude-account",
+        "claude-code-install",
+        "permissions",
+        "vscode-integration",
+        "mcp-chrome",
+        "claude-md",
+        "hooks",
+        "subagents",
+        "first-project"
       ]
     },
     {
@@ -76,6 +189,22 @@
         "Terminal",
         "Extensões",
         "GEO"
+      ],
+      "ancoras": [
+        "o-que-e-editor",
+        "por-que-vscode",
+        "instalacao",
+        "interface",
+        "arquivos-pastas",
+        "terminal-integrado",
+        "atalhos",
+        "extensoes",
+        "personalizacao",
+        "workspace",
+        "ia-no-editor",
+        "agent-mode",
+        "claude-code",
+        "mcp-governanca"
       ]
     },
     {
@@ -89,6 +218,18 @@
         "Versionamento",
         "Colaboração",
         "Agent Legibility"
+      ],
+      "ancoras": [
+        "version-control",
+        "git-vs-github",
+        "github-account",
+        "install-git",
+        "git-config",
+        "fundamentals",
+        "first-repo",
+        "essential-commands",
+        "github-desktop",
+        "github-pages"
       ]
     },
     {
@@ -102,6 +243,18 @@
         "pip",
         "Automação",
         "GEO"
+      ],
+      "ancoras": [
+        "o-que-e-programação",
+        "por-que-python",
+        "instalação-python",
+        "primeiro-script",
+        "variáveis-tipos",
+        "condicionais-loops",
+        "funções",
+        "listas-dicionarios",
+        "leitura-arquivos",
+        "ambientes-virtuais"
       ]
     },
     {
@@ -115,6 +268,18 @@
         "npm",
         "Next.js",
         "MCP"
+      ],
+      "ancoras": [
+        "javascript",
+        "frontend-backend",
+        "nodejs",
+        "instalação",
+        "primeiro-script",
+        "módulos",
+        "npm-packagejson",
+        "instalando-pacotes",
+        "servidor-http",
+        "intro-nextjs"
       ]
     },
     {
@@ -137,6 +302,31 @@
         "ChatGPT",
         "Gemini",
         "Grok"
+      ],
+      "ancoras": [
+        "comparativo-openai",
+        "comparativo-gemini",
+        "comparativo-grok",
+        "conectores",
+        "inbox-agenda",
+        "dados-diretoria",
+        "contratos-diligence",
+        "governanca-adocao",
+        "automacao-avancada",
+        "ia-generativa",
+        "claude-anthropic",
+        "o-que-e-cli",
+        "instalacao",
+        "primeira-conversa",
+        "prompt-engineering",
+        "comandos-essenciais",
+        "leitura-edicao",
+        "claude-md",
+        "recursos-modernos",
+        "claude-cowork",
+        "para-executivos",
+        "rotinas-executivas",
+        "workflow-completo"
       ]
     },
     {
@@ -157,6 +347,26 @@
         "Grok",
         "Executivos",
         "NR-1"
+      ],
+      "ancoras": [
+        "autistas-ia-magneto",
+        "comorbidades-ansiedade",
+        "ai-brain-fry-paradoxo",
+        "hiperfoco-hiperfixacao-interesses",
+        "hiperfoco-forca-armadilha",
+        "burnout-autista-raymaker",
+        "ansiedade-autista-vs-neurotipica",
+        "mascaramento-times-ia",
+        "meltdown-shutdown-sprint",
+        "time-boxing-body-doubling",
+        "regulacao-sensorial-setup",
+        "transicoes-tarefas-rituais",
+        "divulgar-diagnostico-decisao",
+        "acomodacoes-lbi-cordao-girassol",
+        "times-neurodivergent-affirming",
+        "ia-suporte-funcao-executiva",
+        "chatbots-terapia-evidencia",
+        "plano-pessoal-saude-mental"
       ]
     },
     {
@@ -174,6 +384,24 @@
         "Browser",
         "Agent Legibility",
         "chrome-devtools-mcp"
+      ],
+      "ancoras": [
+        "mapa-de-risco-do-agente",
+        "tres-caminhos-uma-decisao",
+        "laboratorio-descartavel",
+        "ler-barato-antes-de-agir",
+        "extensao-claude-in-chrome",
+        "fronteira-de-permissoes",
+        "injecao-indireta-na-pratica",
+        "contencao-por-arquitetura",
+        "cadeia-de-suprimentos-mcp",
+        "protocolo-mcp-em-uma-pagina",
+        "automacao-idempotente",
+        "html-bruto-versus-dom",
+        "legibilidade-por-agente",
+        "performance-de-laboratorio",
+        "rede-pixel-e-datalayer",
+        "runbook-governanca-e-limites"
       ]
     },
     {
@@ -190,6 +418,37 @@
         "Agentic Commerce",
         "Schema.org",
         "Roadmap 90 dias"
+      ],
+      "ancoras": [
+        "arquitetura-canibalizacao",
+        "casos-práticos",
+        "comece-por-aqui",
+        "conteúdo-ia",
+        "entity-seo",
+        "etapa-1-diagnostico-geo16",
+        "etapa-2-estruturacao-tecnica",
+        "etapa-3-conteudo-citavel",
+        "etapa-4-distribuicao-cluster",
+        "etapa-5-agent-legibility",
+        "etapa-6-mensuracao-twin-branch",
+        "etapa-7-roadmap-90-dias",
+        "framework-universal-intro",
+        "geo-definição",
+        "internacional-hreflang",
+        "licenciamento-acesso-ia",
+        "llms-fontes",
+        "monitoramento",
+        "motor-escolhe-onde-buscar",
+        "orquestração",
+        "pago-em-ia",
+        "profissional-2026",
+        "proposta-de-fornecedor",
+        "seguranca-conteudo-lgpd",
+        "seo-fundamentos",
+        "seo-local-geo",
+        "structured-data",
+        "workflow-completo",
+        "zero-click"
       ]
     },
     {
@@ -201,6 +460,16 @@
         "Building in Public",
         "Orquestração",
         "Multi-LLM"
+      ],
+      "ancoras": [
+        "visao",
+        "stack",
+        "orquestração",
+        "agentes",
+        "seo-geo",
+        "gamificacao",
+        "qualidade",
+        "roadmap"
       ]
     },
     {
@@ -213,6 +482,29 @@
         "Intent Mapping",
         "Citação",
         "Estratégia"
+      ],
+      "ancoras": [
+        "intencao-vs-keyword",
+        "o-que-mudou-em-2026",
+        "regua-de-evidencia",
+        "objetivo-citacao",
+        "anatomia-prompt",
+        "tres-familias-intencao",
+        "analise-vacuo",
+        "score-oportunidade",
+        "ponte-semantica",
+        "producao-conteudo",
+        "mapeamento-completo",
+        "monitoramento-citacao",
+        "armadilhas-medicao",
+        "metricas-roi",
+        "midia-paga-em-ia",
+        "escalando-automacao",
+        "casos-praticos",
+        "ser-escolhido-pelo-agente",
+        "futuro-conversacao",
+        "quem-responde-quando-a-ia-erra",
+        "verticais-especificas"
       ]
     },
     {
@@ -225,6 +517,20 @@
         "Link Building",
         "Outreach",
         "Knowledge Graph"
+      ],
+      "ancoras": [
+        "o-que-e-digital-pr",
+        "digital-pr-vs-link-building",
+        "pesquisa-oportunidades",
+        "data-driven-content",
+        "outreach-templates",
+        "relacionamento-imprensa",
+        "digital-pr-ecommerce",
+        "métricas-da-dr",
+        "link-building-etico",
+        "amplificacao-redes",
+        "digital-pr-knowledge-graph",
+        "projeto-prático"
       ]
     },
     {
@@ -237,6 +543,20 @@
         "E-commerce",
         "Schema",
         "Core Web Vitals"
+      ],
+      "ancoras": [
+        "fundamentos-crawl-budget",
+        "urls-categorias-facetas",
+        "schema-markup-produtos",
+        "core-web-vitals",
+        "indexação-canonicais",
+        "seo-páginas-produto",
+        "paginacao-filtros",
+        "seo-marketplaces",
+        "migracao-plataforma",
+        "monitoramento-gsc",
+        "seo-programatico",
+        "projeto-auditoria"
       ]
     },
     {
@@ -251,6 +571,16 @@
         "WhatsApp",
         "E-E-A-T",
         "Busca Visual"
+      ],
+      "ancoras": [
+        "fundamentos-mercado-psicologia",
+        "seo-classico-ecommerce",
+        "geo-aeo-nova-fronteira",
+        "eeat-confianca",
+        "busca-visual-google-lens",
+        "seo-local-goiania",
+        "social-commerce-whatsapp",
+        "stack-ia-kpis"
       ]
     },
     {
@@ -271,6 +601,38 @@
         "Checkout",
         "Core Web Vitals",
         "Tráfego de LLM"
+      ],
+      "ancoras": [
+        "o-que-e-cro",
+        "funil-conversao",
+        "pesquisa-qualitativa",
+        "metricas-oec",
+        "testes-ab-fundamentos",
+        "sequential-testing",
+        "reducao-variancia",
+        "armadilhas-experimentacao",
+        "bandits-switchback",
+        "hipoteses-priorizacao",
+        "landing-pages",
+        "formularios-checkout",
+        "mobile-performance",
+        "acessibilidade-conversao",
+        "trafego-llm",
+        "agentic-commerce",
+        "ia-na-operacao",
+        "personalizacao",
+        "privacidade-mensuracao",
+        "etica-dark-patterns",
+        "decisao-de-investir",
+        "governanca-e-alcada",
+        "maturidade-e-cobranca",
+        "apresentar-resultados",
+        "projeto-cro",
+        "cro-saas-assinatura",
+        "motor-de-aquisicao",
+        "mapa-do-sistema-cro",
+        "ritual-executivo-cro",
+        "plano-90-dias-cro"
       ]
     },
     {
@@ -284,6 +646,26 @@
         "Dados Públicos",
         "Indexação",
         "Search Console"
+      ],
+      "ancoras": [
+        "auditoria-de-sitemap-ao-vivo",
+        "fontes-brasileiras-de-dado",
+        "gate-do-dado-proprio",
+        "governanca-e-capstone",
+        "indexacao-seletiva-em-render",
+        "keywords-sem-volume-confiavel",
+        "leitura-critica-de-fonte",
+        "medicao-gsc-e-bigquery",
+        "modelagem-e-normalizacao",
+        "performance-e-teto-de-plataforma",
+        "politica-de-spam-e-acao-manual",
+        "risco-juridico-e-de-marca",
+        "rotas-e-regime-de-renderizacao",
+        "sindicacao-e-canonical",
+        "sitemap-index-e-lastmod",
+        "template-com-densidade",
+        "validacao-como-gate-de-build",
+        "visibilidade-em-motores-generativos"
       ]
     },
     {
@@ -297,6 +679,19 @@
         "Ferramentas",
         "Claude Code",
         "Cursor"
+      ],
+      "ancoras": [
+        "vibecoding-manifesto",
+        "ambiente-setup",
+        "auditor-técnico",
+        "monitor-citações",
+        "gerador-schema",
+        "dashboard-métricas",
+        "verificador-entidade",
+        "deploy-automático",
+        "correção-conteúdo",
+        "orquestração-final",
+        "use-case-leads-2026"
       ]
     },
     {
@@ -315,6 +710,22 @@
         "Indexação",
         "Governança de agência",
         "Analytics"
+      ],
+      "ancoras": [
+        "o-que-a-busca-mede",
+        "quatro-metricas",
+        "busca-com-ia",
+        "relatorio-de-ia-sem-confusao",
+        "decisao-sair-dos-resumos-de-ia",
+        "pergunta-para-recorte",
+        "propriedade-e-fronteira",
+        "dado-que-falta",
+        "arvore-de-causas",
+        "indexacao",
+        "oportunidade-com-tamanho",
+        "painel-de-uma-pagina",
+        "cadencia-e-alerta",
+        "contrato-de-evidencia"
       ]
     },
     {
@@ -337,6 +748,27 @@
         "Território Defendível",
         "Mapa de Demanda",
         "Operação Editorial"
+      ],
+      "ancoras": [
+        "o-que-e-autoridade-tematica",
+        "topical-maps",
+        "paginas-pillar",
+        "entity-seo",
+        "knowledge-graph-panel",
+        "schema-entidades",
+        "information-gain",
+        "campos-semanticos",
+        "autoridade-para-llms",
+        "entidade-pessoal",
+        "auditoria-autoridade",
+        "mensuracao-kpis",
+        "casos-praticos",
+        "roadmap-90-dias",
+        "taxonomia-e-modelo-mental",
+        "escolha-do-territorio",
+        "mapa-de-demanda",
+        "operacao-editorial-e-distribuicao",
+        "decisao-executiva-autoridade"
       ]
     },
     {
@@ -351,6 +783,20 @@
         "SPARQL",
         "Entity SEO",
         "GEO"
+      ],
+      "ancoras": [
+        "fundamentos-wikidata-wikipedia",
+        "modelo-de-dados",
+        "ecossistema-wikimedia",
+        "wikidata-e-geo",
+        "qid-e-identidade",
+        "editando-wikidata",
+        "editando-wikipedia",
+        "etica-e-coi",
+        "sparql-query-service",
+        "schema-sameas-integração",
+        "auditoria-presença",
+        "roadmap-90-dias"
       ]
     },
     {
@@ -365,6 +811,21 @@
         "Orçamento",
         "Governança",
         "Leigos"
+      ],
+      "ancoras": [
+        "a-resposta-pronta-no-lugar-da-lista",
+        "quanto-isso-ja-custa",
+        "o-caminho-da-pergunta-ate-a-resposta",
+        "por-que-a-maquina-cita-uma-fonte-e-ignora-outra",
+        "uma-pergunta-vira-varias",
+        "a-ficha-que-a-maquina-guarda-sobre-voce",
+        "dizer-quem-e-dono-de-que",
+        "as-provas-fora-do-seu-site",
+        "medir-sem-se-enganar",
+        "como-pegar-numero-inventado",
+        "quanto-custa-e-o-que-comprar",
+        "quem-pode-ler-o-seu-conteudo",
+        "a-politica-de-uma-pagina-e-os-90-dias"
       ]
     },
     {
@@ -380,6 +841,24 @@
         "Agentic Commerce",
         "Terminologia",
         "Referência"
+      ],
+      "ancoras": [
+        "fundamentos-seo",
+        "seo-on-page",
+        "seo-tecnico",
+        "link-building",
+        "local-seo",
+        "analytics-metricas",
+        "entity-seo",
+        "geo-fundamentos",
+        "geo-avancado",
+        "conteudo-ia",
+        "ecommerce-seo",
+        "geo-agentic-commerce",
+        "geo-governanca-executiva",
+        "tendencias-2026",
+        "vocabulario-2026-busca-generativa",
+        "comparar-assistentes-para-ser-citado"
       ]
     },
     {
@@ -394,6 +873,30 @@
         "YMYL",
         "Conteúdo com IA",
         "EU AI Act"
+      ],
+      "ancoras": [
+        "auditoria-25-fatos",
+        "auditoria-sem-charlatanismo",
+        "authoritativeness-entidade-mencoes",
+        "eeat-busca-generativa",
+        "congruencia-cinco-elos",
+        "core-updates-e-spam-2025-2026",
+        "disclosure-ia-eu-ai-act",
+        "experience-primeira-mao",
+        "expertise-profundidade-credencial",
+        "fluxo-editorial-humano-ia",
+        "framework-limites-e-ceticismo",
+        "laboratorio-executivo-decisoes",
+        "mapa-executivo-taxonomia",
+        "memorando-ao-conselho",
+        "panorama-2026-o-que-mudou",
+        "plano-90-dias",
+        "politica-google-conteudo-ia",
+        "publicidade-identificavel-cdc-conar",
+        "regulacao-brasileira-ymyl",
+        "schema-autoria-e-entidade",
+        "trust-pilar-que-sustenta",
+        "ymyl-2026-categorias-e-padrao"
       ]
     },
     {
@@ -409,6 +912,27 @@
         "Busca com IA",
         "Governança de dados",
         "Letramento em dados"
+      ],
+      "ancoras": [
+        "ai-overviews-e-a-queda-de-cliques",
+        "anatomia-do-relatorio-executivo",
+        "como-um-relatorio-engana",
+        "custo-de-aquisicao-por-canal",
+        "decisoes-na-busca-generativa",
+        "do-trafego-ao-cliente",
+        "escolher-e-negociar-ferramentas",
+        "ga4-o-que-ele-mostra",
+        "governanca-de-dados-e-lgpd",
+        "mapa-das-fontes-de-dados",
+        "mapa-executivo-e-glossario",
+        "medir-presenca-em-assistentes",
+        "painel-de-risco-por-plataforma",
+        "plano-de-90-dias",
+        "priorizacao-impacto",
+        "quando-o-dado-nao-e-confiavel",
+        "quanto-custa-a-infraestrutura-de-dados",
+        "search-console-o-que-ele-mostra",
+        "vocabulario-dos-numeros"
       ]
     },
     {
@@ -422,6 +946,26 @@
         "Negociação",
         "GEO",
         "C-Level"
+      ],
+      "ancoras": [
+        "mercado-consultoria-geo",
+        "comprador-pre-educado",
+        "comite-de-compra",
+        "perfil-cliente-ideal",
+        "prospeccao-geracao-demanda",
+        "janela-de-compra",
+        "discovery-call",
+        "diagnostico-artefato",
+        "promessa-honesta",
+        "precificacao-servicos",
+        "gate-do-cfo",
+        "proposta-comercial",
+        "medicao-resultado",
+        "negociacao-c-level",
+        "perda-para-nao-decisao",
+        "pipeline-crm",
+        "fechamento-onboarding",
+        "projeto-pratico-venda"
       ]
     },
     {
@@ -434,6 +978,68 @@
         "C-Level",
         "Métricas",
         "Governança"
+      ],
+      "ancoras": [
+        "backlog-e-sprint",
+        "backlog-e-sprint-2",
+        "backlog-e-sprint-3",
+        "cadencia-de-acompanhamento",
+        "cadencia-de-acompanhamento-2",
+        "cadencia-de-acompanhamento-3",
+        "comece-por-aqui",
+        "comece-por-aqui-2",
+        "como-a-ia-escolhe-quem-citar",
+        "como-a-ia-escolhe-quem-citar-2",
+        "como-a-ia-escolhe-quem-citar-3",
+        "avaliar-qualidade-com-testes-replicaveis",
+        "explicar-diferencas-entre-modelos-para-a-diretoria",
+        "custo-de-nao-aparecer",
+        "custo-de-nao-aparecer-2",
+        "custo-de-nao-aparecer-3",
+        "escopo-que-se-defende",
+        "escopo-que-se-defende-2",
+        "o-que-da-para-influenciar",
+        "o-que-da-para-influenciar-2",
+        "o-que-da-para-influenciar-3",
+        "o-que-nao-da-para-provar",
+        "o-que-nao-da-para-provar-2",
+        "o-que-nao-da-para-provar-3",
+        "okrs-que-nao-viram-teatro",
+        "okrs-que-nao-viram-teatro-2",
+        "okrs-que-nao-viram-teatro-3",
+        "painel-de-visibilidade",
+        "painel-de-visibilidade-2",
+        "painel-de-visibilidade-3",
+        "perguntas-para-o-fornecedor",
+        "perguntas-para-o-fornecedor-2",
+        "perguntas-para-o-fornecedor-3",
+        "perguntas-para-o-fornecedor-4",
+        "plano-que-voce-apresenta-segunda",
+        "plano-que-voce-apresenta-segunda-2",
+        "plano-que-voce-apresenta-segunda-3",
+        "plano-que-voce-apresenta-segunda-4",
+        "por-que-projetos-de-geo-falham",
+        "por-que-projetos-de-geo-falham-2",
+        "por-que-sua-pagina-nao-entra",
+        "por-que-sua-pagina-nao-entra-2",
+        "por-que-sua-pagina-nao-entra-3",
+        "por-que-sua-pagina-nao-entra-4",
+        "priorizar-com-orcamento-fixo",
+        "priorizar-com-orcamento-fixo-2",
+        "priorizar-com-orcamento-fixo-3",
+        "priorizar-com-orcamento-fixo-4",
+        "risco-e-o-que-voce-assina",
+        "risco-e-o-que-voce-assina-2",
+        "risco-e-o-que-voce-assina-3",
+        "risco-e-o-que-voce-assina-4",
+        "roadmap-90-dias-e-riscos",
+        "roadmap-90-dias-e-riscos-2",
+        "roteiro-geo-90-dias-2026",
+        "time-humano-e-agente",
+        "time-humano-e-agente-2",
+        "time-humano-e-agente-3",
+        "vocabulario-minimo",
+        "vocabulario-minimo-2"
       ]
     },
     {
@@ -446,6 +1052,22 @@
         "Saúde",
         "Marketing Médico",
         "YMYL"
+      ],
+      "ancoras": [
+        "paciente-digital",
+        "ymyl-eeat",
+        "compliance-digital",
+        "lgpd-saude",
+        "geo-explicado",
+        "identidade-entidade",
+        "schema-saude",
+        "conteúdo-citavel",
+        "ia-generativa-etica",
+        "seo-local-clinicas",
+        "marketing-conversacional",
+        "monitoramento-ia",
+        "subvertical-saude",
+        "plano-ação-30-dias"
       ]
     },
     {
@@ -459,6 +1081,22 @@
         "Turismo",
         "Hotelaria",
         "Place Branding"
+      ],
+      "ancoras": [
+        "turismo-digital-2026",
+        "seo-fundamentos-turismo",
+        "geo-turismo-explicado",
+        "place-branding-digital",
+        "otas-canal-direto",
+        "reviews-reputacao",
+        "conteúdo-experiência",
+        "schema-turismo",
+        "seo-local-turismo",
+        "marketing-hotelaria",
+        "ia-generativa-turismo",
+        "monitoramento-presença-ia",
+        "subvertical-turismo",
+        "plano-ação-90-dias"
       ]
     },
     {
@@ -473,6 +1111,22 @@
         "OAB",
         "LGPD",
         "Marketing Jurídico"
+      ],
+      "ancoras": [
+        "cliente-juridico-digital",
+        "oab-etica-provimento",
+        "icp-area-atuacao",
+        "intencao-juridica-demanda",
+        "seo-onpage-juridico",
+        "conteúdo-ymyl-eeat",
+        "seo-local-advogados",
+        "entidade-digital-advogado",
+        "dados-estruturados-advocacia",
+        "geo-advogados-ia",
+        "ia-sigilo-lgpd",
+        "conversao-etica",
+        "autoridade-externa-pr",
+        "plano-90-dias-advogados"
       ]
     },
     {
@@ -488,6 +1142,19 @@
         "Zootecnia",
         "IA",
         "WhatsApp"
+      ],
+      "ancoras": [
+        "panorama-mercado",
+        "jornada-cliente",
+        "google-business-profile",
+        "site-otimizado",
+        "geo-na-prática",
+        "conteúdo-educativo",
+        "vibecoding-apoio",
+        "ia-generativa-conteúdo",
+        "whatsapp-instagram",
+        "métricas-rotina",
+        "bonus-dados-economicos"
       ]
     },
     {
@@ -500,6 +1167,16 @@
         "Educação Financeira",
         "IA Generativa",
         "40+"
+      ],
+      "ancoras": [
+        "funil-descoberta",
+        "persona-40plus",
+        "reverse-engineering",
+        "geo-finanças",
+        "ia-governança",
+        "ativos-conversao",
+        "oferta-monetizacao",
+        "plano-90-dias"
       ]
     },
     {
@@ -513,6 +1190,16 @@
         "Jovens",
         "Sub-18",
         "BNCC"
+      ],
+      "ancoras": [
+        "origem-do-dinheiro",
+        "primeiro-salario",
+        "planejamento-festival",
+        "poupanca-inteligente",
+        "investindo-visao-local",
+        "empreendendo-na-quebrada",
+        "cripto-futuro-dinheiro",
+        "projeto-final-plano-vida"
       ]
     },
     {
@@ -524,6 +1211,22 @@
         "IA",
         "Agentes",
         "LangGraph"
+      ],
+      "ancoras": [
+        "o-que-sao-agentes",
+        "arquitetura-react",
+        "ferramentas-function-calling",
+        "memoria-curto-longo-prazo",
+        "langgraph-fundamentos",
+        "langgraph-avancado",
+        "crewai-multi-agente",
+        "claude-agent-sdk",
+        "mcp-protocol",
+        "orquestração-agentes",
+        "guardrails-seguranca",
+        "testes-avaliacao",
+        "deploy-produção",
+        "monitoramento-observabilidade"
       ]
     },
     {
@@ -535,6 +1238,26 @@
         "MCP",
         "Governança",
         "Decisão executiva"
+      ],
+      "ancoras": [
+        "a-conta-de-infraestrutura",
+        "a-empresa-como-servidor",
+        "a-fatura-invisivel-do-contexto",
+        "a-fronteira-e-a-promessa",
+        "a-maquina-de-quem-trabalha",
+        "anatomia-de-uma-conexao",
+        "comprar-conectar-ou-construir",
+        "graus-de-poder-de-um-servidor",
+        "homologacao-e-contrato",
+        "incidentes-e-licoes",
+        "ler-a-data-de-validade",
+        "mapa-do-curso-e-glossario",
+        "o-cracha-do-agente",
+        "plano-de-90-dias",
+        "politica-interna-e-moldura-legal",
+        "quando-o-servidor-entrega-tela",
+        "quem-governa-o-padrao",
+        "superficie-de-ataque"
       ]
     },
     {
@@ -546,6 +1269,34 @@
         "Prompt",
         "Contexto",
         "Governança"
+      ],
+      "ancoras": [
+        "diretoria",
+        "completa",
+        "antipadroes-que-quebram",
+        "descricao-de-ferramenta-e-contrato",
+        "dimensionar-o-custo",
+        "formato-de-saida-garantido",
+        "injecao-de-prompt",
+        "mapa-executivo-vocabulario",
+        "memorando-ao-conselho",
+        "metrica-defensavel",
+        "o-que-envelheceu-desde-2024",
+        "obrigacoes-que-ja-valem",
+        "oficina-prompts-marketing-estrategia",
+        "oficina-prompts-marketing-execucao",
+        "orcamento-de-atencao",
+        "plano-90-dias",
+        "primeira-suite-de-evals",
+        "prompt-de-sistema-auditavel",
+        "prompt-ou-contexto",
+        "quando-o-exemplo-vale",
+        "raciocinio-ou-padrao",
+        "rag-contexto-longo-ou-busca",
+        "reduzir-a-conta",
+        "regra-dos-dois",
+        "revisao-executiva-30-minutos",
+        "tecnicas-de-contexto-longo"
       ]
     },
     {
@@ -557,6 +1308,17 @@
         "n8n",
         "Make",
         "Automação"
+      ],
+      "ancoras": [
+        "introducao-a-automacao",
+        "n8n-instalacao-e-interface",
+        "primeiro-workflow-no-n8n",
+        "make-conta-e-interface",
+        "primeiro-cenario-no-make",
+        "integracoes-com-apis-rest",
+        "processamento-de-dados-e-transformacoes",
+        "integração-com-ia-openai-claude",
+        "webhooks-e-triggers-avancados-na-automacao"
       ]
     },
     {
@@ -568,6 +1330,22 @@
         "Python",
         "Dados",
         "Análise"
+      ],
+      "ancoras": [
+        "ecossistema-dados",
+        "jupyter-ambientes",
+        "numpy-fundamentos",
+        "pandas-series-dataframes",
+        "limpeza-preparacao",
+        "análise-exploratoria",
+        "agrupamento-pivot",
+        "matplotlib-seaborn",
+        "visualizacoes-negocios",
+        "apis-coleta-dados",
+        "web-scraping-etico",
+        "automacao-relatorios",
+        "sql-com-python",
+        "pipeline-dados-completo"
       ]
     },
     {
@@ -590,6 +1368,28 @@
         "Incidente",
         "LGPD",
         "C-Level"
+      ],
+      "ancoras": [
+        "caminho-do-codigo-ate-o-cliente",
+        "doze-palavras-de-deploy",
+        "quem-executa-o-seu-codigo",
+        "metricas-de-entrega-sem-ilusao",
+        "anatomia-da-fatura",
+        "regiao-como-decisao-de-custo",
+        "custo-invisivel-de-build-e-medicao",
+        "teto-de-gasto-que-nao-existe",
+        "escolher-com-numero",
+        "o-que-o-contrato-devolve",
+        "calendario-que-o-fornecedor-controla",
+        "custo-de-sair",
+        "credencial-sem-substituto",
+        "cadeia-de-suprimentos",
+        "proveniencia-nao-e-selo",
+        "quem-aperta-o-botao",
+        "primeiros-quarenta-minutos",
+        "relogio-do-regulador",
+        "onde-o-dado-mora",
+        "politica-de-publicacao-assinada"
       ]
     },
     {
@@ -601,6 +1401,32 @@
         "FinOps",
         "Custo de IA",
         "C-level"
+      ],
+      "ancoras": [
+        "a-api-nao-tem-memoria-a-conversa-inteira-e-recobrada",
+        "a-conta-do-agente-nao-e-a-conta-do-chat",
+        "a-conta-em-portugues-custa-mais-caro",
+        "a-conta-em-reais-cambio-e-tributos",
+        "anatomia-dos-custos-tokens-modelos-e-pricing-tiers",
+        "antes-de-acreditar-em-qualquer-numero-de-ia",
+        "batch-processing-e-async-reduzir-custos-com-filas",
+        "benchmark-sem-custo-declarado-nao-e-evidencia",
+        "budget-guards-limites-quotas-e-circuit-breakers",
+        "cache-de-prefixo-o-desconto-que-ninguem-liga",
+        "cache-semantico-reduzir-chamadas-repetidas-com-embeddings",
+        "como-o-fornecedor-cobra-tabela-assento-e-credito",
+        "governança-e-compliance-politicas-audit-trails-e-lgpd",
+        "introducao-ao-llm-finops-por-que-custos-de-ia-importam",
+        "modelo-aberto-nao-e-modelo-gratis",
+        "monitoramento-em-tempo-real-dashboards-e-alertas",
+        "negociar-com-o-fornecedor-contrato-desconto-e-portabilidade",
+        "o-paradoxo-preco-cai-conta-sobe",
+        "os-custos-que-nao-sao-token",
+        "otimização-de-prompts-menos-tokens-mesma-qualidade",
+        "plano-de-90-dias-o-documento-que-voce-assina",
+        "relatorios-para-c-level-roi-tco-e-business-cases",
+        "roteamento-inteligente-modelo-certo-para-cada-tarefa",
+        "tokens-de-raciocinio-o-dial-que-ninguem-regulou"
       ]
     },
     {
@@ -612,6 +1438,20 @@
         "API",
         "REST",
         "GraphQL"
+      ],
+      "ancoras": [
+        "fundamentos",
+        "rest-princípios",
+        "openapi-swagger",
+        "autenticacao",
+        "rate-limiting",
+        "graphql-schema",
+        "graphql-operacoes",
+        "validação-erros",
+        "versionamento",
+        "documentação",
+        "testes-api",
+        "performance-caching"
       ]
     },
     {
@@ -624,6 +1464,22 @@
         "Creator",
         "Speaker",
         "Consultoria"
+      ],
+      "ancoras": [
+        "modulo-1",
+        "modulo-2",
+        "modulo-3",
+        "modulo-4",
+        "modulo-5",
+        "modulo-6",
+        "modulo-7",
+        "modulo-8",
+        "modulo-9",
+        "modulo-10",
+        "modulo-11",
+        "modulo-12",
+        "modulo-13",
+        "modulo-14"
       ]
     },
     {
@@ -638,6 +1494,22 @@
         "Áudio",
         "RSS",
         "Transcrição"
+      ],
+      "ancoras": [
+        "stack-descoberta-2026",
+        "icp-tese-posicionamento",
+        "framework-farol",
+        "formato-temporadas",
+        "guest-strategy-booking",
+        "framework-camadas",
+        "perguntas-escada-tensao",
+        "episode-brief-script",
+        "asset-pack-episodio",
+        "youtube-playbook",
+        "spotify-playbook",
+        "site-structured-data",
+        "distribuicao-flywheel",
+        "dashboard-plano-90-dias"
       ]
     },
     {
@@ -652,6 +1524,20 @@
         "MCP",
         "Terminal",
         "Agentes IA"
+      ],
+      "ancoras": [
+        "manifesto-vibecoding",
+        "terminal-claude-setup",
+        "claude-md-constitution",
+        "modos-permissao",
+        "prompt-engineering-agentes",
+        "anatomia-skill",
+        "primeira-skill",
+        "skill-avancada",
+        "mcp-universal",
+        "openclaw-orquestracao",
+        "seguranca-rak",
+        "projeto-capstone"
       ]
     },
     {
@@ -665,6 +1551,20 @@
         "LLM Citation",
         "AMAs",
         "Comunidade"
+      ],
+      "ancoras": [
+        "tese-estrategica",
+        "anatomia-reddit",
+        "credenciamento-conta",
+        "lurking-30-dias",
+        "mapeamento-subreddits",
+        "comentario-valioso",
+        "como-postar",
+        "anti-padroes",
+        "citacao-llm",
+        "amas-participacao",
+        "operacao-longo-prazo",
+        "capstone-reddit-os"
       ]
     },
     {
@@ -679,6 +1579,16 @@
         "APIs",
         "Zero Trust",
         "Identidade"
+      ],
+      "ancoras": [
+        "fundamentos-oauth",
+        "fluxo-authorization-code",
+        "tokens-access-refresh",
+        "escopos-menor-privilegio",
+        "refresh-token-risco",
+        "openid-connect",
+        "implementacao-corporativa",
+        "zero-trust-governanca"
       ]
     },
     {
@@ -694,6 +1604,26 @@
         "ROI de IA",
         "Segurança",
         "Conformidade"
+      ],
+      "ancoras": [
+        "o-que-e-engenharia-software",
+        "por-que-software-atrasa",
+        "vocabulario-minimo-executivo",
+        "diff-versionamento-codigo",
+        "git-controle-versao",
+        "do-commit-ao-cliente",
+        "arquitetura-camadas",
+        "apis-comunicacao-sistemas",
+        "engenharia-software-2026",
+        "custo-e-roi-engenharia-ia",
+        "aprovar-agente-de-codigo",
+        "time-papeis-e-contratacao",
+        "seguranca-e-conformidade",
+        "blindar-cadeia-de-fornecedores-do-codigo",
+        "bancos-de-dados-modelagem",
+        "performance-cache-escalabilidade",
+        "observabilidade-confiabilidade",
+        "terminal-shell-bash"
       ]
     },
     {
@@ -711,6 +1641,49 @@
         "Agentes IA",
         "DORA",
         "Governança de IA"
+      ],
+      "ancoras": [
+        "auth-seguranca-perimetro",
+        "auth-seguranca-perimetro-2",
+        "auth-seguranca-perimetro-3",
+        "auth-seguranca-perimetro-4",
+        "backend-apis-contratos",
+        "backend-apis-contratos-2",
+        "backend-apis-contratos-3",
+        "comparativo-modelos-ia",
+        "comparativo-modelos-ia-2",
+        "comparativo-modelos-ia-3",
+        "comparativo-modelos-ia-4",
+        "dados-banco-supabase",
+        "dados-banco-supabase-2",
+        "dados-banco-supabase-3",
+        "deploy-cloud-operacao",
+        "deploy-cloud-operacao-2",
+        "deploy-cloud-operacao-3",
+        "filas-eventos-async",
+        "filas-eventos-async-2",
+        "filas-eventos-async-3",
+        "frontend-componente-ssr",
+        "frontend-componente-ssr-2",
+        "frontend-componente-ssr-3",
+        "git-github-coreografia",
+        "git-github-coreografia-2",
+        "git-github-coreografia-3",
+        "ia-agentes-governanca",
+        "ia-agentes-governanca-2",
+        "ia-agentes-governanca-3",
+        "ia-agentes-governanca-4",
+        "ia-agentes-governanca-5",
+        "ia-agentes-governanca-6",
+        "manifesto-vibecoding-2026",
+        "manifesto-vibecoding-2026-2",
+        "manifesto-vibecoding-2026-3",
+        "manifesto-vibecoding-2026-4",
+        "manifesto-vibecoding-2026-5",
+        "manifesto-vibecoding-2026-6",
+        "qualidade-cadencia-engenharia",
+        "qualidade-cadencia-engenharia-2",
+        "qualidade-cadencia-engenharia-3"
       ]
     },
     {
@@ -734,6 +1707,22 @@
         "LGPD",
         "Governança de IA",
         "Gestão de Pessoas"
+      ],
+      "ancoras": [
+        "modelo-mental-ia",
+        "briefing-claro",
+        "verificacao-evidencias",
+        "ciclo-5d",
+        "rotinas-por-funcao",
+        "carteira-trabalho-executivo",
+        "arquitetura-contexto",
+        "seguranca-governanca",
+        "automacao-agentes",
+        "selecao-finops",
+        "adocao-operating-model",
+        "plano-90-dias",
+        "comparar-claude-openai-grok-gemini",
+        "escolher-e-combinar-modelos"
       ]
     },
     {
@@ -758,6 +1747,41 @@
         "Mapas",
         "DuckDB-Wasm",
         "Diagramas-as-code"
+      ],
+      "ancoras": [
+        "frontend-como-ativo-e-passivo-integrado",
+        "prompt-de-frontend-2-integrado",
+        "stacks-e-frameworks-integrado",
+        "stacks-complementares-ecossistema-3-integrado",
+        "css-moderno-tailwind-integrado",
+        "componentes-design-systems-integrado",
+        "ilustracao-icones-identidade-integrado",
+        "menus-navegacao-integrado",
+        "layout-mobile-integrado",
+        "animacao-midia-moderna-integrado",
+        "imagens-formato-peso-integrado",
+        "camadas-de-profundidade-e-video-montado-integrado",
+        "formularios-validacao-integrado",
+        "seo-tecnico-geo-spa-integrado",
+        "dataviz-dashboards-integrado",
+        "tabelas-data-grids-integrado",
+        "mapas-geoespacial-integrado",
+        "use-case-stripe-integrado",
+        "use-case-booking-integrado",
+        "acessibilidade-contraste-performance-integrado",
+        "acessibilidade-contraste-performance-3-integrado",
+        "do-prototipo-ao-deploy-integrado",
+        "projeto-final-anti-padroes-integrado",
+        "comparativo-claude-openai-integrado",
+        "comparativo-claude-gemini-integrado",
+        "modelo-que-opera-o-computador-integrado",
+        "ambiente-claude-code-mcp-integrado",
+        "plugins-design-visual-claude-2-integrado",
+        "pwa-mobile-avancado-integrado",
+        "apresentacoes-decks-web-integrado",
+        "cenas-da-maquina-orquestrador-e-harness-integrado",
+        "cenas-da-maquina-ficha-de-cena-integrado",
+        "cenas-da-maquina-grafo-de-conhecimento-integrado"
       ]
     },
     {
@@ -778,6 +1802,23 @@
         "Afiliados",
         "Agentes de IA",
         "FinOps"
+      ],
+      "ancoras": [
+        "aeo-canal-de-citacao",
+        "criativo-e-a-segmentacao",
+        "distribuicao-e-o-fosso",
+        "economia-do-token",
+        "elasticidade-e-incrementalidade",
+        "evento-que-importa",
+        "experiencia-de-chegada",
+        "fabrica-de-criativo",
+        "fadiga-e-proximo-icp",
+        "indicacao-paywall-afiliados",
+        "instrumentar-antes-de-gastar",
+        "primeiros-90-dias",
+        "sistema-operacional-de-marketing",
+        "time-pensador-de-sistemas",
+        "tres-canais"
       ]
     },
     {
@@ -796,6 +1837,33 @@
         "Consent Mode",
         "Data Manager",
         "Incrementalidade"
+      ],
+      "ancoras": [
+        "o-que-mudou-no-google-ads",
+        "jornada-intencao-e-leilao",
+        "conta-da-aquisicao-antes-da-campanha",
+        "estrutura-de-conta-e-governanca",
+        "pagina-de-destino-que-converte",
+        "google-tag-gtm-e-conversoes",
+        "consentimento-e-modelagem",
+        "dados-proprios-crm-e-data-manager",
+        "linguagem-do-cliente-e-palavras-chave",
+        "campanha-de-pesquisa-que-ainda-vale",
+        "ai-max-para-pesquisa",
+        "smart-bidding-e-orcamento",
+        "performance-max",
+        "merchant-center-e-shopping",
+        "demand-gen-youtube-e-display",
+        "criativos-gemini-e-asset-studio",
+        "publicos-remarketing-e-customer-match",
+        "campanhas-por-tipo-de-negocio",
+        "politicas-compliance-e-ia",
+        "relatorios-atribuicao-e-incrementalidade",
+        "rotina-de-otimizacao",
+        "experimentos-e-decisao",
+        "ask-advisor-scripts-e-api",
+        "operacao-de-agencia-e-escala",
+        "projeto-final-30-dias"
       ]
     },
     {
@@ -814,6 +1882,44 @@
         "Atribuição",
         "WhatsApp",
         "Incrementalidade"
+      ],
+      "ancoras": [
+        "o-que-mudou-na-meta-ads",
+        "leilao-e-sistemas-de-entrega",
+        "economia-da-aquisicao",
+        "publico-oferta-e-plano-de-campanha",
+        "portfolio-empresarial-e-seguranca",
+        "politicas-privacidade-e-aprovacao",
+        "perfil-destino-e-atendimento",
+        "plano-de-mensuracao-e-meta-pixel",
+        "api-de-conversoes-e-qualidade-do-sinal",
+        "crm-e-vendas-confirmadas",
+        "atribuicao-na-meta-em-2026",
+        "objetivos-e-configuracao-da-campanha",
+        "publicos-e-controles-de-segmentacao",
+        "advantage-plus-e-arquitetura",
+        "posicionamentos-e-adaptacao",
+        "orcamento-lances-e-aprendizagem",
+        "estrategia-criativa-e-diversidade",
+        "copy-para-anuncios-e-destinos",
+        "reels-stories-e-video",
+        "imagens-carrosseis-e-formatos",
+        "ia-na-producao-criativa",
+        "anuncios-de-parceria-e-criadores",
+        "vendas-ecommerce-e-catalogo",
+        "leads-e-formularios-instantaneos",
+        "conversas-whatsapp-direct-e-messenger",
+        "reconhecimento-trafego-e-engajamento",
+        "remarketing-retencao-e-valor-do-cliente",
+        "estrategias-por-setor",
+        "leitura-de-resultados-e-otimizacao",
+        "testes-ab-e-incrementalidade",
+        "escala-sazonalidade-e-canais",
+        "relatorios-ga4-e-inteligencia",
+        "ia-operacional-regras-e-marketing-api",
+        "gestao-de-contas-clientes-e-equipes",
+        "clinica-de-problemas",
+        "projeto-final-e-edicao-2027"
       ]
     },
     {
@@ -832,6 +1938,43 @@
         "SQL",
         "Data Studio",
         "Measurement Protocol"
+      ],
+      "ancoras": [
+        "o-que-o-ga4-mede-em-2026",
+        "perguntas-de-negocio-e-plano-de-mensuracao",
+        "modelo-de-eventos-usuarios-e-sessoes",
+        "contas-propriedades-e-fluxos",
+        "clinica-de-problemas",
+        "projeto-final-e-operacao-continua",
+        "instalar-a-google-tag",
+        "google-tag-manager-para-analytics",
+        "taxonomia-de-eventos-e-datalayer",
+        "parametros-dimensoes-e-metricas-personalizadas",
+        "consentimento-consent-mode-e-modelagem",
+        "identidade-user-id-e-multiplos-dominios",
+        "validacao-filtros-e-qualidade",
+        "ler-os-relatorios-sem-se-enganar",
+        "aquisicao-utms-e-canais",
+        "seo-assistentes-de-ia-e-novas-origens",
+        "conteudo-engajamento-e-experiencia",
+        "exploracoes-segmentos-e-funis",
+        "retencao-coortes-e-produto",
+        "publicos-e-metricas-preditivas",
+        "ecommerce-da-vitrine-a-receita",
+        "leads-b2b-crm-e-negocios-locais",
+        "aplicativos-firebase-e-assinaturas",
+        "google-ads-e-gestao-de-conversoes",
+        "atribuicao-e-jornadas-entre-canais",
+        "importacao-de-custos-e-analise-entre-plataformas",
+        "orcamento-incrementalidade-e-experimentos",
+        "dashboards-nativos-do-analytics",
+        "looker-studio-e-comunicacao",
+        "ia-aplicada-a-analise",
+        "exportacao-para-bigquery",
+        "sql-para-analytics",
+        "server-side-measurement-protocol-e-data-manager",
+        "apis-automacao-e-agentes",
+        "analytics-360-e-governanca"
       ]
     },
     {
@@ -850,6 +1993,49 @@
         "Lead Gen Forms",
         "Thought Leader Ads",
         "Atribuição de receita"
+      ],
+      "ancoras": [
+        "orientacao-e-ecossistema-linkedin",
+        "como-funciona-a-publicidade-no-linkedin",
+        "icp-comite-de-compra-e-posicionamento",
+        "economia-das-campanhas-e-funil-reverso",
+        "escala-e-integracao-entre-canais",
+        "dashboards-ia-e-apis",
+        "gestao-de-contas-e-clientes",
+        "clinica-de-problemas",
+        "projeto-final-e-plano-de-90-dias",
+        "pagina-business-manager-e-governanca",
+        "campaign-manager-nova-hierarquia",
+        "politicas-privacidade-e-protecao-da-marca",
+        "oferta-landing-page-e-conversao",
+        "plano-de-mensuracao-b2b",
+        "insight-tag-e-conversoes-no-navegador",
+        "conversions-api-e-servidor",
+        "crm-sync-e-processo-comercial",
+        "segmentacao-profissional-avancada",
+        "matched-audiences-e-publicos-preditivos",
+        "abm-marketing-baseado-em-contas",
+        "companies-hub-e-inteligencia-de-contas",
+        "objetivos-e-arquitetura-de-campanhas",
+        "automacao-e-transicao-do-accelerate",
+        "orcamento-lances-e-media-planner",
+        "leads-qualificados-e-otimizacao-por-valor",
+        "copywriting-b2b-e-matriz-criativa",
+        "imagem-carrossel-text-ads-e-dynamic-ads",
+        "video-brandlink-e-ctv",
+        "document-ads-newsletters-e-criacao-com-ia",
+        "thought-leader-ads",
+        "lead-gen-forms-e-agendamento",
+        "sponsored-messaging",
+        "event-ads-e-webinars",
+        "estrategia-de-funil-completo",
+        "remarketing-e-publicos-conhecidos",
+        "aplicacao-por-modelo-de-negocio",
+        "alinhamento-marketing-sdr-e-vendas",
+        "relatorios-e-otimizacao-operacional",
+        "atribuicao-ga4-e-crm",
+        "revenue-attribution-report",
+        "testes-ab-brand-lift-e-conversion-lift"
       ]
     },
     {
@@ -868,6 +2054,50 @@
         "Afiliados",
         "Spark Ads",
         "Symphony"
+      ],
+      "ancoras": [
+        "mapa-do-tiktok-como-canal-de-venda",
+        "descoberta-atencao-e-compra",
+        "economia-da-aquisicao-e-margem",
+        "pesquisa-de-demanda-e-oferta",
+        "estudio-e-infraestrutura",
+        "apresentadores-e-equipe",
+        "audiencia-antes-da-live",
+        "console-e-recursos-da-live",
+        "live-gmv-max",
+        "metricas-da-live-em-tempo-real",
+        "pos-live-e-reaproveitamento",
+        "testes-e-incrementalidade",
+        "escala-e-calendario-comercial",
+        "paineis-api-e-agentes",
+        "gestao-de-servicos-e-clientes",
+        "clinica-de-problemas",
+        "projeto-final-e-plano-de-90-dias",
+        "contas-business-center-e-acessos",
+        "politicas-direitos-e-dados",
+        "perfil-pagina-e-checkout",
+        "plano-de-mensuracao",
+        "tiktok-pixel-e-eventos",
+        "events-api-e-deduplicacao",
+        "atribuicao-e-reconciliacao",
+        "objetivos-formatos-e-estrutura",
+        "publicos-e-posicionamentos",
+        "smart-plus-e-automacao",
+        "orcamento-lances-e-aprendizagem",
+        "search-ads-no-tiktok",
+        "campanhas-por-modelo-de-negocio",
+        "estrategia-criativa",
+        "roteiro-e-producao-de-video",
+        "spark-ads-tiktok-one-e-criadores",
+        "symphony-e-ia-criativa",
+        "tiktok-shop-no-brasil",
+        "catalogo-e-pagina-de-produto",
+        "logistica-financas-e-saude-da-loja",
+        "afiliados-e-colaboracao",
+        "product-gmv-max",
+        "modelos-de-live-commerce",
+        "planejamento-comercial-da-live",
+        "roteiro-de-live"
       ]
     },
     {
@@ -886,6 +2116,28 @@
         "Avaliação",
         "Segurança",
         "Injeção de prompt"
+      ],
+      "ancoras": [
+        "pergunta-que-o-modelo-responde-errado",
+        "recuperar-ou-empilhar-contexto",
+        "anatomia-do-pipeline-rag",
+        "ler-o-documento-antes-de-indexar",
+        "fatiar-sem-separar-numero-do-referente",
+        "metadado-e-permissao-desde-a-ingestao",
+        "o-que-o-vetor-captura-e-o-que-perde",
+        "busca-hibrida-palavra-e-sentido",
+        "reclassificacao-que-le-pergunta-e-trecho-juntos",
+        "interacao-tardia-e-multivetor",
+        "indice-aproximado-e-o-que-ele-troca",
+        "a-conta-por-milhao-de-vetores",
+        "grafo-e-dado-estruturado",
+        "reescrever-a-pergunta-antes-de-buscar",
+        "decompor-e-rotear-a-pergunta",
+        "cache-e-latencia-em-producao",
+        "conjunto-dourado-e-as-metricas",
+        "portao-de-regressao-e-observabilidade",
+        "documento-envenenado-e-isolamento",
+        "quando-nao-usar-e-os-primeiros-30-dias"
       ]
     },
     {
@@ -904,6 +2156,32 @@
         "Benchmarks",
         "Segurança",
         "2027"
+      ],
+      "ancoras": [
+        "onde-o-modelo-encontra-a-informacao",
+        "limites-do-contexto-e-a-ideia-de-recursao",
+        "o-contexto-vira-variavel-no-repl",
+        "arvore-de-chamadas-profundidade-e-resposta",
+        "explorar-o-acervo-antes-de-dividir",
+        "processar-as-partes-e-agregar-sem-perder-evidencia",
+        "contexto-longo-rag-ou-compactacao",
+        "agentes-hibridos-e-a-matriz-de-decisao",
+        "avaliar-bem-e-as-familias-de-benchmark",
+        "comparacoes-controladas-e-resultados-que-contrariam",
+        "preparar-o-acervo-e-rodar-a-biblioteca-oficial",
+        "dspy-rlm-e-a-leitura-do-rastro-da-execucao",
+        "decompor-e-limitar-o-custo-da-recursao",
+        "otimizar-e-monitorar-a-execucao",
+        "isolar-a-execucao-e-tratar-documentos-como-dado",
+        "conter-erros-que-sobem-pela-arvore",
+        "treinar-um-modelo-para-operar-recursivamente",
+        "provar-uma-auto-melhoria-antes-de-acreditar",
+        "recursao-aprendida-e-execucao-previsivel",
+        "hibridos-multimodais-e-trabalho-prolongado",
+        "quatro-cenarios-de-adocao-para-2027",
+        "aplicacoes-candidatas-e-a-decisao-do-piloto",
+        "projeto-final-definir-e-construir-as-alternativas",
+        "projeto-final-avaliar-e-recomendar-para-2027"
       ]
     },
     {
@@ -923,6 +2201,23 @@
         "Operação",
         "PME",
         "Migração"
+      ],
+      "ancoras": [
+        "absorver-manter-matar",
+        "automacao-de-fundo-idempotente",
+        "cronometrar-e-a-conta-que-o-mapa-devolve",
+        "entrada-de-documentos-primeiro",
+        "geracao-respostas-e-triagem",
+        "mapear-antes-de-tocar-em-ferramenta",
+        "o-registro-de-entidades-e-o-portao-a",
+        "os-primeiros-30-dias",
+        "por-que-nao-automatizar-ainda",
+        "quando-nao-fazer-isso",
+        "rotear-modelo-por-classe-de-tarefa",
+        "sete-ferramentas-zero-retrato",
+        "telas-que-parecem-o-que-o-time-ja-usa",
+        "um-caminho-de-escrita-por-entidade",
+        "um-departamento-por-vez"
       ]
     },
     {
@@ -943,6 +2238,27 @@
         "Evals",
         "Spec-Driven Development",
         "Métricas para Board"
+      ],
+      "ancoras": [
+        "nova-unidade-de-producao",
+        "convergencia-vendors-control-plane",
+        "validation-engineering-disciplina",
+        "do-sdlc-ao-agentic-delivery",
+        "ultracode-orquestrador-nao-modo-magico",
+        "model-routing-topologia-cinco-camadas",
+        "ficou-melhor-pergunta-errada",
+        "quality-evidence-stack-dez-camadas",
+        "definition-of-verified-2-0",
+        "tdd-mecanismo-de-controle-de-agente",
+        "testes-gerados-por-ia-tdad",
+        "evals-producao-nightly-agentic-verification",
+        "humano-muda-de-funcao",
+        "autonomia-l0-l5-guardrails",
+        "autonomia-confianca-blast-radius",
+        "sdd-spec-acceptance-pack",
+        "forecast-pos-ia-metricas-de-board",
+        "tiny-teams-operating-model-cinco-camadas",
+        "cadencia-operacional-fim-do-agile-performatico"
       ]
     },
     {
@@ -961,6 +2277,29 @@
         "Conselho e diretoria",
         "Aprendizado por reforço",
         "RLVR"
+      ],
+      "ancoras": [
+        "p1-quando-a-maquina-escreve",
+        "p1-onde-o-dinheiro-vaza",
+        "p1-tres-perguntas-de-triagem",
+        "p2-teto-da-instrucao",
+        "p2-comportamento-padrao",
+        "p2-aprendizado-por-reforco",
+        "p3-nota-contra-prova",
+        "p3-verificador",
+        "p3-recompensa-verificavel",
+        "p4-burlar-a-metrica",
+        "p4-o-que-o-verificador-nao-ve",
+        "p4-regua-que-resiste",
+        "p5-tres-contas-do-loop",
+        "p5-comprar-alugar-ou-treinar",
+        "p5-piloto-de-90-dias",
+        "p6-segregacao-e-trilha",
+        "p6-perguntas-ao-fornecedor",
+        "p6-proximos-90-dias",
+        "apendice-como-o-treino-funciona",
+        "apendice-funcao-de-recompensa",
+        "apendice-do-piloto-a-producao"
       ]
     },
     {
@@ -976,6 +2315,31 @@
         "Escrita humanizada",
         "Marketing de conteúdo",
         "GEO"
+      ],
+      "ancoras": [
+        "abrir-em-situacao",
+        "caso-condutor",
+        "checklist-de-publicacao",
+        "comparar-claude-gpt-gemini-grok",
+        "comparar-e-recomendar",
+        "conclusao-na-frente",
+        "cumprir-a-promessa",
+        "escolher-ferramenta-por-tarefa",
+        "esqueleto-por-genero",
+        "fechar-com-callback",
+        "instalar-a-tensao",
+        "inventario-de-provas",
+        "merece-existir",
+        "mostrar-nao-qualificar",
+        "numero-amarrado",
+        "passada-de-estrutura",
+        "passada-de-frase",
+        "passada-de-substancia",
+        "promessa-e-tensao",
+        "prosa-ou-estrutura",
+        "ritmo-do-sentido",
+        "trocar-de-ferramenta-sem-perder-metodo",
+        "variar-aberturas"
       ]
     }
   ]

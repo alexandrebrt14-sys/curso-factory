@@ -11,7 +11,13 @@ Uso (leitura apenas no repositório de origem):
 
     python scripts/gerar_catalogo_crosslinks.py \\
         ../landing-page-geo/src/data/educacao-courses.ts \\
-        config/clients/default/crosslinks_catalogo.json
+        config/clients/default/crosslinks_catalogo.json \\
+        [../landing-page-geo/src/data/educacao-module-index.generated.ts]
+
+O terceiro argumento, opcional, é o índice gerado de capítulos do portal. Com
+ele, cada destino ganha a lista `ancoras` (ids de capítulo), e o link
+`/educacao/<slug>#<id>` passa a ter o id conferido: âncora imaginada abre o
+curso no topo sem aviso nenhum, que é o mesmo defeito da rota imaginada.
 
 O arquivo gerado registra a origem e o commit do arquivo lido, para que a
 defasagem apareça no diff quando o catálogo for regerado.
@@ -70,12 +76,27 @@ def extrair(texto: str) -> list[dict]:
     return destinos
 
 
+def ancoras_por_slug(texto: str) -> dict[str, list[str]]:
+    """Lê `EDUCACAO_MODULE_INDEX` do índice gerado: slug da rota -> ids de capítulo."""
+    m = re.search(r"EDUCACAO_MODULE_INDEX[^=]*=\s*(\{.*?\n\});", texto, re.S)
+    if not m:
+        return {}
+    dados = json.loads(m.group(1))
+    return {slug: [c["anchor"] for c in capitulos] for slug, capitulos in dados.items()}
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) != 2:
+    if len(argv) not in (2, 3):
         print(__doc__)
         return 2
     origem, destino = Path(argv[0]), Path(argv[1])
     destinos = extrair(origem.read_text(encoding="utf-8"))
+    if len(argv) == 3:
+        ancoras = ancoras_por_slug(Path(argv[2]).read_text(encoding="utf-8"))
+        for d in destinos:
+            slug = d["caminho"].rstrip("/").rsplit("/", 1)[-1]
+            if slug in ancoras:
+                d["ancoras"] = ancoras[slug]
     if not destinos:
         print(f"Nenhum curso lido de {origem}; o catálogo não foi gravado.", file=sys.stderr)
         return 1
