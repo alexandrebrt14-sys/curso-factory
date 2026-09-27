@@ -158,3 +158,22 @@ repositórios. O que a especificação pede deles, para fechar o ciclo:
 
 Prova comum a todos: exportar o curso ou a página em Markdown e rodar o gate com a categoria
 `didatica`, esperando zero erro e avisos só onde a leitura humana os aceitar.
+
+## 6. Adendo de 27/09/2026: da explicação ao guia aplicável
+
+Explicar bem o porquê não basta: o aluno precisa sair sabendo fazer. Desde 27/09/2026 o molde
+da aula é o de guia aplicável, e três pontos desta especificação mudam de leitura:
+
+- **Exemplo do negócio pequeno** (seção 3, costura e fecho): o exemplo deixa de ser contado
+  inteiro. Ele é curto, percorre os passos do procedimento e não conduz a aula; personagem é
+  opcional, e o fecho dá o critério de pronto sem voltar a ele.
+- **Fecho com imperativo e critério** (regra 3): continua, e passa a ser o critério de pronto do
+  procedimento, não do caso.
+- **O que se mede a mais**: procedimento em passos, verbo no imperativo por passo, verificação,
+  erro comum, decisão condicional e critério de pronto (`guia aplicável`); parcela de
+  parágrafos que contam história e abertura em cena (`narrativa`); data e recência das fontes
+  (`fontes recentes`). Tudo como aviso, ligado por cliente.
+
+Diagnóstico, valores de partida e limites do medidor de narrativa em
+`docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`; decisão em
+`wiki/decisions/guia-aplicavel-e-fonte-recente-20260927.md`.

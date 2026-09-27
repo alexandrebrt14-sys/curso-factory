@@ -103,7 +103,8 @@ Fonte normativa: [`DIRETRIZ_EDITORIAL.md`](DIRETRIZ_EDITORIAL.md) (v3, 11/08/202
 - Uma ideia central por parágrafo, desenvolvida até a ideia terminar. O ritmo vem do conteúdo: período longo para raciocínio com causa e ressalva, frase curta quando houver o que enfatizar. PROIBIDA qualquer cota de ritmo (frase curta por parágrafo, alternância programada, teto fixo de linhas), que produz staccato de manchete
 - Dados e estatísticas para sustentar argumentos, nunca afirmar sem evidência
 - Evitar superlativos sem evidência ("o melhor", "revolucionário")
-- Abertura direta (R1 e fonte §2 regra 2): subtítulo de uma frase e parágrafos que dizem o problema do leitor em segunda pessoa, o que custa não resolver e o que muda; sem cena, sem hora do dia, sem personagem na abertura. O caso nomeado entra no H2 do exemplo e o fecho o retoma
+- Abertura direta (R1 e fonte §2 regra 2): subtítulo de uma frase e parágrafos que dizem o problema do leitor em segunda pessoa, o que custa não resolver e o que muda; sem cena, sem hora do dia, sem personagem na abertura
+- A aula é guia aplicável (27/09/2026): ensina a fazer, com passos, verificação, erro comum, decisão "se isto, faça aquilo" e critério de pronto. O exemplo é curto e percorre os passos; personagem é opcional e o fecho não volta a ele
 
 ### Andragogia (6 Princípios de Knowles), cobrada como aviso desde 02/09/2026
 1. Necessidade de saber — POR QUE antes do COMO
@@ -158,11 +159,15 @@ em `docs/ESPECIFICACAO_DIDATICA_20260922.md` e na decisão
   espelho da fonte de estilo `escrita-empreendedor`, e entram no prompt como variáveis
   (`{palavras_alvo_min}`, `{figuras_max}`...). NUNCA repita número de régua em prompt ou doc
 - Abertura na ordem R1: subtítulo em uma frase (vira `description` do step) e dois ou três
-  parágrafos diretos ao ponto; 2 a 4 H2 (o normal são três, como no molde D da fonte: por que
-  a ideia muda o resultado; um caso do ramo, do começo ao fim; o que muda na semana do aluno);
-  H3 só em H2 longo; nada de H4 nem subtítulo por linha terminada em dois-pontos
-- NENHUM exercício por aula desde 08/09/2026 (R6): o próximo passo entra em prosa, no fecho.
-  `min_exercises_per_lesson: 0` no YAML; o bloco "faça agora" reprova
+  parágrafos diretos ao ponto; 2 a 4 H2, promessas com verbo (o normal: um para o porquê, um
+  ou dois para o como fazer); H3 só em H2 longo; nada de H4 nem subtítulo por linha terminada
+  em dois-pontos
+- O corpo segue o esqueleto de aula-guia de `validation.guia_aplicavel.esqueleto` (resposta,
+  porquê com fonte, pré-requisitos, passos, decisões, exemplo aplicado, critério de pronto,
+  fontes), que chega aos prompts por `{bloco_molde_da_aula}`; parte sem conteúdo não entra
+- NENHUM exercício por aula desde 08/09/2026 (R6). O passo a passo do procedimento é conteúdo
+  (lista numerada, sem rótulo, com a verificação em prosa dentro do passo), nunca bloco "faça
+  agora". `min_exercises_per_lesson: 0` no YAML
 - Apoio visual é TETO (até `figuras_max` por aula), só quando substitui texto. Sem piso de
   tabela, blockquote, negrito ou figura
 - Objetivos, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha: o
@@ -216,6 +221,22 @@ validador e teste; o prompt recebe o texto da mesma configuração por um `{bloc
 - os números citados nos prompts saem da configuração (`src/validators/numeros_dos_prompts.py`);
   nunca escreva número de teto à mão num prompt
 
+### Aula-guia aplicável e fonte recente (27/09/2026) (LEIA antes de mexer em prompt ou gate)
+Pedido do dono: a aula vira guia de como fazer, a história só entra quando carrega o
+procedimento e todo conceito se apoia em fonte recente e datada. Diagnóstico em
+`docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`; decisão em
+`wiki/decisions/guia-aplicavel-e-fonte-recente-20260927.md`. Cada regra liga no `client.yaml`
+(default ligado, `_template` desligado) e nasce como aviso:
+- completude do como fazer (`guia_aplicavel`; pisos por tipo de aula e marcadores em
+  `validation.guia_aplicavel`; `src/validators/guia_aplicavel_checker.py`)
+- orçamento de narrativa (`narrativa.parcela_max`; marcadores em
+  `validation.orcamento_narrativa`; `src/validators/narrativa_checker.py`, que conta marcas de
+  superfície e não entende se o exemplo carrega um passo)
+- fonte recente (`fontes_recentes`, também por curso em `courses.yaml`; formatos de data em
+  `validation.fontes_recentes`; `src/validators/fontes_recentes_checker.py`, com a data de
+  referência sempre injetada; `python cli.py fontes-recentes`). A tabela de proveniência ganhou
+  a coluna "Data de publicação"
+
 
 ## Quality Gate — 5 Camadas de Validação
 
@@ -241,6 +262,8 @@ validador e teste; o prompt recebe o texto da mesma configuração por um `{bloc
 - Desde 27/09/2026: `vocabulario` (palavras de uso limitado), `crosslinks` (opt-in do cliente),
   `peso visual` (quando declarado) e, sobre o curso inteiro, `planejamento` e a sequência de
   crosslinks (`QualityGate.check_curso`)
+- Também desde 27/09/2026, quando o cliente liga: `guia aplicável`, `narrativa` e `fontes
+  recentes` (`QualityGate.check_guia`, aula a aula; na trilha, só as fontes)
 
 ### Camada 3: Links (link_checker.py)
 - Acentos em URLs = ERRO CRÍTICO (incidente 2026-03-27: 55 hrefs corrompidos)
@@ -338,6 +361,6 @@ Antes da primeira frase vem a prova (diretriz §2.2). Levante o material de evid
 
 Promessa e tensão são escritas antes do esqueleto (§3.1), o esqueleto segue a ordem do gênero (§3.2), o pedido é um só por peça com as quatro peças da fórmula (§3.6), e toda porcentagem dispara quatro conferências na mesma frase: origem, data, método e denominador (§13).
 
-O essencial, em uma passada: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; caso condutor contado inteiro no H2 do exemplo, promessa cumprida e fecho que retoma o caso, com abertura direta e sem cena (fonte §2 regra 2); ritmo nascido do sentido, com o teste do bloco de dez frases servindo de diagnóstico depois de escrever e nunca de cota durante a escrita; proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); tabela, matriz de decisão e checklist usados sempre que houver comparação, escolha ou passo verificável, e prosa sempre que houver raciocínio encadeado; dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta.
+O essencial, em uma passada: escrita de especialista sênior em português do Brasil com acentuação completa e tipografia brasileira (sem title case, numerais à brasileira); conclusão antes da sustentação e cada parágrafo acrescentando uma ideia nova; aula que ensina a fazer, com passos, verificação, decisão condicional e critério de pronto, exemplo curto amarrado aos passos e conceito apoiado em fonte recente e datada, com abertura direta e sem cena (fonte §2 regra 2); ritmo nascido do sentido, com o teste do bloco de dez frases servindo de diagnóstico depois de escrever e nunca de cota durante a escrita; proibido travessão como recurso estilístico; proibidas como padrão as construções que negam para afirmar ("não é X, é Y"), a regra de três mecânica, as conclusões-espelho e a atribuição vaga sem fonte nomeada; conectivos cortados por subtração, sem clichês nem vícios de português de LLM (gerundismo, "endereçar", "suportar", "eventualmente" como eventually); tabela, matriz de decisão e checklist usados sempre que houver comparação, escolha ou passo verificável, e prosa sempre que houver raciocínio encadeado; dado sem fonte e data não entra, e o que só o autor humano sabe vira marcador `[PREENCHER-HUMANO]`, nunca invenção; em superfícies HTML ou PDF, parágrafos com alinhamento justificado (`text-align: justify`); revisão final em três passadas (substância, estrutura, linguagem) com leitura em voz alta.
 
 Sub-agentes que geram copy longa recebem o bloco de `C:/Sandyboxclaude/scripts/prompts/COPY_PROMPT_PREFIX.md` carimbado no prompt. Os documentos completos prevalecem sobre este resumo, e as convenções específicas deste repositório prevalecem sobre convenções genéricas, exceto quando comprometerem segurança ou corretude.

@@ -7,8 +7,11 @@ São ponteiros para a fonte `escrita-empreendedor`; os critérios de fidelidade 
 §10 da fonte e a aplicação ao pipeline está em `docs/ESCRITA_SEO_GEO.md`.
 As notas históricas da antiga diretriz v4 não substituem a fonte vigente.
 
-A aula resolve uma ideia para o dono de pequeno negócio, com abertura direta e exemplo
-compreensível. A evidência vem da pesquisa recebida. Preserve população, período, condição
+A aula resolve uma ideia para o dono de pequeno negócio, com abertura direta, e é um guia
+aplicável: ensina a fazer em passos com verbo no imperativo, diz como saber que cada passo deu
+certo, traz o erro comum com o conserto, a decisão "se isto, faça aquilo" e o critério de
+pronto. O exemplo é curto e percorre os passos; personagem e cena são opcionais e nunca
+conduzem a aula (desde 27/09/2026, `docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`). A evidência vem da pesquisa recebida. Preserve população, período, condição
 e a diferença entre projeção, exemplo hipotético e resultado observado ao simplificar.
 O detalhe da apuração fica no material de pesquisa; o limite que muda a decisão fica na prosa.
 
@@ -37,6 +40,10 @@ lido e data de acesso, numa tabela de proveniência que é arquivo de trabalho e
 a página. O redator do pipeline devolve só a aula; a tabela sai do texto final
 (`result.etapas["proveniencia"]` ou `python cli.py proveniencia <arquivo>`), e quem redige
 fora do pipeline entrega a mesma tabela junto com a aula. Frase sem fonte sai do texto.
+Cada fonte leva a data de publicação: o conceito central se apoia em fonte recente, a fonte
+antiga entra só como origem do conceito, e nenhuma alegação de estado atual usa fonte velha.
+A janela e a data de referência estão no bloco `fontes_recentes` do `client.yaml`; confira com
+`python cli.py fontes-recentes <aula> --proveniencia <tabela>`.
 
 Revise substância, estrutura e linguagem. Ganho de informação é o que a explicação acrescenta
 à decisão do aluno, sem quota de dados ou garantia de visibilidade. Acentuação PT-BR completa,

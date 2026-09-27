@@ -95,6 +95,11 @@ Relacionadas: [[padrao-editorial-hsm-hbr]], [[ADR-001-adopcao-llm-wiki]].
 
 ## Linha do tempo (append-only, ordem reversa)
 
+- **2026-09-27**: [evolução] a narrativa obrigatória da seção 3 deixa de valer para a aula:
+  caso condutor, fecho com callback e cena no H2 do caso saem dos prompts; a aula vira guia de
+  como fazer, com exemplo curto amarrado aos passos. Ver
+  [[guia-aplicavel-e-fonte-recente-20260927]].
+
 - **2026-08-11** — [evolução] v4 da diretriz, no mesmo dia da v3, fechando o que
   faltava: prova antes da escrita com a regra de proporção afirmação/prova e as
   quatro saídas antes do marcador (§2.2), promessa e tensão redigidas antes do

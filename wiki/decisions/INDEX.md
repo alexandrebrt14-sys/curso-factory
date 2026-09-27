@@ -13,6 +13,7 @@ detalhe vive no arquivo de cada decisão. Mantenha curto — ele entra no contex
 
 ## Decisões editoriais
 
+- [Aula-guia aplicável e fonte recente](guia-aplicavel-e-fonte-recente-20260927.md) — aula ensina a fazer; história só com passo; fonte datada e recente · `feedback`
 - [Boas práticas de escrita da produção de 27/09](boas-praticas-de-escrita-20260927.md) — vocabulário limitado, apuração fora da aula, crosslinks, peso visual, ordem do curso · `feedback`
 - [Didática: explicar em vez de detalhar](didatica-explicar-em-vez-de-detalhar-20260922.md) — régua de tamanho é teto; gate mede cadência, glosa, fecho, título, subtítulo e fichas; prompts pedem explicação · `feedback`
 - [Abertura direta e sem distração (R1 a R9)](abertura-direta-sem-distracao-20260908.md) — título, subtítulo, parágrafo; sem faça agora, mockup, checkpoint, requer verificação, LGPD; fontes só no rodapé · `feedback`
