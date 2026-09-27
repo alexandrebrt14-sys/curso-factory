@@ -11,6 +11,9 @@
 #   validation.anti_invencao.require_source_for_percentages
 #   validation.anti_invencao.fail_if_unresolved_markers_above
 #   validation.visual_density.*                  -> check_visual_density
+#   validation.abertura.*                        -> abertura_checker
+#   validation.didatica.*                        -> didatica_checker
+#   validation.palavras_de_uso_exagerado.*       -> vocabulario_checker
 # As demais seções seguem descritivas; o valor espelhado em código está
 # anotado por comentário na chave correspondente.
 
@@ -46,7 +49,7 @@ validation:
   # config/lexicos.json (espelho gerado da fonte, bloco `tetos.D`), lido em
   # runtime por src/validators/lexicos_loader.py. Repetir o número aqui criaria
   # a segunda cópia que o PLANO_DE_MIGRACAO.md proíbe. Para referência humana,
-  # hoje `tetos.D` (fonte 1.7.1) diz: piso 700 · alvo 900-1.800 · aviso 2.400 ·
+  # hoje `tetos.D` (fonte 1.8.0, igual à 1.7.1) diz: piso 700 · alvo 900-1.800 · aviso 2.400 ·
   # erro 3.600 palavras; 2 a 4 H2; 1 H3 por H2; até 3 figuras; parágrafo 20-80
   # palavras. Se este comentário divergir do JSON, o JSON vence. Piso e faixa
   # de parágrafo são AVISO, nunca erro (fonte §1: piso rígido é motor de
@@ -59,6 +62,8 @@ validation:
     # Trilha = 4 a 6 aulas (MOLDES_DE_PAGINA.md seção 6), 30-60 min.
     min_lessons_per_trail: 4
     max_lessons_per_trail: 6
+    # Descritivas: nenhum código lê as duas chaves abaixo (27/09/2026).
+    # O tamanho do curso é orientado por validation.planejamento.aulas_por_curso.
     min_trails_per_course: 5
     max_trails_per_course: 8
     # Compatibilidade com o pipeline atual, que ainda entrega "módulo": um
@@ -289,6 +294,9 @@ validation:
   # é texto literal; prefixe com "re:" para passar uma expressão regular.
   abertura:
     enabled: true
+    # R7: palavras por linha de fonte no rodapé da trilha. Lido pelo
+    # abertura_checker e pelo prompt da trilha ({fonte_max_palavras}).
+    fonte_max_palavras: 25
     termos:
       R3: []
       R5_qualquer: []
@@ -304,6 +312,10 @@ validation:
     # LIDO EM RUNTIME — content_checker.py::check_content (erro bloqueante).
     # Também conta "[PREENCHER-HUMANO:". Default no código: 5.
     fail_if_unresolved_markers_above: 5  # Mais que 5 marcadores sobrando = reprovar
+    # LIDO EM RUNTIME — numeros_dos_prompts.py: o teto que o redator e o revisor
+    # recebem no prompt ({marcadores_max_aula}). É mais baixo que o do gate de
+    # propósito: o rascunho mira abaixo do ponto em que o gate reprova.
+    marcadores_por_aula_no_rascunho: 3
     ban_vague_attribution: true  # "especialistas apontam" sem citação = erro
     # LIDO EM RUNTIME — content_checker.py::_check_percentages_have_source
     # (aviso não-bloqueante, teto de 5 por documento). Default no código: true.
@@ -382,6 +394,216 @@ validation:
         - "verifique na documentação"
         - "posteriores ao recorte"
         - "podem ter mudado"
+
+  # Camada 2d: Palavras de uso exagerado (pedido do dono, 27/09/2026). LIDA EM
+  # RUNTIME por src/validators/vocabulario_checker.py, chamado por
+  # content_checker.check_content (categoria "vocabulario"). Quatro palavras que
+  # o time usa entre si soam estranhas ao leitor quando se repetem. Limite por
+  # aula, em toda superfície de leitura, e só no sentido literal. Excesso é o
+  # número de ocorrências além do limite: a partir de `excesso_para_aviso` sai
+  # aviso; a partir de `excesso_para_erro`, erro. Código, nome de arquivo,
+  # chave de configuração, destino de link e menção entre aspas ficam fora.
+  # `instrucao_prompt` entra em draft.md e review.md (pt-br) pela
+  # variável {bloco_vocabulario}; `{limite}` e `{familias}` são trocados pelos
+  # valores abaixo. Sem esta seção, nada é cobrado nem instruído.
+  palavras_de_uso_exagerado:
+    enabled: true
+    limite_por_aula: 1
+    excesso_para_aviso: 1
+    excesso_para_erro: 3
+    familias:
+      travar:
+        rotulo: "travar (trava, travado, travando)"
+        formas: [travar, trava, travas, travado, travada, travados, travadas, travando,
+                 travou, travaram, travam, travamento, travamentos]
+        trocas: [parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir,
+                 congelar, fixar]
+      canonico:
+        rotulo: "canônico (canônica, canônicos)"
+        formas: [canônico, canônica, canônicos, canônicas, canonicamente,
+                 canonico, canonica, canonicos, canonicas]
+        trocas: [oficial, principal, de referência, padrão, adotado, definitivo, fonte única]
+      regua:
+        rotulo: "régua"
+        formas: [régua, réguas, regua, reguas]
+        trocas: [critério, padrão, medida, parâmetro, regra, norma, referencial, limite,
+                 guia de escrita]
+      honesto:
+        rotulo: "honesto (honesta, honestamente, com honestidade)"
+        formas: [honesto, honesta, honestos, honestas, honestamente, honestidade]
+        trocas: [franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero,
+                 transparente]
+    instrucao_prompt: |
+      Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo {limite}
+      ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+      prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+      a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+      {familias}
+
+  # Camada 2e: A aula não narra a própria apuração (pedido do dono, 27/09/2026).
+  # ESTENDE o bastidor que já existe: content_checker._check_bastidor soma estes
+  # padrões às famílias `bastidorDeVerificacao`, `rotuloDeConfianca` e
+  # `metalinguagemDeProcesso` do espelho config/lexicos.json e ao
+  # `metalinguagemRx` da fonte. Mesma severidade (erro, categoria editorial) e
+  # mesma exceção: menção entre aspas não conta. A R9 do abertura_checker
+  # continua cuidando do MARCADOR visível ("requer verificação", "fonte
+  # pendente"); aqui mora a FRASE que conta ao leitor o que o redator checou.
+  # Cada item é texto literal; prefixe com "re:" para expressão regular. Os
+  # literais entram também como exemplos na instrução dos prompts
+  # ({bloco_apuracao} em draft.md e review.md, pt-br).
+  apuracao_narrada:
+    enabled: true
+    padroes:
+      - "confirmado na fonte primária"
+      - "confirmada na fonte primária"
+      - "verificamos"
+      - "conferido em"
+      - "conferida em"
+      - "não há fonte para"
+      - "descartamos por falta de certeza"
+      - "segundo o que apuramos"
+      - "re:\\bn[ãa]o (?:foi|é|seria) poss[íi]vel (?:confirmar|verificar|checar|conferir)\\b"
+      - "re:\\bn[ãa]o p[ôo]de ser (?:checad|verificad|confirmad|conferid)[oa]s?\\b"
+      - "re:\\bconfirmad[oa]s? (?:na|em) fonte\\b"
+      - "re:\\bverificou-se\\b"
+    instrucao_prompt: |
+      A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+      como {exemplos}. A checagem decide o que entra; o leitor recebe só o resultado, e a
+      fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+      aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+  # Camada 2f: Crosslinks por aula (pedido do dono, 27/09/2026). OPT-IN POR
+  # CLIENTE: piso, teto, prefixos e catálogo vivem no bloco `crosslinks` do
+  # client.yaml (ClientContext.crosslinks); aqui mora só a forma, que vale
+  # para todo cliente que ligar. LIDA EM RUNTIME por
+  # src/validators/crosslink_checker.py (categoria "crosslinks").
+  #   - ancoras_genericas: texto de link que não diz o que o leitor encontra
+  #     lá. Âncora igual a um destes itens (sem pontuação, sem caixa) é erro.
+  #   - paragrafos_iniciais_sem_link: nenhum crosslink nos N primeiros
+  #     parágrafos da aula (R2: nada compete com a abertura); aviso.
+  #   - max_destinos_no_prompt: quantos destinos do catálogo, os de maior
+  #     afinidade de tag com o curso, entram na instrução do redator.
+  #   - instrucao_prompt: texto de {bloco_crosslinks} em draft.md (pt-br e
+  #     raiz); {min}, {max}, {destinos} e {anteriores} são trocados em runtime.
+  crosslinks:
+    ancoras_genericas:
+      - "clique aqui"
+      - "saiba mais"
+      - "aqui"
+      - "neste link"
+      - "este link"
+      - "link"
+      - "veja também"
+      - "leia também"
+      - "leia mais"
+      - "veja mais"
+    paragrafos_iniciais_sem_link: 3
+    max_destinos_no_prompt: 25
+    instrucao_prompt: |
+      Ligue esta aula a outros cursos do portal que completam o que ela ensina: de {min} a {max}
+      cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+      entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+      e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+      curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+      O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+      Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+      {anteriores}
+      Destinos disponíveis (caminho: nome):
+      {destinos}
+
+  # Camada 2g: Peso visual por aula declarado (27/09/2026). O cliente
+  # (client.yaml, bloco `visual`) ou o curso (config/courses.yaml, chave
+  # `visual`) podem sobrepor o teto padrão do espelho (tetos.D.figuras_max)
+  # com min_por_aula, max_por_aula, min_tipos_por_aula e
+  # max_paragrafos_sem_peca; o curso vence o cliente campo a campo. Medido por
+  # src/validators/peso_visual_aula.py (categoria "peso visual"). Sem bloco
+  # declarado, vale o teto do espelho, como antes. Aqui mora só o texto da
+  # instrução que entra em draft.md ({bloco_peso_visual}, pt-br);
+  # {min}, {max}, {tipos} e {paragrafos} são trocados pelos valores declarados.
+  peso_visual:
+    instrucao_prompt: |
+      Neste curso a regra de apoio visual muda: cada aula leva de {min} a {max} peças visuais,
+      de pelo menos {tipos} tipos diferentes, e nenhuma sequência de mais de {paragrafos}
+      parágrafos sem uma peça. A primeira peça vem logo depois dos parágrafos de abertura,
+      nunca antes deles. Cada peça carrega informação própria: substitui ou completa o texto,
+      nunca repete o parágrafo de cima, e a legenda afirma um fato. Do Markdown saem três
+      tipos: tabela (comparação com critérios), lista numerada de passos (processo em que a
+      ordem importa) e imagem com legenda (conceito que pede figura).
+
+  # Camada 2h: Tamanho e ordem do curso, pelos dados de uso do portal
+  # (27/09/2026). Curso curto termina e curso longo não; o aluno abandona na
+  # teoria que chega cedo, no capítulo de contexto com número de terceiros e
+  # no apêndice de instalação; a rolagem média dos capítulos abandonados fica
+  # abaixo de 60%. LIDA EM RUNTIME por src/validators/planejamento_checker.py:
+  #   - instrucao_plano: entra no prompt de planejamento de aulas
+  #     (Orchestrator._plan_lessons), com {aulas_min}, {aulas_max},
+  #     {iniciais} e {modulo} trocados em runtime;
+  #   - instrucao_aula / instrucao_aula_inicial: entram no draft.md
+  #     ({bloco_ordem_do_curso}); a segunda só nas `aulas_iniciais_curtas`
+  #     primeiras aulas do curso, com {palavras_max};
+  #   - aviso (nunca erro) quando o curso sai da faixa `aulas_por_curso` ou
+  #     quando uma das primeiras aulas passa de `palavras_max_aulas_iniciais`
+  #     (QualityGate.check_curso, entrada "curso (sequência)").
+  planejamento:
+    enabled: true
+    aulas_por_curso: [14, 18]
+    aulas_iniciais_curtas: 3
+    palavras_max_aulas_iniciais: 900
+    instrucao_plano: |
+      Tamanho e ordem, pelos dados de uso do portal: curso curto termina, curso longo não, e o
+      aluno abandona na teoria que chega cedo e no apêndice de instalação. Para tema amplo, o
+      curso inteiro fica entre {aulas_min} e {aulas_max} aulas; aula que não muda uma decisão
+      do aluno sai. As {iniciais} primeiras aulas do curso são as mais curtas e as mais
+      práticas, com um ganho no primeiro dia. Teoria densa só da metade do curso em diante, e
+      sempre depois de um caso contado inteiro. Nenhuma aula é apêndice de instalação: o passo
+      de instalação entra como passo a passo curto dentro da aula que precisa dele. Este é o
+      módulo {modulo} do curso.
+    instrucao_aula: |
+      A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
+      maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
+      critério de acerto; ele não guarda a informação principal.
+    instrucao_aula_inicial: |
+      Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
+      práticas: no máximo {palavras_max} palavras, com um ganho que o aluno aplica no mesmo
+      dia, sem panorama histórico, sem taxonomia e sem teoria densa.
+
+  # Camada 2i: Tabela de proveniência (27/09/2026). Arquivo de trabalho, nunca
+  # página: lista as frases da aula com número, data, versão ou nome de
+  # produto, para quem confere preencher URL primária, trecho lido e data de
+  # acesso. LIDA EM RUNTIME por src/validators/proveniencia.py, chamado pelo
+  # orquestrador ao fim do pipeline (result.etapas["proveniencia"]) e por
+  # `python cli.py proveniencia <arquivo>`. O formato de retorno do redator e
+  # do revisor não muda. `padroes` são expressões regulares por tipo;
+  # `rotulos_de_exemplo` marcam a frase de exemplo, que dispensa fonte.
+  proveniencia:
+    enabled: true
+    padroes:
+      numero: "\\d"
+      data: "(?i)\\b(?:janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\\b|\\b\\d{1,2}/\\d{1,2}(?:/\\d{2,4})?\\b|\\b(?:19|20)\\d{2}\\b"
+      versao: "(?i)\\bv\\d+(?:\\.\\d+)*\\b|(?<!R\\$ )\\b(?!\\d{1,3}(?:\\.\\d{3})+\\b)\\d+\\.\\d+(?:\\.\\d+)?\\b(?!\\s*%)|\\bvers[ãa]o\\s+\\d+"
+      produto: "\\b[A-Z][a-z]+[A-Z][A-Za-z]+\\b|\\b[A-Z][A-Za-z]*[- ]\\d+(?:\\.\\d+)*\\b|\\b[A-Z]{1,4}\\d{1,3}\\b"
+    rotulos_de_exemplo:
+      - "suponha"
+      - "imagine"
+      - "por exemplo, um"
+      - "digamos que"
+      - "número de exemplo"
+
+  # Revisão dirigida pelo gate (27/09/2026). O gate determinístico roda sobre
+  # cada aula ANTES da chamada paga de revisão, e os erros que ele achar entram
+  # no prompt do revisor ({bloco_correcoes} em review.md, pt-br) como a
+  # lista do que corrigir primeiro. Antes, o revisor trabalhava às cegas e o
+  # gate só media no fim, depois de todas as chamadas pagas. `max_itens`
+  # limita a lista; sem a seção, o bloco sai vazio e a revisão fica como antes.
+  revisao_dirigida:
+    enabled: true
+    max_itens: 12
+    instrucao_prompt: |
+      O verificador automático já mediu esta aula e achou os problemas abaixo. Corrija cada um
+      primeiro, sem criar outro: um crosslink que falta entra na prosa, só com destino da lista
+      de destinos disponíveis deste prompt; peça visual que falta substitui um trecho de texto,
+      nunca enfeita.
+      {itens}
 
   # Camada 3: Links
   link_check:

@@ -95,6 +95,17 @@ RELATORIO_REVISAO_RE = re.compile(
 PLANO_LINHA_RE = re.compile(r"^\s*(\d{1,2})[.)]\s*(.+?)(?:\s*\|\s*(.+?))?\s*$")
 
 
+class EtapaInterrompida(RuntimeError):
+    """A etapa parou no meio (orçamento esgotado) e NÃO é gravada como concluída.
+
+    Até 27/09/2026, parar por orçamento devolvia o rascunho parcial como saída
+    normal da etapa: o checkpoint marcava a etapa como feita, a retomada a
+    pulava, e análise e revisão eram pagas sobre um curso incompleto. Agora a
+    etapa fica aberta, e o que já foi pago está em `Orchestrator._parciais`,
+    gravado no checkpoint a cada aula, para a retomada não pagar de novo.
+    """
+
+
 class PipelineResult:
     """Resultado completo de uma execução do pipeline."""
 
@@ -208,6 +219,16 @@ class Orchestrator:
         #: Avisos produzidos dentro de uma etapa (ex.: expansão de aula curta) e
         #: entregues ao resultado quando a etapa fecha.
         self._avisos_pendentes: list[str] = []
+        #: Resultado de cada chamada paga já concluída dentro de uma etapa
+        #: (plano, aula, trilha, revisão), gravado no checkpoint a cada passo.
+        #: `{"draft": {"plano:1": [...], "aula:1.2": "...", "trilha:1": "..."},
+        #: "review": {"aula:1.2": "..."}}`.
+        self._parciais: dict[str, dict[str, Any]] = {}
+        self._resultado_atual: PipelineResult | None = None
+        #: Destinos de crosslink da aula recém-escrita, para a seguinte variar.
+        self._destinos_anteriores: set[str] = set()
+        #: Posição da aula no curso inteiro (1, 2, 3...), contada na redação.
+        self._aula_no_curso: int = 0
 
     # ── ciclo de vida ───────────────────────────────────────────────────
 
@@ -232,6 +253,7 @@ class Orchestrator:
         """Salva checkpoint incremental após cada etapa concluída (escrita atômica)."""
         data = result.to_dict()
         data["_context"] = context
+        data["_parciais"] = self._parciais
         path = self._checkpoint_path(course_id)
         try:
             write_json_atomic(path, data)
@@ -262,8 +284,20 @@ class Orchestrator:
         result.provedores = dict(data.get("provedores", {}))
         result.erros = []  # Limpa erros anteriores para retry
         context = data.get("_context", "")
+        parciais = data.get("_parciais")
+        self._parciais = dict(parciais) if isinstance(parciais, dict) else {}
         logger.info("Checkpoint carregado: %d etapas concluídas anteriormente", len(result.etapas))
         return result, context
+
+    def _parcial(self, etapa: str, chave: str) -> Any:
+        """O que já foi pago nesta etapa, numa execução anterior, ou `None`."""
+        return self._parciais.get(etapa, {}).get(chave)
+
+    def _guardar_parcial(self, course_id: str, etapa: str, chave: str, valor: Any) -> None:
+        """Guarda o resultado de uma chamada paga e grava o checkpoint na hora."""
+        self._parciais.setdefault(etapa, {})[chave] = valor
+        if self._resultado_atual is not None:
+            self._save_checkpoint(course_id, self._resultado_atual)
 
     # ── orçamento e procedência ─────────────────────────────────────────
 
@@ -320,6 +354,7 @@ class Orchestrator:
         carrega número nenhum: quem muda a régua na fonte muda o prompt.
         """
         from src.validators.content_checker import tetos_da_unidade
+        from src.validators.numeros_dos_prompts import numeros_dos_prompts
 
         t = tetos_da_unidade("aula")
         alvo_min, alvo_max = t["alvo"]
@@ -338,7 +373,59 @@ class Orchestrator:
             "paragrafo_min": str(par_min),
             "paragrafo_max": str(par_max),
             "minutos_alvo": str(max(5, round(alvo_max / 180))),
+            **numeros_dos_prompts(),
         }
+
+    @staticmethod
+    def _blocos_de_instrucao() -> dict[str, str]:
+        """Blocos de instrução montados da configuração, para redação e revisão.
+
+        Cada bloco sai vazio quando a regra correspondente não está configurada,
+        e o prompt segue como antes. O texto e os números vêm do YAML; o prompt
+        só marca o lugar (`{bloco_vocabulario}`).
+        """
+        from src.validators.content_checker import instrucao_de_apuracao
+        from src.validators.vocabulario_checker import instrucao_para_prompt
+
+        return {
+            "bloco_vocabulario": instrucao_para_prompt(),
+            "bloco_apuracao": instrucao_de_apuracao(),
+        }
+
+    def _bloco_crosslinks(self, course: Course) -> str:
+        """Instrução de crosslinks da aula, vazia quando o cliente não liga a regra."""
+        from src.validators.crosslink_checker import instrucao_para_prompt
+
+        return instrucao_para_prompt(
+            getattr(self.client_context, "crosslinks", None),
+            tags=course.tags,
+            excluir=course.id,
+            anteriores=self._destinos_anteriores,
+        )
+
+    def _bloco_ordem_do_curso(self) -> str:
+        """Instrução de tamanho e ordem da aula, pela posição dela no curso."""
+        from src.validators.planejamento_checker import instrucao_da_aula
+
+        return instrucao_da_aula(self._aula_no_curso)
+
+    def _visual_do_curso(self, course: Course):
+        """Bloco `visual` do cliente sobreposto, campo a campo, pelo do curso."""
+        from src.clients.context import VisualConfig
+
+        do_cliente = getattr(self.client_context, "visual", None) or VisualConfig()
+        do_curso = VisualConfig.de_dict(course.visual) if course.visual else None
+        return do_cliente.sobreposto_por(do_curso)
+
+    def _variaveis_de_peso_visual(self, course: Course) -> dict[str, str]:
+        """`{bloco_peso_visual}` e, quando o teto é declarado, `{figuras_max}`."""
+        from src.validators.peso_visual_aula import instrucao_para_prompt
+
+        visual = self._visual_do_curso(course)
+        variaveis = {"bloco_peso_visual": instrucao_para_prompt(visual)}
+        if visual.max_por_aula is not None:
+            variaveis["figuras_max"] = str(visual.max_por_aula)
+        return variaveis
 
     # ── etapas ──────────────────────────────────────────────────────────
 
@@ -352,7 +439,9 @@ class Orchestrator:
         return self._draft_modules_iterative(course, research)
 
     def _step_analyze(self, course: Course, draft: str) -> str:
-        return self.analyzer.execute(draft, course_name=course.titulo, draft_content=draft)
+        return self.analyzer.execute(
+            draft, course_name=course.titulo, draft_content=draft, **self._tetos_da_aula()
+        )
 
     def _step_classify(self, course: Course, draft: str) -> str:
         conteudo = draft[:CLASSIFY_CONTEXT_CHARS]
@@ -371,6 +460,7 @@ class Orchestrator:
         # com que o cost_tracker registre cada call sob o curso correto.
         self.client.set_course_context(course.id)
 
+        self._parciais = {}
         checkpoint = self._load_checkpoint(course.id)
         if checkpoint:
             result, _ = checkpoint
@@ -379,6 +469,7 @@ class Orchestrator:
             )
         else:
             result = PipelineResult(course.id)
+        self._resultado_atual = result
 
         etapas: list[tuple[str, str, Callable[[], str]]] = [
             ("research", self.researcher.provider, lambda: self._step_research(course)),
@@ -448,6 +539,7 @@ class Orchestrator:
 
         if result.sucesso:
             self._quality_gate(course, result)
+            self._registrar_proveniencia(result)
 
         self._save_result(course.id, result)
         cp = self._checkpoint_path(course.id)
@@ -488,7 +580,10 @@ class Orchestrator:
                 for e in modulo.etapas
             ]
 
+        from src.validators.planejamento_checker import instrucao_do_plano
+
         minimo, maximo = self._aulas_por_modulo()
+        ordem = instrucao_do_plano(numero)
         prompt = (
             f"Você planeja as aulas de um curso em português do Brasil, com "
             f"acentuação completa.\n\n"
@@ -501,6 +596,7 @@ class Orchestrator:
             f"no negócio do aluno e o próximo passo. As aulas se encadeiam: a "
             f"seguinte usa o que a anterior deixou pronto. Título sem 'faça "
             f"agora', 'exercício', 'no seu negócio', 'checkpoint' ou LGPD.\n\n"
+            f"{ordem + chr(10) + chr(10) if ordem else ''}"
             f"Responda SOMENTE com uma linha por aula, neste formato, sem "
             f"comentário antes ou depois:\n"
             f"1. Título da aula em até 10 palavras | a ideia única da aula em uma frase\n\n"
@@ -556,6 +652,11 @@ class Orchestrator:
             "previous_lessons": "; ".join(anteriores) or "nenhuma (esta abre o módulo)",
             "next_lessons": "; ".join(seguintes) or "nenhuma (esta fecha o módulo)",
             **self._tetos_da_aula(),
+            **self._blocos_de_instrucao(),
+            "bloco_crosslinks": self._bloco_crosslinks(course),
+            "bloco_ordem_do_curso": self._bloco_ordem_do_curso(),
+            "bloco_expansao": "",
+            **self._variaveis_de_peso_visual(course),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
         titulo_proposto, bruto = self._extrair_titulo_proposto(
@@ -584,9 +685,11 @@ class Orchestrator:
             logger.info(
                 "%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso
             )
-            nota = self._nota_de_expansao(texto, palavras, variaveis)
+            nota = self._nota_de_expansao(texto, palavras, self._alvo_da_expansao(variaveis))
+            # A nota vai no fim do prompt ({bloco_expansao}), depois da pesquisa:
+            # antes dela, quebrava o prefixo que as outras aulas compartilham.
             expandido = self._normalizar_aula(
-                self.writer.execute(nota + "\n\n" + contexto, **variaveis)
+                self.writer.execute(contexto, **{**variaveis, "bloco_expansao": nota})
             )
             palavras_exp = _contar_palavras(expandido)
             if palavras_exp > palavras:
@@ -626,6 +729,24 @@ class Orchestrator:
         texto = AULA_H1_RE.sub("", texto, count=1).strip() if AULA_H1_RE.match(texto) else texto
         return re.sub(r"^#\s+(?!#)", "## ", texto, count=1) if texto.startswith("# ") else texto
 
+    def _alvo_da_expansao(self, variaveis: dict[str, str]) -> dict[str, str]:
+        """Alvo da passada de expansão, respeitando o teto das primeiras aulas.
+
+        As primeiras aulas do curso recebem "no máximo N palavras"
+        (`validation.planejamento`); expandir uma delas para o alvo geral da aula
+        pagava uma chamada que depois virava o aviso `aula-inicial-longa`.
+        """
+        from src.validators.planejamento_checker import teto_da_aula_inicial
+
+        teto = teto_da_aula_inicial(self._aula_no_curso)
+        if teto is None:
+            return variaveis
+        return {
+            **variaveis,
+            "palavras_alvo_min": str(min(int(variaveis["palavras_alvo_min"]), teto)),
+            "palavras_alvo_max": str(min(int(variaveis["palavras_alvo_max"]), teto)),
+        }
+
     def _nota_de_expansao(self, texto: str, palavras: int, variaveis: dict[str, str]) -> str:
         """Instrução de expansão no idioma do redator, com o rascunho curto embutido."""
         from src.agents.lang_resolver import resolve_prompt_path
@@ -641,6 +762,12 @@ class Orchestrator:
             lesson_md=texto,
         )
 
+    def _destinos_da_aula(self, aula_md: str) -> set[str]:
+        from src.validators.crosslink_checker import destinos_da_aula
+
+        config = getattr(self.client_context, "crosslinks", None)
+        return destinos_da_aula(aula_md, config) if getattr(config, "enabled", False) else set()
+
     def _draft_modules_iterative(self, course: Course, research_context: str) -> str:
         """Gera o curso aula a aula.
 
@@ -652,13 +779,17 @@ class Orchestrator:
             Module(titulo=course.titulo, descricao=course.descricao, ordem=1)
         ]
         partes: list[str] = []
+        self._aula_no_curso = 0
+        self._destinos_anteriores = set()
 
         for i, modulo in enumerate(modulos, 1):
-            pode, motivo = self._pode_chamar(self.writer.provider, course.id)
-            if not pode:
-                logger.warning("%s antes do módulo %d. Parando draft.", motivo, i)
-                break
-            aulas = self._plan_lessons(course, modulo, i, research_context)
+            aulas = self._parcial("draft", f"plano:{i}")
+            if aulas is None:
+                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                if not pode:
+                    raise EtapaInterrompida(f"{motivo} antes do plano do módulo {i}")
+                aulas = self._plan_lessons(course, modulo, i, research_context)
+                self._guardar_parcial(course.id, "draft", f"plano:{i}", aulas)
             logger.info(
                 "Módulo %d/%d '%s': %d aula(s) planejada(s)",
                 i,
@@ -669,22 +800,30 @@ class Orchestrator:
             partes.append(f"<!-- Módulo {i}: {modulo.titulo} -->")
             partes_do_modulo: list[str] = []
             for j in range(len(aulas)):
-                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
-                if not pode:
-                    logger.warning("%s na aula %d.%d. Parando draft.", motivo, i, j + 1)
-                    return "\n\n".join(partes)
-                logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
-                aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
+                self._aula_no_curso += 1
+                aula_md = self._parcial("draft", f"aula:{i}.{j + 1}")
+                if aula_md is None:
+                    pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                    if not pode:
+                        raise EtapaInterrompida(f"{motivo} na aula {i}.{j + 1}")
+                    logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
+                    aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
+                    self._guardar_parcial(course.id, "draft", f"aula:{i}.{j + 1}", aula_md)
+                else:
+                    logger.info("Aula %d.%d reaproveitada do checkpoint", i, j + 1)
+                self._destinos_anteriores = self._destinos_da_aula(aula_md)
                 partes.append(aula_md)
                 partes_do_modulo.append(aula_md)
                 logger.info("Aula %d.%d gerada: %d palavras", i, j + 1, _contar_palavras(aula_md))
-            pode, motivo = self._pode_chamar(self.writer.provider, course.id)
-            if not pode:
-                logger.warning("%s antes do fechamento da trilha %d. Parando draft.", motivo, i)
-                return "\n\n".join(partes)
-            trilha_md = self._close_trail(
-                course, modulo, i, aulas, partes_do_modulo, research_context
-            )
+            trilha_md = self._parcial("draft", f"trilha:{i}")
+            if trilha_md is None:
+                pode, motivo = self._pode_chamar(self.writer.provider, course.id)
+                if not pode:
+                    raise EtapaInterrompida(f"{motivo} antes do fechamento da trilha {i}")
+                trilha_md = self._close_trail(
+                    course, modulo, i, aulas, partes_do_modulo, research_context
+                )
+                self._guardar_parcial(course.id, "draft", f"trilha:{i}", trilha_md)
             if trilha_md:
                 partes.append(trilha_md)
                 logger.info("Trilha %d fechada: %d palavras", i, _contar_palavras(trilha_md))
@@ -735,6 +874,7 @@ class Orchestrator:
                 ),
                 "lessons": lessons,
                 "context": research_context[:TRAIL_RESEARCH_CHARS],
+                **self._tetos_da_aula(),
             },
         )
         texto = self.client.call(self.writer.provider, prompt, model=self.writer.model).strip()
@@ -758,7 +898,9 @@ class Orchestrator:
         if not unidades:
             return ""
         resumo_analise = (analysis or "")[:REVIEW_ANALYSIS_CHARS]
+        blocos = {**self._tetos_da_aula(), **self._blocos_de_instrucao()}
         revisadas: list[str] = []
+        self._destinos_anteriores = set()
         relatorios: list[str] = []
 
         for k, (titulo, texto) in enumerate(unidades, 1):
@@ -768,13 +910,16 @@ class Orchestrator:
                 # risco de invenção. Passa como saiu do writer.
                 revisadas.append(texto)
                 continue
+            chave = f"{k}:{titulo}"
+            pronta = self._parcial("review", chave)
+            if pronta is not None:
+                logger.info("Revisão %d/%d reaproveitada do checkpoint", k, len(unidades))
+                revisadas.append(pronta)
+                self._destinos_anteriores = self._destinos_da_aula(pronta)
+                continue
             pode, motivo = self._pode_chamar(self.reviewer.provider, course.id)
             if not pode:
-                aviso = f"{motivo} na revisão da unidade {k}; as seguintes ficam sem revisão."
-                logger.warning(aviso)
-                result.avisos.append(aviso)
-                revisadas.extend(t for _, t in unidades[k - 1 :])
-                break
+                raise EtapaInterrompida(f"{motivo} na revisão da unidade {k}")
             logger.info("Revisão %d/%d: %s", k, len(unidades), titulo or "(unidade sem título)")
             saida = self.reviewer.execute(
                 texto,
@@ -782,6 +927,9 @@ class Orchestrator:
                 unit_title=titulo or f"unidade {k}",
                 unit_position=f"{k} de {len(unidades)}",
                 analysis_summary=resumo_analise,
+                **blocos,
+                bloco_crosslinks=self._bloco_crosslinks(course),
+                bloco_correcoes=self._bloco_correcoes(course, texto, titulo),
             )
             texto_revisado, relatorio = separar_relatorio_de_revisao(saida)
             if relatorio:
@@ -796,8 +944,12 @@ class Orchestrator:
                 logger.warning(aviso)
                 result.avisos.append(aviso)
                 revisadas.append(texto)
+                self._destinos_anteriores = self._destinos_da_aula(texto)
+                self._guardar_parcial(course.id, "review", chave, texto)
                 continue
             revisadas.append(texto_revisado)
+            self._destinos_anteriores = self._destinos_da_aula(texto_revisado)
+            self._guardar_parcial(course.id, "review", chave, texto_revisado)
 
         if relatorios:
             result.etapas["review_report"] = "\n\n".join(relatorios)
@@ -824,6 +976,59 @@ class Orchestrator:
         except Exception as exc:
             logger.warning("Histórico de detecção não gravado para '%s': %s", rotulo, exc)
 
+    def _bloco_correcoes(self, course: Course, texto: str, titulo: str) -> str:
+        """Erros do gate determinístico na aula, para o revisor corrigir primeiro.
+
+        Roda ANTES da chamada paga de revisão (27/09/2026). Só erros entram,
+        até `validation.revisao_dirigida.max_itens`; sem a seção, vazio.
+        """
+        from src.validators.content_checker import check_content
+        from src.validators.rules_loader import validation_section
+
+        secao = validation_section("revisao_dirigida")
+        modelo = secao.get("instrucao_prompt") if secao else None
+        if not secao or not bool(secao.get("enabled", True)) or not isinstance(modelo, str):
+            return ""
+        try:
+            achados = check_content(
+                texto,
+                titulo,
+                unidade="aula",
+                crosslinks_config=getattr(self.client_context, "crosslinks", None),
+                visual_config=self._visual_do_curso(course),
+            )
+        except Exception as exc:  # o gate nunca derruba a revisão
+            logger.warning("Gate antes da revisão falhou em '%s': %s", titulo, exc)
+            return ""
+        erros = [a for a in achados if a.tipo == "error"]
+        try:
+            limite = max(1, int(secao.get("max_itens", len(erros)) or len(erros)))
+        except (TypeError, ValueError):
+            limite = len(erros)
+        if not erros:
+            return ""
+        itens = "\n".join(f"- [{a.categoria}] {a.mensagem}" for a in erros[:limite])
+        return modelo.strip().replace("{itens}", itens)
+
+    def _registrar_proveniencia(self, result: PipelineResult) -> None:
+        """Grava a tabela de proveniência do texto final em `etapas["proveniencia"]`.
+
+        É arquivo de trabalho (27/09/2026): as frases com número, data, versão
+        ou nome de produto, com as colunas de fonte em branco para conferência,
+        e os crosslinks de cada aula. Não muda o formato de retorno de nenhuma
+        etapa e nunca vai para a página. Falha aqui não derruba o pipeline.
+        """
+        from src.validators.proveniencia import tabela_de_proveniencia
+
+        final = result.etapas.get("review") or result.etapas.get("draft") or ""
+        try:
+            tabela = tabela_de_proveniencia(final)
+        except Exception as exc:
+            logger.warning("Tabela de proveniência não montada: %s", exc)
+            return
+        if tabela:
+            result.etapas["proveniencia"] = tabela
+
     def _quality_gate(self, course: Course, result: PipelineResult) -> None:
         """Roda o quality gate aula a aula sobre o texto final e grava o veredito.
 
@@ -847,7 +1052,12 @@ class Orchestrator:
             rotulo = titulo or "unidade"
             try:
                 r = gate.check_text(
-                    bloco, curso_id=course.id, module_name=rotulo, unidade="aula", geo=False
+                    bloco,
+                    curso_id=course.id,
+                    module_name=rotulo,
+                    unidade="aula",
+                    geo=False,
+                    visual=self._visual_do_curso(course),
                 )
             except Exception as exc:
                 logger.warning("Quality gate falhou em '%s': %s", rotulo, exc, exc_info=True)
@@ -889,6 +1099,26 @@ class Orchestrator:
                 f"{result.gate['curso']['avisos']} aviso(s)"
             )
             for e in erros_geo:
+                linhas.append(f"      - {e}")
+        # Medidas da sequência de aulas (crosslinks entre aulas seguidas, piso
+        # de destinos do curso): só entram quando o cliente liga alguma delas.
+        try:
+            curso_achados = gate.check_curso(final, "curso", self.client_context)
+        except Exception as exc:
+            logger.warning("Medidas do curso falharam: %s", exc, exc_info=True)
+            curso_achados = []
+        if curso_achados:
+            erros_curso = [a.mensagem for a in curso_achados if a.tipo == "error"]
+            result.gate["curso (sequência)"] = {
+                "aprovado": not erros_curso,
+                "erros": erros_curso,
+                "avisos": sum(1 for a in curso_achados if a.tipo == "warning"),
+            }
+            linhas.append(
+                f"{'OK  ' if not erros_curso else 'FAIL'} curso (sequência): "
+                f"{len(erros_curso)} erro(s), {result.gate['curso (sequência)']['avisos']} aviso(s)"
+            )
+            for e in erros_curso:
                 linhas.append(f"      - {e}")
         aprovadas = sum(1 for v in result.gate.values() if v.get("aprovado"))
         cabecalho = f"Quality gate: {aprovadas} de {len(result.gate)} unidade(s) aprovada(s)"

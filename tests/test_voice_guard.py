@@ -113,7 +113,7 @@ def test_anti_cliche_one_offence():
     text = "Em um mundo cada vez mais digital, GEO eh essencial."
     score, errs = _score_anti_cliche(text)
     assert score == 75
-    assert errs == ["cliche proibido: 'em um mundo cada vez mais'"] or len(errs) == 1
+    assert errs == ["cliche proibido: 'em um mundo cada vez mais'"]
 
 
 def test_bloom_clean():

@@ -38,8 +38,8 @@ decided by context. Never add accents to URLs, slugs, code, variables or HTML at
   line, then two or three paragraphs straight to the point. If the subtitle is missing, write
   it from the first sentence. Scene, time of day, character, "in this module", lists of
   objectives, "what you will learn", "who this is for", index and cards leave the top.
-- 2 to 4 H2 (two is the norm: why the idea changes the result; one case from the trade,
-  beginning to end). H3 only in an H2 above 350 words. H4 and subheadings made of a line
+- {h2_min} to {h2_max} H2 (three is the norm: why the idea changes the result; one case from the trade,
+  beginning to end; what changes in the student's week, in prose). H3 only in an H2 above {h3_acima_de_palavras} words. H4 and subheadings made of a line
   ending in a colon become prose or disappear. Sections that deal with the same subject merge.
 - Forbidden blocks (R5 to R9) GO, with no replacement: exercises ("do it now", "exercise",
   "hands on", "your turn", "practice", "task", "challenge", "Expected result:", "If
@@ -61,7 +61,7 @@ decided by context. Never add accents to URLs, slugs, code, variables or HTML at
 
 A paragraph carries one idea in 2 to 4 sentences. Join the sequence of one-sentence paragraphs
 that slices a single line of reasoning; split the ten-line block that carries two subjects. A
-sentence above 28 words is split when it can be split without losing the condition. Never
+sentence above {frase_max_palavras} words is split when it can be split without losing the condition. Never
 apply programmed alternation of short and long sentences.
 
 ### 5. Banned lexicon (fix every occurrence)
@@ -85,12 +85,15 @@ apply programmed alternation of short and long sentences.
   "impact" as a verb, nominalization ("the implementation of" becomes "implement").
 - Em dash in prose, title case, Oxford comma in simple enumerations, emoji.
 - Blaming the reader: the subject of the failure is the process ("the reminder did not go out").
+- The team's internal vocabulary, repeated. A word the production team uses among itself does
+  not become the lesson's vocabulary: say the plain meaning, and never lean on the same label
+  more than once per lesson.
 
 ### 6. Evidence
 
 Every number needs an origin in the research or an illustrative-example label in the sentence
 itself. A percentage without origin becomes `[MISSING EVIDENCE: ...]` or a claim reduced to what
-is known. Open markers above 3 in the lesson: reject in the report, but return the text anyway.
+is known. Open markers above {marcadores_max_aula} in the lesson: reject in the report, but return the text anyway.
 Source and date do not enter the reading sentence; they stay in the track's source list. Never
 turn "the market understands" into "67% of companies, according to McKinsey" unless the number
 is in the research.

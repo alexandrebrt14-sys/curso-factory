@@ -79,6 +79,11 @@ class Course(BaseModel):
     modulos: list[Module] = Field(default_factory=list, description="Módulos do curso")
     # Wave 8 (i18n): idioma do curso. Fallback "pt-br" mantém compat.
     language: str = Field(default="pt-br", description="Idioma do curso (pt-br | en | es | ...)")
+    visual: dict[str, int] | None = Field(
+        default=None,
+        description="Peso visual por aula que sobrepõe o do cliente (min_por_aula, "
+        "max_por_aula, min_tipos_por_aula, max_paragrafos_sem_peca)",
+    )
     # Wave 6 (engagement): badges que o curso destrava
     badges_alvo: list[str] = Field(default_factory=list, description="IDs do catálogo de badges")
     # Wave 9 (skill graph): skills tagueadas com schema.org URIs

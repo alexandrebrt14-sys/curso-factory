@@ -44,7 +44,7 @@ princípio 5 da [[andragogia-knowles]] (orientação a problemas).
 ## Aplicação no pipeline
 
 - Prompt externo do [[gpt-4o-writer]]
-  (`src/templates/prompts/draft.md`) inclui tabela de verbos aceitos
+  (`src/templates/prompts/pt-br/draft.md`) inclui tabela de verbos aceitos
   e proibidos com instrução literal de rejeição.
 - [[content-checker]] cheque 7 valida verbos Bloom no campo
   `objetivos` do módulo. Detecta proibido → bloqueia aprovação.

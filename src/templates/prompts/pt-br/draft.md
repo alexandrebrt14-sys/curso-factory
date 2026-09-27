@@ -1,4 +1,4 @@
-# Prompt: redação de UMA aula (GPT-4o)
+# Prompt: redação de UMA aula
 
 ## Quem escreve, para quem
 
@@ -6,9 +6,10 @@ Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (o
 clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
 celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
 com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
-ganha explicação de até 12 palavras na primeira vez que aparece, com comparação do dia a dia,
-no molde "spring: jeito de animar que imita uma mola: em vez de mandar o movimento durar um
-tempo fixo, você diz o quanto ele é firme e o quanto desacelera". Esse molde vale para TODA
+ganha, colada a ele na primeira vez que aparece, uma explicação de até {glosa_max_palavras} palavras com
+comparação do dia a dia ("spring: jeito de animar que imita uma mola"); a analogia pode seguir
+na frase seguinte, começando pelo termo ("Com o spring, em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera"). Esse molde vale para TODA
 superfície que você escrever: prosa, legenda, ficha, dica, tabela.
 
 Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
@@ -18,18 +19,6 @@ de versão que não decide nada fica fora, e a referência vai para a lista de f
 
 O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
 
-## O que você está escrevendo agora
-
-- Curso: {course_name} (nível {course_level})
-- Módulo {module_number}: {module_title}. {module_description}
-- Esta aula: **{lesson_number}: {lesson_title}** ({lesson_position})
-- A ideia única desta aula: {lesson_idea}
-- Aulas anteriores do módulo: {previous_lessons}
-- Aulas seguintes do módulo: {next_lessons}
-
-Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
-quando precisar. Não antecipe as seguintes.
-
 ## Anti-invenção (inviolável)
 
 Todo número, nome, empresa, estudo, data e citação vem da pesquisa no fim deste prompt. O que
@@ -37,7 +26,7 @@ não estiver lá não entra como fato. Antes de deixar um buraco, tente, nesta o
 novo na pesquisa; reduzir a afirmação ao que se sabe ("três clientes relataram" no lugar de "o
 mercado relata"); tirar o argumento do centro; cortar o trecho. Só depois disso use o marcador
 `[FALTA EVIDÊNCIA: o que precisa ser buscado]`, no lugar do DADO e nunca no lugar da seção.
-Teto de 3 marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
+Teto de {marcadores_max_aula} marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
 própria frase ("suponha um faturamento de R$ 40 mil no mês").
 
 ## Fidelidade ao resumir e contribuir
@@ -64,12 +53,13 @@ dele e qual é o próximo passo, dito em prosa. Extensão: de {palavras_alvo_min
 acima de {palavras_aviso}, confira se entrou outra ideia. A contagem orienta a revisão,
 mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
 
-Cabeçalhos: **{h2_min} a {h2_max} H2**, e o normal são dois, um por bloco abaixo. H3 só quando
-um H2 passa de 350 palavras e precisa de duas partes (no máximo {h3_por_h2} por H2). Nada de
+Cabeçalhos: **{h2_min} a {h2_max} H2**, e o normal são três, um por bloco abaixo (dois passam
+quando o terceiro não tem o que acrescentar). H3 só quando
+um H2 passa de {h3_acima_de_palavras} palavras e precisa de duas partes (no máximo {h3_por_h2} por H2). Nada de
 H4, nada de linha terminada em dois-pontos como subtítulo.
 
 **Abertura, nesta ordem exata, sem nada no meio (regra R1).** O pipeline insere o título
-(H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até 25 palavras**, que diz o
+(H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até {subtitulo_max_palavras} palavras**, que diz o
 que o aluno vai conseguir fazer ao terminar. Uma promessa só, sem corrente de vírgulas, e sem
 fórmula fixa de abertura: "Você sai com...", "Você aprende...", "Nesta aula..." viraram tique
 e o gate aponta. Comece pelo resultado, pelo problema ou pela decisão, e mude a forma a cada
@@ -85,9 +75,9 @@ sem botão, sem card, sem tabela antes do primeiro parágrafo.
 **H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
 tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
 disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
-(comportamento observável, antes e depois) e o erro mais comum de quem ignora, marcado como
-**Armadilha comum:**. Comece pelo problema e chegue à ideia; nunca abra com "a definição de X
-é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
+(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
+Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
 primeira não explicou.
 
 **H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
@@ -95,6 +85,10 @@ quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que acont
 com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
 caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
 negócio", "aplique no seu negócio" nem "mockup".
+
+**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
+acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
+numeradas de exercício e sem campo para preencher (R6).
 
 **Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
 dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
@@ -132,10 +126,10 @@ com a leitura. O gate reprova cada item abaixo, e a página não é publicada co
 
 ## Título da aula: promessa do aluno, não índice de técnico
 
-O título que o pipeline insere é o que está em "Esta aula". Se ele for rótulo de índice
+O título que o pipeline insere é o que está em "Esta aula", no fim deste prompt. Se ele for rótulo de índice
 (dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
 primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
-conseguir fazer, com verbo e em até 12 palavras: "Escolher a base do site sem pagar duas
+conseguir fazer, com verbo e em até {titulo_max_palavras} palavras: "Escolher a base do site sem pagar duas
 vezes" no lugar de "Astro ou Next.js pelo tipo de página e o custo da troca". O pipeline usa
 a sua proposta e apaga a linha.
 
@@ -145,8 +139,8 @@ a sua proposta e apaga a linha.
   orientação, em 2 a 4 frases na maior parte das vezes. Parágrafo de uma frase é legítimo
   quando a ideia cabe nela; o defeito é a página picada em série, e o outro é o bloco de dez
   linhas com dois assuntos. A faixa orienta a revisão, não decide sozinha.
-- Frase de até 28 palavras na maior parte das vezes, em ordem direta. Enumeração que não
-  parte, exemplo contado de uma vez ou número com condição podem ir até 60; acima disso não há
+- Frase de até {frase_max_palavras} palavras na maior parte das vezes, em ordem direta. Enumeração que não
+  parte, exemplo contado de uma vez ou número com condição podem ir até {frase_tolerancia_palavras}; acima disso não há
   caso. O tamanho vem do sentido: causa e ressalva juntas pedem frase maior; a virada pede
   frase curta. Nunca alterne curta e longa por programa.
 - Frases ligadas em raciocínio, não justapostas: o que é, por que importa para o negócio dele,
@@ -163,15 +157,19 @@ a sua proposta e apaga a linha.
 ## Apoio visual (teto, não piso)
 
 Até {figuras_max} apoios visuais na aula, e só quando substituem texto: tabela para comparar
-duas ou mais opções em dois ou mais critérios (opções nas colunas, critérios nas linhas); lista
+opções em dois ou mais critérios (opções nas colunas, critérios nas linhas, no máximo três
+colunas de texto curto para caber no celular: a coluna do critério e duas opções); lista
 numerada para processo em que a ordem importa (um verbo por passo, resultado observável no
 mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
-Aula sem apoio visual passa; peça decorativa, não. Blockquote, negrito e bloco de código não
+Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
+decorativa reprova sempre. Blockquote, negrito e bloco de código não
 contam como apoio visual e não têm cota.
 
 Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
 mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
 numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
+
+{bloco_peso_visual}
 
 ## Blocos auxiliares: ficha, dica, caso, legenda
 
@@ -220,6 +218,10 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 - Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
   fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
 
+{bloco_apuracao}
+
+{bloco_vocabulario}
+
 ## Antes de entregar, confira
 
 1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.
@@ -229,9 +231,9 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 5. Extensão entre {palavras_alvo_min} e {palavras_alvo_max} palavras.
 6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
 7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
-8. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
+8. Nenhum número sem origem na pesquisa; no máximo {marcadores_max_aula} marcadores `[FALTA EVIDÊNCIA]`.
 9. Parágrafos na faixa de {paragrafo_min} a {paragrafo_max} palavras na maior parte das vezes;
-   frases até 28 na maior parte das vezes, e nenhuma acima de 60.
+   frases até {frase_max_palavras} na maior parte das vezes, e nenhuma acima de {frase_tolerancia_palavras}.
 10. Até {figuras_max} apoios visuais, todos substituindo texto.
 11. Nada da lista "O que nunca entra".
 12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
@@ -239,8 +241,28 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
     todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
 
-Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
-módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
-
 --- DADOS DA PESQUISA ---
 {context}
+
+--- ESTA AULA ---
+
+## O que você está escrevendo agora
+
+- Curso: {course_name} (nível {course_level})
+- Módulo {module_number}: {module_title}. {module_description}
+- Esta aula: **{lesson_number}: {lesson_title}** ({lesson_position})
+- A ideia única desta aula: {lesson_idea}
+- Aulas anteriores do módulo: {previous_lessons}
+- Aulas seguintes do módulo: {next_lessons}
+
+Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
+quando precisar. Não antecipe as seguintes.
+
+{bloco_ordem_do_curso}
+
+{bloco_crosslinks}
+
+{bloco_expansao}
+
+Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.

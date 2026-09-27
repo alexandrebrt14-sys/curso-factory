@@ -27,7 +27,7 @@ body:
       placeholder: |
         Permitir que cada cliente tenha sua própria pasta de prompts:
         config/clients/<id>/prompts/draft.md
-        Se existir, sobrescreve src/templates/prompts/draft.md.
+        Se existir, sobrescreve src/templates/prompts/pt-br/draft.md.
     validations:
       required: true
 

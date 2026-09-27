@@ -13,4 +13,4 @@ the lesson itself. Deliver only the rewritten lesson.
 --- SHORT LESSON ---
 {lesson_md}
 
---- RESEARCH (same as the first version) ---
+The research is the same as in the first version and is above, under "RESEARCH DATA".

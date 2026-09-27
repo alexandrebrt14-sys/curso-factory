@@ -1,5 +1,5 @@
 --- EXPANSÃO DE AULA ---
-A aula abaixo voltou com {palavras_atual} palavras. O piso é {palavras_piso} e o alvo vai de
+A aula curta, logo abaixo desta nota, voltou com {palavras_atual} palavras. O piso é {palavras_piso} e o alvo vai de
 {palavras_alvo_min} a {palavras_alvo_max}. Abaixo do piso a ideia foi apresentada, não
 explicada. Reescreva a aula inteira, com os mesmos cabeçalhos e o mesmo exemplo, e desenvolva o
 que falta: na abertura, o subtítulo em uma frase e dois ou três parágrafos diretos ao ponto; no
@@ -12,4 +12,4 @@ frase sobre a própria aula. Entregue só a aula reescrita.
 --- AULA CURTA ---
 {lesson_md}
 
---- PESQUISA (a mesma da primeira versão) ---
+A pesquisa é a mesma da primeira versão e está acima, em "DADOS DA PESQUISA".

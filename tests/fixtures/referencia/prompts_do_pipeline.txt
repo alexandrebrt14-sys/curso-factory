@@ -1,0 +1,2360 @@
+[perplexity]
+# Prompt — Pesquisa de Mercado e Fundamentação (Perplexity)
+
+## Contexto
+
+Você é um pesquisador educacional com rigor acadêmico, especializado em fundamentar cursos online de alta qualidade. Sua pesquisa deve fornecer a base factual e analítica para conteúdo com padrão editorial de publicações como Harvard Business Review, MIT Sloan Management Review e HSM Management.
+
+## Curso
+
+- **Nome:** WhatsApp que vende
+- **Descrição:** Responder rápido e fechar venda
+- **Módulos previstos:**   - Resposta rápida: tempo de resposta
+
+## O que pesquisar
+
+### 1. Dados de Mercado e Contexto (2025–2026)
+
+- Tamanho do mercado e crescimento projetado para este segmento educacional
+- Plataformas líderes (Udemy, Coursera, Hotmart, Alura etc.) e seus dados públicos
+- Ticket médio de cursos semelhantes em português e em inglês
+- Taxa de conclusão média em cursos desta categoria
+- Dados demográficos do público-alvo (idade, formação, cargo, setor)
+
+### 2. Fundamentação Acadêmica e Científica
+
+- Pesquisas e artigos acadêmicos relevantes ao tema central do curso
+- Frameworks teóricos consolidados na área (cite autores e publicações)
+- Estudos de caso documentados em periódicos ou publicações de negócios
+- Dados estatísticos com fontes primárias identificadas
+- Meta-análises ou revisões sistemáticas quando disponíveis
+
+**Regra anti-GhostCite (obrigatória para claims acadêmicos):** todo paper citado deve vir com identificador verificável (arXiv ID, DOI ou URL do abstract) e o número/afirmação atribuído deve constar do abstract ou do corpo consultado, nunca de memória. Se você não conseguir apontar o identificador, rebaixe o claim para [Baixa] ou remova. Atribuir a um paper real um achado que não está nele é o erro mais grave desta pesquisa (já ocorreu no corpus com o GEO-16 atribuído indevidamente ao paper de Princeton; a wave `docs/research/geo-wave-julho-22-2026/` mantém a lista de 32 papers de GEO com ID verificado para consulta).
+
+### 3. Tendências e Inovações
+
+- Metodologias pedagógicas eficazes para este tipo de conteúdo (andragogia, microlearning, problem-based learning)
+- Formatos preferidos pelo público em 2026 (vídeo curto, projetos práticos, simulações)
+- Ferramentas e tecnologias emergentes citadas por especialistas
+- Pesquisas sobre retenção e engajamento em cursos online para adultos
+
+### 4. Análise Competitiva
+
+- Liste ao menos 5 cursos concorrentes com: nome, plataforma, preço, avaliação média, número de alunos
+- Identifique pontos fortes e fracos recorrentes nas avaliações de alunos
+- Aponte lacunas não atendidas pelo mercado atual (oportunidades de diferenciação)
+- Analise o nível de profundidade dos concorrentes (superficial vs. aprofundado)
+
+### 5. Fontes e Referências Recomendadas
+
+Priorize fontes de 2024–2026:
+
+- **Relatórios de mercado**: HolonIQ, Ambient Insight, Class Central, Research and Markets
+- **Publicações de negócios**: Harvard Business Review, MIT Sloan, McKinsey Insights, Deloitte Insights
+- **Periódicos acadêmicos**: quando relevante ao tema do curso
+- **Dados públicos de plataformas**: páginas de vendas, reviews, dados de redes sociais
+- **Publicações brasileiras**: HSM Management, Exame, Valor Econômico, repositórios USP/Unicamp/FGV
+
+### 6. Casos para os exemplos das aulas
+
+- Identifique 3–5 casos reais (empresas, projetos, incidentes) que possam ser contados do começo ao fim como exemplo (a aula não carrega exercício)
+- Para cada caso, forneça: contexto, desafio enfrentado, abordagem adotada, resultado obtido
+- Priorize casos verificáveis com fontes públicas
+
+## Pesquisa orientada à decisão e ao uso em busca
+
+Desdobre a ideia do curso em perguntas que o aluno precisa resolver: condições de uso,
+alternativas, custo, erro comum e limite. Agrupe variações que levam à mesma resposta.
+Procure também evidências que contrariem a hipótese inicial. O conjunto de buscas orienta
+a cobertura; não exige páginas ou aulas redundantes para cada expressão.
+
+Para cada afirmação aproveitável, registre sujeito, período, público, unidade, denominador,
+comparador, origem e limite. Diferencie observação, opinião, projeção e exemplo hipotético.
+Um trecho com link só conta como evidência se a fonte consultada sustentar aquela afirmação.
+Vários textos derivados de um mesmo estudo contam como uma origem.
+
+Use a data de publicação e a data do fenômeno; procure a versão vigente de fatos perecíveis.
+A janela de anos sugerida neste prompt não exclui fundamentos antigos nem autoriza dado
+desatualizado. Se faltarem casos ou dados, registre a lacuna na pesquisa sem inventar
+material para completar a quantidade pedida.
+
+Quando o tema envolver SEO ou GEO, separe a documentação oficial, os estudos e as hipóteses
+editoriais. Pesquisa de opinião não fornece pesos de ranking. Citação, menção de marca,
+apoio à afirmação, visita e venda são observações distintas. Faixa de palavras, quantidade
+de referências ou metadados não garantem presença em uma resposta de IA.
+
+Os níveis de confiança abaixo descrevem a procedência disponível. Eles não substituem
+a avaliação do método, da população pertinente e do apoio à afirmação escrita.
+
+## Formato de saída
+
+Retorne um documento estruturado em Markdown com:
+
+1. Seções numeradas correspondentes aos itens acima
+2. **Tabelas comparativas** para dados de mercado e análise competitiva
+3. **Referências completas** para cada dado citado (autor, título, publicação, ano, URL quando disponível)
+4. **Nível de confiança** para cada dado: [Alta] fonte primária verificável, [Média] fonte secundária confiável, [Baixa] estimativa ou dado parcial
+
+Escreva em Português do Brasil com acentuação completa e ortografia correta.
+
+
+======== CHAMADA ========
+
+[openai]
+Você planeja as aulas de um curso em português do Brasil, com acentuação completa.
+
+Curso: WhatsApp que vende
+Nível: iniciante
+Módulo 1: Resposta rápida
+Descrição do módulo: tempo de resposta
+
+Planeje de 4 a 6 aulas para este módulo. Cada aula ensina UMA ideia, explicada por inteiro, em leitura corrida (sem exercício, sem checkpoint, sem mockup), e fecha dizendo o que muda no negócio do aluno e o próximo passo. As aulas se encadeiam: a seguinte usa o que a anterior deixou pronto. Título sem 'faça agora', 'exercício', 'no seu negócio', 'checkpoint' ou LGPD.
+
+Tamanho e ordem, pelos dados de uso do portal: curso curto termina, curso longo não, e o
+aluno abandona na teoria que chega cedo e no apêndice de instalação. Para tema amplo, o
+curso inteiro fica entre 14 e 18 aulas; aula que não muda uma decisão
+do aluno sai. As 3 primeiras aulas do curso são as mais curtas e as mais
+práticas, com um ganho no primeiro dia. Teoria densa só da metade do curso em diante, e
+sempre depois de um caso contado inteiro. Nenhuma aula é apêndice de instalação: o passo
+de instalação entra como passo a passo curto dentro da aula que precisa dele. Este é o
+módulo 1 do curso.
+
+Responda SOMENTE com uma linha por aula, neste formato, sem comentário antes ou depois:
+1. Título da aula em até 10 palavras | a ideia única da aula em uma frase
+
+--- DADOS DA PESQUISA ---
+PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. 
+
+======== CHAMADA ========
+
+[openai]
+# Prompt: redação de UMA aula
+
+## Quem escreve, para quem
+
+Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (oficina, salão,
+clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
+celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
+com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
+ganha, colada a ele na primeira vez que aparece, uma explicação de até 12 palavras com
+comparação do dia a dia ("spring: jeito de animar que imita uma mola"); a analogia pode seguir
+na frase seguinte, começando pelo termo ("Com o spring, em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera"). Esse molde vale para TODA
+superfície que você escrever: prosa, legenda, ficha, dica, tabela.
+
+Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
+na mesma passagem: o que é, por que importa para o negócio dele e o que fazer com isso. Versão
+de ferramenta ou de biblioteca só entra quando muda a decisão do aluno; a enxurrada de número
+de versão que não decide nada fica fora, e a referência vai para a lista de fontes da trilha.
+
+O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
+
+## Anti-invenção (inviolável)
+
+Todo número, nome, empresa, estudo, data e citação vem da pesquisa no fim deste prompt. O que
+não estiver lá não entra como fato. Antes de deixar um buraco, tente, nesta ordem: procurar de
+novo na pesquisa; reduzir a afirmação ao que se sabe ("três clientes relataram" no lugar de "o
+mercado relata"); tirar o argumento do centro; cortar o trecho. Só depois disso use o marcador
+`[FALTA EVIDÊNCIA: o que precisa ser buscado]`, no lugar do DADO e nunca no lugar da seção.
+Teto de 3 marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
+própria frase ("suponha um faturamento de R$ 40 mil no mês").
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+## O molde da aula
+
+A aula ensina UMA ideia até o fim e é LEITURA: o aluno termina sabendo o que muda no negócio
+dele e qual é o próximo passo, dito em prosa. Extensão: de 900 a
+1800 palavras. Abaixo de 700, confira se faltou explicação;
+acima de 2400, confira se entrou outra ideia. A contagem orienta a revisão,
+mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
+
+Cabeçalhos: **2 a 4 H2**, e o normal são três, um por bloco abaixo (dois passam
+quando o terceiro não tem o que acrescentar). H3 só quando
+um H2 passa de 350 palavras e precisa de duas partes (no máximo 1 por H2). Nada de
+H4, nada de linha terminada em dois-pontos como subtítulo.
+
+**Abertura, nesta ordem exata, sem nada no meio (regra R1).** O pipeline insere o título
+(H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até 25 palavras**, que diz o
+que o aluno vai conseguir fazer ao terminar. Uma promessa só, sem corrente de vírgulas, e sem
+fórmula fixa de abertura: "Você sai com...", "Você aprende...", "Nesta aula..." viraram tique
+e o gate aponta. Comece pelo resultado, pelo problema ou pela decisão, e mude a forma a cada
+aula. Depois de uma linha em branco, **dois ou três parágrafos de abertura**, diretos ao ponto,
+que prendem a atenção: o problema que ele vive hoje, o que custa não resolver e o que muda ao
+terminar a aula. Quando existe aula anterior, a primeira frase pode ser a ponte de entrada, em
+uma linha: o que ficou resolvido lá e por que este pedaço vem agora ("Com o cadastro no ar,
+falta decidir quem recebe a primeira mensagem"). O primeiro elemento depois do subtítulo é
+sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
+módulo", sem lista de objetivos, sem "o que você vai aprender", sem "para quem é", sem índice,
+sem botão, sem card, sem tabela antes do primeiro parágrafo.
+
+**H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
+tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
+disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
+(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
+(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
+Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+primeira não explicou.
+
+**H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
+quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois,
+com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
+caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
+negócio", "aplique no seu negócio" nem "mockup".
+
+**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
+acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
+numeradas de exercício e sem campo para preencher (R6).
+
+**Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
+dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
+objeto visível: abra, anote, liste, calcule, publique) com o critério que diz se deu certo
+(número, prazo ou condição: "quando três clientes responderem", "em uma semana", "se o custo
+passar de R$ 40"). Não resuma o que ele acabou de ler.
+
+Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
+uma vez; não entram na aula.
+
+## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
+
+Pedido do dono, de 08/09/2026: o topo carregado dispersa o leitor e o card no meio compete
+com a leitura. O gate reprova cada item abaixo, e a página não é publicada com ele.
+
+- R1. Qualquer coisa entre o título, o subtítulo e o primeiro parágrafo.
+- R2. Botão, convite ou chamada para ação antes do corpo. Se houver, é uma só, no fim.
+- R3. Percurso alternativo: "escolha seu caminho", "se você é X vá para Y", "comece por aqui",
+  abas por perfil. Um único caminho, linear.
+- R4. Segunda descrição, lead ou resumo repetido no topo. A descrição é uma, e é do curso.
+- R5. Bloco "mockup no seu negócio" e variantes ("no seu negócio", "aplique no seu negócio",
+  "simule no seu negócio", "maquete") como seção ou rótulo.
+- R6. Exercício: "faça agora", "exercício", "mão na massa", "sua vez", "pratique", "tarefa",
+  "desafio", "checklist de ação", "Resultado esperado:", "Se travar:". A aula é leitura, não
+  workbook. O próximo passo entra em prosa, no fecho.
+- R7. Fonte no meio da aula: linha "Fonte:", cabeçalho "Fontes", citação em card ou callout.
+  A fonte vai para o bloco "Fontes" do rodapé da trilha, uma linha curta por fonte.
+- R8. Card de "checkpoint", "ponto de verificação", "recapitulando", "resumo do capítulo",
+  "você aprendeu", "quiz".
+- R9. Marcador visível de verificação ("requer verificação", "a verificar", "[verificar]",
+  "dado não confirmado", "fonte pendente") e QUALQUER menção à LGPD, à Lei Geral de Proteção
+  de Dados ou à Lei 13.709, mesmo entre aspas. Verificação é bastidor; proteção de dados
+  entra como conduta prática ("peça autorização antes de mandar a primeira mensagem"), sem
+  nomear a lei.
+
+## Título da aula: promessa do aluno, não índice de técnico
+
+O título que o pipeline insere é o que está em "Esta aula", no fim deste prompt. Se ele for rótulo de índice
+(dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
+primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
+conseguir fazer, com verbo e em até 12 palavras: "Escolher a base do site sem pagar duas
+vezes" no lugar de "Astro ou Next.js pelo tipo de página e o custo da troca". O pipeline usa
+a sua proposta e apaga a linha.
+
+## Parágrafo, frase, ritmo
+
+- Parágrafo com uma ideia, de 20 a 80 palavras como faixa de
+  orientação, em 2 a 4 frases na maior parte das vezes. Parágrafo de uma frase é legítimo
+  quando a ideia cabe nela; o defeito é a página picada em série, e o outro é o bloco de dez
+  linhas com dois assuntos. A faixa orienta a revisão, não decide sozinha.
+- Frase de até 28 palavras na maior parte das vezes, em ordem direta. Enumeração que não
+  parte, exemplo contado de uma vez ou número com condição podem ir até 60; acima disso não há
+  caso. O tamanho vem do sentido: causa e ressalva juntas pedem frase maior; a virada pede
+  frase curta. Nunca alterne curta e longa por programa.
+- Frases ligadas em raciocínio, não justapostas: o que é, por que importa para o negócio dele,
+  o que fazer. Quando dois parágrafos vizinhos podem trocar de lugar sem perda, falta o fio.
+- Parágrafos vizinhos não começam com a mesma palavra nem com a mesma construção, e a maioria
+  não começa por "O" ou "A" mais sujeito. Comece alguns pela condição ("Quando o orçamento
+  demora"), pelo número ("Três dias depois") ou pelo verbo ("Anote o valor").
+- Verbo com sujeito e voz ativa. "Otimizar a captação" vira "captar melhor".
+- Quando a frase fala de uma falha, o sujeito é o processo ou o artefato, nunca o aluno: "o
+  lembrete não saiu", não "você esqueceu de mandar".
+- Prosa carrega raciocínio; lista carrega itens paralelos; tabela carrega comparação. Lista cujos
+  itens têm causa e consequência entre si vira prosa.
+
+## Apoio visual (teto, não piso)
+
+Até 3 apoios visuais na aula, e só quando substituem texto: tabela para comparar
+opções em dois ou mais critérios (opções nas colunas, critérios nas linhas, no máximo três
+colunas de texto curto para caber no celular: a coluna do critério e duas opções); lista
+numerada para processo em que a ordem importa (um verbo por passo, resultado observável no
+mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
+Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
+decorativa reprova sempre. Blockquote, negrito e bloco de código não
+contam como apoio visual e não têm cota.
+
+Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
+mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
+numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
+
+
+
+## Blocos auxiliares: ficha, dica, caso, legenda
+
+Tudo que não é parágrafo corrido (ficha de recurso, dica, caso numerado, legenda de figura,
+célula de tabela) sai no MESMO registro da aula: fala com o aluno ("você"), glosa o termo na
+primeira aparição, traz o exemplo do negócio pequeno e diz o que ele vê na tela quando
+acertou. Ficha que fala sobre o assunto em terceira pessoa, que abre sempre com a mesma palavra
+("Confira", "Teste", "Num") ou que se protege ("confira na versão instalada", "a documentação
+atual pode conter mudanças") reprova. Mais de seis fichas seguidas pedem, entre os grupos,
+uma frase de prosa que diga o que ficou resolvido, por que o próximo grupo vem agora e onde o
+aluno pode parar.
+
+## Liberdade de forma
+
+O molde acima fixa o que a aula precisa ter, não como dizer. Analogia do cotidiano do ramo do
+aluno, cena de duas frases dentro do H2 2, contraste entre o jeito antigo e o novo, a pergunta
+que ele faria em voz alta, humor leve, primeira pessoa quando a empresa fala: use o que encurta
+o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
+vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
+
+## O que nunca entra
+
+- Bastidor: qualquer frase sobre a própria aula, a regra que você seguiu, a verificação que
+  fez ou o método da estimativa ("esta aula foi", "os dados foram verificados", "segundo nossa
+  metodologia", "estimativa calculada", "nota do revisor"). O aluno recebe o fato e o passo.
+- Rótulo da pesquisa ([Alta], [Média], [Baixa], "nível de confiança"): serve a você para
+  escolher o dado; na aula o número entra limpo ou não entra.
+- Aviso legal genérico ("consulte um advogado", "conforme a legislação vigente", "isenção de
+  responsabilidade"). Lei entra só quando muda a decisão do aluno, e entra com número: qual
+  lei, qual artigo, qual prazo, qual valor. Exceção fixa (R9): a lei de proteção de dados não
+  é nomeada de forma nenhuma; a conduta entra, o nome da lei não.
+
+- Antítese que nega para afirmar ("não é X, é Y", "não se trata de X", "mais do que X, Y").
+- Tríade como ritmo (três adjetivos, três exemplos, três benefícios por hábito).
+- Conectivo de enchimento abrindo parágrafo: "nesse sentido", "vale ressaltar", "dito isso",
+  "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
+- Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
+- Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
+- Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
+  entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
+- Meta-discurso de verificação ("verificamos que", "fontes consultadas"), alerta rotulado
+  ("Atenção:", "Importante:"), rótulo de confiança sobre o próprio dado.
+- Travessão em prosa, title case em título, vírgula antes do "e" em enumeração simples,
+  gerundismo ("vamos estar enviando").
+- Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
+  fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
+
+A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+como "confirmado na fonte primária", "confirmada na fonte primária", "verificamos", "conferido em", "conferida em", "não há fonte para", "descartamos por falta de certeza", "segundo o que apuramos". A checagem decide o que entra; o leitor recebe só o resultado, e a
+fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo 1
+ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+- travar (trava, travado, travando): parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir, congelar, fixar
+- canônico (canônica, canônicos): oficial, principal, de referência, padrão, adotado, definitivo, fonte única
+- régua: critério, padrão, medida, parâmetro, regra, norma, referencial, limite, guia de escrita
+- honesto (honesta, honestamente, com honestidade): franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero, transparente
+
+## Antes de entregar, confira
+
+1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.
+2. Logo depois do subtítulo vem um parágrafo, e depois dele mais um ou dois, antes do primeiro H2.
+3. Uma ideia só, explicada até o fim; o exemplo é um e vai do começo ao fim, com número.
+4. 2 a 4 H2; H3 só em H2 longo; nenhum H4.
+5. Extensão entre 900 e 1800 palavras.
+6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
+7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
+8. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
+9. Parágrafos na faixa de 20 a 80 palavras na maior parte das vezes;
+   frases até 28 na maior parte das vezes, e nenhuma acima de 60.
+10. Até 3 apoios visuais, todos substituindo texto.
+11. Nada da lista "O que nunca entra".
+12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
+13. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
+14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
+    todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
+
+--- DADOS DA PESQUISA ---
+PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. 
+
+--- ESTA AULA ---
+
+## O que você está escrevendo agora
+
+- Curso: WhatsApp que vende (nível iniciante)
+- Módulo 1: Resposta rápida. tempo de resposta
+- Esta aula: **1.1: Por que o cliente some** (aula 1 de 2 do módulo 1)
+- A ideia única desta aula: tempo de resposta
+- Aulas anteriores do módulo: nenhuma (esta abre o módulo)
+- Aulas seguintes do módulo: 1.2 Responder em cinco minutos
+
+Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
+quando precisar. Não antecipe as seguintes.
+
+A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
+maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
+critério de acerto; ele não guarda a informação principal.
+
+Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
+práticas: no máximo 900 palavras, com um ganho que o aluno aplica no mesmo
+dia, sem panorama histórico, sem taxonomia e sem teoria densa.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+
+
+Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
+
+
+======== CHAMADA ========
+
+[openai]
+# Prompt: redação de UMA aula
+
+## Quem escreve, para quem
+
+Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (oficina, salão,
+clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
+celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
+com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
+ganha, colada a ele na primeira vez que aparece, uma explicação de até 12 palavras com
+comparação do dia a dia ("spring: jeito de animar que imita uma mola"); a analogia pode seguir
+na frase seguinte, começando pelo termo ("Com o spring, em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera"). Esse molde vale para TODA
+superfície que você escrever: prosa, legenda, ficha, dica, tabela.
+
+Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
+na mesma passagem: o que é, por que importa para o negócio dele e o que fazer com isso. Versão
+de ferramenta ou de biblioteca só entra quando muda a decisão do aluno; a enxurrada de número
+de versão que não decide nada fica fora, e a referência vai para a lista de fontes da trilha.
+
+O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
+
+## Anti-invenção (inviolável)
+
+Todo número, nome, empresa, estudo, data e citação vem da pesquisa no fim deste prompt. O que
+não estiver lá não entra como fato. Antes de deixar um buraco, tente, nesta ordem: procurar de
+novo na pesquisa; reduzir a afirmação ao que se sabe ("três clientes relataram" no lugar de "o
+mercado relata"); tirar o argumento do centro; cortar o trecho. Só depois disso use o marcador
+`[FALTA EVIDÊNCIA: o que precisa ser buscado]`, no lugar do DADO e nunca no lugar da seção.
+Teto de 3 marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
+própria frase ("suponha um faturamento de R$ 40 mil no mês").
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+## O molde da aula
+
+A aula ensina UMA ideia até o fim e é LEITURA: o aluno termina sabendo o que muda no negócio
+dele e qual é o próximo passo, dito em prosa. Extensão: de 900 a
+1800 palavras. Abaixo de 700, confira se faltou explicação;
+acima de 2400, confira se entrou outra ideia. A contagem orienta a revisão,
+mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
+
+Cabeçalhos: **2 a 4 H2**, e o normal são três, um por bloco abaixo (dois passam
+quando o terceiro não tem o que acrescentar). H3 só quando
+um H2 passa de 350 palavras e precisa de duas partes (no máximo 1 por H2). Nada de
+H4, nada de linha terminada em dois-pontos como subtítulo.
+
+**Abertura, nesta ordem exata, sem nada no meio (regra R1).** O pipeline insere o título
+(H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até 25 palavras**, que diz o
+que o aluno vai conseguir fazer ao terminar. Uma promessa só, sem corrente de vírgulas, e sem
+fórmula fixa de abertura: "Você sai com...", "Você aprende...", "Nesta aula..." viraram tique
+e o gate aponta. Comece pelo resultado, pelo problema ou pela decisão, e mude a forma a cada
+aula. Depois de uma linha em branco, **dois ou três parágrafos de abertura**, diretos ao ponto,
+que prendem a atenção: o problema que ele vive hoje, o que custa não resolver e o que muda ao
+terminar a aula. Quando existe aula anterior, a primeira frase pode ser a ponte de entrada, em
+uma linha: o que ficou resolvido lá e por que este pedaço vem agora ("Com o cadastro no ar,
+falta decidir quem recebe a primeira mensagem"). O primeiro elemento depois do subtítulo é
+sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
+módulo", sem lista de objetivos, sem "o que você vai aprender", sem "para quem é", sem índice,
+sem botão, sem card, sem tabela antes do primeiro parágrafo.
+
+**H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
+tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
+disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
+(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
+(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
+Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+primeira não explicou.
+
+**H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
+quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois,
+com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
+caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
+negócio", "aplique no seu negócio" nem "mockup".
+
+**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
+acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
+numeradas de exercício e sem campo para preencher (R6).
+
+**Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
+dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
+objeto visível: abra, anote, liste, calcule, publique) com o critério que diz se deu certo
+(número, prazo ou condição: "quando três clientes responderem", "em uma semana", "se o custo
+passar de R$ 40"). Não resuma o que ele acabou de ler.
+
+Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
+uma vez; não entram na aula.
+
+## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
+
+Pedido do dono, de 08/09/2026: o topo carregado dispersa o leitor e o card no meio compete
+com a leitura. O gate reprova cada item abaixo, e a página não é publicada com ele.
+
+- R1. Qualquer coisa entre o título, o subtítulo e o primeiro parágrafo.
+- R2. Botão, convite ou chamada para ação antes do corpo. Se houver, é uma só, no fim.
+- R3. Percurso alternativo: "escolha seu caminho", "se você é X vá para Y", "comece por aqui",
+  abas por perfil. Um único caminho, linear.
+- R4. Segunda descrição, lead ou resumo repetido no topo. A descrição é uma, e é do curso.
+- R5. Bloco "mockup no seu negócio" e variantes ("no seu negócio", "aplique no seu negócio",
+  "simule no seu negócio", "maquete") como seção ou rótulo.
+- R6. Exercício: "faça agora", "exercício", "mão na massa", "sua vez", "pratique", "tarefa",
+  "desafio", "checklist de ação", "Resultado esperado:", "Se travar:". A aula é leitura, não
+  workbook. O próximo passo entra em prosa, no fecho.
+- R7. Fonte no meio da aula: linha "Fonte:", cabeçalho "Fontes", citação em card ou callout.
+  A fonte vai para o bloco "Fontes" do rodapé da trilha, uma linha curta por fonte.
+- R8. Card de "checkpoint", "ponto de verificação", "recapitulando", "resumo do capítulo",
+  "você aprendeu", "quiz".
+- R9. Marcador visível de verificação ("requer verificação", "a verificar", "[verificar]",
+  "dado não confirmado", "fonte pendente") e QUALQUER menção à LGPD, à Lei Geral de Proteção
+  de Dados ou à Lei 13.709, mesmo entre aspas. Verificação é bastidor; proteção de dados
+  entra como conduta prática ("peça autorização antes de mandar a primeira mensagem"), sem
+  nomear a lei.
+
+## Título da aula: promessa do aluno, não índice de técnico
+
+O título que o pipeline insere é o que está em "Esta aula", no fim deste prompt. Se ele for rótulo de índice
+(dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
+primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
+conseguir fazer, com verbo e em até 12 palavras: "Escolher a base do site sem pagar duas
+vezes" no lugar de "Astro ou Next.js pelo tipo de página e o custo da troca". O pipeline usa
+a sua proposta e apaga a linha.
+
+## Parágrafo, frase, ritmo
+
+- Parágrafo com uma ideia, de 20 a 80 palavras como faixa de
+  orientação, em 2 a 4 frases na maior parte das vezes. Parágrafo de uma frase é legítimo
+  quando a ideia cabe nela; o defeito é a página picada em série, e o outro é o bloco de dez
+  linhas com dois assuntos. A faixa orienta a revisão, não decide sozinha.
+- Frase de até 28 palavras na maior parte das vezes, em ordem direta. Enumeração que não
+  parte, exemplo contado de uma vez ou número com condição podem ir até 60; acima disso não há
+  caso. O tamanho vem do sentido: causa e ressalva juntas pedem frase maior; a virada pede
+  frase curta. Nunca alterne curta e longa por programa.
+- Frases ligadas em raciocínio, não justapostas: o que é, por que importa para o negócio dele,
+  o que fazer. Quando dois parágrafos vizinhos podem trocar de lugar sem perda, falta o fio.
+- Parágrafos vizinhos não começam com a mesma palavra nem com a mesma construção, e a maioria
+  não começa por "O" ou "A" mais sujeito. Comece alguns pela condição ("Quando o orçamento
+  demora"), pelo número ("Três dias depois") ou pelo verbo ("Anote o valor").
+- Verbo com sujeito e voz ativa. "Otimizar a captação" vira "captar melhor".
+- Quando a frase fala de uma falha, o sujeito é o processo ou o artefato, nunca o aluno: "o
+  lembrete não saiu", não "você esqueceu de mandar".
+- Prosa carrega raciocínio; lista carrega itens paralelos; tabela carrega comparação. Lista cujos
+  itens têm causa e consequência entre si vira prosa.
+
+## Apoio visual (teto, não piso)
+
+Até 3 apoios visuais na aula, e só quando substituem texto: tabela para comparar
+opções em dois ou mais critérios (opções nas colunas, critérios nas linhas, no máximo três
+colunas de texto curto para caber no celular: a coluna do critério e duas opções); lista
+numerada para processo em que a ordem importa (um verbo por passo, resultado observável no
+mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
+Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
+decorativa reprova sempre. Blockquote, negrito e bloco de código não
+contam como apoio visual e não têm cota.
+
+Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
+mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
+numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
+
+
+
+## Blocos auxiliares: ficha, dica, caso, legenda
+
+Tudo que não é parágrafo corrido (ficha de recurso, dica, caso numerado, legenda de figura,
+célula de tabela) sai no MESMO registro da aula: fala com o aluno ("você"), glosa o termo na
+primeira aparição, traz o exemplo do negócio pequeno e diz o que ele vê na tela quando
+acertou. Ficha que fala sobre o assunto em terceira pessoa, que abre sempre com a mesma palavra
+("Confira", "Teste", "Num") ou que se protege ("confira na versão instalada", "a documentação
+atual pode conter mudanças") reprova. Mais de seis fichas seguidas pedem, entre os grupos,
+uma frase de prosa que diga o que ficou resolvido, por que o próximo grupo vem agora e onde o
+aluno pode parar.
+
+## Liberdade de forma
+
+O molde acima fixa o que a aula precisa ter, não como dizer. Analogia do cotidiano do ramo do
+aluno, cena de duas frases dentro do H2 2, contraste entre o jeito antigo e o novo, a pergunta
+que ele faria em voz alta, humor leve, primeira pessoa quando a empresa fala: use o que encurta
+o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
+vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
+
+## O que nunca entra
+
+- Bastidor: qualquer frase sobre a própria aula, a regra que você seguiu, a verificação que
+  fez ou o método da estimativa ("esta aula foi", "os dados foram verificados", "segundo nossa
+  metodologia", "estimativa calculada", "nota do revisor"). O aluno recebe o fato e o passo.
+- Rótulo da pesquisa ([Alta], [Média], [Baixa], "nível de confiança"): serve a você para
+  escolher o dado; na aula o número entra limpo ou não entra.
+- Aviso legal genérico ("consulte um advogado", "conforme a legislação vigente", "isenção de
+  responsabilidade"). Lei entra só quando muda a decisão do aluno, e entra com número: qual
+  lei, qual artigo, qual prazo, qual valor. Exceção fixa (R9): a lei de proteção de dados não
+  é nomeada de forma nenhuma; a conduta entra, o nome da lei não.
+
+- Antítese que nega para afirmar ("não é X, é Y", "não se trata de X", "mais do que X, Y").
+- Tríade como ritmo (três adjetivos, três exemplos, três benefícios por hábito).
+- Conectivo de enchimento abrindo parágrafo: "nesse sentido", "vale ressaltar", "dito isso",
+  "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
+- Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
+- Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
+- Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
+  entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
+- Meta-discurso de verificação ("verificamos que", "fontes consultadas"), alerta rotulado
+  ("Atenção:", "Importante:"), rótulo de confiança sobre o próprio dado.
+- Travessão em prosa, title case em título, vírgula antes do "e" em enumeração simples,
+  gerundismo ("vamos estar enviando").
+- Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
+  fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
+
+A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+como "confirmado na fonte primária", "confirmada na fonte primária", "verificamos", "conferido em", "conferida em", "não há fonte para", "descartamos por falta de certeza", "segundo o que apuramos". A checagem decide o que entra; o leitor recebe só o resultado, e a
+fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo 1
+ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+- travar (trava, travado, travando): parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir, congelar, fixar
+- canônico (canônica, canônicos): oficial, principal, de referência, padrão, adotado, definitivo, fonte única
+- régua: critério, padrão, medida, parâmetro, regra, norma, referencial, limite, guia de escrita
+- honesto (honesta, honestamente, com honestidade): franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero, transparente
+
+## Antes de entregar, confira
+
+1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.
+2. Logo depois do subtítulo vem um parágrafo, e depois dele mais um ou dois, antes do primeiro H2.
+3. Uma ideia só, explicada até o fim; o exemplo é um e vai do começo ao fim, com número.
+4. 2 a 4 H2; H3 só em H2 longo; nenhum H4.
+5. Extensão entre 900 e 1800 palavras.
+6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
+7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
+8. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
+9. Parágrafos na faixa de 20 a 80 palavras na maior parte das vezes;
+   frases até 28 na maior parte das vezes, e nenhuma acima de 60.
+10. Até 3 apoios visuais, todos substituindo texto.
+11. Nada da lista "O que nunca entra".
+12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
+13. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
+14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
+    todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
+
+--- DADOS DA PESQUISA ---
+PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. 
+
+--- ESTA AULA ---
+
+## O que você está escrevendo agora
+
+- Curso: WhatsApp que vende (nível iniciante)
+- Módulo 1: Resposta rápida. tempo de resposta
+- Esta aula: **1.1: Por que o cliente some** (aula 1 de 2 do módulo 1)
+- A ideia única desta aula: tempo de resposta
+- Aulas anteriores do módulo: nenhuma (esta abre o módulo)
+- Aulas seguintes do módulo: 1.2 Responder em cinco minutos
+
+Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
+quando precisar. Não antecipe as seguintes.
+
+A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
+maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
+critério de acerto; ele não guarda a informação principal.
+
+Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
+práticas: no máximo 900 palavras, com um ganho que o aluno aplica no mesmo
+dia, sem panorama histórico, sem taxonomia e sem teoria densa.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+--- EXPANSÃO DE AULA ---
+A aula curta, logo abaixo desta nota, voltou com 627 palavras. O piso é 700 e o alvo vai de
+900 a 900. Abaixo do piso a ideia foi apresentada, não
+explicada. Reescreva a aula inteira, com os mesmos cabeçalhos e o mesmo exemplo, e desenvolva o
+que falta: na abertura, o subtítulo em uma frase e dois ou três parágrafos diretos ao ponto; no
+primeiro H2, de onde a ideia vem, o que custa não saber disso na operação do aluno e o erro
+comum; no segundo, o exemplo contado do começo ao fim, com número; no fecho, o que mudou e o
+próximo passo em prosa. Não acrescente exercício, checkpoint, mockup, "requer verificação" nem
+LGPD. Não repita parágrafo, não acrescente uma segunda ideia, não encha com adjetivo nem com
+frase sobre a própria aula. Entregue só a aula reescrita.
+
+--- AULA CURTA ---
+Responda o cliente antes que ele desista (1.1: Por que o cliente some).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+A pesquisa é a mesma da primeira versão e está acima, em "DADOS DA PESQUISA".
+
+
+Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
+
+
+======== CHAMADA ========
+
+[openai]
+# Prompt: redação de UMA aula
+
+## Quem escreve, para quem
+
+Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (oficina, salão,
+clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
+celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
+com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
+ganha, colada a ele na primeira vez que aparece, uma explicação de até 12 palavras com
+comparação do dia a dia ("spring: jeito de animar que imita uma mola"); a analogia pode seguir
+na frase seguinte, começando pelo termo ("Com o spring, em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera"). Esse molde vale para TODA
+superfície que você escrever: prosa, legenda, ficha, dica, tabela.
+
+Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
+na mesma passagem: o que é, por que importa para o negócio dele e o que fazer com isso. Versão
+de ferramenta ou de biblioteca só entra quando muda a decisão do aluno; a enxurrada de número
+de versão que não decide nada fica fora, e a referência vai para a lista de fontes da trilha.
+
+O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
+
+## Anti-invenção (inviolável)
+
+Todo número, nome, empresa, estudo, data e citação vem da pesquisa no fim deste prompt. O que
+não estiver lá não entra como fato. Antes de deixar um buraco, tente, nesta ordem: procurar de
+novo na pesquisa; reduzir a afirmação ao que se sabe ("três clientes relataram" no lugar de "o
+mercado relata"); tirar o argumento do centro; cortar o trecho. Só depois disso use o marcador
+`[FALTA EVIDÊNCIA: o que precisa ser buscado]`, no lugar do DADO e nunca no lugar da seção.
+Teto de 3 marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
+própria frase ("suponha um faturamento de R$ 40 mil no mês").
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+## O molde da aula
+
+A aula ensina UMA ideia até o fim e é LEITURA: o aluno termina sabendo o que muda no negócio
+dele e qual é o próximo passo, dito em prosa. Extensão: de 900 a
+1800 palavras. Abaixo de 700, confira se faltou explicação;
+acima de 2400, confira se entrou outra ideia. A contagem orienta a revisão,
+mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
+
+Cabeçalhos: **2 a 4 H2**, e o normal são três, um por bloco abaixo (dois passam
+quando o terceiro não tem o que acrescentar). H3 só quando
+um H2 passa de 350 palavras e precisa de duas partes (no máximo 1 por H2). Nada de
+H4, nada de linha terminada em dois-pontos como subtítulo.
+
+**Abertura, nesta ordem exata, sem nada no meio (regra R1).** O pipeline insere o título
+(H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até 25 palavras**, que diz o
+que o aluno vai conseguir fazer ao terminar. Uma promessa só, sem corrente de vírgulas, e sem
+fórmula fixa de abertura: "Você sai com...", "Você aprende...", "Nesta aula..." viraram tique
+e o gate aponta. Comece pelo resultado, pelo problema ou pela decisão, e mude a forma a cada
+aula. Depois de uma linha em branco, **dois ou três parágrafos de abertura**, diretos ao ponto,
+que prendem a atenção: o problema que ele vive hoje, o que custa não resolver e o que muda ao
+terminar a aula. Quando existe aula anterior, a primeira frase pode ser a ponte de entrada, em
+uma linha: o que ficou resolvido lá e por que este pedaço vem agora ("Com o cadastro no ar,
+falta decidir quem recebe a primeira mensagem"). O primeiro elemento depois do subtítulo é
+sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
+módulo", sem lista de objetivos, sem "o que você vai aprender", sem "para quem é", sem índice,
+sem botão, sem card, sem tabela antes do primeiro parágrafo.
+
+**H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
+tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
+disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
+(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
+(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
+Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+primeira não explicou.
+
+**H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
+quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois,
+com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
+caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
+negócio", "aplique no seu negócio" nem "mockup".
+
+**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
+acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
+numeradas de exercício e sem campo para preencher (R6).
+
+**Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
+dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
+objeto visível: abra, anote, liste, calcule, publique) com o critério que diz se deu certo
+(número, prazo ou condição: "quando três clientes responderem", "em uma semana", "se o custo
+passar de R$ 40"). Não resuma o que ele acabou de ler.
+
+Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
+uma vez; não entram na aula.
+
+## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
+
+Pedido do dono, de 08/09/2026: o topo carregado dispersa o leitor e o card no meio compete
+com a leitura. O gate reprova cada item abaixo, e a página não é publicada com ele.
+
+- R1. Qualquer coisa entre o título, o subtítulo e o primeiro parágrafo.
+- R2. Botão, convite ou chamada para ação antes do corpo. Se houver, é uma só, no fim.
+- R3. Percurso alternativo: "escolha seu caminho", "se você é X vá para Y", "comece por aqui",
+  abas por perfil. Um único caminho, linear.
+- R4. Segunda descrição, lead ou resumo repetido no topo. A descrição é uma, e é do curso.
+- R5. Bloco "mockup no seu negócio" e variantes ("no seu negócio", "aplique no seu negócio",
+  "simule no seu negócio", "maquete") como seção ou rótulo.
+- R6. Exercício: "faça agora", "exercício", "mão na massa", "sua vez", "pratique", "tarefa",
+  "desafio", "checklist de ação", "Resultado esperado:", "Se travar:". A aula é leitura, não
+  workbook. O próximo passo entra em prosa, no fecho.
+- R7. Fonte no meio da aula: linha "Fonte:", cabeçalho "Fontes", citação em card ou callout.
+  A fonte vai para o bloco "Fontes" do rodapé da trilha, uma linha curta por fonte.
+- R8. Card de "checkpoint", "ponto de verificação", "recapitulando", "resumo do capítulo",
+  "você aprendeu", "quiz".
+- R9. Marcador visível de verificação ("requer verificação", "a verificar", "[verificar]",
+  "dado não confirmado", "fonte pendente") e QUALQUER menção à LGPD, à Lei Geral de Proteção
+  de Dados ou à Lei 13.709, mesmo entre aspas. Verificação é bastidor; proteção de dados
+  entra como conduta prática ("peça autorização antes de mandar a primeira mensagem"), sem
+  nomear a lei.
+
+## Título da aula: promessa do aluno, não índice de técnico
+
+O título que o pipeline insere é o que está em "Esta aula", no fim deste prompt. Se ele for rótulo de índice
+(dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
+primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
+conseguir fazer, com verbo e em até 12 palavras: "Escolher a base do site sem pagar duas
+vezes" no lugar de "Astro ou Next.js pelo tipo de página e o custo da troca". O pipeline usa
+a sua proposta e apaga a linha.
+
+## Parágrafo, frase, ritmo
+
+- Parágrafo com uma ideia, de 20 a 80 palavras como faixa de
+  orientação, em 2 a 4 frases na maior parte das vezes. Parágrafo de uma frase é legítimo
+  quando a ideia cabe nela; o defeito é a página picada em série, e o outro é o bloco de dez
+  linhas com dois assuntos. A faixa orienta a revisão, não decide sozinha.
+- Frase de até 28 palavras na maior parte das vezes, em ordem direta. Enumeração que não
+  parte, exemplo contado de uma vez ou número com condição podem ir até 60; acima disso não há
+  caso. O tamanho vem do sentido: causa e ressalva juntas pedem frase maior; a virada pede
+  frase curta. Nunca alterne curta e longa por programa.
+- Frases ligadas em raciocínio, não justapostas: o que é, por que importa para o negócio dele,
+  o que fazer. Quando dois parágrafos vizinhos podem trocar de lugar sem perda, falta o fio.
+- Parágrafos vizinhos não começam com a mesma palavra nem com a mesma construção, e a maioria
+  não começa por "O" ou "A" mais sujeito. Comece alguns pela condição ("Quando o orçamento
+  demora"), pelo número ("Três dias depois") ou pelo verbo ("Anote o valor").
+- Verbo com sujeito e voz ativa. "Otimizar a captação" vira "captar melhor".
+- Quando a frase fala de uma falha, o sujeito é o processo ou o artefato, nunca o aluno: "o
+  lembrete não saiu", não "você esqueceu de mandar".
+- Prosa carrega raciocínio; lista carrega itens paralelos; tabela carrega comparação. Lista cujos
+  itens têm causa e consequência entre si vira prosa.
+
+## Apoio visual (teto, não piso)
+
+Até 3 apoios visuais na aula, e só quando substituem texto: tabela para comparar
+opções em dois ou mais critérios (opções nas colunas, critérios nas linhas, no máximo três
+colunas de texto curto para caber no celular: a coluna do critério e duas opções); lista
+numerada para processo em que a ordem importa (um verbo por passo, resultado observável no
+mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
+Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
+decorativa reprova sempre. Blockquote, negrito e bloco de código não
+contam como apoio visual e não têm cota.
+
+Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
+mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
+numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
+
+
+
+## Blocos auxiliares: ficha, dica, caso, legenda
+
+Tudo que não é parágrafo corrido (ficha de recurso, dica, caso numerado, legenda de figura,
+célula de tabela) sai no MESMO registro da aula: fala com o aluno ("você"), glosa o termo na
+primeira aparição, traz o exemplo do negócio pequeno e diz o que ele vê na tela quando
+acertou. Ficha que fala sobre o assunto em terceira pessoa, que abre sempre com a mesma palavra
+("Confira", "Teste", "Num") ou que se protege ("confira na versão instalada", "a documentação
+atual pode conter mudanças") reprova. Mais de seis fichas seguidas pedem, entre os grupos,
+uma frase de prosa que diga o que ficou resolvido, por que o próximo grupo vem agora e onde o
+aluno pode parar.
+
+## Liberdade de forma
+
+O molde acima fixa o que a aula precisa ter, não como dizer. Analogia do cotidiano do ramo do
+aluno, cena de duas frases dentro do H2 2, contraste entre o jeito antigo e o novo, a pergunta
+que ele faria em voz alta, humor leve, primeira pessoa quando a empresa fala: use o que encurta
+o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
+vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
+
+## O que nunca entra
+
+- Bastidor: qualquer frase sobre a própria aula, a regra que você seguiu, a verificação que
+  fez ou o método da estimativa ("esta aula foi", "os dados foram verificados", "segundo nossa
+  metodologia", "estimativa calculada", "nota do revisor"). O aluno recebe o fato e o passo.
+- Rótulo da pesquisa ([Alta], [Média], [Baixa], "nível de confiança"): serve a você para
+  escolher o dado; na aula o número entra limpo ou não entra.
+- Aviso legal genérico ("consulte um advogado", "conforme a legislação vigente", "isenção de
+  responsabilidade"). Lei entra só quando muda a decisão do aluno, e entra com número: qual
+  lei, qual artigo, qual prazo, qual valor. Exceção fixa (R9): a lei de proteção de dados não
+  é nomeada de forma nenhuma; a conduta entra, o nome da lei não.
+
+- Antítese que nega para afirmar ("não é X, é Y", "não se trata de X", "mais do que X, Y").
+- Tríade como ritmo (três adjetivos, três exemplos, três benefícios por hábito).
+- Conectivo de enchimento abrindo parágrafo: "nesse sentido", "vale ressaltar", "dito isso",
+  "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
+- Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
+- Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
+- Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
+  entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
+- Meta-discurso de verificação ("verificamos que", "fontes consultadas"), alerta rotulado
+  ("Atenção:", "Importante:"), rótulo de confiança sobre o próprio dado.
+- Travessão em prosa, title case em título, vírgula antes do "e" em enumeração simples,
+  gerundismo ("vamos estar enviando").
+- Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
+  fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
+
+A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+como "confirmado na fonte primária", "confirmada na fonte primária", "verificamos", "conferido em", "conferida em", "não há fonte para", "descartamos por falta de certeza", "segundo o que apuramos". A checagem decide o que entra; o leitor recebe só o resultado, e a
+fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo 1
+ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+- travar (trava, travado, travando): parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir, congelar, fixar
+- canônico (canônica, canônicos): oficial, principal, de referência, padrão, adotado, definitivo, fonte única
+- régua: critério, padrão, medida, parâmetro, regra, norma, referencial, limite, guia de escrita
+- honesto (honesta, honestamente, com honestidade): franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero, transparente
+
+## Antes de entregar, confira
+
+1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.
+2. Logo depois do subtítulo vem um parágrafo, e depois dele mais um ou dois, antes do primeiro H2.
+3. Uma ideia só, explicada até o fim; o exemplo é um e vai do começo ao fim, com número.
+4. 2 a 4 H2; H3 só em H2 longo; nenhum H4.
+5. Extensão entre 900 e 1800 palavras.
+6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
+7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
+8. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
+9. Parágrafos na faixa de 20 a 80 palavras na maior parte das vezes;
+   frases até 28 na maior parte das vezes, e nenhuma acima de 60.
+10. Até 3 apoios visuais, todos substituindo texto.
+11. Nada da lista "O que nunca entra".
+12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
+13. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
+14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
+    todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
+
+--- DADOS DA PESQUISA ---
+PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. 
+
+--- ESTA AULA ---
+
+## O que você está escrevendo agora
+
+- Curso: WhatsApp que vende (nível iniciante)
+- Módulo 1: Resposta rápida. tempo de resposta
+- Esta aula: **1.2: Responder em cinco minutos** (aula 2 de 2 do módulo 1)
+- A ideia única desta aula: roteiro
+- Aulas anteriores do módulo: 1.1 Por que o cliente some
+- Aulas seguintes do módulo: nenhuma (esta fecha o módulo)
+
+Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
+quando precisar. Não antecipe as seguintes.
+
+A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
+maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
+critério de acerto; ele não guarda a informação principal.
+
+Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
+práticas: no máximo 900 palavras, com um ganho que o aluno aplica no mesmo
+dia, sem panorama histórico, sem taxonomia e sem teoria densa.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+
+
+Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
+
+
+======== CHAMADA ========
+
+[openai]
+# Prompt: redação de UMA aula
+
+## Quem escreve, para quem
+
+Você escreve uma aula de curso para o dono de um pequeno negócio brasileiro (oficina, salão,
+clínica, loja, restaurante, prestador autônomo). Ele é leigo em marketing e tecnologia, lê no
+celular e dá poucos minutos por aula. Escreva como quem explica no balcão: frase direta, verbo
+com sujeito, exemplo com nome de coisa real (agenda, caixa, estoque, WhatsApp). Termo técnico
+ganha, colada a ele na primeira vez que aparece, uma explicação de até 12 palavras com
+comparação do dia a dia ("spring: jeito de animar que imita uma mola"); a analogia pode seguir
+na frase seguinte, começando pelo termo ("Com o spring, em vez de mandar o movimento durar um
+tempo fixo, você diz o quanto ele é firme e o quanto desacelera"). Esse molde vale para TODA
+superfície que você escrever: prosa, legenda, ficha, dica, tabela.
+
+Troque minúcia por explicação, sem inchar. Cada ideia técnica entra em três movimentos ligados
+na mesma passagem: o que é, por que importa para o negócio dele e o que fazer com isso. Versão
+de ferramenta ou de biblioteca só entra quando muda a decisão do aluno; a enxurrada de número
+de versão que não decide nada fica fora, e a referência vai para a lista de fontes da trilha.
+
+O texto sai em português do Brasil com acentuação completa, sem emoji, sem travessão.
+
+## Anti-invenção (inviolável)
+
+Todo número, nome, empresa, estudo, data e citação vem da pesquisa no fim deste prompt. O que
+não estiver lá não entra como fato. Antes de deixar um buraco, tente, nesta ordem: procurar de
+novo na pesquisa; reduzir a afirmação ao que se sabe ("três clientes relataram" no lugar de "o
+mercado relata"); tirar o argumento do centro; cortar o trecho. Só depois disso use o marcador
+`[FALTA EVIDÊNCIA: o que precisa ser buscado]`, no lugar do DADO e nunca no lugar da seção.
+Teto de 3 marcadores por aula. Exemplo com número inventado é permitido só quando rotulado na
+própria frase ("suponha um faturamento de R$ 40 mil no mês").
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+## O molde da aula
+
+A aula ensina UMA ideia até o fim e é LEITURA: o aluno termina sabendo o que muda no negócio
+dele e qual é o próximo passo, dito em prosa. Extensão: de 900 a
+1800 palavras. Abaixo de 700, confira se faltou explicação;
+acima de 2400, confira se entrou outra ideia. A contagem orienta a revisão,
+mas não demonstra sozinha falta de substância ou presença de um segundo assunto.
+
+Cabeçalhos: **2 a 4 H2**, e o normal são três, um por bloco abaixo (dois passam
+quando o terceiro não tem o que acrescentar). H3 só quando
+um H2 passa de 350 palavras e precisa de duas partes (no máximo 1 por H2). Nada de
+H4, nada de linha terminada em dois-pontos como subtítulo.
+
+**Abertura, nesta ordem exata, sem nada no meio (regra R1).** O pipeline insere o título
+(H1). Você começa pelo **subtítulo: UMA frase, em linha própria, de até 25 palavras**, que diz o
+que o aluno vai conseguir fazer ao terminar. Uma promessa só, sem corrente de vírgulas, e sem
+fórmula fixa de abertura: "Você sai com...", "Você aprende...", "Nesta aula..." viraram tique
+e o gate aponta. Comece pelo resultado, pelo problema ou pela decisão, e mude a forma a cada
+aula. Depois de uma linha em branco, **dois ou três parágrafos de abertura**, diretos ao ponto,
+que prendem a atenção: o problema que ele vive hoje, o que custa não resolver e o que muda ao
+terminar a aula. Quando existe aula anterior, a primeira frase pode ser a ponte de entrada, em
+uma linha: o que ficou resolvido lá e por que este pedaço vem agora ("Com o cadastro no ar,
+falta decidir quem recebe a primeira mensagem"). O primeiro elemento depois do subtítulo é
+sempre um parágrafo. Sem cena, sem hora do dia, sem personagem, sem "neste
+módulo", sem lista de objetivos, sem "o que você vai aprender", sem "para quem é", sem índice,
+sem botão, sem card, sem tabela antes do primeiro parágrafo.
+
+**H2 1: por que [a ideia] muda o seu resultado.** Explique a ideia em prosa corrida, sem
+tópicos: de onde ela vem (quem a formulou e que problema resolvia), o que custa não saber
+disso na operação dele (com número quando a pesquisa tiver), o que muda quando ele aplica
+(comportamento observável, antes e depois) e o erro mais comum de quem ignora, dito em prosa
+(rótulo fixo como "Armadilha comum:" abrindo parágrafo virou tique; no máximo uma vez por aula).
+Comece pelo problema e chegue à ideia; nunca abra com "a definição de X é". Uma analogia do cotidiano do ramo dele ajuda; duas, se a segunda explicar o que a
+primeira não explicou.
+
+**H2 2: um caso do seu ramo, do começo ao fim.** UM exemplo do ramo do aluno, contado inteiro:
+quem é, o que estava acontecendo, o que a pessoa fez passo a passo, o que aconteceu depois,
+com número. Meio exemplo não serve; três exemplos curtos também não. O cabeçalho nomeia o
+caso ("Como a oficina do Sérgio parou de perder orçamento"); nunca "como fica no seu
+negócio", "aplique no seu negócio" nem "mockup".
+
+**H2 3: o que muda na sua semana.** A ação de hoje, em prosa, com o que o aluno deve ver quando
+acertar, e o cabeçalho como promessa ("O que fazer com a agenda nesta semana"). Sem etapas
+numeradas de exercício e sem campo para preencher (R6).
+
+**Fecho, sem cabeçalho, em 3 a 5 linhas.** O que mudou no negócio dele depois desta aula,
+dito pelo exemplo do H2 2, e uma única ponte para a próxima aula (verbo no imperativo com
+objeto visível: abra, anote, liste, calcule, publique) com o critério que diz se deu certo
+(número, prazo ou condição: "quando três clientes responderem", "em uma semana", "se o custo
+passar de R$ 40"). Não resuma o que ele acabou de ler.
+
+Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
+uma vez; não entram na aula.
+
+## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
+
+Pedido do dono, de 08/09/2026: o topo carregado dispersa o leitor e o card no meio compete
+com a leitura. O gate reprova cada item abaixo, e a página não é publicada com ele.
+
+- R1. Qualquer coisa entre o título, o subtítulo e o primeiro parágrafo.
+- R2. Botão, convite ou chamada para ação antes do corpo. Se houver, é uma só, no fim.
+- R3. Percurso alternativo: "escolha seu caminho", "se você é X vá para Y", "comece por aqui",
+  abas por perfil. Um único caminho, linear.
+- R4. Segunda descrição, lead ou resumo repetido no topo. A descrição é uma, e é do curso.
+- R5. Bloco "mockup no seu negócio" e variantes ("no seu negócio", "aplique no seu negócio",
+  "simule no seu negócio", "maquete") como seção ou rótulo.
+- R6. Exercício: "faça agora", "exercício", "mão na massa", "sua vez", "pratique", "tarefa",
+  "desafio", "checklist de ação", "Resultado esperado:", "Se travar:". A aula é leitura, não
+  workbook. O próximo passo entra em prosa, no fecho.
+- R7. Fonte no meio da aula: linha "Fonte:", cabeçalho "Fontes", citação em card ou callout.
+  A fonte vai para o bloco "Fontes" do rodapé da trilha, uma linha curta por fonte.
+- R8. Card de "checkpoint", "ponto de verificação", "recapitulando", "resumo do capítulo",
+  "você aprendeu", "quiz".
+- R9. Marcador visível de verificação ("requer verificação", "a verificar", "[verificar]",
+  "dado não confirmado", "fonte pendente") e QUALQUER menção à LGPD, à Lei Geral de Proteção
+  de Dados ou à Lei 13.709, mesmo entre aspas. Verificação é bastidor; proteção de dados
+  entra como conduta prática ("peça autorização antes de mandar a primeira mensagem"), sem
+  nomear a lei.
+
+## Título da aula: promessa do aluno, não índice de técnico
+
+O título que o pipeline insere é o que está em "Esta aula", no fim deste prompt. Se ele for rótulo de índice
+(dois-pontos, substantivos empilhados, jargão que a aula ainda vai ensinar), proponha na
+primeira linha, antes do subtítulo, `TÍTULO: ...` com a versão que nomeia o que o aluno vai
+conseguir fazer, com verbo e em até 12 palavras: "Escolher a base do site sem pagar duas
+vezes" no lugar de "Astro ou Next.js pelo tipo de página e o custo da troca". O pipeline usa
+a sua proposta e apaga a linha.
+
+## Parágrafo, frase, ritmo
+
+- Parágrafo com uma ideia, de 20 a 80 palavras como faixa de
+  orientação, em 2 a 4 frases na maior parte das vezes. Parágrafo de uma frase é legítimo
+  quando a ideia cabe nela; o defeito é a página picada em série, e o outro é o bloco de dez
+  linhas com dois assuntos. A faixa orienta a revisão, não decide sozinha.
+- Frase de até 28 palavras na maior parte das vezes, em ordem direta. Enumeração que não
+  parte, exemplo contado de uma vez ou número com condição podem ir até 60; acima disso não há
+  caso. O tamanho vem do sentido: causa e ressalva juntas pedem frase maior; a virada pede
+  frase curta. Nunca alterne curta e longa por programa.
+- Frases ligadas em raciocínio, não justapostas: o que é, por que importa para o negócio dele,
+  o que fazer. Quando dois parágrafos vizinhos podem trocar de lugar sem perda, falta o fio.
+- Parágrafos vizinhos não começam com a mesma palavra nem com a mesma construção, e a maioria
+  não começa por "O" ou "A" mais sujeito. Comece alguns pela condição ("Quando o orçamento
+  demora"), pelo número ("Três dias depois") ou pelo verbo ("Anote o valor").
+- Verbo com sujeito e voz ativa. "Otimizar a captação" vira "captar melhor".
+- Quando a frase fala de uma falha, o sujeito é o processo ou o artefato, nunca o aluno: "o
+  lembrete não saiu", não "você esqueceu de mandar".
+- Prosa carrega raciocínio; lista carrega itens paralelos; tabela carrega comparação. Lista cujos
+  itens têm causa e consequência entre si vira prosa.
+
+## Apoio visual (teto, não piso)
+
+Até 3 apoios visuais na aula, e só quando substituem texto: tabela para comparar
+opções em dois ou mais critérios (opções nas colunas, critérios nas linhas, no máximo três
+colunas de texto curto para caber no celular: a coluna do critério e duas opções); lista
+numerada para processo em que a ordem importa (um verbo por passo, resultado observável no
+mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
+Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
+decorativa reprova sempre. Blockquote, negrito e bloco de código não
+contam como apoio visual e não têm cota.
+
+Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
+mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
+numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
+
+
+
+## Blocos auxiliares: ficha, dica, caso, legenda
+
+Tudo que não é parágrafo corrido (ficha de recurso, dica, caso numerado, legenda de figura,
+célula de tabela) sai no MESMO registro da aula: fala com o aluno ("você"), glosa o termo na
+primeira aparição, traz o exemplo do negócio pequeno e diz o que ele vê na tela quando
+acertou. Ficha que fala sobre o assunto em terceira pessoa, que abre sempre com a mesma palavra
+("Confira", "Teste", "Num") ou que se protege ("confira na versão instalada", "a documentação
+atual pode conter mudanças") reprova. Mais de seis fichas seguidas pedem, entre os grupos,
+uma frase de prosa que diga o que ficou resolvido, por que o próximo grupo vem agora e onde o
+aluno pode parar.
+
+## Liberdade de forma
+
+O molde acima fixa o que a aula precisa ter, não como dizer. Analogia do cotidiano do ramo do
+aluno, cena de duas frases dentro do H2 2, contraste entre o jeito antigo e o novo, a pergunta
+que ele faria em voz alta, humor leve, primeira pessoa quando a empresa fala: use o que encurta
+o caminho até ele fazer. Duas aulas do mesmo curso podem ter ritmo diferente. O que reprova é o
+vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
+
+## O que nunca entra
+
+- Bastidor: qualquer frase sobre a própria aula, a regra que você seguiu, a verificação que
+  fez ou o método da estimativa ("esta aula foi", "os dados foram verificados", "segundo nossa
+  metodologia", "estimativa calculada", "nota do revisor"). O aluno recebe o fato e o passo.
+- Rótulo da pesquisa ([Alta], [Média], [Baixa], "nível de confiança"): serve a você para
+  escolher o dado; na aula o número entra limpo ou não entra.
+- Aviso legal genérico ("consulte um advogado", "conforme a legislação vigente", "isenção de
+  responsabilidade"). Lei entra só quando muda a decisão do aluno, e entra com número: qual
+  lei, qual artigo, qual prazo, qual valor. Exceção fixa (R9): a lei de proteção de dados não
+  é nomeada de forma nenhuma; a conduta entra, o nome da lei não.
+
+- Antítese que nega para afirmar ("não é X, é Y", "não se trata de X", "mais do que X, Y").
+- Tríade como ritmo (três adjetivos, três exemplos, três benefícios por hábito).
+- Conectivo de enchimento abrindo parágrafo: "nesse sentido", "vale ressaltar", "dito isso",
+  "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
+- Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
+- Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
+- Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
+  entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
+- Meta-discurso de verificação ("verificamos que", "fontes consultadas"), alerta rotulado
+  ("Atenção:", "Importante:"), rótulo de confiança sobre o próprio dado.
+- Travessão em prosa, title case em título, vírgula antes do "e" em enumeração simples,
+  gerundismo ("vamos estar enviando").
+- Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
+  fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
+
+A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+como "confirmado na fonte primária", "confirmada na fonte primária", "verificamos", "conferido em", "conferida em", "não há fonte para", "descartamos por falta de certeza", "segundo o que apuramos". A checagem decide o que entra; o leitor recebe só o resultado, e a
+fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo 1
+ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+- travar (trava, travado, travando): parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir, congelar, fixar
+- canônico (canônica, canônicos): oficial, principal, de referência, padrão, adotado, definitivo, fonte única
+- régua: critério, padrão, medida, parâmetro, regra, norma, referencial, limite, guia de escrita
+- honesto (honesta, honestamente, com honestidade): franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero, transparente
+
+## Antes de entregar, confira
+
+1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.
+2. Logo depois do subtítulo vem um parágrafo, e depois dele mais um ou dois, antes do primeiro H2.
+3. Uma ideia só, explicada até o fim; o exemplo é um e vai do começo ao fim, com número.
+4. 2 a 4 H2; H3 só em H2 longo; nenhum H4.
+5. Extensão entre 900 e 1800 palavras.
+6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
+7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
+8. Nenhum número sem origem na pesquisa; no máximo 3 marcadores `[FALTA EVIDÊNCIA]`.
+9. Parágrafos na faixa de 20 a 80 palavras na maior parte das vezes;
+   frases até 28 na maior parte das vezes, e nenhuma acima de 60.
+10. Até 3 apoios visuais, todos substituindo texto.
+11. Nada da lista "O que nunca entra".
+12. Fecho pelo exemplo, com verbo no imperativo, critério de acerto e uma ponte para a próxima aula.
+13. Acentuação completa (não, você, também, até, já, só, será, está, conteúdo, prática, código).
+14. Nenhum par de parágrafos vizinhos abrindo com a mesma palavra; subtítulo sem fórmula fixa;
+    todo termo técnico glosado com analogia na primeira vez; ficha e legenda no registro da aula.
+
+--- DADOS DA PESQUISA ---
+PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. 
+
+--- ESTA AULA ---
+
+## O que você está escrevendo agora
+
+- Curso: WhatsApp que vende (nível iniciante)
+- Módulo 1: Resposta rápida. tempo de resposta
+- Esta aula: **1.2: Responder em cinco minutos** (aula 2 de 2 do módulo 1)
+- A ideia única desta aula: roteiro
+- Aulas anteriores do módulo: 1.1 Por que o cliente some
+- Aulas seguintes do módulo: nenhuma (esta fecha o módulo)
+
+Escreva SÓ esta aula. Não repita o que as anteriores ensinaram; aponte para elas em uma frase
+quando precisar. Não antecipe as seguintes.
+
+A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
+maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
+critério de acerto; ele não guarda a informação principal.
+
+Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
+práticas: no máximo 900 palavras, com um ganho que o aluno aplica no mesmo
+dia, sem panorama histórico, sem taxonomia e sem teoria densa.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+--- EXPANSÃO DE AULA ---
+A aula curta, logo abaixo desta nota, voltou com 626 palavras. O piso é 700 e o alvo vai de
+900 a 900. Abaixo do piso a ideia foi apresentada, não
+explicada. Reescreva a aula inteira, com os mesmos cabeçalhos e o mesmo exemplo, e desenvolva o
+que falta: na abertura, o subtítulo em uma frase e dois ou três parágrafos diretos ao ponto; no
+primeiro H2, de onde a ideia vem, o que custa não saber disso na operação do aluno e o erro
+comum; no segundo, o exemplo contado do começo ao fim, com número; no fecho, o que mudou e o
+próximo passo em prosa. Não acrescente exercício, checkpoint, mockup, "requer verificação" nem
+LGPD. Não repita parágrafo, não acrescente uma segunda ideia, não encha com adjetivo nem com
+frase sobre a própria aula. Entregue só a aula reescrita.
+
+--- AULA CURTA ---
+Responda o cliente antes que ele desista (1.2: Responder em cinco minutos).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+A pesquisa é a mesma da primeira versão e está acima, em "DADOS DA PESQUISA".
+
+
+Comece direto pelo subtítulo da aula, sem cabeçalho de aula (o pipeline o insere), sem título de
+módulo, sem comentário HTML e sem nenhuma frase sobre este prompt ou sobre o que você fez.
+
+
+======== CHAMADA ========
+
+[openai]
+# Prompt: fechamento da trilha (GPT-5.5)
+
+## O que é
+
+Uma trilha é um módulo de 4 a 6 aulas. As aulas já estão escritas. Você escreve só o que vive
+no nível da TRILHA, uma vez: o que o aluno vai saber fazer, o que precisa antes, o glossário, as
+perguntas frequentes e as fontes datadas. Nada disso entra em cada aula; entra aqui.
+
+O leitor é o dono de um pequeno negócio, leigo em marketing e tecnologia, no celular. Português
+do Brasil com acentuação completa, sem emoji, sem travessão, sem clichê.
+
+## A trilha
+
+- Curso: WhatsApp que vende (nível iniciante)
+- Trilha 1: Resposta rápida. tempo de resposta
+- Aulas, na ordem: 1.1 Por que o cliente some; 1.2 Responder em cinco minutos
+
+## Anti-invenção (inviolável)
+
+Toda fonte listada precisa aparecer no texto das aulas ou na pesquisa abaixo, com nome e data.
+Fonte que não estiver em nenhum dos dois não entra. Se as aulas citam um dado sem fonte, não
+crie a fonte: deixe o dado fora da lista.
+
+## O que escrever, nesta ordem e com estes cabeçalhos
+
+## O que você vai saber fazer
+
+De três a cinco frases, uma por linha, cada uma começando por um verbo de ação no infinitivo
+(analisar, comparar, calcular, montar, aplicar, escolher, medir, publicar). Nunca "entender",
+"conhecer", "saber", "aprender". Cada frase nomeia um resultado que ele consegue conferir no
+próprio negócio.
+
+## Antes de começar
+
+De um a três pré-requisitos, em uma linha cada: o que ele precisa ter em mãos (conta, dado,
+ferramenta) ou já saber. Se a trilha não depende de nada, escreva uma linha dizendo isso.
+
+## Glossário
+
+Os termos técnicos que as aulas usam, em ordem alfabética, cada um com glosa de até 12
+palavras e uma comparação do dia a dia dele, no molde "spring: jeito de animar que imita uma
+mola: em vez de mandar o movimento durar um tempo fixo, você diz o quanto ele é firme e o
+quanto desacelera". Formato: `**termo**: glosa`. Entre cinco e doze termos; só o que as aulas
+de fato usam. Nome de API cru sem a explicação prática não entra.
+
+## Perguntas frequentes
+
+De três a seis perguntas que o dono do negócio faria depois de terminar a trilha, cada uma
+com resposta de duas a quatro frases, direta, sem preâmbulo. Pergunta em negrito, resposta em
+prosa logo abaixo.
+
+## Fontes
+
+Uma linha por fonte, no formato `Nome da fonte, título ou relatório, mês e ano` e, quando
+houver, o link logo depois, só com o que as aulas ou a pesquisa trazem. De uma a oito fontes.
+É o ÚLTIMO bloco da trilha e o único lugar do curso onde fonte aparece (R7): cada linha tem até
+25 palavras, sem comentário, sem card, sem citação em destaque. Ela é desenhada no rodapé da
+página, em corpo pequeno.
+
+## Subtítulo da trilha
+
+Se o pipeline pedir a descrição da trilha, ela é UMA promessa em até 25 palavras, sem fórmula
+fixa ("Você sai com...") e sem corrente de vírgulas empilhando as promessas de cada aula. As
+trilhas de um curso não podem começar todas com as mesmas duas palavras.
+
+## Antes de entregar, confira
+
+1. Cinco seções, nesta ordem, cada uma com o cabeçalho acima como H2; "Fontes" é a última.
+6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem menção à LGPD (R5 a R9).
+2. Verbos de ação nos objetivos; nenhum "entender" ou "conhecer".
+3. Glosa de até 12 palavras por termo; nenhum termo que as aulas não usem.
+4. Nenhuma fonte inventada.
+5. Frases de até 28 palavras; sem travessão; acentuação completa.
+
+Comece direto pelo primeiro H2, sem título de trilha (o pipeline o insere) e sem comentário
+sobre este prompt.
+
+--- AULAS DA TRILHA ---
+# Aula 1.1: Por que o cliente some
+
+Responda o cliente antes que ele desista (1.1: Por que o cliente some).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+# Aula 1.2: Responder em cinco minutos
+
+Responda o cliente antes que ele desista (1.2: Responder em cinco minutos).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+--- DADOS DA PESQUISA ---
+PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. PESQUISA: o tempo de resposta do WhatsApp decide a venda. 
+
+
+======== CHAMADA ========
+
+[google]
+# Prompt: análise de qualidade pedagógica (Gemini)
+
+## Contexto
+
+Você é um designer instrucional com experiência em cursos curtos para adultos que trabalham
+(Coursera, Udemy, microlearning). Sua tarefa é analisar o rascunho do curso abaixo e emitir um
+diagnóstico que o revisor vai usar aula a aula. Você não reescreve; aponta, com a aula e o
+trecho.
+
+O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular. O
+molde da aula: subtítulo em uma frase e dois ou três parágrafos diretos ao ponto (R1); UMA ideia
+explicada até o fim (origem, por que importa, o que muda, erro comum); um exemplo do ramo dele
+contado por inteiro, com número; fecho pelo exemplo com ponte para a próxima aula. A aula é
+leitura: sem exercício, sem checkpoint, sem mockup, sem "requer verificação", sem LGPD, sem
+fonte no meio (R5 a R9). Objetivos, pré-requisitos, glossário, FAQ e fontes vivem no nível da
+trilha.
+
+## Identificação
+
+- **Curso:** WhatsApp que vende
+
+## Rascunho a analisar
+
+<!-- Módulo 1: Resposta rápida -->
+
+# Aula 1.1: Por que o cliente some
+
+Responda o cliente antes que ele desista (1.1: Por que o cliente some).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+# Aula 1.2: Responder em cinco minutos
+
+Responda o cliente antes que ele desista (1.2: Responder em cinco minutos).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+# Trilha 1: Resposta rápida
+
+## Fontes
+
+Octadesk, CX Trends, maio de 2025.
+
+## Dimensões de análise
+
+### 1. Uma ideia por aula
+
+Cada aula ensina uma ideia só? Aponte a aula que carrega duas (candidata a divisão) e a que não
+explica nenhuma até o fim (apresenta o conceito e para). A abertura diz, na primeira frase, o
+que o aluno vai conseguir fazer, ou abre em cena, definição, contexto histórico ou "neste
+módulo"?
+
+### 2. Exemplo e abertura sem distração
+
+O exemplo é do ramo do aluno, contado do começo ao fim, com número? Ou são três exemplos
+mencionados? A aula abre com subtítulo de uma frase e parágrafo, sem nada no meio? Aponte, com a
+aula, cada bloco que o dono pediu fora (R5 a R9): exercício "faça agora", "mockup"/"no seu
+negócio" como seção, card "checkpoint"/"recapitulando"/"quiz", marcador "requer
+verificação", menção à LGPD, linha "Fonte:" ou cabeçalho "Fontes" dentro da aula, percurso
+alternativo ("se você é X vá para Y"). Um só desses achados numa aula deixa `aprovado` false.
+
+### 3. Progressão entre aulas
+
+Lidas em sequência, as aulas de cada módulo contam começo, meio e fim? Alguma repete a anterior
+ou pula um degrau (conceito usado antes de explicado)? Há título repetido ou duas aulas com o
+mesmo propósito?
+
+### 4. Linguagem para o leitor
+
+Linguagem de balcão ou registro de revista de negócios? Jargão sem explicação na primeira
+aparição? Frases longas empilhadas, parágrafos de uma linha em série, ou blocos de dez linhas?
+Subdivisão em excesso (H3 em seção curta, H4, subtítulo por linha terminada em dois-pontos)?
+Frase que culpa o aluno pela falha?
+
+### 4b. Cadência e superfícies fora da prosa
+
+Parágrafos vizinhos abrindo com a mesma palavra ou com "O"/"A" mais sujeito em série? Frases
+justapostas em vez de ligadas (o que é, por que importa, o que fazer)? Enxurrada de número de
+versão que não decide nada? Título de aula que é índice de técnico (dois-pontos, substantivos
+empilhados, jargão que a aula ainda vai ensinar) em vez de promessa com verbo? Subtítulo com
+fórmula fixa ("Você sai com...") ou com quatro promessas numa corrente de vírgulas? Aulas
+seguidas sem frase de passagem entre elas? Fecho sem verbo no imperativo ou sem critério de
+acerto? E as superfícies que não são parágrafo (ficha, dica, caso, legenda, tabela): falam com
+o aluno, glosam o termo com analogia, ou são ficha técnica em terceira pessoa, com nome de API
+cru e conferência que se protege ("confira na versão instalada")? Aponte a aula e o trecho.
+
+### 5. Evidência
+
+Cada número tem origem na pesquisa ou rótulo de exemplo ilustrativo? Há atribuição vaga
+("especialistas apontam"), caso apresentado como real sem fonte, ou percentual sem origem?
+Conte os marcadores `[FALTA EVIDÊNCIA:` e `[PREENCHER-HUMANO:` por aula: acima de 3 numa aula,
+`aprovado` é false.
+
+### 6. Léxico vetado
+
+Liste, com a aula, as ocorrências de: antítese que nega para afirmar, tríade como ritmo,
+conectivo de enchimento abrindo parágrafo, adjetivo vazio, clichê de máquina, escassez
+fabricada, travessão em prosa, meta-discurso de verificação, alerta rotulado.
+
+### 7. Acentuação PT-BR
+
+Palavras sem acento obrigatório (ex.: "nao", "voce", "conteudo", "modulo", "pratica"). Liste
+todas.
+
+## Formato do relatório
+
+Retorne um JSON com os campos abaixo. Toda observação cita a aula (`Aula 2.3`) e, quando
+possível, o trecho.
+
+```json
+{
+  "score": 0-100,
+  "aprovado": true/false,
+  "dimensoes": {
+    "uma_ideia_por_aula": {"nota": 0-10, "aulas_com_duas_ideias": ["..."], "aulas_sem_explicacao": ["..."], "aberturas_fora_do_molde": ["..."], "observacoes": "..."},
+    "exemplo_e_abertura": {"nota": 0-10, "aulas_sem_exemplo_inteiro": ["..."], "aulas_com_bloco_proibido": ["Aula 1.2: [R6] faça agora"], "aulas_com_abertura_fora_de_R1": ["..."], "observacoes": "..."},
+    "progressao": {"nota": 0-10, "repeticoes": ["..."], "saltos": ["..."], "observacoes": "..."},
+    "linguagem": {"nota": 0-10, "jargao_sem_glosa": ["..."], "subdivisao_em_excesso": ["..."], "observacoes": "..."},
+    "evidencia": {"nota": 0-10, "marcadores_por_aula": {"Aula 1.1": 0}, "atribuicoes_vagas": ["..."], "observacoes": "..."},
+    "lexico_vetado": {"nota": 0-10, "ocorrencias": ["Aula 1.2: 'não se trata de'"]},
+    "acentuacao": {"nota": 0-10, "erros_encontrados": ["..."]}
+  },
+  "melhorias_prioritarias": ["...", "...", "..."],
+  "pontos_fortes": ["...", "..."],
+  "acentos_faltantes": ["palavra_errada -> correção"]
+}
+```
+
+Escreva todas as observações em português do Brasil com acentuação completa e ortografia
+correta, sem emoji e sem travessão.
+
+
+======== CHAMADA ========
+
+[google]
+# Prompt — Classificação de Conteúdo (Groq)
+
+## Contexto
+
+Você é um especialista em taxonomia educacional e catalogação de cursos online. Sua tarefa é classificar o conteúdo abaixo com metadados precisos e padronizados para indexação, descoberta e recomendação em plataformas educacionais.
+
+## Identificação
+
+- **Curso:** WhatsApp que vende
+
+## Conteúdo a classificar
+
+<!-- Módulo 1: Resposta rápida -->
+
+# Aula 1.1: Por que o cliente some
+
+Responda o cliente antes que ele desista (1.1: Por que o cliente some).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+# Aula 1.2: Responder em cinco minutos
+
+Responda o cliente antes que ele desista (1.2: Responder em cinco minutos).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+# Trilha 1: Resposta rápida
+
+## Fontes
+
+Octadesk, CX Trends, maio de 2025.
+
+## Classificações obrigatórias
+
+### 1. Nível de dificuldade
+
+Escolha exatamente um:
+
+- `iniciante` — não exige conhecimento prévio do tema
+- `intermediário` — pressupõe familiaridade básica com o tema
+- `avançado` — exige domínio sólido de conceitos anteriores
+
+Justifique a escolha em 1–2 frases, referenciando elementos específicos do conteúdo.
+
+### 2. Tags temáticas
+
+Liste de 5 a 10 tags que descrevam o conteúdo, priorizando:
+
+- Termos técnicos específicos do domínio
+- Ferramentas e tecnologias mencionadas
+- Habilidades e competências desenvolvidas
+- Formato e metodologia pedagógica
+
+**Tags canônicas de GEO** (adicione quando o conteúdo for sobre, ou otimizado para, Generative Engine Optimization): `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`. Use `citation-ready` quando o módulo cumprir a rubrica de citabilidade (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule) — ver `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+
+### 3. Pré-requisitos
+
+Liste os conhecimentos que o aluno deve ter antes de iniciar este curso. Para cada pré-requisito, indique o nível esperado (básico, intermediário, avançado). Se nenhum, indique explicitamente "Nenhum".
+
+### 4. Duração estimada por módulo
+
+Estime o tempo de estudo para cada módulo, considerando:
+
+- Leitura do conteúdo
+- Tempo para o aluno aplicar o próximo passo dito no fecho de cada aula
+
+Forneça a estimativa em minutos por módulo e o total em horas.
+
+### 5. Categoria principal
+
+Escolha a categoria que melhor descreve o curso no contexto de plataformas como Hotmart, Udemy ou Coursera (ex.: "Tecnologia", "Negócios", "Design", "Marketing", "Desenvolvimento Pessoal", "Idiomas", etc.).
+
+### 6. Perfil do público-alvo
+
+Descreva o aluno ideal: cargo, experiência, setor, motivação para fazer o curso.
+
+## Formato de saída
+
+Retorne um JSON com a seguinte estrutura:
+
+```json
+{
+  "nivel": "iniciante|intermediário|avançado",
+  "nivel_justificativa": "...",
+  "tags": ["tag1", "tag2", "..."],
+  "prerequisitos": [
+    {"conhecimento": "...", "nivel_esperado": "básico|intermediário|avançado"}
+  ],
+  "duracao_por_modulo_minutos": [30, 25, ...],
+  "duracao_total_horas": 0,
+  "categoria": "...",
+  "publico_alvo": "...",
+  "palavras_chave_seo": ["...", "..."]
+}
+```
+
+Use Português do Brasil com acentuação completa em todos os campos de texto.
+
+
+======== CHAMADA ========
+
+[anthropic]
+# Prompt: revisão de UMA aula (Claude)
+
+## Contexto
+
+Você é o revisor final do pipeline de cursos. Recebe UMA aula por vez e devolve a mesma aula
+inteira, corrigida. Sua tarefa é CORRIGIR, não comentar: texto que volta menor do que entrou,
+ou que vem como relatório no lugar do conteúdo, é descartado pelo pipeline.
+
+- Curso: WhatsApp que vende
+- Unidade: Aula 1.1: Por que o cliente some (1 de 3)
+- O que o analisador pedagógico apontou sobre o curso inteiro (use como pista, não como ordem):
+
+{"score": 80, "aprovado": true}
+
+O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular.
+Linguagem de balcão, resposta primeiro, um exemplo contado por inteiro, e a aula é LEITURA:
+sem exercício, sem card. Português do Brasil com acentuação completa, sem emoji, sem travessão.
+
+## O que corrigir, nesta ordem
+
+### 1. Substância (antes de qualquer corte)
+
+A aula tem uma ideia só, explicada até o fim (de onde vem, por que importa, o que muda, o erro
+comum), um exemplo do ramo do aluno com número e um fecho que diz o que mudou e o próximo
+passo em prosa? Se faltar um desses, ACRESCENTE com o material da própria aula e do que a pesquisa
+sustenta; se não houver material, marque `[FALTA EVIDÊNCIA: ...]` no lugar do dado. Nunca corte
+substância para satisfazer regra de forma.
+
+### 2. Acentuação e ortografia
+
+Corrija toda palavra sem acento obrigatório (não, você, também, até, já, só, será, está,
+conteúdo, módulo, prática, técnica, lógica, código, análise, possível, disponível, necessário,
+específico, experiência, referência, título, relatório). Homógrafos se decidem pelo contexto:
+esta/está, analise/análise, pratica/prática, publico/público, valido/válido, nos/nós. Nunca
+acentue URL, slug, código, variável ou atributo HTML.
+
+### 3. Estrutura da aula
+
+- Abertura na ordem R1: logo abaixo do `# Aula ...`, o subtítulo em UMA frase e em linha
+  própria, depois dois ou três parágrafos diretos ao ponto. Se o subtítulo faltar, escreva-o a
+  partir da primeira frase. Cena, hora do dia, personagem, "neste módulo", lista de
+  objetivos, "o que você vai aprender", "para quem é", índice e card saem do topo.
+- 2 a 4 H2 (o normal são três: por que a ideia muda o resultado; um caso do ramo, do começo
+  ao fim; o que muda na semana do aluno, em prosa). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
+  dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
+- Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
+  "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",
+  "Se travar:"), "mockup"/"no seu negócio" como seção, card "checkpoint"/"recapitulando"/
+  "quiz", marcador "requer verificação"/"a verificar" e qualquer menção à LGPD ou à Lei
+  13.709 (a conduta fica, o nome da lei sai). O passo prático que o exercício carregava vira
+  uma ou duas frases de prosa no fecho. Percurso alternativo ("se você é X vá para Y") vira
+  um caminho só.
+- Fonte no meio da aula (linha "Fonte:", cabeçalho "Fontes", citação em card) sai; o dado
+  fica limpo na frase e a fonte pertence ao rodapé da trilha (R7).
+- Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula, verbo no imperativo e
+  critério de acerto (número, prazo ou condição). Fecho que resume o que foi lido é reescrito
+  como consequência. Quando existe aula anterior, a primeira frase pode ser a ponte de
+  entrada, em uma linha: o que ficou resolvido lá e por que este pedaço vem agora.
+- Título e subtítulo como promessa do aluno. Título com dois-pontos, substantivos empilhados ou
+  jargão que a aula ainda vai ensinar vira frase com verbo, em até 12 palavras. Subtítulo com
+  fórmula fixa ("Você sai com...", "Nesta aula...") ou com quatro promessas em corrente de
+  vírgulas vira UMA promessa, começando pelo resultado, pelo problema ou pela decisão.
+- Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).
+  Peça decorativa sai; comparação escondida em prosa vira tabela. Tabela precisa de linha de
+  separação e o mesmo número de células em todas as linhas. Não há cota de tabela, blockquote,
+  negrito ou figura.
+
+### 4. Parágrafo, frase e cadência
+
+Parágrafo com uma ideia, em 2 a 4 frases na maior parte das vezes; parágrafo de uma frase fica
+quando a ideia cabe nela. Junte a sequência de parágrafos de uma frase que fatia um raciocínio;
+separe o bloco de dez linhas que carrega dois assuntos. Frase acima de 28 palavras se parte
+quando dá para partir sem perder a condição; enumeração, exemplo contado de uma vez e número com
+condição podem ir até 60. Nunca aplique alternância programada de frase curta e longa.
+
+Cadência: parágrafos vizinhos que começam com a mesma palavra ou com a mesma construção (sujeito
+"O"/"A" antes de tudo) ganham entrada diferente em metade deles: condição, número, verbo, adjunto
+de tempo. Frases justapostas viram raciocínio ligado: o que é, por que importa para o negócio,
+o que fazer. Número de versão que não muda a decisão do aluno sai da prosa.
+
+Glosa: todo termo técnico ganha, na primeira aparição, explicação de até 12 palavras com
+analogia do cotidiano, no molde "spring: jeito de animar que imita uma mola". Nome de API cru
+(Dialog.Root, createTheme) sem explicação prática logo em seguida recebe a explicação ou sai.
+
+### 4b. Superfícies fora da prosa
+
+Ficha, dica, caso numerado, legenda e célula de tabela saem no mesmo registro da aula: "você",
+glosa, exemplo do negócio pequeno e conferência que diz o que o aluno vê na tela quando acertou.
+Conferência que se protege ("confira na versão instalada", "a documentação pode conter
+mudanças") é reescrita como conferência de verdade. Fichas que abrem sempre com a mesma palavra
+ganham entrada variada, e mais de seis seguidas recebem, entre os grupos, uma frase de prosa que
+diga o que ficou resolvido e por que o próximo grupo vem agora.
+
+### 5. Léxico vetado (corrija cada ocorrência)
+
+- Antítese que nega para afirmar ("não é X, é Y", "não se trata de", "mais do que X, Y"): vira a
+  afirmação direta do lado Y.
+- Tríade usada como ritmo: corte para dois ou expanda para o número real.
+- Conectivo de enchimento abrindo parágrafo ("nesse sentido", "vale ressaltar", "dito isso",
+  "em suma", "cabe destacar", "diante desse cenário"): corte por subtração, sem sinônimo.
+- Adjetivo vazio e intensificador (robusto, crucial, estratégico, inovador, poderoso,
+  extremamente, realmente): troque pelo dado ou corte.
+- Atribuição vaga ("especialistas apontam", "estudos indicam"): nomeie a fonte que está na
+  pesquisa ou corte a afirmação. Nunca invente a fonte.
+- Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais", "descubra o
+  poder"): corte.
+- Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
+  entra", "cada vez mais", "em constante evolução"): corte ou diga o fato.
+- Meta-discurso de verificação, alerta rotulado ("Atenção:", "Importante:") e rótulo de
+  confiança sobre o próprio dado: o fato fica, a moldura sai.
+
+A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+como "confirmado na fonte primária", "confirmada na fonte primária", "verificamos", "conferido em", "conferida em", "não há fonte para", "descartamos por falta de certeza", "segundo o que apuramos". A checagem decide o que entra; o leitor recebe só o resultado, e a
+fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+- Vícios de máquina: gerundismo, "endereçar" por "tratar de", "suportar" por "aceitar",
+  "eventualmente" por "no fim", "impactar" por "aumentar/reduzir", "alavancar", "agregar
+  valor", nominalização ("a implementação de" vira "implementar").
+- Travessão em prosa, title case, vírgula antes do "e" em enumeração simples, emoji.
+- Culpa no leitor: o sujeito da falha é o processo ("o lembrete não saiu").
+
+Corrija cada ocorrência acima do limite abaixo, trocando a palavra pelo sentido.
+
+Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo 1
+ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+- travar (trava, travado, travando): parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir, congelar, fixar
+- canônico (canônica, canônicos): oficial, principal, de referência, padrão, adotado, definitivo, fonte única
+- régua: critério, padrão, medida, parâmetro, regra, norma, referencial, limite, guia de escrita
+- honesto (honesta, honestamente, com honestidade): franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero, transparente
+
+### 6. Evidência
+
+Todo número precisa de origem na pesquisa ou rótulo de exemplo ilustrativo na própria frase.
+Percentual sem origem vira `[FALTA EVIDÊNCIA: ...]` ou afirmação reduzida ao que se sabe.
+Marcadores abertos acima de 3 na aula: reprove no relatório, mas devolva o texto mesmo assim.
+A referência completa fica na lista de fontes da trilha. Preserve no corpo sujeito,
+período e condição sempre que mudarem a interpretação do fato. Nunca
+transforme "o mercado entende" em "67% das empresas, segundo a McKinsey" sem que o número
+esteja na pesquisa.
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+## Formato de saída
+
+Primeiro o texto INTEGRAL da aula revisada, em Markdown, começando pelo mesmo cabeçalho
+`# Aula ...` que você recebeu. Dentro da aula, nenhuma nota sua: sem marca de alteração, sem
+comentário HTML, sem frase sobre o que corrigiu, sem rótulo de confiança, sem aviso legal
+genérico. Tudo isso vai só no relatório. Depois, separado por uma linha com três hífens, o
+relatório:
+
+```
+---
+REVISÃO CONCLUÍDA
+Palavras recebidas / devolvidas: [n] / [n]
+Correções de acentuação: [n]
+Correções de estrutura (abertura R1, H2/H3, blocos R5 a R9 removidos, fecho): [n]
+Correções de léxico vetado: [n]
+Correções de didática (título, subtítulo, cadência, glosa, fecho, fichas): [n]
+Substância acrescentada ou marcada: [o que faltava, ou "completa"]
+Marcadores [FALTA EVIDÊNCIA] abertos: [n]
+Aprovado para publicação: sim/não
+Motivo (se não): ...
+---
+```
+
+Links para outros cursos do portal e peças visuais (tabela, lista de passos, figura com
+legenda) que o redator pôs ficam na aula: corrija a forma deles, nunca os apague.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+O verificador automático já mediu esta aula e achou os problemas abaixo. Corrija cada um
+primeiro, sem criar outro: um crosslink que falta entra na prosa, só com destino da lista
+de destinos disponíveis deste prompt; peça visual que falta substitui um trecho de texto,
+nunca enfeita.
+- [profundidade] Aula com 641 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica: falta a narrativa (de onde vem a ideia, por que importa, o que muda, o erro comum) ou o exemplo contado por inteiro. Alvo: 900 a 1800.
+- [crosslinks] [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
+
+--- AULA PARA REVISÃO ---
+<!-- Módulo 1: Resposta rápida -->
+
+# Aula 1.1: Por que o cliente some
+
+Responda o cliente antes que ele desista (1.1: Por que o cliente some).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+
+
+======== CHAMADA ========
+
+[anthropic]
+# Prompt: revisão de UMA aula (Claude)
+
+## Contexto
+
+Você é o revisor final do pipeline de cursos. Recebe UMA aula por vez e devolve a mesma aula
+inteira, corrigida. Sua tarefa é CORRIGIR, não comentar: texto que volta menor do que entrou,
+ou que vem como relatório no lugar do conteúdo, é descartado pelo pipeline.
+
+- Curso: WhatsApp que vende
+- Unidade: Aula 1.2: Responder em cinco minutos (2 de 3)
+- O que o analisador pedagógico apontou sobre o curso inteiro (use como pista, não como ordem):
+
+{"score": 80, "aprovado": true}
+
+O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular.
+Linguagem de balcão, resposta primeiro, um exemplo contado por inteiro, e a aula é LEITURA:
+sem exercício, sem card. Português do Brasil com acentuação completa, sem emoji, sem travessão.
+
+## O que corrigir, nesta ordem
+
+### 1. Substância (antes de qualquer corte)
+
+A aula tem uma ideia só, explicada até o fim (de onde vem, por que importa, o que muda, o erro
+comum), um exemplo do ramo do aluno com número e um fecho que diz o que mudou e o próximo
+passo em prosa? Se faltar um desses, ACRESCENTE com o material da própria aula e do que a pesquisa
+sustenta; se não houver material, marque `[FALTA EVIDÊNCIA: ...]` no lugar do dado. Nunca corte
+substância para satisfazer regra de forma.
+
+### 2. Acentuação e ortografia
+
+Corrija toda palavra sem acento obrigatório (não, você, também, até, já, só, será, está,
+conteúdo, módulo, prática, técnica, lógica, código, análise, possível, disponível, necessário,
+específico, experiência, referência, título, relatório). Homógrafos se decidem pelo contexto:
+esta/está, analise/análise, pratica/prática, publico/público, valido/válido, nos/nós. Nunca
+acentue URL, slug, código, variável ou atributo HTML.
+
+### 3. Estrutura da aula
+
+- Abertura na ordem R1: logo abaixo do `# Aula ...`, o subtítulo em UMA frase e em linha
+  própria, depois dois ou três parágrafos diretos ao ponto. Se o subtítulo faltar, escreva-o a
+  partir da primeira frase. Cena, hora do dia, personagem, "neste módulo", lista de
+  objetivos, "o que você vai aprender", "para quem é", índice e card saem do topo.
+- 2 a 4 H2 (o normal são três: por que a ideia muda o resultado; um caso do ramo, do começo
+  ao fim; o que muda na semana do aluno, em prosa). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
+  dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
+- Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
+  "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",
+  "Se travar:"), "mockup"/"no seu negócio" como seção, card "checkpoint"/"recapitulando"/
+  "quiz", marcador "requer verificação"/"a verificar" e qualquer menção à LGPD ou à Lei
+  13.709 (a conduta fica, o nome da lei sai). O passo prático que o exercício carregava vira
+  uma ou duas frases de prosa no fecho. Percurso alternativo ("se você é X vá para Y") vira
+  um caminho só.
+- Fonte no meio da aula (linha "Fonte:", cabeçalho "Fontes", citação em card) sai; o dado
+  fica limpo na frase e a fonte pertence ao rodapé da trilha (R7).
+- Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula, verbo no imperativo e
+  critério de acerto (número, prazo ou condição). Fecho que resume o que foi lido é reescrito
+  como consequência. Quando existe aula anterior, a primeira frase pode ser a ponte de
+  entrada, em uma linha: o que ficou resolvido lá e por que este pedaço vem agora.
+- Título e subtítulo como promessa do aluno. Título com dois-pontos, substantivos empilhados ou
+  jargão que a aula ainda vai ensinar vira frase com verbo, em até 12 palavras. Subtítulo com
+  fórmula fixa ("Você sai com...", "Nesta aula...") ou com quatro promessas em corrente de
+  vírgulas vira UMA promessa, começando pelo resultado, pelo problema ou pela decisão.
+- Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).
+  Peça decorativa sai; comparação escondida em prosa vira tabela. Tabela precisa de linha de
+  separação e o mesmo número de células em todas as linhas. Não há cota de tabela, blockquote,
+  negrito ou figura.
+
+### 4. Parágrafo, frase e cadência
+
+Parágrafo com uma ideia, em 2 a 4 frases na maior parte das vezes; parágrafo de uma frase fica
+quando a ideia cabe nela. Junte a sequência de parágrafos de uma frase que fatia um raciocínio;
+separe o bloco de dez linhas que carrega dois assuntos. Frase acima de 28 palavras se parte
+quando dá para partir sem perder a condição; enumeração, exemplo contado de uma vez e número com
+condição podem ir até 60. Nunca aplique alternância programada de frase curta e longa.
+
+Cadência: parágrafos vizinhos que começam com a mesma palavra ou com a mesma construção (sujeito
+"O"/"A" antes de tudo) ganham entrada diferente em metade deles: condição, número, verbo, adjunto
+de tempo. Frases justapostas viram raciocínio ligado: o que é, por que importa para o negócio,
+o que fazer. Número de versão que não muda a decisão do aluno sai da prosa.
+
+Glosa: todo termo técnico ganha, na primeira aparição, explicação de até 12 palavras com
+analogia do cotidiano, no molde "spring: jeito de animar que imita uma mola". Nome de API cru
+(Dialog.Root, createTheme) sem explicação prática logo em seguida recebe a explicação ou sai.
+
+### 4b. Superfícies fora da prosa
+
+Ficha, dica, caso numerado, legenda e célula de tabela saem no mesmo registro da aula: "você",
+glosa, exemplo do negócio pequeno e conferência que diz o que o aluno vê na tela quando acertou.
+Conferência que se protege ("confira na versão instalada", "a documentação pode conter
+mudanças") é reescrita como conferência de verdade. Fichas que abrem sempre com a mesma palavra
+ganham entrada variada, e mais de seis seguidas recebem, entre os grupos, uma frase de prosa que
+diga o que ficou resolvido e por que o próximo grupo vem agora.
+
+### 5. Léxico vetado (corrija cada ocorrência)
+
+- Antítese que nega para afirmar ("não é X, é Y", "não se trata de", "mais do que X, Y"): vira a
+  afirmação direta do lado Y.
+- Tríade usada como ritmo: corte para dois ou expanda para o número real.
+- Conectivo de enchimento abrindo parágrafo ("nesse sentido", "vale ressaltar", "dito isso",
+  "em suma", "cabe destacar", "diante desse cenário"): corte por subtração, sem sinônimo.
+- Adjetivo vazio e intensificador (robusto, crucial, estratégico, inovador, poderoso,
+  extremamente, realmente): troque pelo dado ou corte.
+- Atribuição vaga ("especialistas apontam", "estudos indicam"): nomeie a fonte que está na
+  pesquisa ou corte a afirmação. Nunca invente a fonte.
+- Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais", "descubra o
+  poder"): corte.
+- Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
+  entra", "cada vez mais", "em constante evolução"): corte ou diga o fato.
+- Meta-discurso de verificação, alerta rotulado ("Atenção:", "Importante:") e rótulo de
+  confiança sobre o próprio dado: o fato fica, a moldura sai.
+
+A aula não conta ao leitor como a informação foi checada. Ficam fora do texto frases
+como "confirmado na fonte primária", "confirmada na fonte primária", "verificamos", "conferido em", "conferida em", "não há fonte para", "descartamos por falta de certeza", "segundo o que apuramos". A checagem decide o que entra; o leitor recebe só o resultado, e a
+fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
+aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
+
+- Vícios de máquina: gerundismo, "endereçar" por "tratar de", "suportar" por "aceitar",
+  "eventualmente" por "no fim", "impactar" por "aumentar/reduzir", "alavancar", "agregar
+  valor", nominalização ("a implementação de" vira "implementar").
+- Travessão em prosa, title case, vírgula antes do "e" em enumeração simples, emoji.
+- Culpa no leitor: o sujeito da falha é o processo ("o lembrete não saiu").
+
+Corrija cada ocorrência acima do limite abaixo, trocando a palavra pelo sentido.
+
+Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo 1
+ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+- travar (trava, travado, travando): parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir, congelar, fixar
+- canônico (canônica, canônicos): oficial, principal, de referência, padrão, adotado, definitivo, fonte única
+- régua: critério, padrão, medida, parâmetro, regra, norma, referencial, limite, guia de escrita
+- honesto (honesta, honestamente, com honestidade): franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero, transparente
+
+### 6. Evidência
+
+Todo número precisa de origem na pesquisa ou rótulo de exemplo ilustrativo na própria frase.
+Percentual sem origem vira `[FALTA EVIDÊNCIA: ...]` ou afirmação reduzida ao que se sabe.
+Marcadores abertos acima de 3 na aula: reprove no relatório, mas devolva o texto mesmo assim.
+A referência completa fica na lista de fontes da trilha. Preserve no corpo sujeito,
+período e condição sempre que mudarem a interpretação do fato. Nunca
+transforme "o mercado entende" em "67% das empresas, segundo a McKinsey" sem que o número
+esteja na pesquisa.
+
+## Fidelidade ao resumir e contribuir
+
+A aula resolve a pergunta declarada com o material recebido. Explique uma condição, uma
+comparação ou um mecanismo que ajude o aluno a decidir; não acrescente estatísticas apenas
+para parecer completa. Nomes de marca, produto e termos técnicos mantêm o mesmo significado.
+
+Preserve sujeito, período, população, denominador e condição quando encurtar uma afirmação.
+Uma projeção continua condicional, preferência declarada continua preferência e associação
+não vira causa. O detalhe de apuração fica na pesquisa; a condição que muda a decisão fica
+na prosa, mesmo quando a referência completa estiver no rodapé da trilha.
+
+Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não podem prometer
+mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
+aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
+ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+## Formato de saída
+
+Primeiro o texto INTEGRAL da aula revisada, em Markdown, começando pelo mesmo cabeçalho
+`# Aula ...` que você recebeu. Dentro da aula, nenhuma nota sua: sem marca de alteração, sem
+comentário HTML, sem frase sobre o que corrigiu, sem rótulo de confiança, sem aviso legal
+genérico. Tudo isso vai só no relatório. Depois, separado por uma linha com três hífens, o
+relatório:
+
+```
+---
+REVISÃO CONCLUÍDA
+Palavras recebidas / devolvidas: [n] / [n]
+Correções de acentuação: [n]
+Correções de estrutura (abertura R1, H2/H3, blocos R5 a R9 removidos, fecho): [n]
+Correções de léxico vetado: [n]
+Correções de didática (título, subtítulo, cadência, glosa, fecho, fichas): [n]
+Substância acrescentada ou marcada: [o que faltava, ou "completa"]
+Marcadores [FALTA EVIDÊNCIA] abertos: [n]
+Aprovado para publicação: sim/não
+Motivo (se não): ...
+---
+```
+
+Links para outros cursos do portal e peças visuais (tabela, lista de passos, figura com
+legenda) que o redator pôs ficam na aula: corrija a forma deles, nunca os apague.
+
+Ligue esta aula a outros cursos do portal que completam o que ela ensina: de 2 a 4
+cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+
+Destinos disponíveis (caminho: nome):
+- /educacao/seo-geo-revendedoras-joias: SEO e GEO para Revendedoras de Joias e Semijoias
+- /educacao/vendas-consultivas: Vendas Consultivas de Serviços de GEO e IA
+- /educacao/seo-geo-petshops-agropecuarias: SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia
+- /educacao/meta-ads-2027: Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance
+- /educacao/astra-profundo: Astra profundo: criação visual e desenvolvimento
+- /educacao/orquestracao-llm-local-desktop: IA Local na Prática: seu time de assistentes no computador
+- /educacao/setup-claude-code: Setup Completo: do zero ao Claude Code
+- /educacao/setup-claude-code-mac: Setup Inicial de Vibecoding em computadores Mac Apple
+- /educacao/vscode: VS Code: Do Zero ao Editor Profissional
+- /educacao/github: GitHub: Controle de Versão do Zero
+- /educacao/python: Python: Programação do Zero
+- /educacao/nodejs: Node.js: JavaScript no Servidor
+- /educacao/claude-code: Claude Code CLI: Programação com IA
+- /educacao/saude-mental-vibecoding: Saúde Mental para Autistas que Trabalham com IA
+- /educacao/mcp-chrome: MCP com Chrome: Automação com IA
+- /educacao/seo-geo: GEO Universal Framework: Do SEO ao Generative Engine Optimization
+- /educacao/bastidores: Bastidores: Como Este Portal Foi Construído
+- /educacao/geo-intent-mapping: GEO Intent Mapping: mapeamento de intenção para respostas de IA
+- /educacao/digital-pr-link-building: Digital PR e Link Building na Era do GEO
+- /educacao/seo-ecommerce: SEO Técnico para E-commerce de Alta Escala
+- /educacao/cro-experimentacao: CRO: Otimização de Conversão e Experimentação
+- /educacao/seo-programatico: SEO Programático com Dado Próprio: da Fonte à Governança
+- /educacao/vibecoding-seo: Vibecoding para SEO: Construa Ferramentas com IA
+- /educacao/gsc-avancado: Google Search Console para decisão executiva
+- /educacao/autoridade-tematica: Autoridade Temática e SEO de Entidades
+
+O verificador automático já mediu esta aula e achou os problemas abaixo. Corrija cada um
+primeiro, sem criar outro: um crosslink que falta entra na prosa, só com destino da lista
+de destinos disponíveis deste prompt; peça visual que falta substitui um trecho de texto,
+nunca enfeita.
+- [profundidade] Aula com 633 palavras, abaixo do piso de 700. Abaixo do piso a peça apresenta o conceito e não o explica: falta a narrativa (de onde vem a ideia, por que importa, o que muda, o erro comum) ou o exemplo contado por inteiro. Alvo: 900 a 1800.
+- [crosslinks] [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
+
+--- AULA PARA REVISÃO ---
+# Aula 1.2: Responder em cinco minutos
+
+Responda o cliente antes que ele desista (1.2: Responder em cinco minutos).
+
+A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. A oficina perde a venda quando a resposta demora. 
+
+## Por que responder rápido muda o seu resultado
+
+Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. Texto explicativo com frase direta e exemplo do balcão. 
+
+## Como a oficina do bairro fechou a venda
+
+A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. A oficina respondeu em cinco minutos e fechou a venda de R$ 300. 
+
+Abra o WhatsApp e anote o horário da próxima mensagem sem resposta.
+

@@ -256,18 +256,6 @@ def extrair_fontes(content: str) -> tuple[str, list[str]]:
     return sem, fontes
 
 
-def _detect_special_quote(line: str) -> tuple[SectionType, str] | None:
-    """Detecta `> DICA: ...` e `> AVISO: ...`."""
-    stripped = line.strip()
-    if not stripped.startswith(">"):
-        return None
-    content = stripped[1:].strip()
-    for prefix, stype in _SPECIAL_QUOTES.items():
-        if content.startswith(f"{prefix}:"):
-            return stype, content[len(prefix) + 1 :].strip()
-    return None
-
-
 # ─── Promoção: helpers ───────────────────────────────────────────────
 
 

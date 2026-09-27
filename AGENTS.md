@@ -14,8 +14,8 @@ O detalhe da apuração fica no material de pesquisa; o limite que muda a decis�
 
 ## Prompts e contratos
 
-O resolvedor lê `src/templates/prompts/pt-br/` antes da raiz no idioma padrão.
-Ao alterar orientação executável em português, confira os dois caminhos. Preserve variáveis,
+O resolvedor lê `src/templates/prompts/pt-br/`; a raiz de `prompts/` guarda só o `tutor.md`
+(as cópias de raiz dos demais prompts saíram em 27/09/2026, porque nunca carregavam). Preserve variáveis,
 marcadores e o formato de retorno; a revisão devolve a aula e o relatório no contrato existente.
 Os demais idiomas conservam seus próprios prompts e precisam de revisão própria ao estender
 a orientação para eles.
@@ -31,6 +31,12 @@ Mantenha H1, subtítulo e prosa direta, com um percurso de leitura. As regras de
 e distração continuam no ponteiro editorial e em `src/validators/abertura_checker.py`.
 Metadados representam a aula, e fontes seguem o rodapé da trilha conforme o molde vigente.
 Conserve autoria, referências e condições ao transferir a prova entre esses lugares.
+
+Toda frase com número, data, versão ou nome de produto tem fonte primária aberta, com trecho
+lido e data de acesso, numa tabela de proveniência que é arquivo de trabalho e nunca vai para
+a página. O redator do pipeline devolve só a aula; a tabela sai do texto final
+(`result.etapas["proveniencia"]` ou `python cli.py proveniencia <arquivo>`), e quem redige
+fora do pipeline entrega a mesma tabela junto com a aula. Frase sem fonte sai do texto.
 
 Revise substância, estrutura e linguagem. Ganho de informação é o que a explicação acrescenta
 à decisão do aluno, sem quota de dados ou garantia de visibilidade. Acentuação PT-BR completa,

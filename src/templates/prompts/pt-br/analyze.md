@@ -70,7 +70,7 @@ cru e conferência que se protege ("confira na versão instalada")? Aponte a aul
 
 Cada número tem origem na pesquisa ou rótulo de exemplo ilustrativo? Há atribuição vaga
 ("especialistas apontam"), caso apresentado como real sem fonte, ou percentual sem origem?
-Conte os marcadores `[FALTA EVIDÊNCIA:` e `[PREENCHER-HUMANO:` por aula: acima de 3 numa aula,
+Conte os marcadores `[FALTA EVIDÊNCIA:` e `[PREENCHER-HUMANO:` por aula: acima de {marcadores_max_aula} numa aula,
 `aprovado` é false.
 
 ### 6. Léxico vetado

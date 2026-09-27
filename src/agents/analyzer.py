@@ -3,7 +3,7 @@
 Revisa qualidade, coerência e acessibilidade do conteúdo
 gerado na etapa de redação.
 
-Prompt externo: src/templates/prompts/analyze.md
+Prompt externo: src/templates/prompts/pt-br/analyze.md
 """
 
 from __future__ import annotations

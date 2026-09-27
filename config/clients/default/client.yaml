@@ -32,7 +32,10 @@ branding:
   hero_gradient_to: "#0176d3"
   badge_color: "#0176d3"
 
-# Padrão editorial — HSM / HBR / MIT Sloan + andragogia de Knowles
+# Padrão editorial. O registro da aula é o da fonte de estilo (linguagem simples,
+# dono de pequeno negócio no celular); HSM, HBR e MIT Sloan ficam como referência
+# de rigor de evidência. `style` e `words_per_module_*` só aparecem na listagem de
+# `python cli.py clients`: os tetos da aula vêm de config/lexicos.json (tetos.D).
 editorial:
   style: "hsm_hbr_mit_sloan"
   reference_publications:
@@ -170,6 +173,20 @@ geo_2026:
                                # literal com nome e data; cobrar uma por curso convidava a inventar
   require_answer_capsule: true # parágrafo resposta-primeiro após heading (lift 1,9×)
   schema_authority_stack_enabled: true  # @graph Article→Person→Organization→Wikidata
+
+# Crosslinks por aula (pedido do dono, 27/09/2026). Cada aula liga, na prosa e
+# no fecho, para 2 a 4 cursos diferentes do portal /educacao, e o curso inteiro
+# para ao menos 8. O destino só vale se estiver no catálogo, gerado do catálogo
+# publicado da landing por scripts/gerar_catalogo_crosslinks.py. A forma do
+# link (âncora genérica, abertura sem link, instrução do redator) vem de
+# config/quality_rules.yaml > validation.crosslinks.
+crosslinks:
+  enabled: true
+  min_por_aula: 2
+  max_por_aula: 4
+  min_destinos_distintos_no_curso: 8
+  prefixos_validos: ["/educacao/"]
+  catalogo: "config/clients/default/crosslinks_catalogo.json"
 
 # Output — onde os artefatos gerados para este cliente são salvos
 output:

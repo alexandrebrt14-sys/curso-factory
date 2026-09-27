@@ -15,6 +15,7 @@ from src.clients.context import (
     CertificationConfig,
     ClientContext,
     Company,
+    CrosslinksConfig,
     DisclosureConfig,
     Domain,
     Editorial,
@@ -22,6 +23,7 @@ from src.clients.context import (
     Geo2026Config,
     PipelineConfig,
     TutorConfig,
+    VisualConfig,
     VoiceGuardCanonical,
     VoiceGuardConfig,
     VoiceGuardForbidden,
@@ -207,6 +209,22 @@ def load_client(client_id: str = "default") -> ClientContext:
         schema_authority_stack_enabled=bool(geo_d.get("schema_authority_stack_enabled", False)),
     )
 
+    # Crosslinks por aula (27/09/2026; default off; ligar via client.yaml crosslinks)
+    cl_d = data.get("crosslinks") or {}
+    crosslinks_cfg = CrosslinksConfig(
+        enabled=bool(cl_d.get("enabled", False)),
+        min_por_aula=int(cl_d.get("min_por_aula", 0) or 0),
+        max_por_aula=int(cl_d.get("max_por_aula", 0) or 0),
+        min_destinos_distintos_no_curso=int(cl_d.get("min_destinos_distintos_no_curso", 0) or 0),
+        prefixos_validos=[
+            str(p) for p in (cl_d.get("prefixos_validos") or []) if isinstance(p, str) and p
+        ],
+        catalogo=_resolve_path(cl_d.get("catalogo"), _ROOT),
+    )
+
+    # Peso visual por aula (27/09/2026); ausente = teto do espelho, como antes
+    visual_cfg = VisualConfig.de_dict(data.get("visual"))
+
     # Wave 8 — idioma default do cliente
     client_language = ed_d.get("language", "pt-br")
 
@@ -228,6 +246,8 @@ def load_client(client_id: str = "default") -> ClientContext:
         agentic=agentic,
         pipeline=pipeline_cfg,
         geo=geo_cfg,
+        crosslinks=crosslinks_cfg,
+        visual=visual_cfg,
         language=client_language,
     )
 

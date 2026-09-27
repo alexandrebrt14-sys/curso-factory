@@ -37,7 +37,7 @@ already know. If the track depends on nothing, say so in one line.
 
 ## Glossary
 
-The technical terms the lessons use, in alphabetical order, each with a gloss of up to 12
+The technical terms the lessons use, in alphabetical order, each with a gloss of up to {glosa_max_palavras}
 words and a comparison from daily life. Format: `**term**: gloss`. Between five and twelve
 terms; only what the lessons actually use.
 
@@ -52,7 +52,7 @@ below.
 One line per source, in the form `Source name, title or report, month and year` and, when there
 is one, the link right after, only with what the lessons or the research bring. One to eight
 sources. It is the LAST block of the track and the only place in the course where a source
-appears (R7): each line up to 25 words, no commentary, no card, no highlighted quote. It is
+appears (R7): each line up to {fonte_max_palavras} words, no commentary, no card, no highlighted quote. It is
 rendered in the page footer, in small type.
 
 ## Before delivering, check
@@ -60,9 +60,9 @@ rendered in the page footer, in small type.
 1. Five sections, in this order, each with the heading above as H2; "Sources" is the last.
 6. No exercise, checkpoint, mockup, "needs verification" or data protection law by name (R5 to R9).
 2. Action verbs in the objectives; no "understand" or "know".
-3. Gloss of up to 12 words per term; no term the lessons do not use.
+3. Gloss of up to {glosa_max_palavras} words per term; no term the lessons do not use.
 4. No invented source.
-5. Sentences up to 28 words; no em dash; correct spelling.
+5. Sentences up to {frase_max_palavras} words; no em dash; correct spelling.
 
 Start directly with the first H2, with no track title (the pipeline inserts it) and no comment
 about this prompt.

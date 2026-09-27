@@ -39,7 +39,7 @@ do quality gate programático.
 
 ## Prompt externo
 
-`src/templates/prompts/review.md`. Inclui checklist exaustivo de
+`src/templates/prompts/pt-br/review.md`. Inclui checklist exaustivo de
 acentuação (150+ palavras obrigatórias) e regras anti-clichê.
 
 ## Por que este LLM

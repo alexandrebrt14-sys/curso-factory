@@ -72,7 +72,7 @@ de script, log, ou referência técnica é aceito.
 ## Aplicação no pipeline
 
 - Prompt externo [[gpt-4o-writer]]
-  (`src/templates/prompts/draft.md`) lista todas as regras acima.
+  (`src/templates/prompts/pt-br/draft.md`) lista todas as regras acima.
 - [[claude-reviewer]] etapa 5 faz última passagem com checklist
   expressões proibidas.
 - [[content-checker]] camada 2 valida programaticamente formatação,

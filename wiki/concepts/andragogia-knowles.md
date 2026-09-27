@@ -43,7 +43,7 @@ programaticamente por [[content-checker]] (camada 2 do
 ## Aplicação no pipeline
 
 - **Etapa 2 (DRAFT, [[gpt-4o-writer]])**: prompt externo
-  `src/templates/prompts/draft.md` lista os 6 princípios como
+  `src/templates/prompts/pt-br/draft.md` lista os 6 princípios como
   checklist obrigatório.
 - **Etapa 3 (ANALYZE, Gemini)**: revisa pedagogicamente em 7
   dimensões; uma delas é a presença dos 6 princípios.

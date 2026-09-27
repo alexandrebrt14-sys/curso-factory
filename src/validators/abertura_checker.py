@@ -461,7 +461,15 @@ def _check_r9(texto: str) -> list[AchadoAbertura]:
 
 # ─── R7: fontes só no rodapé ────────────────────────────────────────────
 
+#: Fallback; o valor vivo é `validation.abertura.fonte_max_palavras`, o mesmo
+#: que o prompt da trilha recebe (`numeros_dos_prompts`).
 FONTE_MAX_PALAVRAS = 25
+
+
+def _fonte_max_palavras() -> int:
+    from src.validators.numeros_dos_prompts import numero
+
+    return numero("fonte_max_palavras")
 
 
 def _check_r7_aula(texto: str) -> list[AchadoAbertura]:
@@ -513,12 +521,13 @@ def _check_r7_trilha(texto: str) -> list[AchadoAbertura]:
                 )
             )
             break
-        if len(s.split()) > FONTE_MAX_PALAVRAS:
+        teto = _fonte_max_palavras()
+        if len(s.split()) > teto:
             achados.append(
                 AchadoAbertura(
                     "R7",
                     f"Fonte com comentário longo ({len(s.split())} palavras): '{s[:60]}'. "
-                    f"Nome da fonte, título e data, no máximo {FONTE_MAX_PALAVRAS} palavras.",
+                    f"Nome da fonte, título e data, no máximo {teto} palavras.",
                 )
             )
             break
@@ -646,11 +655,12 @@ def check_abertura_definicao(course: CourseDefinition) -> list[str]:
                 + _check_r3(texto)
             ):
                 mensagens.append(f"{rotulo}[{i}]: [{achado.regra}] {achado.mensagem}")
+    teto_fonte = _fonte_max_palavras()
     for k, fonte in enumerate(course.fontes):
-        if len(fonte.split()) > FONTE_MAX_PALAVRAS:
+        if len(fonte.split()) > teto_fonte:
             mensagens.append(
                 f"fontes[{k}]: fonte com {len(fonte.split())} palavras; no rodapé a fonte é nome, "
-                f"título e data, até {FONTE_MAX_PALAVRAS} palavras (R7)."
+                f"título e data, até {teto_fonte} palavras (R7)."
             )
         if _check_r9(fonte):
             mensagens.append(f"fontes[{k}]: menção proibida (R9) na fonte.")

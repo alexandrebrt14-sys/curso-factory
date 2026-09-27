@@ -13,6 +13,11 @@ Cascata::
     2. src/templates/prompts/pt-br/<prompt_file>
     3. src/templates/prompts/<prompt_file>            (fallback global)
 
+Desde 27/09/2026 o nível 3 só guarda o `tutor.md`, que não tem pasta por
+idioma. As cópias de raiz dos demais prompts eram idênticas às de `pt-br/` (ou
+já divergentes, como `classify.md` e `research.md`) e nunca carregavam, porque
+`pt-br/` vence para qualquer idioma: a regra editada só na raiz ficava inerte.
+
 Uso típico::
 
     from src.agents.lang_resolver import resolve_prompt_path

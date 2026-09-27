@@ -53,7 +53,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any
 
-from src.validators.lexicos_loader import carregar_lexicos
+from src.validators.lexicos_loader import carregar_lexicos, familias_de_abertura
 from src.validators.rules_loader import validation_section
 
 # ─── Resultado ──────────────────────────────────────────────────────────
@@ -501,7 +501,9 @@ def check_subtitulo(subtitulo: str) -> list[AchadoDidatica]:
         return []
     achados: list[AchadoDidatica] = []
     n = _contar_palavras(limpo)
-    teto = int(cfg["max_palavras"])
+    # O teto do subtítulo é o da fonte (aberturaEDistracao.subtituloMaxPalavras),
+    # o mesmo que a R1 e o prompt usam; o YAML fica como fallback.
+    teto = int(familias_de_abertura().get("subtituloMaxPalavras") or cfg["max_palavras"])
     if n > teto:
         achados.append(
             AchadoDidatica(

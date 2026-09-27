@@ -125,3 +125,17 @@ output:
 #   min_quotations: 1                  # citação direta de especialista nomeado
 #   require_answer_capsule: true       # parágrafo resposta-primeiro após heading
 #   schema_authority_stack_enabled: false
+
+# Crosslinks por aula para outros cursos do portal do cliente. Default OFF:
+# desligado, nada é cobrado e o prompt de redação não muda. Ligado, cada aula
+# liga para de min_por_aula a max_por_aula cursos diferentes do catálogo, o
+# curso inteiro para ao menos min_destinos_distintos_no_curso, e destino fora
+# do catálogo reprova a aula. O catálogo é um JSON ou YAML com a lista
+# `destinos` (caminho, nome, tags); gere com scripts/gerar_catalogo_crosslinks.py.
+# crosslinks:
+#   enabled: false
+#   min_por_aula: 2
+#   max_por_aula: 4
+#   min_destinos_distintos_no_curso: 8
+#   prefixos_validos: ["/cursos/"]
+#   catalogo: "config/clients/<id>/crosslinks_catalogo.json"

@@ -6,7 +6,7 @@ Escribes una lección de curso para el dueño de un pequeño negocio (taller, sa
 tienda, restaurante, profesional autónomo). Es lego en marketing y tecnología, lee en el
 celular y dedica pocos minutos a cada lección. Escribe como quien explica en el mostrador:
 frase directa, verbo con sujeto, ejemplo con nombre de cosa real (agenda, caja, inventario,
-WhatsApp). El término técnico recibe una explicación de hasta 12 palabras la primera vez que
+WhatsApp). El término técnico recibe una explicación de hasta {glosa_max_palavras} palabras la primera vez que
 aparece, con una comparación de la vida diaria.
 
 El texto sale en el idioma del curso, con acentuación completa, sin emoji y sin raya.
@@ -30,7 +30,7 @@ prompt. Lo que no esté allí no entra como hecho. Antes de dejar un hueco, inte
 orden: buscar de nuevo en la investigación; reducir la afirmación a lo que se sabe ("tres
 clientes reportaron" en lugar de "el mercado reporta"); sacar el argumento del centro; cortar
 el pasaje. Solo después usa el marcador `[FALTA EVIDENCIA: qué hay que buscar]`, en lugar del
-DATO y nunca en lugar de la sección. Techo de 3 marcadores por lección. Un ejemplo con número
+DATO y nunca en lugar de la sección. Techo de {marcadores_max_aula} marcadores por lección. Un ejemplo con número
 inventado se permite solo cuando va rotulado en la propia frase ("supón una facturación de
 R$ 40 mil al mes").
 
@@ -41,12 +41,13 @@ en su negocio y cuál es el próximo paso, dicho en prosa. Extensión: de {palav
 Por debajo de {palavras_piso} la idea quedó sin explicar; por encima de {palavras_aviso} entró
 una segunda idea, que pertenece a otra lección.
 
-Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son dos, uno por bloque. H3 solo cuando
-un H2 pasa de 350 palabras y necesita dos partes (como máximo {h3_por_h2} por H2). Nada de H4,
+Encabezados: **{h2_min} a {h2_max} H2**, y lo normal son tres, uno por bloque (dos pasan cuando
+el tercero no tiene qué agregar). H3 solo cuando
+un H2 pasa de {h3_acima_de_palavras} palabras y necesita dos partes (como máximo {h3_por_h2} por H2). Nada de H4,
 nada de línea terminada en dos puntos como subtítulo.
 
 **Apertura, en este orden exacto, sin nada en medio (regla R1).** El pipeline inserta el título
-(H1). Tú empiezas por el **subtítulo: UNA frase, en línea propia, de hasta 25 palabras**, que
+(H1). Tú empiezas por el **subtítulo: UNA frase, en línea propia, de hasta {subtitulo_max_palavras} palabras**, que
 dice qué va a poder hacer el alumno al terminar. Después de una línea en blanco, **dos o tres
 párrafos de apertura**, directos al punto: el problema que vive hoy, qué cuesta no resolverlo y
 qué cambia al terminar la lección. El primer elemento después del subtítulo es siempre un
@@ -57,8 +58,9 @@ sin tabla antes del primer párrafo.
 **H2 1: por qué [la idea] cambia tu resultado.** Explica la idea en prosa corrida, sin
 viñetas: de dónde viene (quién la formuló y qué problema resolvía), qué cuesta no saberla en su
 operación (con número cuando la investigación lo tenga), qué cambia cuando la aplica
-(comportamiento observable, antes y después) y el error más común de quien la ignora, marcado
-como **Trampa común:**. Empieza por el problema y llega a la idea; nunca abras con "la
+(comportamiento observable, antes y después) y el error más común de quien la ignora, dicho en
+prosa (un rótulo fijo como "Trampa común:" abriendo párrafo se volvió tic; como máximo una vez
+por lección). Empieza por el problema y llega a la idea; nunca abras con "la
 definición de X es". Una analogía del día a día del ramo del alumno ayuda; dos, si la
 segunda explica lo que la primera no explicó.
 
@@ -67,6 +69,10 @@ entero: quién es, qué estaba pasando, qué hizo la persona paso a paso, qué p
 número. Medio ejemplo no sirve; tres ejemplos cortos tampoco. El encabezado nombra el caso
 ("Cómo el taller de Sergio dejó de perder presupuestos"); nunca "cómo queda en tu negocio",
 "aplícalo en tu negocio" ni "mockup".
+
+**H2 3: qué cambia en tu semana.** La acción de hoy, en prosa, con lo que el alumno debe ver
+cuando acierta, y el encabezado como promesa ("Qué hacer con la agenda esta semana"). Sin pasos
+numerados de ejercicio y sin campo para llenar (R6).
 
 **Cierre, sin encabezado, en 3 a 5 líneas.** Qué cambió en su negocio después de esta lección,
 dicho por el ejemplo del H2 2, y un único puente hacia la siguiente lección (verbo en imperativo
@@ -102,7 +108,7 @@ compite con la lectura. El gate rechaza cada ítem de abajo y la página no se p
 
 - Párrafo con una idea, de {paragrafo_min} a {paragrafo_max} palabras, en 2 a 4 frases. Ni
   párrafos de una línea apilados, ni bloques de diez líneas.
-- Frase de hasta 28 palabras, en orden directo la mayor parte de las veces. El tamaño viene del
+- Frase de hasta {frase_max_palavras} palabras, en orden directo la mayor parte de las veces. El tamaño viene del
   sentido: causa y salvedad juntas piden frase mayor; el giro pide frase corta. Nunca alternes
   corta y larga por programa.
 - Verbo con sujeto y voz activa. "Optimizar la captación" se vuelve "captar mejor".
@@ -138,7 +144,9 @@ nunca la figura.
 - Bastidor: cualquier frase sobre la propia lección, la regla que seguiste, la verificación que
   hiciste o el método de la estimación ("esta lección fue", "los datos fueron verificados",
   "según nuestra metodología", "estimación calculada", "nota del revisor"). El alumno recibe el
-  hecho y el paso.
+  hecho y el paso. Lo mismo vale para narrar la verificación ("confirmado en la fuente
+  primaria", "no fue posible confirmar", "descartamos por falta de certeza"): la verificación
+  decide qué entra, y el lector recibe solo el resultado.
 - Rótulo de la investigación ([Alta], [Media], [Baja], "nivel de confianza"): te sirve para
   elegir el dato; en la lección el número entra limpio o no entra.
 - Aviso legal genérico ("consulte a un abogado", "conforme a la legislación vigente", "exención
@@ -161,6 +169,9 @@ nunca la figura.
   gerundio.
 - Dato con la fuente dentro de la frase de lectura. El número entra limpio; la fuente va a la
   lista de fuentes del itinerario.
+- El vocabulario interno del equipo, repetido. Una palabra que el equipo de producción usa entre
+  sí no se vuelve vocabulario de la lección: di el sentido llano y nunca apoyes la frase en la
+  misma etiqueta más de una vez por lección.
 
 ## Antes de entregar, comprueba
 
@@ -172,8 +183,8 @@ nunca la figura.
 5. Extensión entre {palavras_alvo_min} y {palavras_alvo_max} palabras.
 6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R1 a R9).
 7. Ninguna línea "Fuente:" y ningún encabezado "Fuentes" dentro de la lección.
-8. Ningún número sin origen en la investigación; como máximo 3 marcadores `[FALTA EVIDENCIA]`.
-9. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta 28.
+8. Ningún número sin origen en la investigación; como máximo {marcadores_max_aula} marcadores `[FALTA EVIDENCIA]`.
+9. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta {frase_max_palavras}.
 10. Hasta {figuras_max} apoyos visuales, todos sustituyendo texto.
 11. Nada de la lista "Lo que nunca entra".
 12. Cierre por el ejemplo, con un puente hacia la siguiente lección.
@@ -184,3 +195,5 @@ inserta), sin título de módulo y sin comentario sobre este prompt.
 
 --- DATOS DE LA INVESTIGACIÓN ---
 {context}
+
+{bloco_expansao}

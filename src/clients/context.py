@@ -244,6 +244,94 @@ class Geo2026Config:
 
 
 @dataclass
+class CrosslinksConfig:
+    """Crosslinks por aula para outros cursos do portal (27/09/2026). Opt-in.
+
+    Desligado, nada é cobrado nem instruído. Ligado, cada aula liga para ao
+    menos `min_por_aula` e no máximo `max_por_aula` cursos diferentes do
+    catálogo (`catalogo`, JSON ou YAML com a lista `destinos`), e o curso
+    inteiro para ao menos `min_destinos_distintos_no_curso`. Só contam links
+    cujo caminho começa por um dos `prefixos_validos`. As regras de forma
+    (âncora genérica, parágrafos de abertura sem link, instrução do prompt)
+    vivem em `config/quality_rules.yaml > validation.crosslinks`.
+    """
+
+    enabled: bool = False
+    min_por_aula: int = 0
+    max_por_aula: int = 0
+    min_destinos_distintos_no_curso: int = 0
+    prefixos_validos: list[str] = field(default_factory=list)
+    catalogo: Path | None = None
+
+
+@dataclass
+class VisualConfig:
+    """Peso visual por aula declarado pelo cliente ou pelo curso (27/09/2026).
+
+    Sobrepõe o teto padrão de apoios visuais da aula (`tetos.D.figuras_max` do
+    espelho `config/lexicos.json`) sem mexer no espelho. Cada campo é opcional:
+    `None` significa "não declarado". Sem nenhum campo declarado, vale o
+    comportamento anterior (só o teto do espelho, como aviso).
+
+    - `min_por_aula`: piso de peças visuais na aula (abaixo, erro).
+    - `max_por_aula`: teto de peças visuais na aula (acima, aviso).
+    - `min_tipos_por_aula`: tipos diferentes de peça na aula (abaixo, aviso).
+    - `max_paragrafos_sem_peca`: maior sequência de parágrafos sem peça (acima, aviso).
+    """
+
+    min_por_aula: int | None = None
+    max_por_aula: int | None = None
+    min_tipos_por_aula: int | None = None
+    max_paragrafos_sem_peca: int | None = None
+
+    @property
+    def declarado(self) -> bool:
+        return any(
+            v is not None
+            for v in (
+                self.min_por_aula,
+                self.max_por_aula,
+                self.min_tipos_por_aula,
+                self.max_paragrafos_sem_peca,
+            )
+        )
+
+    @classmethod
+    def de_dict(cls, dados: dict | None) -> VisualConfig:
+        """Lê o bloco `visual` de um YAML; chave ausente ou ilegível fica `None`."""
+
+        def _num(chave: str) -> int | None:
+            try:
+                valor = (dados or {}).get(chave)
+                return None if valor is None else max(0, int(valor))
+            except (TypeError, ValueError, AttributeError):
+                return None
+
+        return cls(
+            min_por_aula=_num("min_por_aula"),
+            max_por_aula=_num("max_por_aula"),
+            min_tipos_por_aula=_num("min_tipos_por_aula"),
+            max_paragrafos_sem_peca=_num("max_paragrafos_sem_peca"),
+        )
+
+    def sobreposto_por(self, outro: VisualConfig | None) -> VisualConfig:
+        """Campos declarados em `outro` (o curso) vencem os deste (o cliente)."""
+        if outro is None:
+            return self
+        return VisualConfig(
+            *(
+                b if b is not None else a
+                for a, b in (
+                    (self.min_por_aula, outro.min_por_aula),
+                    (self.max_por_aula, outro.max_por_aula),
+                    (self.min_tipos_por_aula, outro.min_tipos_por_aula),
+                    (self.max_paragrafos_sem_peca, outro.max_paragrafos_sem_peca),
+                )
+            )
+        )
+
+
+@dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
 
@@ -266,6 +354,10 @@ class ClientContext:
     pipeline: PipelineConfig = field(default_factory=PipelineConfig)
     # Rubrica de citabilidade GEO (default off; ligar via client.yaml geo_2026)
     geo: Geo2026Config = field(default_factory=Geo2026Config)
+    # Crosslinks por aula (default off; ligar via client.yaml crosslinks)
+    crosslinks: CrosslinksConfig = field(default_factory=CrosslinksConfig)
+    # Peso visual por aula (default: não declarado, vale o teto do espelho)
+    visual: VisualConfig = field(default_factory=VisualConfig)
     # Wave 8 — idioma default do cliente (override per curso possível)
     language: str = "pt-br"
 

@@ -40,8 +40,8 @@ acentue URL, slug, código, variável ou atributo HTML.
   própria, depois dois ou três parágrafos diretos ao ponto. Se o subtítulo faltar, escreva-o a
   partir da primeira frase. Cena, hora do dia, personagem, "neste módulo", lista de
   objetivos, "o que você vai aprender", "para quem é", índice e card saem do topo.
-- 2 a 4 H2 (o normal são dois: por que a ideia muda o resultado; um caso do ramo, do começo
-  ao fim). H3 só em H2 acima de 350 palavras. H4 e subtítulo por linha terminada em
+- {h2_min} a {h2_max} H2 (o normal são três: por que a ideia muda o resultado; um caso do ramo, do começo
+  ao fim; o que muda na semana do aluno, em prosa). H3 só em H2 acima de {h3_acima_de_palavras} palavras. H4 e subtítulo por linha terminada em
   dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
 - Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
   "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",
@@ -57,7 +57,7 @@ acentue URL, slug, código, variável ou atributo HTML.
   como consequência. Quando existe aula anterior, a primeira frase pode ser a ponte de
   entrada, em uma linha: o que ficou resolvido lá e por que este pedaço vem agora.
 - Título e subtítulo como promessa do aluno. Título com dois-pontos, substantivos empilhados ou
-  jargão que a aula ainda vai ensinar vira frase com verbo, em até 12 palavras. Subtítulo com
+  jargão que a aula ainda vai ensinar vira frase com verbo, em até {titulo_max_palavras} palavras. Subtítulo com
   fórmula fixa ("Você sai com...", "Nesta aula...") ou com quatro promessas em corrente de
   vírgulas vira UMA promessa, começando pelo resultado, pelo problema ou pela decisão.
 - Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).
@@ -69,16 +69,16 @@ acentue URL, slug, código, variável ou atributo HTML.
 
 Parágrafo com uma ideia, em 2 a 4 frases na maior parte das vezes; parágrafo de uma frase fica
 quando a ideia cabe nela. Junte a sequência de parágrafos de uma frase que fatia um raciocínio;
-separe o bloco de dez linhas que carrega dois assuntos. Frase acima de 28 palavras se parte
+separe o bloco de dez linhas que carrega dois assuntos. Frase acima de {frase_max_palavras} palavras se parte
 quando dá para partir sem perder a condição; enumeração, exemplo contado de uma vez e número com
-condição podem ir até 60. Nunca aplique alternância programada de frase curta e longa.
+condição podem ir até {frase_tolerancia_palavras}. Nunca aplique alternância programada de frase curta e longa.
 
 Cadência: parágrafos vizinhos que começam com a mesma palavra ou com a mesma construção (sujeito
 "O"/"A" antes de tudo) ganham entrada diferente em metade deles: condição, número, verbo, adjunto
 de tempo. Frases justapostas viram raciocínio ligado: o que é, por que importa para o negócio,
 o que fazer. Número de versão que não muda a decisão do aluno sai da prosa.
 
-Glosa: todo termo técnico ganha, na primeira aparição, explicação de até 12 palavras com
+Glosa: todo termo técnico ganha, na primeira aparição, explicação de até {glosa_max_palavras} palavras com
 analogia do cotidiano, no molde "spring: jeito de animar que imita uma mola". Nome de API cru
 (Dialog.Root, createTheme) sem explicação prática logo em seguida recebe a explicação ou sai.
 
@@ -108,17 +108,24 @@ diga o que ficou resolvido e por que o próximo grupo vem agora.
   entra", "cada vez mais", "em constante evolução"): corte ou diga o fato.
 - Meta-discurso de verificação, alerta rotulado ("Atenção:", "Importante:") e rótulo de
   confiança sobre o próprio dado: o fato fica, a moldura sai.
+
+{bloco_apuracao}
+
 - Vícios de máquina: gerundismo, "endereçar" por "tratar de", "suportar" por "aceitar",
   "eventualmente" por "no fim", "impactar" por "aumentar/reduzir", "alavancar", "agregar
   valor", nominalização ("a implementação de" vira "implementar").
 - Travessão em prosa, title case, vírgula antes do "e" em enumeração simples, emoji.
 - Culpa no leitor: o sujeito da falha é o processo ("o lembrete não saiu").
 
+Corrija cada ocorrência acima do limite abaixo, trocando a palavra pelo sentido.
+
+{bloco_vocabulario}
+
 ### 6. Evidência
 
 Todo número precisa de origem na pesquisa ou rótulo de exemplo ilustrativo na própria frase.
 Percentual sem origem vira `[FALTA EVIDÊNCIA: ...]` ou afirmação reduzida ao que se sabe.
-Marcadores abertos acima de 3 na aula: reprove no relatório, mas devolva o texto mesmo assim.
+Marcadores abertos acima de {marcadores_max_aula} na aula: reprove no relatório, mas devolva o texto mesmo assim.
 A referência completa fica na lista de fontes da trilha. Preserve no corpo sujeito,
 período e condição sempre que mudarem a interpretação do fato. Nunca
 transforme "o mercado entende" em "67% das empresas, segundo a McKinsey" sem que o número
@@ -162,6 +169,13 @@ Aprovado para publicação: sim/não
 Motivo (se não): ...
 ---
 ```
+
+Links para outros cursos do portal e peças visuais (tabela, lista de passos, figura com
+legenda) que o redator pôs ficam na aula: corrija a forma deles, nunca os apague.
+
+{bloco_crosslinks}
+
+{bloco_correcoes}
 
 --- AULA PARA REVISÃO ---
 {context}

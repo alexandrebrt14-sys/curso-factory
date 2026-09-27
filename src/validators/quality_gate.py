@@ -100,6 +100,7 @@ class QualityGate:
         module_name: str = "",
         unidade: str = "modulo",
         geo: bool = True,
+        visual=None,
     ) -> GateResult:
         """Valida texto puro (Markdown) com todas as verificações.
 
@@ -113,6 +114,8 @@ class QualityGate:
                 acervo. Quando o gerador passar a emitir aula, o chamador
                 passa `unidade="aula"` e a régua fica a do molde D sem
                 multiplicador. Ver `content_checker.tetos_da_unidade`.
+            visual: `VisualConfig` já resolvido para o curso (cliente sobreposto
+                pelo curso). Ausente, vale o bloco `visual` do cliente.
         """
         result = GateResult()
 
@@ -151,7 +154,12 @@ class QualityGate:
         #    docs/GEO_REDACAO_CHECKLIST_2026.md)
         geo_config = getattr(self.client, "geo", None) if geo else None
         content_errors = self._check_content_por_unidade(
-            working_text, module_name, geo_config, unidade
+            working_text,
+            module_name,
+            geo_config,
+            unidade,
+            client=self.client,
+            visual=visual if visual is not None else getattr(self.client, "visual", None),
         )
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
@@ -233,7 +241,9 @@ class QualityGate:
         return result
 
     @staticmethod
-    def _check_content_por_unidade(text: str, module_name: str, geo_config, unidade: str):
+    def _check_content_por_unidade(
+        text: str, module_name: str, geo_config, unidade: str, client=None, visual=None
+    ):
         """Mede aula a aula quando o texto vem montado pelo orquestrador.
 
         O rascunho gerado desde 02/09/2026 traz `# Aula i.j: título` abrindo
@@ -244,6 +254,8 @@ class QualityGate:
         from src.orchestrator import AULA_H1_RE, TRILHA_H1_RE, dividir_em_unidades
         from src.validators.content_checker import erros_de_abertura
 
+        crosslinks = getattr(client, "crosslinks", None)
+
         if TRILHA_H1_RE.match(text.lstrip()) or module_name.startswith("Trilha "):
             # Fechamento da trilha (objetivos, glossário, FAQ, fontes): não é
             # aula e a régua da aula o reprovaria pelo motivo errado. As
@@ -252,7 +264,14 @@ class QualityGate:
             # do bloco 'Fontes' e pelos blocos proibidos.
             return erros_de_abertura(text, module_name or "trilha", unidade="trilha")
         if not AULA_H1_RE.search(text):
-            return check_content(text, module_name, geo_config=geo_config, unidade=unidade)
+            return check_content(
+                text,
+                module_name,
+                geo_config=geo_config,
+                unidade=unidade,
+                crosslinks_config=crosslinks,
+                visual_config=visual,
+            )
         achados = []
         for titulo, bloco in dividir_em_unidades(text):
             if titulo.startswith("Trilha "):
@@ -262,10 +281,51 @@ class QualityGate:
             rotulo = f"{module_name} / {titulo}" if module_name else titulo
             # A régua da aula não carrega a camada GEO: fontes, estatísticas
             # e citação vivem no nível da trilha e do curso (molde D).
-            achados.extend(check_content(bloco, rotulo, geo_config=None, unidade="aula"))
+            achados.extend(
+                check_content(
+                    bloco,
+                    rotulo,
+                    geo_config=None,
+                    unidade="aula",
+                    crosslinks_config=crosslinks,
+                    visual_config=visual,
+                )
+            )
         if geo_config is not None:
             achados.extend(QualityGate.check_geo(text, module_name or "curso", geo_config))
+        achados.extend(QualityGate.check_curso(text, module_name or "curso", client))
         return achados
+
+    @staticmethod
+    def check_curso(text: str, rotulo: str = "curso", client=None):
+        """Medidas que só existem na sequência de aulas do curso inteiro.
+
+        Crosslinks (27/09/2026): o mesmo destino em aulas seguidas e o piso de
+        destinos distintos do curso, quando o cliente liga a regra. Tamanho e
+        ordem (27/09/2026): faixa de aulas do curso e extensão das primeiras
+        aulas, como aviso, quando `validation.planejamento` está no YAML.
+        """
+        from src.orchestrator import AULA_H1_RE, dividir_em_unidades
+        from src.validators.content_checker import ContentError
+        from src.validators.crosslink_checker import check_crosslinks_curso
+        from src.validators.planejamento_checker import check_planejamento_curso
+
+        if not AULA_H1_RE.search(text):
+            return []
+        aulas = [(t, b) for t, b in dividir_em_unidades(text) if t and not t.startswith("Trilha ")]
+        achados = [
+            ("crosslinks", a)
+            for a in check_crosslinks_curso(aulas, getattr(client, "crosslinks", None))
+        ] + [("planejamento", a) for a in check_planejamento_curso(aulas)]
+        return [
+            ContentError(
+                tipo=a.tipo,
+                categoria=categoria,
+                mensagem=f"[{a.regra}] {a.mensagem}",
+                modulo=rotulo,
+            )
+            for categoria, a in achados
+        ]
 
     @staticmethod
     def check_geo(text: str, rotulo: str = "curso", geo_config=None):
@@ -275,10 +335,9 @@ class QualityGate:
         conjunto, não de cada aula de mil palavras: cobradas por aula, elas
         reprovavam toda aula do molde novo (wave 5, 02/09/2026).
         """
-        if geo_config is None:
-            return []
-        achados = check_content(text, rotulo, geo_config=geo_config, unidade="modulo")
-        return [a for a in achados if a.categoria == "geo"]
+        from src.validators.content_checker import erros_de_geo
+
+        return erros_de_geo(text, geo_config, rotulo)
 
     def check_html(
         self,

@@ -1,8 +1,8 @@
 # Diretriz editorial deste repositório (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 999d02ddc87cfa2897cb0fafda4f6b5fdd170103fddd74c14c7750f96f91beae
-sincronizado-em: 2026-09-10
+hash-fonte: 6547f0ee6548d56a177b09c61984235e01fb5bf6b48617672368443cfdc28623
+sincronizado-em: 2026-09-27
 
 A régua de escrita, os moldes de página, a tabela de tetos, o perfil do leitor e o glossário
 vivem na fonte acima. Este arquivo não repete nenhum número nem nenhuma lista. Quando algo aqui
@@ -36,12 +36,33 @@ três passadas, vícios de português, estruturas proibidas — passou a viver n
   código realmente carrega o arquivo de regras. Foi o defeito de 11/08/2026, quando o YAML tinha
   56 clichês e o gate rodava com 18 em código.
 
+## Tamanho e ordem do curso (27/09/2026)
+
+Os dados de uso do portal /educacao mostraram que curso curto termina e curso longo não, que o
+aluno abandona na teoria que chega cedo, no capítulo de contexto com número de terceiros e no
+apêndice de instalação, e que a rolagem média dos capítulos abandonados fica abaixo da metade
+da página. Daí saem cinco orientações de planejamento, que entram no prompt de planejamento de
+aulas e no de redação:
+
+- para tema amplo, o curso inteiro fica numa faixa curta de aulas; aula que não muda uma
+  decisão do aluno sai;
+- as primeiras aulas do curso são as mais curtas e as mais práticas, com ganho no primeiro dia;
+- teoria densa só da metade do curso em diante, e sempre depois de um caso contado inteiro;
+- a tese e o que fazer ficam na primeira metade de cada aula; o fecho retoma o caso e não
+  guarda a informação principal;
+- nenhum apêndice de instalação no caminho: o passo vira passo a passo curto dentro da aula
+  que precisa dele, ou link para o curso que já ensina.
+
+Os números (faixa de aulas, quantas aulas iniciais, alvo de palavras delas) e os textos das
+instruções vivem em `config/quality_rules.yaml > validation.planejamento`. O gate confere, como
+aviso, o curso fora da faixa e a aula inicial acima do alvo (`src/validators/planejamento_checker.py`).
+
 ## Abertura e distração (R1 a R9)
 
 Pedido do dono dos repositórios em 08/09/2026, literal na decisão
 `wiki/decisions/abertura-direta-sem-distracao-20260908.md`: o topo carregado dispersa o leitor
-e o card no meio compete com a leitura. A fonte de estilo 1.7.1 (ponteiro acima, ressincronizado
-em 10/09/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
+e o card no meio compete com a leitura. A fonte de estilo 1.8.0 (ponteiro acima, ressincronizado
+em 27/09/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
 `config/lexicos.json`, que o `abertura_checker` lê e soma aos padrões próprios; esta seção é o
 resumo local, e em divergência a fonte vence.
 
@@ -100,12 +121,33 @@ A aplicação de SEO e GEO às etapas de pesquisa, escrita, revisão e humaniza�
 `docs/ESCRITA_SEO_GEO.md`. A fonte §10 rege a fidelidade; os prompts da raiz e de `pt-br/`
 executam essa orientação sem alterar o formato de retorno do pipeline.
 
+## Compatibilidade editorial de 27/09/2026
+
+Espelho regerado a partir do commit `12d1baec475d161ae3ffae2213bd894bd2a606f0`, versão 1.8.0.
+Os tetos do tipo D e os limiares são iguais aos da 1.7.1; a 1.8.0 acrescenta o bloco
+`didatica` (frases de fuga, nomes técnicos aceitos, fórmulas de descrição), que o
+`didatica_checker` ainda não lê: os números de didática deste repositório seguem em
+`config/quality_rules.yaml > validation.didatica` (pendência registrada na decisão
+`wiki/decisions/boas-praticas-de-escrita-20260927.md`).
+
 ## Como sincronizar
 
 ```
 python -m escrita.sincronizar verificar DIRETRIZ_EDITORIAL.md   # reprova se o hash divergir
 python -m escrita.cli lexicos --json > config/lexicos.json      # espelho lido pelos validadores
 ```
+
+Atenção ao nome do pacote: `escrita-empresarial` também instala um módulo chamado `escrita`,
+e se ele estiver no ambiente os dois comandos acima falham ("No module named
+escrita.sincronizar" ou "invalid choice: 'lexicos'"). Sem instalar nada, aponte o
+`PYTHONPATH` para o clone da fonte:
+
+```
+PYTHONPATH=../escrita-empreendedor python -m escrita.sincronizar verificar DIRETRIZ_EDITORIAL.md
+PYTHONPATH=../escrita-empreendedor python -m escrita.cli lexicos --json > config/lexicos.json
+```
+
+No Windows, o redirecionamento grava CRLF; o `.gitattributes` normaliza para LF no commit.
 
 `config/lexicos.json` é gerado, nunca editado à mão. É dele que
 `src/validators/content_checker.py` tira os tetos da aula e as listas de expressão vetada.

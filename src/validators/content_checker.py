@@ -43,10 +43,13 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 
 from src.validators.abertura_checker import check_abertura
+from src.validators.crosslink_checker import check_crosslinks_aula
 from src.validators.didatica_checker import check_didatica
 from src.validators.lexicos_loader import (
+    carregar_lexicos,
     expressoes_de_bastidor,
     expressoes_de_muleta_legal,
     expressoes_vetadas,
@@ -54,7 +57,9 @@ from src.validators.lexicos_loader import (
     regex_de_metalinguagem,
     tetos_da_aula,
 )
+from src.validators.peso_visual_aula import check_peso_visual_aula
 from src.validators.rules_loader import rules_list, validation_section
+from src.validators.vocabulario_checker import check_vocabulario
 
 
 @dataclass
@@ -264,11 +269,6 @@ def _find_headings(text: str) -> list[tuple[int, str, str]]:
     return headings
 
 
-def _find_blockquotes(text: str) -> int:
-    """Conta blocos de citação (>) no texto."""
-    return len(re.findall(r"^>\s+", text, re.MULTILINE))
-
-
 def _find_bold_terms(text: str) -> int:
     """Conta termos em negrito no texto."""
     return len(re.findall(r"\*\*[^*]+\*\*", text))
@@ -392,11 +392,62 @@ def _ocorrencias(text: str, expressoes) -> list[str]:
     ]
 
 
+def _apuracao_narrada() -> tuple[list[str], list[re.Pattern[str]]]:
+    """Padrões de `validation.apuracao_narrada` (27/09/2026): (literais, expressões).
+
+    Sem a seção, ou com `enabled: false`, devolve listas vazias e o bastidor
+    fica exatamente como era antes. Item com prefixo `re:` é expressão regular;
+    expressão inválida é ignorada, nunca derruba o gate.
+    """
+    secao = validation_section("apuracao_narrada")
+    if not secao or not bool(secao.get("enabled", True)):
+        return [], []
+    itens = tuple(rules_list("apuracao_narrada", "padroes"))
+    literais = [item for item in itens if not item.startswith("re:")]
+    return literais, list(_compilar_apuracao(itens))
+
+
+@lru_cache(maxsize=8)
+def _compilar_apuracao(itens: tuple[str, ...]) -> tuple[re.Pattern[str], ...]:
+    """Compila uma vez por conjunto de padrões (antes: a cada aula medida)."""
+    compilados: list[re.Pattern[str]] = []
+    for item in itens:
+        if item.startswith("re:"):
+            try:
+                compilados.append(re.compile(item[3:], re.IGNORECASE))
+            except re.error:
+                continue
+    return tuple(compilados)
+
+
+def instrucao_de_apuracao() -> str:
+    """Bloco `{bloco_apuracao}` dos prompts, montado de `validation.apuracao_narrada`."""
+    secao = validation_section("apuracao_narrada")
+    texto = secao.get("instrucao_prompt") if secao else None
+    literais, _ = _apuracao_narrada()
+    if not isinstance(texto, str) or not texto.strip() or not literais:
+        return ""
+    exemplos = ", ".join(f'"{lit}"' for lit in literais)
+    return texto.strip().replace("{exemplos}", exemplos)
+
+
 def _check_bastidor(text: str) -> list[str]:
-    """Expressões e construções em que a aula fala de si ou do próprio processo."""
+    """Expressões e construções em que a aula fala de si ou do próprio processo.
+
+    Soma três origens: as famílias de bastidor do espelho da fonte, o
+    `metalinguagemRx` da fonte e, desde 27/09/2026, os padrões de
+    `validation.apuracao_narrada` do YAML (a aula que narra a checagem).
+    """
     corpo = _sem_mencoes(text)
-    lista = expressoes_de_bastidor() or list(_BASTIDOR_FALLBACK)
+    literais_apuracao, expressoes_apuracao = _apuracao_narrada()
+    lista = list(expressoes_de_bastidor() or _BASTIDOR_FALLBACK)
+    vistos_lista = {e.lower() for e in lista}
+    lista += [lit for lit in literais_apuracao if lit.lower() not in vistos_lista]
     achados = _ocorrencias(corpo, lista)
+    for padrao_apuracao in expressoes_apuracao:
+        m = padrao_apuracao.search(corpo)
+        if m and m.group(0).lower() not in {a.lower() for a in achados}:
+            achados.append(m.group(0).strip())
     padrao = regex_de_metalinguagem()
     if padrao:
         try:
@@ -406,7 +457,14 @@ def _check_bastidor(text: str) -> list[str]:
                     achados.append(trecho)
         except re.error:
             pass
-    return achados
+    # Uma ocorrência, uma cobrança: "verificamos" dentro de "verificamos que"
+    # sai, fica a expressão mais longa.
+    minusculas = [a.lower() for a in achados]
+    return [
+        a
+        for a, chave in zip(achados, minusculas, strict=True)
+        if not any(chave != outra and chave in outra for outra in minusculas)
+    ]
 
 
 def _check_autoapresentacao(text: str) -> list[str]:
@@ -620,10 +678,16 @@ def _count_quotations(text: str) -> int:
     return len(re.findall(pattern, clean))
 
 
+#: Faixa de palavras do parágrafo que conta como cápsula de resposta. Até
+#: 27/09/2026 o código aceitava 18 a 75 e a mensagem de erro dizia "40-60":
+#: quem lia o relatório corrigia para a faixa errada. Um número, um lugar.
+CAPSULA_PALAVRAS = (18, 75)
+
+
 def _has_answer_capsule(text: str) -> bool:
     """Detecta ao menos um 'answer capsule' (parágrafo resposta-primeiro após heading).
 
-    Capsule = parágrafo de prosa curto (≈20-70 palavras), auto-contido,
+    Capsule = parágrafo de prosa curto (faixa em `CAPSULA_PALAVRAS`), auto-contido,
     imediatamente após um heading H2/H3, sem ser lista/tabela/citação/código.
     """
     clean = _strip_noise(text)
@@ -641,7 +705,7 @@ def _has_answer_capsule(text: str) -> bool:
         if para.startswith(("-", "*", "|", ">", "#", "1.", "```")):
             continue
         words = len(para.split())
-        if 18 <= words <= 75:
+        if CAPSULA_PALAVRAS[0] <= words <= CAPSULA_PALAVRAS[1]:
             return True
     return False
 
@@ -659,7 +723,7 @@ MAX_PERCENTAGE_WARNINGS = 5
 # Marcadores que o redator deixa para o revisor humano resolver. A grafia sem
 # acento entra porque o marcador é digitado à mão no meio do texto.
 _UNRESOLVED_MARKER_RE = re.compile(
-    r"\[\s*(?:FALTA\s+EVID[ÊE]NCIA|PREENCHER-HUMANO)\s*:",
+    r"\[\s*(?:FALTA\s+EVID[ÊE]NCIA|PREENCHER-HUMANO|MISSING\s+EVIDENCE)\s*:",
     re.IGNORECASE,
 )
 
@@ -747,6 +811,8 @@ def check_content(
     module_name: str = "",
     geo_config=None,
     unidade: str = "aula",
+    crosslinks_config=None,
+    visual_config=None,
 ) -> list[ContentError]:
     """Valida qualidade de conteúdo educacional contra os tetos do molde D.
 
@@ -759,6 +825,12 @@ def check_content(
             modo módulo os números da aula são multiplicados pela faixa de 4 a
             6 aulas, para que o pipeline atual, que ainda entrega módulos, não
             seja reprovado por medir a peça errada.
+        crosslinks_config: `CrosslinksConfig` do cliente, opcional. Ligado, mede
+            os crosslinks da aula (categoria `crosslinks`); ausente ou
+            desligado, nada muda.
+        visual_config: `VisualConfig` resolvido (cliente sobreposto pelo
+            curso), opcional. Declarado, a aula é medida contra ele (categoria
+            `peso visual`) no lugar do teto do espelho; ausente, vale o teto.
 
     Verifica: extensão, número de H2 e de H3 por H2, hierarquia de títulos,
     teto de apoios visuais, exercício aplicado, clichês, verbos de Bloom,
@@ -826,7 +898,8 @@ def check_content(
     #    substituem texto; cobrá-los como obrigação produzia enfeite.
     headings = _find_headings(text)
     visuais = _find_tables(text) + _find_figures(text)
-    if visuais > tetos["visuais_max"]:
+    visual_declarado = bool(getattr(visual_config, "declarado", False)) and unidade == "aula"
+    if not visual_declarado and visuais > tetos["visuais_max"]:
         erros.append(
             ContentError(
                 tipo="warning",
@@ -835,6 +908,30 @@ def check_content(
                 f"por {nome_unidade}. Apoio visual entra quando SUBSTITUI texto "
                 f"(comparação, sequência, conjunto de números); acima do teto ele "
                 f"passa a competir com a leitura.",
+                modulo=mod,
+            )
+        )
+    # 2b. Aula longa sem nenhum apoio (27/09/2026): a fonte avisa acima de
+    #     `limiares.semVisualAcimaDePalavras` do espelho, e até esta data o
+    #     limiar existia no JSON sem nenhum código que o lesse. Sem a chave, nada.
+    limiares = carregar_lexicos().get("limiares")
+    sem_visual_acima = (
+        _inteiro(limiares.get("semVisualAcimaDePalavras"), 0) if isinstance(limiares, dict) else 0
+    )
+    if (
+        unidade == "aula"
+        and not visual_declarado
+        and sem_visual_acima
+        and visuais == 0
+        and word_count > sem_visual_acima
+    ):
+        erros.append(
+            ContentError(
+                tipo="warning",
+                categoria="formatação",
+                mensagem=f"Aula com {word_count} palavras e nenhum apoio visual; acima de "
+                f"{sem_visual_acima} palavras, uma tabela, um passo a passo ou uma figura que "
+                f"substitua texto costuma ajudar a leitura no celular.",
                 modulo=mod,
             )
         )
@@ -1178,64 +1275,8 @@ def check_content(
             )
         )
 
-    # 14. Citabilidade GEO (opt-in via client.yaml geo_2026) — ver
-    #     docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
-    #     habilitado = erro bloqueante; desabilitado = aviso não-bloqueante.
-    if geo_config is not None:
-        playbook = bool(getattr(geo_config, "princeton_playbook_enabled", False))
-        geo_tipo = "error" if playbook else "warning"
-
-        min_cite = int(getattr(geo_config, "min_cite_sources", 3))
-        min_stats = int(getattr(geo_config, "min_statistics", 5))
-        min_quotes = int(getattr(geo_config, "min_quotations", 1))
-        require_capsule = bool(getattr(geo_config, "require_answer_capsule", True))
-
-        n_cite = _count_cite_sources(text)
-        if n_cite < min_cite:
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
-                    f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
-                    modulo=mod,
-                )
-            )
-
-        n_stats = _count_statistics(text)
-        if n_stats < min_stats:
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
-                    f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
-                    modulo=mod,
-                )
-            )
-
-        n_quotes = _count_quotations(text)
-        if n_quotes < min_quotes:
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
-                    f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
-                    modulo=mod,
-                )
-            )
-
-        if require_capsule and not _has_answer_capsule(text):
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
-                    "(40-60 palavras) detectado após um heading. Lift de citação 1,9×.",
-                    modulo=mod,
-                )
-            )
+    # 14. Citabilidade GEO (opt-in via client.yaml geo_2026): ver `erros_de_geo`.
+    erros.extend(erros_de_geo(text, geo_config, mod))
 
     # 15. Abertura e distração (R1 a R9, 08/09/2026): abertura em H1, subtítulo
     #     e parágrafo; sem "faça agora", "mockup no seu negócio", "checkpoint",
@@ -1249,6 +1290,125 @@ def check_content(
     #     comprovado. Regras em `validation.didatica` do YAML.
     erros.extend(erros_de_didatica(text, mod, unidade="trilha" if unidade == "trilha" else "aula"))
 
+    # 17. Palavras de uso exagerado (27/09/2026): limite por aula de cada
+    #     família em `validation.palavras_de_uso_exagerado`. Sem a seção, nada.
+    erros.extend(erros_de_vocabulario(text, mod))
+
+    # 18. Crosslinks por aula (27/09/2026), opt-in pelo bloco `crosslinks` do
+    #     client.yaml. Só na aula: a trilha é fechamento, não leitura corrida.
+    if unidade == "aula":
+        erros.extend(erros_de_crosslinks(text, mod, crosslinks_config))
+
+    # 19. Peso visual declarado pelo cliente ou pelo curso (27/09/2026): piso,
+    #     teto, tipos e ritmo de peças na aula, no lugar do teto do espelho.
+    if visual_declarado:
+        erros.extend(
+            ContentError(
+                tipo=a.tipo,
+                categoria="peso visual",
+                mensagem=f"[{a.regra}] {a.mensagem}",
+                modulo=mod,
+            )
+            for a in check_peso_visual_aula(text, visual_config)
+        )
+
+    return erros
+
+
+def erros_de_crosslinks(text: str, module_name: str = "", config=None) -> list[ContentError]:
+    """Achados do `crosslink_checker` sobre uma aula, no formato do relatório."""
+    return [
+        ContentError(
+            tipo=a.tipo,
+            categoria="crosslinks",
+            mensagem=f"[{a.regra}] {a.mensagem}",
+            modulo=module_name or "aula",
+        )
+        for a in check_crosslinks_aula(text, config)
+    ]
+
+
+def erros_de_vocabulario(text: str, module_name: str = "") -> list[ContentError]:
+    """Achados do `vocabulario_checker` no formato do relatório de conteúdo."""
+    resultado = check_vocabulario(text)
+    return [
+        ContentError(
+            tipo=a.tipo,
+            categoria="vocabulario",
+            mensagem=f"[{a.regra}] {a.mensagem}",
+            modulo=module_name or "aula",
+        )
+        for a in resultado.achados
+    ]
+
+
+def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError]:
+    """Camada de citabilidade GEO (opt-in via `geo_2026` do client.yaml).
+
+    Ver docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
+    habilitado = erro bloqueante; desabilitado = aviso não-bloqueante. Função
+    própria desde 27/09/2026: o `QualityGate.check_geo` rodava o `check_content`
+    inteiro sobre o curso (abertura, didática, bastidor, clichês...) só para
+    ficar com os achados desta camada.
+    """
+    erros: list[ContentError] = []
+    if geo_config is None:
+        return erros
+    playbook = bool(getattr(geo_config, "princeton_playbook_enabled", False))
+    geo_tipo = "error" if playbook else "warning"
+
+    min_cite = int(getattr(geo_config, "min_cite_sources", 3))
+    min_stats = int(getattr(geo_config, "min_statistics", 5))
+    min_quotes = int(getattr(geo_config, "min_quotations", 1))
+    require_capsule = bool(getattr(geo_config, "require_answer_capsule", True))
+
+    n_cite = _count_cite_sources(text)
+    if n_cite < min_cite:
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
+                f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
+                modulo=mod,
+            )
+        )
+
+    n_stats = _count_statistics(text)
+    if n_stats < min_stats:
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
+                f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
+                modulo=mod,
+            )
+        )
+
+    n_quotes = _count_quotations(text)
+    if n_quotes < min_quotes:
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
+                f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
+                modulo=mod,
+            )
+        )
+
+    if require_capsule and not _has_answer_capsule(text):
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
+                f"({CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras) detectado após "
+                "um heading. Lift de citação 1,9×.",
+                modulo=mod,
+            )
+        )
     return erros
 
 

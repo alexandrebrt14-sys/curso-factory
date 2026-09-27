@@ -323,9 +323,11 @@ def test_quality_gate_roda_ao_fim_e_grava_veredito_por_aula(tmp_path, monkeypatc
 
     assert resultado.sucesso, resultado.erros
     unidades = {t for t, _ in dividir_em_unidades(resultado.etapas["review"])}
-    # 6 aulas + 2 fechamentos de trilha, mais a camada GEO do curso inteiro.
+    # 6 aulas + 2 fechamentos de trilha, mais a camada GEO do curso inteiro e,
+    # desde 27/09/2026, a medida da sequência (o cliente default liga os
+    # crosslinks, e as aulas falsas não trazem nenhum).
     assert len(unidades) == 8
-    assert set(resultado.gate) == unidades | {"curso"}
+    assert set(resultado.gate) == unidades | {"curso", "curso (sequência)"}
     for nome, veredito in resultado.gate.items():
         assert veredito["aprovado"] in (True, False)
         assert isinstance(veredito["erros"], list)
@@ -348,15 +350,40 @@ def test_gate_nao_roda_quando_o_pipeline_falha(tmp_path, monkeypatch) -> None:
 
 
 def test_orcamento_da_sessao_interrompe_com_motivo(tmp_path, monkeypatch) -> None:
-    # pesquisa (0,01) + planejamento e fechamento do módulo 1 + 6 aulas = 0,09;
-    # o fechamento da trilha 2 e a análise não cabem.
+    # pesquisa (0,01) + plano, 3 aulas e trilha do módulo 1 + plano e 2 aulas do
+    # módulo 2 = 0,09; a aula 2.3 não cabe. Desde 27/09/2026 a redação parada
+    # no meio NÃO é gravada como concluída (antes, o curso incompleto seguia
+    # para análise e revisão na retomada): a etapa fica aberta, com o motivo.
     orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso(teto_sessao=0.09))
     resultado = orq.run(_curso())
 
     assert not resultado.sucesso
-    assert "research" in resultado.etapas and "draft" in resultado.etapas
-    assert "analyze" not in resultado.etapas
-    assert any("orçamento da sessão esgotado" in e and "'analyze'" in e for e in resultado.erros)
+    assert "research" in resultado.etapas and "draft" not in resultado.etapas
+    assert any("orçamento da sessão esgotado" in e and "'draft'" in e for e in resultado.erros)
+    assert set(orq._parciais["draft"]) == {
+        "plano:1",
+        "aula:1.1",
+        "aula:1.2",
+        "aula:1.3",
+        "trilha:1",
+        "plano:2",
+        "aula:2.1",
+        "aula:2.2",
+    }
+
+
+def test_retomada_nao_paga_de_novo_o_que_ja_foi_escrito(tmp_path, monkeypatch) -> None:
+    orq, _ = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso(teto_sessao=0.09))
+    assert not orq.run(_curso()).sucesso
+
+    orq2, cliente2 = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
+    resultado = orq2.run(_curso())
+    assert resultado.sucesso, resultado.erros
+    redator = [p for prov, p in cliente2.chamadas if prov == "openai"]
+    # Só a aula 2.3 e o fechamento da trilha 2 faltavam.
+    assert len(redator) == 2
+    titulos = [t for t, _ in dividir_em_unidades(resultado.etapas["draft"])]
+    assert len([t for t in titulos if t.startswith("Aula ")]) == 6
 
 
 def test_fechamento_da_trilha_vem_depois_das_aulas_e_nao_passa_pela_revisao(
@@ -417,3 +444,17 @@ def test_parser_trata_cada_aula_como_unidade() -> None:
     assert [t for t, _ in blocos] == ["Aula 1.1: Primeira", "Aula 1.2: Segunda"]
     assert "## O caso da oficina" in blocos[0][1]
     assert "<!--" not in blocos[0][1]
+
+
+def test_revisao_interrompida_retoma_da_unidade_seguinte(tmp_path, monkeypatch) -> None:
+    # pesquisa + 10 chamadas do redator + análise + classificação = 0,13; com teto
+    # 0,16 cabem 3 revisões. A retomada revisa só as 3 que faltam.
+    orq, cliente = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso(teto_sessao=0.16))
+    resultado = orq.run(_curso())
+    assert not resultado.sucesso and "review" not in resultado.etapas
+    assert len([p for prov, p in cliente.chamadas if prov == "anthropic"]) == 3
+
+    orq2, cliente2 = _orquestrador_com_ledger(tmp_path, monkeypatch, _LedgerFalso())
+    resultado2 = orq2.run(_curso())
+    assert resultado2.sucesso, resultado2.erros
+    assert len([p for prov, p in cliente2.chamadas if prov == "anthropic"]) == 3
