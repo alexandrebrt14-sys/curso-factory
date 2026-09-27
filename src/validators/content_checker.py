@@ -677,10 +677,16 @@ def _count_quotations(text: str) -> int:
     return len(re.findall(pattern, clean))
 
 
+#: Faixa de palavras do parágrafo que conta como cápsula de resposta. Até
+#: 27/09/2026 o código aceitava 18 a 75 e a mensagem de erro dizia "40-60":
+#: quem lia o relatório corrigia para a faixa errada. Um número, um lugar.
+CAPSULA_PALAVRAS = (18, 75)
+
+
 def _has_answer_capsule(text: str) -> bool:
     """Detecta ao menos um 'answer capsule' (parágrafo resposta-primeiro após heading).
 
-    Capsule = parágrafo de prosa curto (≈20-70 palavras), auto-contido,
+    Capsule = parágrafo de prosa curto (faixa em `CAPSULA_PALAVRAS`), auto-contido,
     imediatamente após um heading H2/H3, sem ser lista/tabela/citação/código.
     """
     clean = _strip_noise(text)
@@ -698,7 +704,7 @@ def _has_answer_capsule(text: str) -> bool:
         if para.startswith(("-", "*", "|", ">", "#", "1.", "```")):
             continue
         words = len(para.split())
-        if 18 <= words <= 75:
+        if CAPSULA_PALAVRAS[0] <= words <= CAPSULA_PALAVRAS[1]:
             return True
     return False
 
@@ -1322,7 +1328,8 @@ def check_content(
                     tipo=geo_tipo,
                     categoria="geo",
                     mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
-                    "(40-60 palavras) detectado após um heading. Lift de citação 1,9×.",
+                    f"({CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras) detectado após "
+                    "um heading. Lift de citação 1,9×.",
                     modulo=mod,
                 )
             )

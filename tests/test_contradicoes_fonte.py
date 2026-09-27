@@ -74,3 +74,14 @@ def test_c1_fallback_inline_nao_pede_cena_nem_registro_hbr() -> None:
 def test_c8_credencial_sem_travessao_no_claude_md() -> None:
     texto = (PROJECT_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     assert "Alexandre Caramaschi — CEO" not in texto
+
+
+def test_capsula_mensagem_e_codigo_usam_a_mesma_faixa() -> None:
+    """Item 10 de 27/09/2026: a mensagem dizia 40-60 e o código aceitava 18 a 75."""
+    from src.clients.context import Geo2026Config
+    from src.validators.content_checker import CAPSULA_PALAVRAS
+
+    cfg = Geo2026Config(princeton_playbook_enabled=True, require_answer_capsule=True)
+    erros = check_content("## Título\n\n- item solto\n", "x", geo_config=cfg, unidade="modulo")
+    msg = next(e.mensagem for e in erros if "capsule" in e.mensagem.lower())
+    assert f"{CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras" in msg
