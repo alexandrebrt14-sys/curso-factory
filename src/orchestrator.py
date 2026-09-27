@@ -653,7 +653,7 @@ class Orchestrator:
             logger.info(
                 "%s veio com %d palavras (piso %d): uma passada de expansão", rotulo, palavras, piso
             )
-            nota = self._nota_de_expansao(texto, palavras, variaveis)
+            nota = self._nota_de_expansao(texto, palavras, self._alvo_da_expansao(variaveis))
             # A nota vai no fim do prompt ({bloco_expansao}), depois da pesquisa:
             # antes dela, quebrava o prefixo que as outras aulas compartilham.
             expandido = self._normalizar_aula(
@@ -696,6 +696,24 @@ class Orchestrator:
         texto = texto.strip()
         texto = AULA_H1_RE.sub("", texto, count=1).strip() if AULA_H1_RE.match(texto) else texto
         return re.sub(r"^#\s+(?!#)", "## ", texto, count=1) if texto.startswith("# ") else texto
+
+    def _alvo_da_expansao(self, variaveis: dict[str, str]) -> dict[str, str]:
+        """Alvo da passada de expansão, respeitando o teto das primeiras aulas.
+
+        As primeiras aulas do curso recebem "no máximo N palavras"
+        (`validation.planejamento`); expandir uma delas para o alvo geral da aula
+        pagava uma chamada que depois virava o aviso `aula-inicial-longa`.
+        """
+        from src.validators.planejamento_checker import teto_da_aula_inicial
+
+        teto = teto_da_aula_inicial(self._aula_no_curso)
+        if teto is None:
+            return variaveis
+        return {
+            **variaveis,
+            "palavras_alvo_min": str(min(int(variaveis["palavras_alvo_min"]), teto)),
+            "palavras_alvo_max": str(min(int(variaveis["palavras_alvo_max"]), teto)),
+        }
 
     def _nota_de_expansao(self, texto: str, palavras: int, variaveis: dict[str, str]) -> str:
         """Instrução de expansão no idioma do redator, com o rascunho curto embutido."""

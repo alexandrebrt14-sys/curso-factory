@@ -129,3 +129,17 @@ def test_gate_do_curso_emite_categoria_planejamento() -> None:
     texto = "\n\n".join(b for _, b in [_aula(i, 50) for i in range(1, 4)])
     achados = QualityGate.check_curso(texto, "curso", client=None)
     assert any(a.categoria == "planejamento" and a.tipo == "warning" for a in achados)
+
+
+def test_expansao_das_primeiras_aulas_mira_o_teto_de_aula_curta() -> None:
+    from src.orchestrator import Orchestrator
+
+    s = _secao()
+    orq = Orchestrator.__new__(Orchestrator)
+    variaveis = {"palavras_alvo_min": "900", "palavras_alvo_max": "1800"}
+    orq._aula_no_curso = 1
+    alvo = orq._alvo_da_expansao(variaveis)
+    teto = str(s["palavras_max_aulas_iniciais"])
+    assert alvo["palavras_alvo_max"] == teto and int(alvo["palavras_alvo_min"]) <= int(teto)
+    orq._aula_no_curso = s["aulas_iniciais_curtas"] + 1
+    assert orq._alvo_da_expansao(variaveis) == variaveis

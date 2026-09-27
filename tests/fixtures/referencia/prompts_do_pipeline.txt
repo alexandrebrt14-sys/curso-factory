@@ -765,7 +765,7 @@ Destinos disponíveis (caminho: nome):
 
 --- EXPANSÃO DE AULA ---
 A aula curta, logo abaixo desta nota, voltou com 627 palavras. O piso é 700 e o alvo vai de
-900 a 1800. Abaixo do piso a ideia foi apresentada, não
+900 a 900. Abaixo do piso a ideia foi apresentada, não
 explicada. Reescreva a aula inteira, com os mesmos cabeçalhos e o mesmo exemplo, e desenvolva o
 que falta: na abertura, o subtítulo em uma frase e dois ou três parágrafos diretos ao ponto; no
 primeiro H2, de onde a ideia vem, o que custa não saber disso na operação do aluno e o erro
@@ -1436,7 +1436,7 @@ Destinos disponíveis (caminho: nome):
 
 --- EXPANSÃO DE AULA ---
 A aula curta, logo abaixo desta nota, voltou com 626 palavras. O piso é 700 e o alvo vai de
-900 a 1800. Abaixo do piso a ideia foi apresentada, não
+900 a 900. Abaixo do piso a ideia foi apresentada, não
 explicada. Reescreva a aula inteira, com os mesmos cabeçalhos e o mesmo exemplo, e desenvolva o
 que falta: na abertura, o subtítulo em uma frase e dois ou três parágrafos diretos ao ponto; no
 primeiro H2, de onde a ideia vem, o que custa não saber disso na operação do aluno e o erro

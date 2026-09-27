@@ -82,6 +82,16 @@ def instrucao_da_aula(posicao_no_curso: int) -> str:
     return "\n\n".join(p for p in partes if p)
 
 
+def teto_da_aula_inicial(posicao_no_curso: int) -> int | None:
+    """Alvo máximo de palavras se a aula está entre as primeiras do curso; senão `None`."""
+    secao = _secao()
+    iniciais = _inteiro(secao.get("aulas_iniciais_curtas"))
+    teto = _inteiro(secao.get("palavras_max_aulas_iniciais"))
+    if iniciais and teto and 1 <= posicao_no_curso <= iniciais:
+        return teto
+    return None
+
+
 def check_planejamento_curso(aulas: list[tuple[str, str]]) -> list[AchadoPlanejamento]:
     """Faixa de aulas do curso e extensão das primeiras aulas, como aviso."""
     secao = _secao()
