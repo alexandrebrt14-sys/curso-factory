@@ -89,6 +89,9 @@ def _rodar(tmp_path, monkeypatch) -> tuple[str, str]:
         nivel=NivelCurso.INICIANTE,
         tags=["whatsapp", "vendas"],
         modulos=[Module(titulo="Resposta rápida", descricao="tempo de resposta", ordem=1)],
+        # A recência das fontes é medida contra uma data; fixá-la mantém a
+        # referência igual em qualquer dia (27/09/2026).
+        fontes_recentes={"data_de_referencia": "2026-09-27"},
     )
     resultado = orq.run(curso)
     assert resultado.sucesso, resultado.erros

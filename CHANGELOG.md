@@ -1,5 +1,29 @@
 # Changelog
 
+## 27/09/2026: aula-guia aplicável, orçamento de narrativa e fonte recente
+
+Pedido do dono: a aula gerada vira guia de como fazer, a história só entra quando carrega o
+procedimento e todo conceito se apoia em fonte recente e datada. Diagnóstico em
+`docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`; decisão em
+`wiki/decisions/guia-aplicavel-e-fonte-recente-20260927.md`.
+
+- **Molde de aula-guia** em `validation.guia_aplicavel.esqueleto`, levado aos prompts de
+  planejamento, redação, análise, revisão e expansão (`{bloco_molde_da_aula}`); o caso nomeado
+  obrigatório, a cena no H2 do caso e o fecho pelo exemplo saem dos prompts pt-br.
+- **Completude do como fazer** (`guia_aplicavel_checker.py`): passos, imperativo por passo,
+  verificação, erro comum, decisão condicional, critério de pronto, piso por tipo de aula.
+- **Orçamento de narrativa** (`narrativa_checker.py`): parcela de parágrafos com marcas de
+  história e abertura em cena; teto de 20% no default.
+- **Fonte recente** (`fontes_recentes_checker.py`, `python cli.py fontes-recentes`): data por
+  fonte, metade das fontes com até 12 meses, estado atual com fonte de até 18 meses, data de
+  referência injetada; pesquisa, redação e trilha pedem a data de publicação; a tabela de
+  proveniência ganha a coluna "Data de publicação".
+- **Por cliente e por curso**: blocos `guia_aplicavel`, `narrativa` e `fontes_recentes` no
+  `client.yaml` (default ligado, `_template` desligado) e `fontes_recentes` em `courses.yaml`.
+  Tudo como aviso.
+- **Exemplo de referência** em `examples/`: a mesma aula no molde de guia e no estilo narrativo
+  antigo, com fontes abertas e datadas.
+
 ## 27/09/2026: boas práticas de escrita da produção do curso de super agentes
 
 Pedidos do dono e dados de uso do portal, registrados durante a produção do curso de super

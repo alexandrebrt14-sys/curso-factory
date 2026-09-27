@@ -855,8 +855,8 @@ def check_content(
                 categoria="profundidade",
                 mensagem=f"{nome_unidade.capitalize()} com {word_count} palavras, abaixo do "
                 f"piso de {piso}. Abaixo do piso a peça apresenta o conceito e não o "
-                f"explica: falta a narrativa (de onde vem a ideia, por que importa, o "
-                f"que muda, o erro comum) ou o exemplo contado por inteiro. "
+                f"explica nem ensina a fazer: falta o porquê com fonte, o procedimento em "
+                f"passos com a verificação e o erro comum, ou o critério de pronto. "
                 f"Alvo: {alvo_min} a {alvo_max}.",
                 modulo=mod,
             )
@@ -946,8 +946,8 @@ def check_content(
                 tipo="error",
                 categoria="formatação",
                 mensagem=f"{len(h2)} H2 na {nome_unidade}, abaixo do mínimo de {h2_min}. "
-                f"A sequência do molde pede ao menos: explicar a ideia e contar o "
-                f"caso do ramo do aluno até o fim.",
+                f"A sequência do molde pede ao menos: o porquê da ideia e o como fazer, "
+                f"em passos.",
                 modulo=mod,
             )
         )

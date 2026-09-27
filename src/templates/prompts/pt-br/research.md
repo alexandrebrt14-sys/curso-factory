@@ -46,7 +46,7 @@ Você é um pesquisador educacional com rigor acadêmico, especializado em funda
 
 ### 5. Fontes e Referências Recomendadas
 
-Priorize fontes de 2024–2026:
+Priorize a edição mais recente de cada fonte; fonte antiga só quando é a origem do conceito:
 
 - **Relatórios de mercado**: HolonIQ, Ambient Insight, Class Central, Research and Markets
 - **Publicações de negócios**: Harvard Business Review, MIT Sloan, McKinsey Insights, Deloitte Insights
@@ -54,11 +54,17 @@ Priorize fontes de 2024–2026:
 - **Dados públicos de plataformas**: páginas de vendas, reviews, dados de redes sociais
 - **Publicações brasileiras**: HSM Management, Exame, Valor Econômico, repositórios USP/Unicamp/FGV
 
-### 6. Casos para os exemplos das aulas
+### 6. Como fazer: procedimentos, erros comuns e decisões
 
-- Identifique 3–5 casos reais (empresas, projetos, incidentes) que possam ser contados do começo ao fim como exemplo (a aula não carrega exercício)
-- Para cada caso, forneça: contexto, desafio enfrentado, abordagem adotada, resultado obtido
-- Priorize casos verificáveis com fontes públicas
+A aula é um guia aplicável: o aluno sai sabendo fazer. Para cada tarefa central do curso:
+
+- O procedimento documentado pela fonte primária (documentação oficial, norma, guia do
+  fabricante), com os passos na ordem, o que precisa estar pronto antes e o sinal de que cada
+  passo deu certo
+- Os erros mais comuns registrados (suporte oficial, relatório, estudo) e o conserto de cada um
+- As decisões do caminho: em que situação a resposta muda e o que fazer em cada uma
+- Um ou dois exemplos aplicados, com número e fonte, que mostrem o procedimento funcionando
+  num negócio pequeno; história sem passo ensinado não serve
 
 ## Pesquisa orientada à decisão e ao uso em busca
 
@@ -73,8 +79,11 @@ Um trecho com link só conta como evidência se a fonte consultada sustentar aqu
 Vários textos derivados de um mesmo estudo contam como uma origem.
 
 Use a data de publicação e a data do fenômeno; procure a versão vigente de fatos perecíveis.
-A janela de anos sugerida neste prompt não exclui fundamentos antigos nem autoriza dado
-desatualizado. Se faltarem casos ou dados, registre a lacuna na pesquisa sem inventar
+Registre a data de publicação de cada fonte (dia, mês e ano; mês e ano quando o documento não
+traz o dia). Fundamento antigo entra como origem do conceito, dito assim; ele não autoriza dado
+desatualizado.
+
+{bloco_fontes_recentes_pesquisa} Se faltarem casos ou dados, registre a lacuna na pesquisa sem inventar
 material para completar a quantidade pedida.
 
 Quando o tema envolver SEO ou GEO, separe a documentação oficial, os estudos e as hipóteses
@@ -91,7 +100,7 @@ Retorne um documento estruturado em Markdown com:
 
 1. Seções numeradas correspondentes aos itens acima
 2. **Tabelas comparativas** para dados de mercado e análise competitiva
-3. **Referências completas** para cada dado citado (autor, título, publicação, ano, URL quando disponível)
+3. **Referências completas** para cada dado citado (autor, título, publicação, data de publicação, URL quando disponível)
 4. **Nível de confiança** para cada dado: [Alta] fonte primária verificável, [Média] fonte secundária confiável, [Baixa] estimativa ou dado parcial
 
 Escreva em Português do Brasil com acentuação completa e ortografia correta.

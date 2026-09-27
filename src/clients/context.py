@@ -331,6 +331,127 @@ class VisualConfig:
         )
 
 
+def _severidade(valor: object) -> str:
+    """`erro` reprova; qualquer outro valor (ou ausência) avisa."""
+    return "erro" if str(valor or "").strip().lower() in ("erro", "error") else "aviso"
+
+
+def _numero(dados: dict | None, chave: str, tipo=int):
+    try:
+        valor = (dados or {}).get(chave)
+        return None if valor is None else tipo(valor)
+    except (TypeError, ValueError, AttributeError):
+        return None
+
+
+@dataclass
+class GuiaAplicavelConfig:
+    """Aula-guia aplicável, medida por cliente (27/09/2026). Opt-in.
+
+    Desligado, o gate não mede a completude do como fazer. Ligado, a aula é
+    medida contra os pisos do `tipo_de_aula` em
+    `config/quality_rules.yaml > validation.guia_aplicavel.tipos_de_aula`, com a
+    `severidade` declarada (`aviso` ou `erro`).
+    """
+
+    enabled: bool = False
+    severidade: str = "aviso"
+    tipo_de_aula: str = ""
+
+    @classmethod
+    def de_dict(cls, dados: dict | None) -> GuiaAplicavelConfig:
+        dados = dados if isinstance(dados, dict) else {}
+        return cls(
+            enabled=bool(dados.get("enabled", False)),
+            severidade=_severidade(dados.get("severidade")),
+            tipo_de_aula=str(dados.get("tipo_de_aula") or ""),
+        )
+
+
+@dataclass
+class NarrativaConfig:
+    """Orçamento de narrativa por aula (27/09/2026). Opt-in.
+
+    - `parcela_max`: fração máxima dos parágrafos de prosa com marcas de
+      narrativa (0 a 1). `None` = parcela não medida.
+    - `abertura_sem_narrativa`: a abertura em cena ou em história vira achado.
+    """
+
+    enabled: bool = False
+    parcela_max: float | None = None
+    abertura_sem_narrativa: bool = False
+    severidade: str = "aviso"
+
+    @classmethod
+    def de_dict(cls, dados: dict | None) -> NarrativaConfig:
+        dados = dados if isinstance(dados, dict) else {}
+        return cls(
+            enabled=bool(dados.get("enabled", False)),
+            parcela_max=_numero(dados, "parcela_max", float),
+            abertura_sem_narrativa=bool(dados.get("abertura_sem_narrativa", False)),
+            severidade=_severidade(dados.get("severidade")),
+        )
+
+
+@dataclass
+class FontesRecentesConfig:
+    """Recência das fontes, por cliente ou por curso (27/09/2026). Opt-in.
+
+    - `janela_meses`: idade máxima, em meses, de uma fonte recente.
+    - `parcela_min_recente`: fração mínima de fontes recentes (0 a 1).
+    - `estado_atual_max_meses`: idade máxima da fonte de uma alegação de estado atual.
+    - `data_de_referencia`: data contra a qual a idade é medida (AAAA-MM-DD).
+      Ausente, quem chama injeta a data da execução.
+    Campo `None` = parte da regra não medida. O curso sobrepõe o cliente campo a campo.
+    """
+
+    enabled: bool = False
+    janela_meses: int | None = None
+    parcela_min_recente: float | None = None
+    estado_atual_max_meses: int | None = None
+    data_de_referencia: str | None = None
+    severidade: str = "aviso"
+
+    @classmethod
+    def de_dict(cls, dados: dict | None) -> FontesRecentesConfig:
+        dados = dados if isinstance(dados, dict) else {}
+        ref = dados.get("data_de_referencia")
+        return cls(
+            enabled=bool(dados.get("enabled", False)),
+            janela_meses=_numero(dados, "janela_meses"),
+            parcela_min_recente=_numero(dados, "parcela_min_recente", float),
+            estado_atual_max_meses=_numero(dados, "estado_atual_max_meses"),
+            data_de_referencia=str(ref) if ref else None,
+            severidade=_severidade(dados.get("severidade")),
+        )
+
+    def sobreposto_por(self, dados: dict | None) -> FontesRecentesConfig:
+        """Chaves declaradas no curso (`dados`) vencem as do cliente."""
+        if not isinstance(dados, dict) or not dados:
+            return self
+        outro = FontesRecentesConfig.de_dict({"enabled": self.enabled, **dados})
+        return FontesRecentesConfig(
+            enabled=outro.enabled,
+            janela_meses=outro.janela_meses if "janela_meses" in dados else self.janela_meses,
+            parcela_min_recente=(
+                outro.parcela_min_recente
+                if "parcela_min_recente" in dados
+                else self.parcela_min_recente
+            ),
+            estado_atual_max_meses=(
+                outro.estado_atual_max_meses
+                if "estado_atual_max_meses" in dados
+                else self.estado_atual_max_meses
+            ),
+            data_de_referencia=(
+                outro.data_de_referencia
+                if "data_de_referencia" in dados
+                else self.data_de_referencia
+            ),
+            severidade=outro.severidade if "severidade" in dados else self.severidade,
+        )
+
+
 @dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
@@ -358,6 +479,10 @@ class ClientContext:
     crosslinks: CrosslinksConfig = field(default_factory=CrosslinksConfig)
     # Peso visual por aula (default: não declarado, vale o teto do espelho)
     visual: VisualConfig = field(default_factory=VisualConfig)
+    # Aula-guia, orçamento de narrativa e fonte recente (27/09/2026; default off)
+    guia_aplicavel: GuiaAplicavelConfig = field(default_factory=GuiaAplicavelConfig)
+    narrativa: NarrativaConfig = field(default_factory=NarrativaConfig)
+    fontes_recentes: FontesRecentesConfig = field(default_factory=FontesRecentesConfig)
     # Wave 8 — idioma default do cliente (override per curso possível)
     language: str = "pt-br"
 

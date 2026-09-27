@@ -13,18 +13,31 @@ ou que vem como relatório no lugar do conteúdo, é descartado pelo pipeline.
 {analysis_summary}
 
 O leitor é dono de pequeno negócio brasileiro, leigo em marketing e tecnologia, no celular.
-Linguagem de balcão, resposta primeiro, um exemplo contado por inteiro, e a aula é LEITURA:
-sem exercício, sem card. Português do Brasil com acentuação completa, sem emoji, sem travessão.
+Linguagem de balcão, resposta primeiro, um guia de como fazer com exemplo curto, e a aula é
+LEITURA: sem exercício, sem card. Português do Brasil com acentuação completa, sem emoji, sem travessão.
 
 ## O que corrigir, nesta ordem
 
 ### 1. Substância (antes de qualquer corte)
 
-A aula tem uma ideia só, explicada até o fim (de onde vem, por que importa, o que muda, o erro
-comum), um exemplo do ramo do aluno com número e um fecho que diz o que mudou e o próximo
-passo em prosa? Se faltar um desses, ACRESCENTE com o material da própria aula e do que a pesquisa
-sustenta; se não houver material, marque `[FALTA EVIDÊNCIA: ...]` no lugar do dado. Nunca corte
-substância para satisfazer regra de forma.
+A aula ensina a fazer? Ela precisa de: uma ideia só, com o porquê curto e apoiado em fonte
+datada; o procedimento em passos numerados, cada um com verbo no imperativo, o que fazer, como
+saber que deu certo e o erro comum com o conserto; ao menos uma decisão "se isto, faça
+aquilo"; um exemplo curto do ramo do aluno que percorre os passos; e um fecho com critério de
+pronto e próximo passo. Se faltar um desses, ACRESCENTE com o material da própria aula e do que
+a pesquisa sustenta; se não houver material, marque `[FALTA EVIDÊNCIA: ...]` no lugar do dado.
+Procedimento espalhado em prosa vira lista numerada. Nunca corte substância para satisfazer
+regra de forma.
+
+{bloco_molde_da_aula}
+
+História que não carrega um passo encolhe ou sai: cena, hora do dia, diálogo, personagem que
+volta em toda seção, "o que aconteceu depois" sem passo ensinado. O exemplo fica, curto e
+amarrado ao procedimento.
+
+{bloco_narrativa}
+
+{bloco_fontes_recentes}
 
 ### 2. Acentuação e ortografia
 
@@ -40,20 +53,20 @@ acentue URL, slug, código, variável ou atributo HTML.
   própria, depois dois ou três parágrafos diretos ao ponto. Se o subtítulo faltar, escreva-o a
   partir da primeira frase. Cena, hora do dia, personagem, "neste módulo", lista de
   objetivos, "o que você vai aprender", "para quem é", índice e card saem do topo.
-- {h2_min} a {h2_max} H2 (o normal são três: por que a ideia muda o resultado; um caso do ramo, do começo
-  ao fim; o que muda na semana do aluno, em prosa). H3 só em H2 acima de {h3_acima_de_palavras} palavras. H4 e subtítulo por linha terminada em
+- {h2_min} a {h2_max} H2, promessas com verbo; o normal é um H2 para o porquê e
+  um ou dois para o como fazer. H3 só em H2 acima de {h3_acima_de_palavras} palavras. H4 e subtítulo por linha terminada em
   dois-pontos viram prosa ou somem. Seções que tratam do mesmo assunto se fundem.
 - Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
   "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",
   "Se travar:"), "mockup"/"no seu negócio" como seção, card "checkpoint"/"recapitulando"/
   "quiz", marcador "requer verificação"/"a verificar" e qualquer menção à LGPD ou à Lei
   13.709 (a conduta fica, o nome da lei sai). O passo prático que o exercício carregava vira
-  uma ou duas frases de prosa no fecho. Percurso alternativo ("se você é X vá para Y") vira
+  passo do procedimento, sem rótulo, com a verificação em prosa dentro dele. Percurso alternativo ("se você é X vá para Y") vira
   um caminho só.
 - Fonte no meio da aula (linha "Fonte:", cabeçalho "Fontes", citação em card) sai; o dado
   fica limpo na frase e a fonte pertence ao rodapé da trilha (R7).
-- Fecho de 3 a 5 linhas pelo exemplo, com uma ponte para a próxima aula, verbo no imperativo e
-  critério de acerto (número, prazo ou condição). Fecho que resume o que foi lido é reescrito
+- Fecho de 3 a 5 linhas com critério de pronto (número, prazo ou condição), verbo no
+  imperativo e uma ponte para a próxima aula, sem voltar à história do exemplo. Fecho que resume o que foi lido é reescrito
   como consequência. Quando existe aula anterior, a primeira frase pode ser a ponte de
   entrada, em uma linha: o que ficou resolvido lá e por que este pedaço vem agora.
 - Título e subtítulo como promessa do aluno. Título com dois-pontos, substantivos empilhados ou
@@ -163,6 +176,7 @@ Correções de acentuação: [n]
 Correções de estrutura (abertura R1, H2/H3, blocos R5 a R9 removidos, fecho): [n]
 Correções de léxico vetado: [n]
 Correções de didática (título, subtítulo, cadência, glosa, fecho, fichas): [n]
+Correções de guia (passos, verificação, erro comum, decisão, critério de pronto, narrativa cortada): [n]
 Substância acrescentada ou marcada: [o que faltava, ou "completa"]
 Marcadores [FALTA EVIDÊNCIA] abertos: [n]
 Aprovado para publicação: sim/não

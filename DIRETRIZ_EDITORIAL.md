@@ -47,15 +47,46 @@ aulas e no de redação:
 - para tema amplo, o curso inteiro fica numa faixa curta de aulas; aula que não muda uma
   decisão do aluno sai;
 - as primeiras aulas do curso são as mais curtas e as mais práticas, com ganho no primeiro dia;
-- teoria densa só da metade do curso em diante, e sempre depois de um caso contado inteiro;
-- a tese e o que fazer ficam na primeira metade de cada aula; o fecho retoma o caso e não
-  guarda a informação principal;
+- teoria densa só da metade do curso em diante, e sempre depois de um procedimento que o
+  aluno já aplicou;
+- a tese e o que fazer ficam na primeira metade de cada aula; o fecho dá o critério de pronto
+  e o próximo passo, e não guarda a informação principal;
 - nenhum apêndice de instalação no caminho: o passo vira passo a passo curto dentro da aula
   que precisa dele, ou link para o curso que já ensina.
 
 Os números (faixa de aulas, quantas aulas iniciais, alvo de palavras delas) e os textos das
 instruções vivem em `config/quality_rules.yaml > validation.planejamento`. O gate confere, como
 aviso, o curso fora da faixa e a aula inicial acima do alvo (`src/validators/planejamento_checker.py`).
+
+## Aula-guia aplicável e fonte recente (27/09/2026)
+
+Pedido do dono: "o curso factory precisa ser mais completo em guia sobre como fazer e reduzir
+um pouco o excesso de storytelling muito aleatório", com base no `Escrita-Empresarial` e em
+fontes recentes. Diagnóstico com arquivo e linha em
+`docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`; decisão em
+`wiki/decisions/guia-aplicavel-e-fonte-recente-20260927.md`.
+
+- **A aula ensina a fazer.** A primeira frase diz o que o aluno sai sabendo fazer; o porquê é
+  curto e apoiado em fonte; o procedimento vem em passos numerados, cada um com verbo no
+  imperativo, como saber que deu certo e o erro comum com o conserto; onde a resposta muda,
+  "se isto, faça aquilo"; o fecho dá o critério de pronto e o próximo passo. A origem é o
+  guia de passos, a sensibilidade, os caminhos com custo e o pedido com dono do
+  `Escrita-Empresarial` (DIRETRIZ §11 e §14, `MOLDES_DE_GENERO.md`).
+- **A história carrega o procedimento ou sai.** O exemplo é curto e percorre os passos;
+  personagem com nome é opcional; nada de caso nomeado conduzindo a aula, cena no H2 do caso ou
+  fecho que volta ao personagem. A fonte já proíbe abrir em cena (§2 regra 2) e só pede "um
+  exemplo do ramo, contado de ponta a ponta"; a exigência de caso condutor era deste
+  repositório.
+- **Fonte recente e datada.** Cada conceito central tem fonte primária com data de publicação;
+  em tema que muda rápido, fonte dos últimos meses; fonte antiga só como origem do conceito,
+  dita como tal; alegação de estado atual nunca com fonte velha. A fonte continua só no
+  rodapé (R7), e a aula não conta como ela foi checada.
+- **Passo não é exercício.** A lista numerada do procedimento é conteúdo; a R6 continua
+  vetando o bloco rotulado ("faça agora", "Resultado esperado:", "Se travar:").
+
+Os números (teto de narrativa, janela de recência, pisos por tipo de aula) vivem no
+`client.yaml` e em `config/quality_rules.yaml` (`guia_aplicavel`, `orcamento_narrativa`,
+`fontes_recentes`); este arquivo não repete nenhum.
 
 ## Abertura e distração (R1 a R9)
 
@@ -102,8 +133,8 @@ Pedido do dono, literal na decisão `wiki/decisions/didatica-explicar-em-vez-de-
 a régua de máquina aprovava aula que o aluno abandona. Régua de tamanho é teto, nunca alvo. A
 aula troca minúcia por explicação sem inchar: glosa com analogia do cotidiano na primeira
 aparição de cada termo, frases ligadas em raciocínio (o que é, por que importa para o negócio,
-o que fazer), corte da enxurrada de versão, exemplo do negócio pequeno contado inteiro, fecho
-com verbo no imperativo e critério de acerto. Ficha, dica, caso, legenda, título, subtítulo e
+o que fazer), corte da enxurrada de versão, exemplo do negócio pequeno amarrado aos passos,
+fecho com verbo no imperativo e critério de acerto. Ficha, dica, caso, legenda, título, subtítulo e
 a passagem entre aulas saem no mesmo registro da aula. Norma de origem: DIRETRIZ §18 do
 `Escrita-Empresarial`; especificação, medição e nomes de regra em
 `docs/ESPECIFICACAO_DIDATICA_20260922.md`.

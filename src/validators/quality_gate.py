@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -101,6 +101,8 @@ class QualityGate:
         unidade: str = "modulo",
         geo: bool = True,
         visual=None,
+        fontes_recentes=None,
+        referencia: date | None = None,
     ) -> GateResult:
         """Valida texto puro (Markdown) com todas as verificações.
 
@@ -116,6 +118,10 @@ class QualityGate:
                 multiplicador. Ver `content_checker.tetos_da_unidade`.
             visual: `VisualConfig` já resolvido para o curso (cliente sobreposto
                 pelo curso). Ausente, vale o bloco `visual` do cliente.
+            fontes_recentes: `FontesRecentesConfig` já resolvido para o curso.
+                Ausente, vale o bloco `fontes_recentes` do cliente.
+            referencia: data contra a qual a idade das fontes é medida. Ausente,
+                vale `data_de_referencia` da configuração ou, sem ela, a data de hoje.
         """
         result = GateResult()
 
@@ -160,6 +166,8 @@ class QualityGate:
             unidade,
             client=self.client,
             visual=visual if visual is not None else getattr(self.client, "visual", None),
+            fontes=fontes_recentes,
+            referencia=referencia,
         )
         blocking_errors = [e for e in content_errors if e.tipo == "error"]
         warnings = [e for e in content_errors if e.tipo == "warning"]
@@ -242,7 +250,14 @@ class QualityGate:
 
     @staticmethod
     def _check_content_por_unidade(
-        text: str, module_name: str, geo_config, unidade: str, client=None, visual=None
+        text: str,
+        module_name: str,
+        geo_config,
+        unidade: str,
+        client=None,
+        visual=None,
+        fontes=None,
+        referencia: date | None = None,
     ):
         """Mede aula a aula quando o texto vem montado pelo orquestrador.
 
@@ -262,7 +277,10 @@ class QualityGate:
             # camadas de acento, link, voice guard e disclosure seguem valendo,
             # e a de abertura e distração (R1 a R9) mede a trilha pela posição
             # do bloco 'Fontes' e pelos blocos proibidos.
-            return erros_de_abertura(text, module_name or "trilha", unidade="trilha")
+            rotulo = module_name or "trilha"
+            return erros_de_abertura(text, rotulo, unidade="trilha") + QualityGate.check_guia(
+                text, rotulo, client, fontes=fontes, referencia=referencia, so_fontes=True
+            )
         if not AULA_H1_RE.search(text):
             return check_content(
                 text,
@@ -271,12 +289,19 @@ class QualityGate:
                 unidade=unidade,
                 crosslinks_config=crosslinks,
                 visual_config=visual,
+            ) + QualityGate.check_guia(
+                text, module_name or "texto", client, fontes=fontes, referencia=referencia
             )
         achados = []
         for titulo, bloco in dividir_em_unidades(text):
             if titulo.startswith("Trilha "):
                 rotulo = f"{module_name} / {titulo}" if module_name else titulo
                 achados.extend(erros_de_abertura(bloco, rotulo, unidade="trilha"))
+                achados.extend(
+                    QualityGate.check_guia(
+                        bloco, rotulo, client, fontes=fontes, referencia=referencia, so_fontes=True
+                    )
+                )
                 continue
             rotulo = f"{module_name} / {titulo}" if module_name else titulo
             # A régua da aula não carrega a camada GEO: fontes, estatísticas
@@ -291,10 +316,62 @@ class QualityGate:
                     visual_config=visual,
                 )
             )
+            achados.extend(
+                QualityGate.check_guia(bloco, rotulo, client, fontes=fontes, referencia=referencia)
+            )
         if geo_config is not None:
             achados.extend(QualityGate.check_geo(text, module_name or "curso", geo_config))
         achados.extend(QualityGate.check_curso(text, module_name or "curso", client))
         return achados
+
+    @staticmethod
+    def check_guia(
+        text: str,
+        rotulo: str = "aula",
+        client=None,
+        fontes=None,
+        referencia: date | None = None,
+        so_fontes: bool = False,
+    ):
+        """Aula-guia, orçamento de narrativa e fonte recente (27/09/2026).
+
+        Cada regra só roda quando o cliente a liga no `client.yaml`; sem o
+        bloco, a lista sai vazia e o gate fica como antes. `fontes` é o bloco
+        `fontes_recentes` já resolvido para o curso (ausente, vale o do cliente).
+        A data de referência vem do parâmetro, da configuração ou, por fim, do
+        dia da execução: o validador nunca lê o relógio por conta própria.
+        `so_fontes` mede só as fontes (fechamento de trilha, que não é aula).
+        """
+        from src.validators.content_checker import ContentError
+        from src.validators.fontes_recentes_checker import (
+            check_fontes_recentes,
+            data_de_referencia,
+        )
+        from src.validators.guia_aplicavel_checker import check_guia_aplicavel
+        from src.validators.narrativa_checker import check_narrativa
+
+        fontes = fontes if fontes is not None else getattr(client, "fontes_recentes", None)
+        achados: list[tuple[str, object]] = []
+        if not so_fontes:
+            achados += [
+                ("guia aplicável", a)
+                for a in check_guia_aplicavel(text, getattr(client, "guia_aplicavel", None))
+            ]
+            achados += [
+                ("narrativa", a) for a in check_narrativa(text, getattr(client, "narrativa", None))
+            ]
+        if fontes is not None and getattr(fontes, "enabled", False):
+            ref = referencia or data_de_referencia(fontes, date.today())
+            achados += [("fontes recentes", a) for a in check_fontes_recentes(text, fontes, ref)]
+        return [
+            ContentError(
+                tipo=a.tipo,
+                categoria=categoria,
+                mensagem=f"[{a.regra}] {a.mensagem}",
+                modulo=rotulo,
+            )
+            for categoria, a in achados
+        ]
 
     @staticmethod
     def check_curso(text: str, rotulo: str = "curso", client=None):
