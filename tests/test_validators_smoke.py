@@ -48,10 +48,11 @@ def test_check_accents_texto_limpo() -> None:
 
 
 def test_check_accents_ignora_blocos_de_codigo() -> None:
-    text = "```python\nnao_acentuado = True\n```"
-    erros = check_accents(text)
-    # Tokens dentro de bloco de código não devem ser contados
-    assert all(e.linha == 0 for e in erros) or erros == []
+    # A mesma palavra sem acento: erro na prosa, ignorada dentro do bloco de
+    # código. Até 27/09/2026 o teste usava `nao_acentuado`, que nunca casaria
+    # (o \b não separa o underscore), e passava mesmo sem o salto de código.
+    assert [e.palavra_errada for e in check_accents("Você nao precisa.")] == ["nao"]
+    assert check_accents("```python\nnao = True\n```") == []
 
 
 def test_fix_accents_corrige_e_preserva_capitalizacao() -> None:

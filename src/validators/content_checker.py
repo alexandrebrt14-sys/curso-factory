@@ -268,11 +268,6 @@ def _find_headings(text: str) -> list[tuple[int, str, str]]:
     return headings
 
 
-def _find_blockquotes(text: str) -> int:
-    """Conta blocos de citação (>) no texto."""
-    return len(re.findall(r"^>\s+", text, re.MULTILINE))
-
-
 def _find_bold_terms(text: str) -> int:
     """Conta termos em negrito no texto."""
     return len(re.findall(r"\*\*[^*]+\*\*", text))
