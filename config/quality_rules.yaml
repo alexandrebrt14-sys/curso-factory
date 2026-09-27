@@ -521,6 +521,43 @@ validation:
       tipos: tabela (comparação com critérios), lista numerada de passos (processo em que a
       ordem importa) e imagem com legenda (conceito que pede figura).
 
+  # Camada 2h: Tamanho e ordem do curso, pelos dados de uso do portal
+  # (27/09/2026). Curso curto termina e curso longo não; o aluno abandona na
+  # teoria que chega cedo, no capítulo de contexto com número de terceiros e
+  # no apêndice de instalação; a rolagem média dos capítulos abandonados fica
+  # abaixo de 60%. LIDA EM RUNTIME por src/validators/planejamento_checker.py:
+  #   - instrucao_plano: entra no prompt de planejamento de aulas
+  #     (Orchestrator._plan_lessons), com {aulas_min}, {aulas_max},
+  #     {iniciais} e {modulo} trocados em runtime;
+  #   - instrucao_aula / instrucao_aula_inicial: entram no draft.md
+  #     ({bloco_ordem_do_curso}); a segunda só nas `aulas_iniciais_curtas`
+  #     primeiras aulas do curso, com {palavras_max};
+  #   - aviso (nunca erro) quando o curso sai da faixa `aulas_por_curso` ou
+  #     quando uma das primeiras aulas passa de `palavras_max_aulas_iniciais`
+  #     (QualityGate.check_curso, entrada "curso (sequência)").
+  planejamento:
+    enabled: true
+    aulas_por_curso: [14, 18]
+    aulas_iniciais_curtas: 3
+    palavras_max_aulas_iniciais: 900
+    instrucao_plano: |
+      Tamanho e ordem, pelos dados de uso do portal: curso curto termina, curso longo não, e o
+      aluno abandona na teoria que chega cedo e no apêndice de instalação. Para tema amplo, o
+      curso inteiro fica entre {aulas_min} e {aulas_max} aulas; aula que não muda uma decisão
+      do aluno sai. As {iniciais} primeiras aulas do curso são as mais curtas e as mais
+      práticas, com um ganho no primeiro dia. Teoria densa só da metade do curso em diante, e
+      sempre depois de um caso contado inteiro. Nenhuma aula é apêndice de instalação: o passo
+      de instalação entra como passo a passo curto dentro da aula que precisa dele. Este é o
+      módulo {modulo} do curso.
+    instrucao_aula: |
+      A tese da aula e o que o aluno faz com ela ficam na primeira metade do texto, porque a
+      maior parte dos leitores não chega ao fim da página. O fecho retoma o caso e dá o
+      critério de acerto; ele não guarda a informação principal.
+    instrucao_aula_inicial: |
+      Esta é uma das primeiras aulas do curso, que precisam ser as mais curtas e as mais
+      práticas: no máximo {palavras_max} palavras, com um ganho que o aluno aplica no mesmo
+      dia, sem panorama histórico, sem taxonomia e sem teoria densa.
+
   # Camada 3: Links
   link_check:
     enabled: true

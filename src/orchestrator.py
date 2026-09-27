@@ -210,6 +210,8 @@ class Orchestrator:
         self._avisos_pendentes: list[str] = []
         #: Destinos de crosslink da aula recém-escrita, para a seguinte variar.
         self._destinos_anteriores: set[str] = set()
+        #: Posição da aula no curso inteiro (1, 2, 3...), contada na redação.
+        self._aula_no_curso: int = 0
 
     # ── ciclo de vida ───────────────────────────────────────────────────
 
@@ -368,6 +370,12 @@ class Orchestrator:
             excluir=course.id,
             anteriores=self._destinos_anteriores,
         )
+
+    def _bloco_ordem_do_curso(self) -> str:
+        """Instrução de tamanho e ordem da aula, pela posição dela no curso."""
+        from src.validators.planejamento_checker import instrucao_da_aula
+
+        return instrucao_da_aula(self._aula_no_curso)
 
     def _visual_do_curso(self, course: Course):
         """Bloco `visual` do cliente sobreposto, campo a campo, pelo do curso."""
@@ -535,7 +543,10 @@ class Orchestrator:
                 for e in modulo.etapas
             ]
 
+        from src.validators.planejamento_checker import instrucao_do_plano
+
         minimo, maximo = self._aulas_por_modulo()
+        ordem = instrucao_do_plano(numero)
         prompt = (
             f"Você planeja as aulas de um curso em português do Brasil, com "
             f"acentuação completa.\n\n"
@@ -548,6 +559,7 @@ class Orchestrator:
             f"no negócio do aluno e o próximo passo. As aulas se encadeiam: a "
             f"seguinte usa o que a anterior deixou pronto. Título sem 'faça "
             f"agora', 'exercício', 'no seu negócio', 'checkpoint' ou LGPD.\n\n"
+            f"{ordem + chr(10) + chr(10) if ordem else ''}"
             f"Responda SOMENTE com uma linha por aula, neste formato, sem "
             f"comentário antes ou depois:\n"
             f"1. Título da aula em até 10 palavras | a ideia única da aula em uma frase\n\n"
@@ -605,6 +617,7 @@ class Orchestrator:
             **self._tetos_da_aula(),
             **self._blocos_de_instrucao(),
             "bloco_crosslinks": self._bloco_crosslinks(course),
+            "bloco_ordem_do_curso": self._bloco_ordem_do_curso(),
             **self._variaveis_de_peso_visual(course),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
@@ -708,6 +721,8 @@ class Orchestrator:
             Module(titulo=course.titulo, descricao=course.descricao, ordem=1)
         ]
         partes: list[str] = []
+        self._aula_no_curso = 0
+        self._destinos_anteriores = set()
 
         for i, modulo in enumerate(modulos, 1):
             pode, motivo = self._pode_chamar(self.writer.provider, course.id)
@@ -730,6 +745,7 @@ class Orchestrator:
                     logger.warning("%s na aula %d.%d. Parando draft.", motivo, i, j + 1)
                     return "\n\n".join(partes)
                 logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
+                self._aula_no_curso += 1
                 aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
                 self._destinos_anteriores = self._destinos_da_aula(aula_md)
                 partes.append(aula_md)

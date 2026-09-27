@@ -36,6 +36,27 @@ três passadas, vícios de português, estruturas proibidas — passou a viver n
   código realmente carrega o arquivo de regras. Foi o defeito de 11/08/2026, quando o YAML tinha
   56 clichês e o gate rodava com 18 em código.
 
+## Tamanho e ordem do curso (27/09/2026)
+
+Os dados de uso do portal /educacao mostraram que curso curto termina e curso longo não, que o
+aluno abandona na teoria que chega cedo, no capítulo de contexto com número de terceiros e no
+apêndice de instalação, e que a rolagem média dos capítulos abandonados fica abaixo da metade
+da página. Daí saem cinco orientações de planejamento, que entram no prompt de planejamento de
+aulas e no de redação:
+
+- para tema amplo, o curso inteiro fica numa faixa curta de aulas; aula que não muda uma
+  decisão do aluno sai;
+- as primeiras aulas do curso são as mais curtas e as mais práticas, com ganho no primeiro dia;
+- teoria densa só da metade do curso em diante, e sempre depois de um caso contado inteiro;
+- a tese e o que fazer ficam na primeira metade de cada aula; o fecho retoma o caso e não
+  guarda a informação principal;
+- nenhum apêndice de instalação no caminho: o passo vira passo a passo curto dentro da aula
+  que precisa dele, ou link para o curso que já ensina.
+
+Os números (faixa de aulas, quantas aulas iniciais, alvo de palavras delas) e os textos das
+instruções vivem em `config/quality_rules.yaml > validation.planejamento`. O gate confere, como
+aviso, o curso fora da faixa e a aula inicial acima do alvo (`src/validators/planejamento_checker.py`).
+
 ## Abertura e distração (R1 a R9)
 
 Pedido do dono dos repositórios em 08/09/2026, literal na decisão

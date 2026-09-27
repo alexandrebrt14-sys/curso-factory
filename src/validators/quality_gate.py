@@ -301,22 +301,30 @@ class QualityGate:
         """Medidas que só existem na sequência de aulas do curso inteiro.
 
         Crosslinks (27/09/2026): o mesmo destino em aulas seguidas e o piso de
-        destinos distintos do curso. Cada medida só roda quando o cliente a
-        liga; sem cliente, devolve vazio.
+        destinos distintos do curso, quando o cliente liga a regra. Tamanho e
+        ordem (27/09/2026): faixa de aulas do curso e extensão das primeiras
+        aulas, como aviso, quando `validation.planejamento` está no YAML.
         """
-        from src.orchestrator import dividir_em_unidades
+        from src.orchestrator import AULA_H1_RE, dividir_em_unidades
         from src.validators.content_checker import ContentError
         from src.validators.crosslink_checker import check_crosslinks_curso
+        from src.validators.planejamento_checker import check_planejamento_curso
 
+        if not AULA_H1_RE.search(text):
+            return []
         aulas = [(t, b) for t, b in dividir_em_unidades(text) if t and not t.startswith("Trilha ")]
+        achados = [
+            ("crosslinks", a)
+            for a in check_crosslinks_curso(aulas, getattr(client, "crosslinks", None))
+        ] + [("planejamento", a) for a in check_planejamento_curso(aulas)]
         return [
             ContentError(
                 tipo=a.tipo,
-                categoria="crosslinks",
+                categoria=categoria,
                 mensagem=f"[{a.regra}] {a.mensagem}",
                 modulo=rotulo,
             )
-            for a in check_crosslinks_curso(aulas, getattr(client, "crosslinks", None))
+            for categoria, a in achados
         ]
 
     @staticmethod
