@@ -1,0 +1,982 @@
+{
+  "origem": "landing-page-geo/src/data/educacao-courses.ts",
+  "commit_origem": "a0f834b4 2026-09-26",
+  "gerado_em": "2026-09-27",
+  "destinos": [
+    {
+      "id": "astra-profundo",
+      "caminho": "/educacao/astra-profundo",
+      "nome": "Astra profundo: criação visual e desenvolvimento",
+      "nome_curto": "Astra profundo",
+      "tags": [
+        "Astra",
+        "GPT-6",
+        "gpt-6-astra",
+        "ChatGPT 6",
+        "Codex",
+        "Criação visual",
+        "UX",
+        "UI",
+        "Imagens",
+        "Animação",
+        "3D",
+        "Edição de vídeo",
+        "API"
+      ]
+    },
+    {
+      "id": "orquestracao-llm-local",
+      "caminho": "/educacao/orquestracao-llm-local-desktop",
+      "nome": "IA Local na Prática: seu time de assistentes no computador",
+      "nome_curto": "IA Local na Prática",
+      "tags": [
+        "IA local",
+        "Sem código",
+        "Vibecoding",
+        "Privacidade",
+        "Iniciantes",
+        "Conceitual"
+      ]
+    },
+    {
+      "id": "setup",
+      "caminho": "/educacao/setup-claude-code",
+      "nome": "Setup Completo: do zero ao Claude Code",
+      "nome_curto": "",
+      "tags": [
+        "Claude Code",
+        "Iniciantes",
+        "Executivos",
+        "MCP",
+        "VS Code"
+      ]
+    },
+    {
+      "id": "setup-mac",
+      "caminho": "/educacao/setup-claude-code-mac",
+      "nome": "Setup Inicial de Vibecoding em computadores Mac Apple",
+      "nome_curto": "Setup de Vibecoding no Mac",
+      "tags": [
+        "Vibecoding",
+        "Claude Code",
+        "macOS",
+        "Apple Silicon",
+        "Homebrew",
+        "MCP"
+      ]
+    },
+    {
+      "id": "vscode",
+      "caminho": "/educacao/vscode",
+      "nome": "VS Code: Do Zero ao Editor Profissional",
+      "nome_curto": "",
+      "tags": [
+        "VS Code",
+        "Editor",
+        "Terminal",
+        "Extensões",
+        "GEO"
+      ]
+    },
+    {
+      "id": "github",
+      "caminho": "/educacao/github",
+      "nome": "GitHub: Controle de Versão do Zero",
+      "nome_curto": "",
+      "tags": [
+        "Git",
+        "GitHub",
+        "Versionamento",
+        "Colaboração",
+        "Agent Legibility"
+      ]
+    },
+    {
+      "id": "python",
+      "caminho": "/educacao/python",
+      "nome": "Python: Programação do Zero",
+      "nome_curto": "",
+      "tags": [
+        "Python",
+        "Programação",
+        "pip",
+        "Automação",
+        "GEO"
+      ]
+    },
+    {
+      "id": "nodejs",
+      "caminho": "/educacao/nodejs",
+      "nome": "Node.js: JavaScript no Servidor",
+      "nome_curto": "",
+      "tags": [
+        "Node.js",
+        "JavaScript",
+        "npm",
+        "Next.js",
+        "MCP"
+      ]
+    },
+    {
+      "id": "claude-code",
+      "caminho": "/educacao/claude-code",
+      "nome": "Claude Code CLI: Programação com IA",
+      "nome_curto": "",
+      "tags": [
+        "Claude Code",
+        "IA",
+        "Anthropic",
+        "Prompt Engineering",
+        "Cowork",
+        "Executivos",
+        "Gestão",
+        "Rotinas",
+        "Conectores",
+        "Governança",
+        "MCP",
+        "ChatGPT",
+        "Gemini",
+        "Grok"
+      ]
+    },
+    {
+      "id": "saude-mental-vibecoding",
+      "caminho": "/educacao/saude-mental-vibecoding",
+      "nome": "Saúde Mental para Autistas que Trabalham com IA",
+      "nome_curto": "Saúde Mental para Autistas em IA",
+      "tags": [
+        "Saúde Mental",
+        "Autismo",
+        "Hiperfoco",
+        "Burnout Autista",
+        "Vibecoding",
+        "Neurodivergência",
+        "Claude Code",
+        "ChatGPT",
+        "Gemini",
+        "Grok",
+        "Executivos",
+        "NR-1"
+      ]
+    },
+    {
+      "id": "mcp-chrome",
+      "caminho": "/educacao/mcp-chrome",
+      "nome": "MCP com Chrome: Automação com IA",
+      "nome_curto": "",
+      "tags": [
+        "MCP",
+        "Chrome",
+        "Executivos",
+        "Segurança",
+        "Injeção de Prompt",
+        "Governança",
+        "Browser",
+        "Agent Legibility",
+        "chrome-devtools-mcp"
+      ]
+    },
+    {
+      "id": "seo-geo",
+      "caminho": "/educacao/seo-geo",
+      "nome": "GEO Universal Framework: Do SEO ao Generative Engine Optimization",
+      "nome_curto": "GEO Universal Framework",
+      "tags": [
+        "GEO",
+        "Para executivos",
+        "Busca sem clique",
+        "ChatGPT Ads",
+        "Agent Legibility",
+        "Agentic Commerce",
+        "Schema.org",
+        "Roadmap 90 dias"
+      ]
+    },
+    {
+      "id": "bastidores",
+      "caminho": "/educacao/bastidores",
+      "nome": "Bastidores: Como Este Portal Foi Construído",
+      "nome_curto": "",
+      "tags": [
+        "Building in Public",
+        "Orquestração",
+        "Multi-LLM"
+      ]
+    },
+    {
+      "id": "geo-intent-mapping",
+      "caminho": "/educacao/geo-intent-mapping",
+      "nome": "GEO Intent Mapping: mapeamento de intenção para respostas de IA",
+      "nome_curto": "GEO Intent Mapping",
+      "tags": [
+        "GEO",
+        "Intent Mapping",
+        "Citação",
+        "Estratégia"
+      ]
+    },
+    {
+      "id": "digital-pr",
+      "caminho": "/educacao/digital-pr-link-building",
+      "nome": "Digital PR e Link Building na Era do GEO",
+      "nome_curto": "",
+      "tags": [
+        "Digital PR",
+        "Link Building",
+        "Outreach",
+        "Knowledge Graph"
+      ]
+    },
+    {
+      "id": "seo-ecommerce",
+      "caminho": "/educacao/seo-ecommerce",
+      "nome": "SEO Técnico para E-commerce de Alta Escala",
+      "nome_curto": "",
+      "tags": [
+        "SEO Técnico",
+        "E-commerce",
+        "Schema",
+        "Core Web Vitals"
+      ]
+    },
+    {
+      "id": "seo-geo-revendedoras-joias",
+      "caminho": "/educacao/seo-geo-revendedoras-joias",
+      "nome": "SEO e GEO para Revendedoras de Joias e Semijoias",
+      "nome_curto": "SEO e GEO para Revendedoras de Joias",
+      "tags": [
+        "SEO",
+        "GEO",
+        "Joias",
+        "WhatsApp",
+        "E-E-A-T",
+        "Busca Visual"
+      ]
+    },
+    {
+      "id": "cro-experimentacao",
+      "caminho": "/educacao/cro-experimentacao",
+      "nome": "CRO: Otimização de Conversão e Experimentação",
+      "nome_curto": "",
+      "tags": [
+        "CRO",
+        "Testes A/B",
+        "Conversão",
+        "Experimentação",
+        "Governança",
+        "Decisão Executiva",
+        "Plano de 90 dias",
+        "Maturidade",
+        "Sequential Testing",
+        "Checkout",
+        "Core Web Vitals",
+        "Tráfego de LLM"
+      ]
+    },
+    {
+      "id": "seo-programatico",
+      "caminho": "/educacao/seo-programatico",
+      "nome": "SEO Programático com Dado Próprio: da Fonte à Governança",
+      "nome_curto": "SEO Programático",
+      "tags": [
+        "SEO Programático",
+        "C-Level",
+        "Dados Públicos",
+        "Indexação",
+        "Search Console"
+      ]
+    },
+    {
+      "id": "vibecoding-seo",
+      "caminho": "/educacao/vibecoding-seo",
+      "nome": "Vibecoding para SEO: Construa Ferramentas com IA",
+      "nome_curto": "Vibecoding para SEO",
+      "tags": [
+        "Vibecoding",
+        "SEO",
+        "Ferramentas",
+        "Claude Code",
+        "Cursor"
+      ]
+    },
+    {
+      "id": "gsc-avancado",
+      "caminho": "/educacao/gsc-avancado",
+      "nome": "Google Search Console para decisão executiva",
+      "nome_curto": "Search Console para decisão",
+      "tags": [
+        "Google Search Console",
+        "GSC",
+        "SEO",
+        "Letramento em dados",
+        "AI Overviews",
+        "AI Mode",
+        "Diagnóstico de queda",
+        "Indexação",
+        "Governança de agência",
+        "Analytics"
+      ]
+    },
+    {
+      "id": "autoridade-tematica",
+      "caminho": "/educacao/autoridade-tematica",
+      "nome": "Autoridade Temática e SEO de Entidades",
+      "nome_curto": "",
+      "tags": [
+        "Topical Authority",
+        "Topical Map",
+        "Clusters de Conteúdo",
+        "Links Internos",
+        "Entity SEO",
+        "Knowledge Graph",
+        "Schema.org",
+        "Information Gain",
+        "Campos Semânticos",
+        "Auditoria de Cobertura",
+        "Poda de Conteúdo",
+        "Território Defendível",
+        "Mapa de Demanda",
+        "Operação Editorial"
+      ]
+    },
+    {
+      "id": "wikidata-wikipedia",
+      "caminho": "/educacao/wikidata-wikipedia",
+      "nome": "Wikidata e Wikipedia para GEO",
+      "nome_curto": "",
+      "tags": [
+        "Wikidata",
+        "Wikipedia",
+        "QID",
+        "SPARQL",
+        "Entity SEO",
+        "GEO"
+      ]
+    },
+    {
+      "id": "geo-knowledge-graph",
+      "caminho": "/educacao/geo-knowledge-graph",
+      "nome": "GEO e Knowledge Graph para leigos",
+      "nome_curto": "GEO e Knowledge Graph",
+      "tags": [
+        "Busca com IA",
+        "Entidade de marca",
+        "Mensuração",
+        "Orçamento",
+        "Governança",
+        "Leigos"
+      ]
+    },
+    {
+      "id": "glossario-seo-geo",
+      "caminho": "/educacao/glossario-seo-geo",
+      "nome": "Glossário Completo de SEO e GEO 2026",
+      "nome_curto": "",
+      "tags": [
+        "Glossário",
+        "SEO",
+        "GEO",
+        "Executivos",
+        "Agentic Commerce",
+        "Terminologia",
+        "Referência"
+      ]
+    },
+    {
+      "id": "eeat-qualidade",
+      "caminho": "/educacao/eeat-qualidade",
+      "nome": "E-E-A-T e Qualidade de Conteúdo",
+      "nome_curto": "",
+      "tags": [
+        "E-E-A-T",
+        "Qualidade",
+        "Core Updates",
+        "YMYL",
+        "Conteúdo com IA",
+        "EU AI Act"
+      ]
+    },
+    {
+      "id": "seo-analytics",
+      "caminho": "/educacao/seo-analytics",
+      "nome": "Analytics de busca para decisão executiva",
+      "nome_curto": "",
+      "tags": [
+        "Decisão executiva",
+        "Analytics",
+        "GA4",
+        "Search Console",
+        "Busca com IA",
+        "Governança de dados",
+        "Letramento em dados"
+      ]
+    },
+    {
+      "id": "vendas-consultivas",
+      "caminho": "/educacao/vendas-consultivas",
+      "nome": "Vendas Consultivas de Serviços de GEO e IA",
+      "nome_curto": "",
+      "tags": [
+        "Vendas",
+        "Consultoria",
+        "Negociação",
+        "GEO",
+        "C-Level"
+      ]
+    },
+    {
+      "id": "gestao-projetos-geo",
+      "caminho": "/educacao/gestao-projetos-geo",
+      "nome": "Gestão de projetos GEO",
+      "nome_curto": "Gestão de Projetos GEO",
+      "tags": [
+        "Gestão",
+        "C-Level",
+        "Métricas",
+        "Governança"
+      ]
+    },
+    {
+      "id": "geo-saude",
+      "caminho": "/educacao/geo-saude",
+      "nome": "GEO para Saúde: Como Aparecer Quando o Paciente Pergunta à IA",
+      "nome_curto": "GEO para Saúde",
+      "tags": [
+        "GEO",
+        "Saúde",
+        "Marketing Médico",
+        "YMYL"
+      ]
+    },
+    {
+      "id": "seo-geo-turismo",
+      "caminho": "/educacao/seo-geo-turismo",
+      "nome": "SEO e GEO para Turismo: Destinos, Hotéis e Agências no Mapa da IA",
+      "nome_curto": "SEO e GEO para Turismo",
+      "tags": [
+        "SEO",
+        "GEO",
+        "Turismo",
+        "Hotelaria",
+        "Place Branding"
+      ]
+    },
+    {
+      "id": "seo-geo-advogados",
+      "caminho": "/educacao/seo-geo-advogados",
+      "nome": "SEO e GEO para Advogados: Como Ser Encontrado com Ética no Google, no Maps e nas IAs",
+      "nome_curto": "SEO e GEO para Advogados",
+      "tags": [
+        "SEO",
+        "GEO",
+        "Advocacia",
+        "OAB",
+        "LGPD",
+        "Marketing Jurídico"
+      ]
+    },
+    {
+      "id": "seo-geo-petshops-agropecuarias",
+      "caminho": "/educacao/seo-geo-petshops-agropecuarias",
+      "nome": "SEO, GEO e IA para Petshops, Agropecuárias e Zootecnia",
+      "nome_curto": "SEO e GEO para Pet e Agro",
+      "tags": [
+        "SEO",
+        "GEO",
+        "Pet",
+        "Agropecuária",
+        "Zootecnia",
+        "IA",
+        "WhatsApp"
+      ]
+    },
+    {
+      "id": "geo-educacao-financeira-40plus",
+      "caminho": "/educacao/geo-educacao-financeira-40plus",
+      "nome": "GEO para Educação Financeira 40+",
+      "nome_curto": "",
+      "tags": [
+        "GEO",
+        "Educação Financeira",
+        "IA Generativa",
+        "40+"
+      ]
+    },
+    {
+      "id": "geo-educacao-financeira-sub18",
+      "caminho": "/educacao/geo-educacao-financeira-sub18",
+      "nome": "GEO para Educação Financeira Sub-18",
+      "nome_curto": "",
+      "tags": [
+        "GEO",
+        "Educação Financeira",
+        "Jovens",
+        "Sub-18",
+        "BNCC"
+      ]
+    },
+    {
+      "id": "agentes-ia-autonomos",
+      "caminho": "/educacao/agentes-ia-autonomos",
+      "nome": "Agentes de IA Autônomos: Do Conceito à Produção",
+      "nome_curto": "",
+      "tags": [
+        "IA",
+        "Agentes",
+        "LangGraph"
+      ]
+    },
+    {
+      "id": "mcp-avancado",
+      "caminho": "/educacao/mcp-avancado",
+      "nome": "MCP para quem decide: conectar sistemas à inteligência artificial sem perder o controle",
+      "nome_curto": "MCP para quem decide",
+      "tags": [
+        "MCP",
+        "Governança",
+        "Decisão executiva"
+      ]
+    },
+    {
+      "id": "prompt-engineering-avancado",
+      "caminho": "/educacao/prompt-engineering-avancado",
+      "nome": "Prompt Engineering para Executivos: decidir sobre IA com evidência",
+      "nome_curto": "Prompt Engineering para Executivos",
+      "tags": [
+        "Prompt",
+        "Contexto",
+        "Governança"
+      ]
+    },
+    {
+      "id": "automacao-n8n-make",
+      "caminho": "/educacao/automacao-n8n-make",
+      "nome": "Automação com n8n e Make: Fluxos Inteligentes",
+      "nome_curto": "",
+      "tags": [
+        "n8n",
+        "Make",
+        "Automação"
+      ]
+    },
+    {
+      "id": "dados-com-python",
+      "caminho": "/educacao/dados-com-python",
+      "nome": "Dados com Python: Análise, Visualização e Automação",
+      "nome_curto": "Dados com Python",
+      "tags": [
+        "Python",
+        "Dados",
+        "Análise"
+      ]
+    },
+    {
+      "id": "deploy-vercel-cloudflare",
+      "caminho": "/educacao/deploy-vercel-cloudflare",
+      "nome": "Deploy e publicação para decisão executiva: Vercel e Cloudflare",
+      "nome_curto": "Deploy para decisão executiva",
+      "tags": [
+        "Decisão executiva",
+        "Deploy",
+        "Vercel",
+        "Cloudflare",
+        "Subir site",
+        "Publicação",
+        "CI/CD",
+        "Custo de plataforma",
+        "FinOps",
+        "Risco de fornecedor",
+        "Cadeia de suprimentos",
+        "Incidente",
+        "LGPD",
+        "C-Level"
+      ]
+    },
+    {
+      "id": "llm-finops",
+      "caminho": "/educacao/llm-finops",
+      "nome": "LLM FinOps: o custo da IA para quem assina o orçamento",
+      "nome_curto": "",
+      "tags": [
+        "FinOps",
+        "Custo de IA",
+        "C-level"
+      ]
+    },
+    {
+      "id": "api-design-rest-graphql",
+      "caminho": "/educacao/api-design-rest-graphql",
+      "nome": "API Design: REST, GraphQL e Boas Práticas",
+      "nome_curto": "",
+      "tags": [
+        "API",
+        "REST",
+        "GraphQL"
+      ]
+    },
+    {
+      "id": "seo-geo-personal-brands",
+      "caminho": "/educacao/seo-geo-personal-brands",
+      "nome": "SEO e GEO para Personal Brands: Creators, Speakers e Consultores",
+      "nome_curto": "SEO e GEO para Personal Brands",
+      "tags": [
+        "Personal Brand",
+        "Creator",
+        "Speaker",
+        "Consultoria"
+      ]
+    },
+    {
+      "id": "seo-geo-podcasts",
+      "caminho": "/educacao/seo-geo-podcasts",
+      "nome": "SEO e GEO para Podcasts: Visibilidade em Áudio",
+      "nome_curto": "SEO e GEO para Podcasts",
+      "tags": [
+        "SEO",
+        "GEO",
+        "Podcast",
+        "Áudio",
+        "RSS",
+        "Transcrição"
+      ]
+    },
+    {
+      "id": "skills-vibecoding-terminal",
+      "caminho": "/educacao/skills-vibecoding-terminal",
+      "nome": "Skills de IA com Vibecoding e Terminal",
+      "nome_curto": "",
+      "tags": [
+        "Vibecoding",
+        "Claude Code",
+        "Skills",
+        "MCP",
+        "Terminal",
+        "Agentes IA"
+      ]
+    },
+    {
+      "id": "reddit-para-geo",
+      "caminho": "/educacao/reddit-para-geo",
+      "nome": "Reddit para GEO: Visibilidade em IA Generativa via Comunidade",
+      "nome_curto": "Reddit para GEO",
+      "tags": [
+        "Reddit",
+        "GEO",
+        "LLM Citation",
+        "AMAs",
+        "Comunidade"
+      ]
+    },
+    {
+      "id": "oauth-autorizacao-delegada",
+      "caminho": "/educacao/oauth-autorizacao-delegada",
+      "nome": "OAuth e Autorização Delegada: Tokens, Escopos e Governança Zero-Trust",
+      "nome_curto": "OAuth e Autorização Delegada",
+      "tags": [
+        "OAuth",
+        "Autorização",
+        "Segurança",
+        "APIs",
+        "Zero Trust",
+        "Identidade"
+      ]
+    },
+    {
+      "id": "introducao-engenharia-software",
+      "caminho": "/educacao/introducao-engenharia-software",
+      "nome": "Engenharia de Software para Executivos: entender, decidir e cobrar",
+      "nome_curto": "Engenharia de Software para Executivos",
+      "tags": [
+        "Engenharia de Software",
+        "C-Level",
+        "Arquitetura",
+        "Dívida Técnica",
+        "ROI de IA",
+        "Segurança",
+        "Conformidade"
+      ]
+    },
+    {
+      "id": "glossario-dev-fullstack-vibecoding",
+      "caminho": "/educacao/glossario-dev-fullstack-vibecoding",
+      "nome": "Software e IA para executivos",
+      "nome_curto": "Software e IA para executivos",
+      "tags": [
+        "Glossário",
+        "Vibecoding",
+        "Full Stack",
+        "C-Level",
+        "Claude Code",
+        "MCP",
+        "Agentes IA",
+        "DORA",
+        "Governança de IA"
+      ]
+    },
+    {
+      "id": "letramento-ia-executivos",
+      "caminho": "/educacao/letramento-ia-executivos",
+      "nome": "Letramento em IA para Executivos",
+      "nome_curto": "Letramento em IA para Executivos",
+      "tags": [
+        "IA Executiva",
+        "Iniciantes em IA",
+        "Aula Zero",
+        "C-Level",
+        "Board",
+        "C.L.A.R.O.",
+        "Ciclo 5D",
+        "Específicação verificável",
+        "Harness corporativo",
+        "Verificação",
+        "Agentes de IA",
+        "FinOps IA",
+        "LGPD",
+        "Governança de IA",
+        "Gestão de Pessoas"
+      ]
+    },
+    {
+      "id": "frontends-com-vibecoding",
+      "caminho": "/educacao/frontends-com-vibecoding",
+      "nome": "Frontends com Vibecoding: interface para quem aprova e contrata",
+      "nome_curto": "Frontends com Vibecoding",
+      "tags": [
+        "Vibecoding",
+        "Frontend",
+        "Claude Code",
+        "React",
+        "Astro",
+        "Tailwind",
+        "shadcn/ui",
+        "Dataviz",
+        "Acessibilidade",
+        "UI/UX",
+        "Menus e navegação",
+        "Apresentações",
+        "Data grids",
+        "Mapas",
+        "DuckDB-Wasm",
+        "Diagramas-as-code"
+      ]
+    },
+    {
+      "id": "motor-de-crescimento-ia",
+      "caminho": "/educacao/motor-de-crescimento-ia",
+      "nome": "Motor de crescimento para produtos de IA",
+      "nome_curto": "Motor de crescimento para IA",
+      "tags": [
+        "Growth",
+        "Mídia paga",
+        "PLG",
+        "LTV e CAC",
+        "Incrementalidade",
+        "Marketing Mix Modeling",
+        "Criativo",
+        "AEO",
+        "Indicação",
+        "Afiliados",
+        "Agentes de IA",
+        "FinOps"
+      ]
+    },
+    {
+      "id": "google-ads-2027",
+      "caminho": "/educacao/google-ads-2027",
+      "nome": "Google Ads 2027: aquisição orientada por IA, dados próprios e mensuração",
+      "nome_curto": "Google Ads 2027",
+      "tags": [
+        "Google Ads",
+        "Mídia paga",
+        "AI Max",
+        "Performance Max",
+        "Demand Gen",
+        "Smart Bidding",
+        "Merchant Center",
+        "Consent Mode",
+        "Data Manager",
+        "Incrementalidade"
+      ]
+    },
+    {
+      "id": "meta-ads-2027",
+      "caminho": "/educacao/meta-ads-2027",
+      "nome": "Meta Ads 2027: Instagram e Facebook com estratégia, criativo, IA e performance",
+      "nome_curto": "Meta Ads 2027",
+      "tags": [
+        "Meta Ads",
+        "Mídia paga",
+        "Instagram",
+        "Facebook",
+        "Advantage+",
+        "Meta Pixel",
+        "API de Conversões",
+        "Atribuição",
+        "WhatsApp",
+        "Incrementalidade"
+      ]
+    },
+    {
+      "id": "google-analytics-2027",
+      "caminho": "/educacao/google-analytics-2027",
+      "nome": "Google Analytics 2027: da implementação à inteligência de negócio",
+      "nome_curto": "Google Analytics 2027",
+      "tags": [
+        "Google Analytics",
+        "GA4",
+        "Tag Manager",
+        "Eventos",
+        "Consent Mode",
+        "Atribuição",
+        "BigQuery",
+        "SQL",
+        "Data Studio",
+        "Measurement Protocol"
+      ]
+    },
+    {
+      "id": "linkedin-ads-2027",
+      "caminho": "/educacao/linkedin-ads-2027",
+      "nome": "LinkedIn Ads 2027: estratégia B2B, inteligência artificial, ABM e geração de receita",
+      "nome_curto": "LinkedIn Ads 2027",
+      "tags": [
+        "LinkedIn Ads",
+        "B2B",
+        "ABM",
+        "Mídia paga",
+        "Campaign Manager",
+        "Conversions API",
+        "CRM",
+        "Lead Gen Forms",
+        "Thought Leader Ads",
+        "Atribuição de receita"
+      ]
+    },
+    {
+      "id": "tiktok-ads-live-commerce-2027",
+      "caminho": "/educacao/tiktok-ads-live-commerce-2027",
+      "nome": "TikTok Ads e Live Commerce 2027: conteúdo, IA, TikTok Shop e vendas ao vivo",
+      "nome_curto": "TikTok Ads e Live Commerce 2027",
+      "tags": [
+        "TikTok Ads",
+        "TikTok Shop",
+        "Live commerce",
+        "GMV Max",
+        "Smart+",
+        "TikTok Pixel",
+        "Events API",
+        "Afiliados",
+        "Spark Ads",
+        "Symphony"
+      ]
+    },
+    {
+      "id": "rag-retrieval-augmented-generation",
+      "caminho": "/educacao/rag-retrieval-augmented-generation",
+      "nome": "RAG em produção: recuperação que sustenta a resposta",
+      "nome_curto": "RAG em produção",
+      "tags": [
+        "RAG",
+        "Recuperação",
+        "Busca híbrida",
+        "Embeddings",
+        "Reranking",
+        "Banco de vetores",
+        "GraphRAG",
+        "Avaliação",
+        "Segurança",
+        "Injeção de prompt"
+      ]
+    },
+    {
+      "id": "modelos-de-linguagem-recursivos-rlm",
+      "caminho": "/educacao/modelos-de-linguagem-recursivos-rlm",
+      "nome": "RLM 2027: modelos de linguagem recursivos, funcionamento, aplicações e perspectivas",
+      "nome_curto": "RLM 2027",
+      "tags": [
+        "RLM",
+        "Recursive Language Models",
+        "Contexto longo",
+        "REPL",
+        "DSPy",
+        "RAG",
+        "Agentes",
+        "Benchmarks",
+        "Segurança",
+        "2027"
+      ]
+    },
+    {
+      "id": "sistema-operacional-nativo-de-ia",
+      "caminho": "/educacao/sistema-operacional-nativo-de-ia",
+      "nome": "Sistema operacional nativo de IA",
+      "nome_curto": "SO nativo de IA",
+      "tags": [
+        "Consolidação",
+        "Modelo de dados",
+        "Single source of truth",
+        "Agentes de IA",
+        "Entrada de documentos",
+        "Roteamento de modelo",
+        "Automação",
+        "Idempotência",
+        "Operação",
+        "PME",
+        "Migração"
+      ]
+    },
+    {
+      "id": "agentic-operating-model",
+      "caminho": "/educacao/agentic-operating-model",
+      "nome": "O Novo Mundo de Fazer Software: do Agile ao Agentic Operating Model",
+      "nome_curto": "Do Agile ao Agentic Operating Model",
+      "tags": [
+        "Governança de Agentes",
+        "Risco",
+        "Conselho",
+        "Letramento em IA",
+        "Agentic Coding",
+        "Validation Engineering",
+        "TDD",
+        "Governança de IA",
+        "Model Routing",
+        "Evals",
+        "Spec-Driven Development",
+        "Métricas para Board"
+      ]
+    },
+    {
+      "id": "reinforcement-learning-vibecoding",
+      "caminho": "/educacao/reinforcement-learning-vibecoding",
+      "nome": "Reinforcement Learning para Vibecoding: do prompt ao loop verificável",
+      "nome_curto": "Agentes de código para executivos",
+      "tags": [
+        "Letramento executivo",
+        "Agentes de código",
+        "Recompensa verificável",
+        "Governança de IA",
+        "Custo de IA",
+        "Compra de IA",
+        "Vibecoding",
+        "Conselho e diretoria",
+        "Aprendizado por reforço",
+        "RLVR"
+      ]
+    },
+    {
+      "id": "escrever-bem-com-ia",
+      "caminho": "/educacao/escrever-bem-com-ia",
+      "nome": "Como escrever bem usando IA Generativa",
+      "nome_curto": "Escrever bem com IA",
+      "tags": [
+        "Escrita com IA",
+        "IA generativa",
+        "Conteúdo",
+        "Revisão editorial",
+        "Escrita humanizada",
+        "Marketing de conteúdo",
+        "GEO"
+      ]
+    }
+  ]
+}

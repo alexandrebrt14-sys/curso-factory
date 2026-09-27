@@ -463,6 +463,45 @@ validation:
       fonte vai para o bloco de fontes do rodapé da trilha. Quando o assunto é disputado, a
       aula ensina a avaliar (quem mediu, em que prova, contra quem), como conteúdo.
 
+  # Camada 2f: Crosslinks por aula (pedido do dono, 27/09/2026). OPT-IN POR
+  # CLIENTE: piso, teto, prefixos e catálogo vivem no bloco `crosslinks` do
+  # client.yaml (ClientContext.crosslinks); aqui mora só a forma, que vale
+  # para todo cliente que ligar. LIDA EM RUNTIME por
+  # src/validators/crosslink_checker.py (categoria "crosslinks").
+  #   - ancoras_genericas: texto de link que não diz o que o leitor encontra
+  #     lá. Âncora igual a um destes itens (sem pontuação, sem caixa) é erro.
+  #   - paragrafos_iniciais_sem_link: nenhum crosslink nos N primeiros
+  #     parágrafos da aula (R2: nada compete com a abertura); aviso.
+  #   - max_destinos_no_prompt: quantos destinos do catálogo, os de maior
+  #     afinidade de tag com o curso, entram na instrução do redator.
+  #   - instrucao_prompt: texto de {bloco_crosslinks} em draft.md (pt-br e
+  #     raiz); {min}, {max}, {destinos} e {anteriores} são trocados em runtime.
+  crosslinks:
+    ancoras_genericas:
+      - "clique aqui"
+      - "saiba mais"
+      - "aqui"
+      - "neste link"
+      - "este link"
+      - "link"
+      - "veja também"
+      - "leia também"
+      - "leia mais"
+      - "veja mais"
+    paragrafos_iniciais_sem_link: 3
+    max_destinos_no_prompt: 25
+    instrucao_prompt: |
+      Ligue esta aula a outros cursos do portal que completam o que ela ensina: de {min} a {max}
+      cursos diferentes, só da lista abaixo, com o caminho exatamente como está nela. O link
+      entra na prosa, no ponto em que o assunto aparece (nunca nos três primeiros parágrafos),
+      e uma passagem no fecho diz onde aprofundar, depois da ponte para a próxima aula. Cite o
+      curso pelo nome entre aspas e diga o que o leitor encontra lá que esta aula não ensina.
+      O texto do link descreve o destino: nada de "clique aqui", "saiba mais" ou "neste link".
+      Nunca card, botão, lista "veja também" nem "escolha seu caminho"; link interno sem UTM.
+      {anteriores}
+      Destinos disponíveis (caminho: nome):
+      {destinos}
+
   # Camada 3: Links
   link_check:
     enabled: true

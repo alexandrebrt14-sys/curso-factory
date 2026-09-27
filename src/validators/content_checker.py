@@ -45,6 +45,7 @@ import re
 from dataclasses import dataclass
 
 from src.validators.abertura_checker import check_abertura
+from src.validators.crosslink_checker import check_crosslinks_aula
 from src.validators.didatica_checker import check_didatica
 from src.validators.lexicos_loader import (
     expressoes_de_bastidor,
@@ -801,6 +802,7 @@ def check_content(
     module_name: str = "",
     geo_config=None,
     unidade: str = "aula",
+    crosslinks_config=None,
 ) -> list[ContentError]:
     """Valida qualidade de conteúdo educacional contra os tetos do molde D.
 
@@ -813,6 +815,9 @@ def check_content(
             modo módulo os números da aula são multiplicados pela faixa de 4 a
             6 aulas, para que o pipeline atual, que ainda entrega módulos, não
             seja reprovado por medir a peça errada.
+        crosslinks_config: `CrosslinksConfig` do cliente, opcional. Ligado, mede
+            os crosslinks da aula (categoria `crosslinks`); ausente ou
+            desligado, nada muda.
 
     Verifica: extensão, número de H2 e de H3 por H2, hierarquia de títulos,
     teto de apoios visuais, exercício aplicado, clichês, verbos de Bloom,
@@ -1307,7 +1312,25 @@ def check_content(
     #     família em `validation.palavras_de_uso_exagerado`. Sem a seção, nada.
     erros.extend(erros_de_vocabulario(text, mod))
 
+    # 18. Crosslinks por aula (27/09/2026), opt-in pelo bloco `crosslinks` do
+    #     client.yaml. Só na aula: a trilha é fechamento, não leitura corrida.
+    if unidade == "aula":
+        erros.extend(erros_de_crosslinks(text, mod, crosslinks_config))
+
     return erros
+
+
+def erros_de_crosslinks(text: str, module_name: str = "", config=None) -> list[ContentError]:
+    """Achados do `crosslink_checker` sobre uma aula, no formato do relatório."""
+    return [
+        ContentError(
+            tipo=a.tipo,
+            categoria="crosslinks",
+            mensagem=f"[{a.regra}] {a.mensagem}",
+            modulo=module_name or "aula",
+        )
+        for a in check_crosslinks_aula(text, config)
+    ]
 
 
 def erros_de_vocabulario(text: str, module_name: str = "") -> list[ContentError]:

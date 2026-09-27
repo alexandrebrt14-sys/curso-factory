@@ -244,6 +244,27 @@ class Geo2026Config:
 
 
 @dataclass
+class CrosslinksConfig:
+    """Crosslinks por aula para outros cursos do portal (27/09/2026). Opt-in.
+
+    Desligado, nada é cobrado nem instruído. Ligado, cada aula liga para ao
+    menos `min_por_aula` e no máximo `max_por_aula` cursos diferentes do
+    catálogo (`catalogo`, JSON ou YAML com a lista `destinos`), e o curso
+    inteiro para ao menos `min_destinos_distintos_no_curso`. Só contam links
+    cujo caminho começa por um dos `prefixos_validos`. As regras de forma
+    (âncora genérica, parágrafos de abertura sem link, instrução do prompt)
+    vivem em `config/quality_rules.yaml > validation.crosslinks`.
+    """
+
+    enabled: bool = False
+    min_por_aula: int = 0
+    max_por_aula: int = 0
+    min_destinos_distintos_no_curso: int = 0
+    prefixos_validos: list[str] = field(default_factory=list)
+    catalogo: Path | None = None
+
+
+@dataclass
 class ClientContext:
     """Contexto completo de um cliente, injetado em todo o pipeline."""
 
@@ -266,6 +287,8 @@ class ClientContext:
     pipeline: PipelineConfig = field(default_factory=PipelineConfig)
     # Rubrica de citabilidade GEO (default off; ligar via client.yaml geo_2026)
     geo: Geo2026Config = field(default_factory=Geo2026Config)
+    # Crosslinks por aula (default off; ligar via client.yaml crosslinks)
+    crosslinks: CrosslinksConfig = field(default_factory=CrosslinksConfig)
     # Wave 8 — idioma default do cliente (override per curso possível)
     language: str = "pt-br"
 

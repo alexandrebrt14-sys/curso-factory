@@ -208,6 +208,8 @@ class Orchestrator:
         #: Avisos produzidos dentro de uma etapa (ex.: expansão de aula curta) e
         #: entregues ao resultado quando a etapa fecha.
         self._avisos_pendentes: list[str] = []
+        #: Destinos de crosslink da aula recém-escrita, para a seguinte variar.
+        self._destinos_anteriores: set[str] = set()
 
     # ── ciclo de vida ───────────────────────────────────────────────────
 
@@ -355,6 +357,17 @@ class Orchestrator:
             "bloco_vocabulario": instrucao_para_prompt(),
             "bloco_apuracao": instrucao_de_apuracao(),
         }
+
+    def _bloco_crosslinks(self, course: Course) -> str:
+        """Instrução de crosslinks da aula, vazia quando o cliente não liga a regra."""
+        from src.validators.crosslink_checker import instrucao_para_prompt
+
+        return instrucao_para_prompt(
+            getattr(self.client_context, "crosslinks", None),
+            tags=course.tags,
+            excluir=course.id,
+            anteriores=self._destinos_anteriores,
+        )
 
     # ── etapas ──────────────────────────────────────────────────────────
 
@@ -573,6 +586,7 @@ class Orchestrator:
             "next_lessons": "; ".join(seguintes) or "nenhuma (esta fecha o módulo)",
             **self._tetos_da_aula(),
             **self._blocos_de_instrucao(),
+            "bloco_crosslinks": self._bloco_crosslinks(course),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
         titulo_proposto, bruto = self._extrair_titulo_proposto(
@@ -658,6 +672,12 @@ class Orchestrator:
             lesson_md=texto,
         )
 
+    def _destinos_da_aula(self, aula_md: str) -> set[str]:
+        from src.validators.crosslink_checker import destinos_da_aula
+
+        config = getattr(self.client_context, "crosslinks", None)
+        return destinos_da_aula(aula_md, config) if getattr(config, "enabled", False) else set()
+
     def _draft_modules_iterative(self, course: Course, research_context: str) -> str:
         """Gera o curso aula a aula.
 
@@ -692,6 +712,7 @@ class Orchestrator:
                     return "\n\n".join(partes)
                 logger.info("Draft aula %d.%d: %s", i, j + 1, aulas[j]["titulo"])
                 aula_md = self._draft_lesson(course, modulo, i, aulas, j, research_context)
+                self._destinos_anteriores = self._destinos_da_aula(aula_md)
                 partes.append(aula_md)
                 partes_do_modulo.append(aula_md)
                 logger.info("Aula %d.%d gerada: %d palavras", i, j + 1, _contar_palavras(aula_md))
@@ -908,6 +929,26 @@ class Orchestrator:
                 f"{result.gate['curso']['avisos']} aviso(s)"
             )
             for e in erros_geo:
+                linhas.append(f"      - {e}")
+        # Medidas da sequência de aulas (crosslinks entre aulas seguidas, piso
+        # de destinos do curso): só entram quando o cliente liga alguma delas.
+        try:
+            curso_achados = gate.check_curso(final, "curso", self.client_context)
+        except Exception as exc:
+            logger.warning("Medidas do curso falharam: %s", exc, exc_info=True)
+            curso_achados = []
+        if curso_achados:
+            erros_curso = [a.mensagem for a in curso_achados if a.tipo == "error"]
+            result.gate["curso (sequência)"] = {
+                "aprovado": not erros_curso,
+                "erros": erros_curso,
+                "avisos": sum(1 for a in curso_achados if a.tipo == "warning"),
+            }
+            linhas.append(
+                f"{'OK  ' if not erros_curso else 'FAIL'} curso (sequência): "
+                f"{len(erros_curso)} erro(s), {result.gate['curso (sequência)']['avisos']} aviso(s)"
+            )
+            for e in erros_curso:
                 linhas.append(f"      - {e}")
         aprovadas = sum(1 for v in result.gate.values() if v.get("aprovado"))
         cabecalho = f"Quality gate: {aprovadas} de {len(result.gate)} unidade(s) aprovada(s)"

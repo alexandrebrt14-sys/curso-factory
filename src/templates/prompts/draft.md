@@ -105,6 +105,8 @@ passar de R$ 40"). Não resuma o que ele acabou de ler.
 Objetivos formais, pré-requisitos, glossário, FAQ e fontes datadas vivem no nível da trilha,
 uma vez; não entram na aula.
 
+{bloco_crosslinks}
+
 ## Abertura e distração (R1 a R9): o que a aula NUNCA carrega
 
 Pedido do dono, de 08/09/2026: o topo carregado dispersa o leitor e o card no meio compete

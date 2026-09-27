@@ -323,9 +323,11 @@ def test_quality_gate_roda_ao_fim_e_grava_veredito_por_aula(tmp_path, monkeypatc
 
     assert resultado.sucesso, resultado.erros
     unidades = {t for t, _ in dividir_em_unidades(resultado.etapas["review"])}
-    # 6 aulas + 2 fechamentos de trilha, mais a camada GEO do curso inteiro.
+    # 6 aulas + 2 fechamentos de trilha, mais a camada GEO do curso inteiro e,
+    # desde 27/09/2026, a medida da sequência (o cliente default liga os
+    # crosslinks, e as aulas falsas não trazem nenhum).
     assert len(unidades) == 8
-    assert set(resultado.gate) == unidades | {"curso"}
+    assert set(resultado.gate) == unidades | {"curso", "curso (sequência)"}
     for nome, veredito in resultado.gate.items():
         assert veredito["aprovado"] in (True, False)
         assert isinstance(veredito["erros"], list)
