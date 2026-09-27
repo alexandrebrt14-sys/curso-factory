@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 
 from src.validators.abertura_checker import check_abertura
 from src.validators.crosslink_checker import check_crosslinks_aula
@@ -401,17 +402,22 @@ def _apuracao_narrada() -> tuple[list[str], list[re.Pattern[str]]]:
     secao = validation_section("apuracao_narrada")
     if not secao or not bool(secao.get("enabled", True)):
         return [], []
-    literais: list[str] = []
-    expressoes: list[re.Pattern[str]] = []
-    for item in rules_list("apuracao_narrada", "padroes"):
+    itens = tuple(rules_list("apuracao_narrada", "padroes"))
+    literais = [item for item in itens if not item.startswith("re:")]
+    return literais, list(_compilar_apuracao(itens))
+
+
+@lru_cache(maxsize=8)
+def _compilar_apuracao(itens: tuple[str, ...]) -> tuple[re.Pattern[str], ...]:
+    """Compila uma vez por conjunto de padrões (antes: a cada aula medida)."""
+    compilados: list[re.Pattern[str]] = []
+    for item in itens:
         if item.startswith("re:"):
             try:
-                expressoes.append(re.compile(item[3:], re.IGNORECASE))
+                compilados.append(re.compile(item[3:], re.IGNORECASE))
             except re.error:
                 continue
-        else:
-            literais.append(item)
-    return literais, expressoes
+    return tuple(compilados)
 
 
 def instrucao_de_apuracao() -> str:
