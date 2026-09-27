@@ -11,6 +11,9 @@
 #   validation.anti_invencao.require_source_for_percentages
 #   validation.anti_invencao.fail_if_unresolved_markers_above
 #   validation.visual_density.*                  -> check_visual_density
+#   validation.abertura.*                        -> abertura_checker
+#   validation.didatica.*                        -> didatica_checker
+#   validation.palavras_de_uso_exagerado.*       -> vocabulario_checker
 # As demais seções seguem descritivas; o valor espelhado em código está
 # anotado por comentário na chave correspondente.
 
@@ -382,6 +385,51 @@ validation:
         - "verifique na documentação"
         - "posteriores ao recorte"
         - "podem ter mudado"
+
+  # Camada 2d: Palavras de uso exagerado (pedido do dono, 27/09/2026). LIDA EM
+  # RUNTIME por src/validators/vocabulario_checker.py, chamado por
+  # content_checker.check_content (categoria "vocabulario"). Quatro palavras que
+  # o time usa entre si soam estranhas ao leitor quando se repetem. Limite por
+  # aula, em toda superfície de leitura, e só no sentido literal. Excesso é o
+  # número de ocorrências além do limite: a partir de `excesso_para_aviso` sai
+  # aviso; a partir de `excesso_para_erro`, erro. Código, nome de arquivo,
+  # chave de configuração, destino de link e menção entre aspas ficam fora.
+  # `instrucao_prompt` entra em draft.md e review.md (pt-br e raiz) pela
+  # variável {bloco_vocabulario}; `{limite}` e `{familias}` são trocados pelos
+  # valores abaixo. Sem esta seção, nada é cobrado nem instruído.
+  palavras_de_uso_exagerado:
+    enabled: true
+    limite_por_aula: 1
+    excesso_para_aviso: 1
+    excesso_para_erro: 3
+    familias:
+      travar:
+        rotulo: "travar (trava, travado, travando)"
+        formas: [travar, trava, travas, travado, travada, travados, travadas, travando,
+                 travou, travaram, travam, travamento, travamentos]
+        trocas: [parar, emperrar, empacar, ficar preso, interromper, bloquear, impedir,
+                 congelar, fixar]
+      canonico:
+        rotulo: "canônico (canônica, canônicos)"
+        formas: [canônico, canônica, canônicos, canônicas, canonicamente,
+                 canonico, canonica, canonicos, canonicas]
+        trocas: [oficial, principal, de referência, padrão, adotado, definitivo, fonte única]
+      regua:
+        rotulo: "régua"
+        formas: [régua, réguas, regua, reguas]
+        trocas: [critério, padrão, medida, parâmetro, regra, norma, referencial, limite,
+                 guia de escrita]
+      honesto:
+        rotulo: "honesto (honesta, honestamente, com honestidade)"
+        formas: [honesto, honesta, honestos, honestas, honestamente, honestidade]
+        trocas: [franco, direto, claro, realista, preciso, fiel aos fatos, sem exagero,
+                 transparente]
+    instrucao_prompt: |
+      Quatro palavras soam estranhas ao leitor quando se repetem. Use no máximo {limite}
+      ocorrência de cada família abaixo por aula, em qualquer superfície (título, subtítulo,
+      prosa, legenda, célula de tabela), e só no sentido literal. Quase sempre a palavra sai e
+      a frase afirma o fato; quando precisar de outra, troque pelo sentido:
+      {familias}
 
   # Camada 3: Links
   link_check:

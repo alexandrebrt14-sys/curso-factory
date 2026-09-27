@@ -161,6 +161,9 @@ nunca la figura.
   gerundio.
 - Dato con la fuente dentro de la frase de lectura. El número entra limpio; la fuente va a la
   lista de fuentes del itinerario.
+- El vocabulario interno del equipo, repetido. Una palabra que el equipo de producción usa entre
+  sí no se vuelve vocabulario de la lección: di el sentido llano y nunca apoyes la frase en la
+  misma etiqueta más de una vez por lección.
 
 ## Antes de entregar, comprueba
 

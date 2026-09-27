@@ -114,6 +114,10 @@ diga o que ficou resolvido e por que o próximo grupo vem agora.
 - Travessão em prosa, title case, vírgula antes do "e" em enumeração simples, emoji.
 - Culpa no leitor: o sujeito da falha é o processo ("o lembrete não saiu").
 
+Corrija cada ocorrência acima do limite abaixo, trocando a palavra pelo sentido.
+
+{bloco_vocabulario}
+
 ### 6. Evidência
 
 Todo número precisa de origem na pesquisa ou rótulo de exemplo ilustrativo na própria frase.

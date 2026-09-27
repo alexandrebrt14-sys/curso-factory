@@ -220,6 +220,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
 - Aparato de fonte que interrompa a leitura. A referência completa vai para a lista de
   fontes da trilha; sujeito, período e condição permanecem quando mudam a interpretação.
 
+{bloco_vocabulario}
+
 ## Antes de entregar, confira
 
 1. A primeira linha é o subtítulo: uma frase só, e ela diz o que o aluno vai conseguir fazer.

@@ -87,6 +87,9 @@ alternancia programada de frase corta y larga.
   "implementar").
 - Raya en prosa, mayúsculas de título, coma antes de "y" en enumeración simple, emoji.
 - Culpa al lector: el sujeto de la falla es el proceso ("el recordatorio no salió").
+- El vocabulario interno del equipo, repetido. Una palabra que el equipo de producción usa entre
+  sí no se vuelve vocabulario de la lección: di el sentido llano y nunca apoyes la frase en la
+  misma etiqueta más de una vez por lección.
 
 ### 6. Evidencia
 

@@ -340,6 +340,18 @@ class Orchestrator:
             "minutos_alvo": str(max(5, round(alvo_max / 180))),
         }
 
+    @staticmethod
+    def _blocos_de_instrucao() -> dict[str, str]:
+        """Blocos de instrução montados da configuração, para redação e revisão.
+
+        Cada bloco sai vazio quando a regra correspondente não está configurada,
+        e o prompt segue como antes. O texto e os números vêm do YAML; o prompt
+        só marca o lugar (`{bloco_vocabulario}`).
+        """
+        from src.validators.vocabulario_checker import instrucao_para_prompt
+
+        return {"bloco_vocabulario": instrucao_para_prompt()}
+
     # ── etapas ──────────────────────────────────────────────────────────
 
     def _step_research(self, course: Course) -> str:
@@ -556,6 +568,7 @@ class Orchestrator:
             "previous_lessons": "; ".join(anteriores) or "nenhuma (esta abre o módulo)",
             "next_lessons": "; ".join(seguintes) or "nenhuma (esta fecha o módulo)",
             **self._tetos_da_aula(),
+            **self._blocos_de_instrucao(),
         }
         contexto = research_context[:DRAFT_RESEARCH_CONTEXT_CHARS]
         titulo_proposto, bruto = self._extrair_titulo_proposto(
@@ -758,6 +771,7 @@ class Orchestrator:
         if not unidades:
             return ""
         resumo_analise = (analysis or "")[:REVIEW_ANALYSIS_CHARS]
+        blocos = self._blocos_de_instrucao()
         revisadas: list[str] = []
         relatorios: list[str] = []
 
@@ -782,6 +796,7 @@ class Orchestrator:
                 unit_title=titulo or f"unidade {k}",
                 unit_position=f"{k} de {len(unidades)}",
                 analysis_summary=resumo_analise,
+                **blocos,
             )
             texto_revisado, relatorio = separar_relatorio_de_revisao(saida)
             if relatorio:

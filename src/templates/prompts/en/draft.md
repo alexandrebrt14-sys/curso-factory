@@ -161,6 +161,9 @@ never the figure.
   futures.
 - Data with the source inside the reading sentence. The number enters clean; the source goes
   to the track's source list.
+- The team's internal vocabulary, repeated. A word the production team uses among itself does
+  not become the lesson's vocabulary: say the plain meaning, and never lean on the same label
+  more than once per lesson.
 
 ## Before delivering, check
 

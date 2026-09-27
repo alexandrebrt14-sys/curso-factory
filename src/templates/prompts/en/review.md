@@ -85,6 +85,9 @@ apply programmed alternation of short and long sentences.
   "impact" as a verb, nominalization ("the implementation of" becomes "implement").
 - Em dash in prose, title case, Oxford comma in simple enumerations, emoji.
 - Blaming the reader: the subject of the failure is the process ("the reminder did not go out").
+- The team's internal vocabulary, repeated. A word the production team uses among itself does
+  not become the lesson's vocabulary: say the plain meaning, and never lean on the same label
+  more than once per lesson.
 
 ### 6. Evidence
 

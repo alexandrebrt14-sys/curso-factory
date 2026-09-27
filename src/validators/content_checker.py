@@ -55,6 +55,7 @@ from src.validators.lexicos_loader import (
     tetos_da_aula,
 )
 from src.validators.rules_loader import rules_list, validation_section
+from src.validators.vocabulario_checker import check_vocabulario
 
 
 @dataclass
@@ -1249,7 +1250,25 @@ def check_content(
     #     comprovado. Regras em `validation.didatica` do YAML.
     erros.extend(erros_de_didatica(text, mod, unidade="trilha" if unidade == "trilha" else "aula"))
 
+    # 17. Palavras de uso exagerado (27/09/2026): limite por aula de cada
+    #     família em `validation.palavras_de_uso_exagerado`. Sem a seção, nada.
+    erros.extend(erros_de_vocabulario(text, mod))
+
     return erros
+
+
+def erros_de_vocabulario(text: str, module_name: str = "") -> list[ContentError]:
+    """Achados do `vocabulario_checker` no formato do relatório de conteúdo."""
+    resultado = check_vocabulario(text)
+    return [
+        ContentError(
+            tipo=a.tipo,
+            categoria="vocabulario",
+            mensagem=f"[{a.regra}] {a.mensagem}",
+            modulo=module_name or "aula",
+        )
+        for a in resultado.achados
+    ]
 
 
 def erros_de_didatica(
