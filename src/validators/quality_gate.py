@@ -335,10 +335,9 @@ class QualityGate:
         conjunto, não de cada aula de mil palavras: cobradas por aula, elas
         reprovavam toda aula do molde novo (wave 5, 02/09/2026).
         """
-        if geo_config is None:
-            return []
-        achados = check_content(text, rotulo, geo_config=geo_config, unidade="modulo")
-        return [a for a in achados if a.categoria == "geo"]
+        from src.validators.content_checker import erros_de_geo
+
+        return erros_de_geo(text, geo_config, rotulo)
 
     def check_html(
         self,

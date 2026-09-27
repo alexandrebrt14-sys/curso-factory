@@ -1274,65 +1274,8 @@ def check_content(
             )
         )
 
-    # 14. Citabilidade GEO (opt-in via client.yaml geo_2026) — ver
-    #     docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
-    #     habilitado = erro bloqueante; desabilitado = aviso não-bloqueante.
-    if geo_config is not None:
-        playbook = bool(getattr(geo_config, "princeton_playbook_enabled", False))
-        geo_tipo = "error" if playbook else "warning"
-
-        min_cite = int(getattr(geo_config, "min_cite_sources", 3))
-        min_stats = int(getattr(geo_config, "min_statistics", 5))
-        min_quotes = int(getattr(geo_config, "min_quotations", 1))
-        require_capsule = bool(getattr(geo_config, "require_answer_capsule", True))
-
-        n_cite = _count_cite_sources(text)
-        if n_cite < min_cite:
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
-                    f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
-                    modulo=mod,
-                )
-            )
-
-        n_stats = _count_statistics(text)
-        if n_stats < min_stats:
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
-                    f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
-                    modulo=mod,
-                )
-            )
-
-        n_quotes = _count_quotations(text)
-        if n_quotes < min_quotes:
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
-                    f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
-                    modulo=mod,
-                )
-            )
-
-        if require_capsule and not _has_answer_capsule(text):
-            erros.append(
-                ContentError(
-                    tipo=geo_tipo,
-                    categoria="geo",
-                    mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
-                    f"({CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras) detectado após "
-                    "um heading. Lift de citação 1,9×.",
-                    modulo=mod,
-                )
-            )
+    # 14. Citabilidade GEO (opt-in via client.yaml geo_2026): ver `erros_de_geo`.
+    erros.extend(erros_de_geo(text, geo_config, mod))
 
     # 15. Abertura e distração (R1 a R9, 08/09/2026): abertura em H1, subtítulo
     #     e parágrafo; sem "faça agora", "mockup no seu negócio", "checkpoint",
@@ -1396,6 +1339,76 @@ def erros_de_vocabulario(text: str, module_name: str = "") -> list[ContentError]
         )
         for a in resultado.achados
     ]
+
+
+def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError]:
+    """Camada de citabilidade GEO (opt-in via `geo_2026` do client.yaml).
+
+    Ver docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
+    habilitado = erro bloqueante; desabilitado = aviso não-bloqueante. Função
+    própria desde 27/09/2026: o `QualityGate.check_geo` rodava o `check_content`
+    inteiro sobre o curso (abertura, didática, bastidor, clichês...) só para
+    ficar com os achados desta camada.
+    """
+    erros: list[ContentError] = []
+    if geo_config is None:
+        return erros
+    playbook = bool(getattr(geo_config, "princeton_playbook_enabled", False))
+    geo_tipo = "error" if playbook else "warning"
+
+    min_cite = int(getattr(geo_config, "min_cite_sources", 3))
+    min_stats = int(getattr(geo_config, "min_statistics", 5))
+    min_quotes = int(getattr(geo_config, "min_quotations", 1))
+    require_capsule = bool(getattr(geo_config, "require_answer_capsule", True))
+
+    n_cite = _count_cite_sources(text)
+    if n_cite < min_cite:
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
+                f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
+                modulo=mod,
+            )
+        )
+
+    n_stats = _count_statistics(text)
+    if n_stats < min_stats:
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
+                f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
+                modulo=mod,
+            )
+        )
+
+    n_quotes = _count_quotations(text)
+    if n_quotes < min_quotes:
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
+                f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
+                modulo=mod,
+            )
+        )
+
+    if require_capsule and not _has_answer_capsule(text):
+        erros.append(
+            ContentError(
+                tipo=geo_tipo,
+                categoria="geo",
+                mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
+                f"({CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras) detectado após "
+                "um heading. Lift de citação 1,9×.",
+                modulo=mod,
+            )
+        )
+    return erros
 
 
 def erros_de_didatica(
