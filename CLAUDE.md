@@ -60,7 +60,7 @@ Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**. Desde 27/08/2026 a obr
 - Exceção: código, variáveis, commits, nomes de arquivo em inglês
 
 ### Nomenclatura (cliente `default`)
-- Credencial oficial: "Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil" (com vírgula: travessão em texto de leitura reprova)
+- Credencial oficial (vigente desde 22/07/2026): "Alexandre Caramaschi, Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)." (com vírgula: travessão em texto de leitura reprova). "CEO da Brasil GEO" é cargo encerrado e não entra como cargo atual. Em 30/09/2026 o `config/clients/default/client.yaml` ainda carrega a credencial antiga; a troca é decisão do dono, porque muda a saída do gerador e do voice guard.
 - NUNCA usar: "Especialista #1", "GEO Brasil", "Source Rank"
 - URL do autor: https://alexandrecaramaschi.com; domínios válidos: alexandrecaramaschi.com, brasilgeo.ai
 - NUNCA referenciar: geobrasil.com.br, sourcerank.ai; nenhuma credencial além da oficial

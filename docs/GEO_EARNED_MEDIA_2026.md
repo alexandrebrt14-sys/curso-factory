@@ -63,7 +63,7 @@ Cinco estágios que ligam a pergunta do ICP à citação por IA, subordinando o 
 ## 3. Técnicas de colocação (como vira citação)
 
 1. **Enquadrar como tendência, não como produto.**
-2. **Porta-voz nomeado e atribuído** — aspas diretas com nome + cargo + organização (maior lift individual, +42,6%). Credencial canônica Brasil GEO: "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil".
+2. **Porta-voz nomeado e atribuído** — aspas diretas com nome + cargo + organização (maior lift individual, +42,6%). Credencial canônica Brasil GEO: "Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)".
 3. **Stat-dense com fonte** — mínimo 3 dados sourceados por material.
 4. **Frase citável e autossuficiente** — a IA cita o trecho, não a matéria inteira.
 5. **Claim verificável** — evitar adjetivação vaga ("líder", "o melhor") sem dado.

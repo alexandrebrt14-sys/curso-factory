@@ -8,7 +8,7 @@
 
 ---
 
-> **Status (2026-09-08, v2.1.0):** refatoração de robustez concluída. CLI com 11 subcomandos e console script `curso-factory` instalável; 513 testes verde; lint e formato (ruff) obrigatórios no CI; I/O de ledger, cache e checkpoint atômico e tolerante a arquivo corrompido; rascunhos por cliente. Identidade do cliente 100% via `ClientContext` (sem hardcode). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+> **Status (2026-09-30, pacote 2.1.0):** CLI com 13 subcomandos e console script `curso-factory` instalável; 671 testes coletados, 664 passando e 7 pulados em 30/09/2026 (`python -m pytest -q`); lint e formato (ruff) obrigatórios no CI; I/O de ledger, cache e checkpoint atômico e tolerante a arquivo corrompido; rascunhos por cliente. Identidade do cliente 100% via `ClientContext` (sem hardcode). A régua de escrita vem da fonte única [escrita-empreendedor](https://github.com/alexandrebrt14-sys/escrita-empreendedor) pelo ponteiro `DIRETRIZ_EDITORIAL.md`, sincronizado em 27/09/2026. Desde 27/09 a aula gerada é um guia aplicável, com orçamento de narrativa e fonte recente datada (ver [CHANGELOG.md](CHANGELOG.md)). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 A revisão editorial de 10/09/2026 está em [Escrita de cursos com evidência](docs/ESCRITA_SEO_GEO.md).
 Os prompts em português aplicam os critérios de fidelidade da fonte 1.8.0, sem alterar
@@ -65,7 +65,7 @@ Scripts Python que fazem `str.replace()` ou regex para inserir conteúdo em pont
 
 ### 5. Falta de validação de qualidade de conteúdo
 
-Sem validação, aulas podem ser publicadas rasas, com o topo carregado ou com clichês proibidos. O **content_checker.py** mede cada aula contra a régua da fonte de estilo (`config/lexicos.json`, `tetos.D`): extensão, H2 e H3 por H2, teto de apoios visuais, faixa de parágrafo, hierarquia de títulos, verbos de Bloom, marcadores de evidência e clichês proibidos. Desde 08/09/2026 o **abertura_checker.py** cobra também as regras R1 a R9 (abertura em título, subtítulo e parágrafo; sem exercício "faça agora", "mockup no seu negócio", card "checkpoint", "requer verificação" ou LGPD; fontes só no rodapé), no Markdown e na publicação do TSX. Desde 22/09/2026 o **didatica_checker.py** mede o que fica entre os parágrafos e ao redor deles (cadência de abertura, jargão sem glosa, fecho com ação e critério, enxurrada de versão, título como promessa, subtítulo sem fórmula, fichas no registro da aula), quase tudo como aviso; especificação e medição em `docs/ESPECIFICACAO_DIDATICA_20260922.md`.
+Sem validação, aulas podem ser publicadas rasas, com o topo carregado ou com clichês proibidos. O **content_checker.py** mede cada aula contra a régua da fonte de estilo (`config/lexicos.json`, `tetos.D`): extensão, H2 e H3 por H2, teto de apoios visuais, faixa de parágrafo, hierarquia de títulos, verbos de Bloom, marcadores de evidência e clichês proibidos. Desde 08/09/2026 o **abertura_checker.py** cobra também as regras R1 a R9 (abertura em título, subtítulo e parágrafo; sem exercício "faça agora", "mockup no seu negócio", card "checkpoint", "requer verificação" ou LGPD; fontes só no rodapé), no Markdown e na publicação do TSX. Desde 22/09/2026 o **didatica_checker.py** mede o que fica entre os parágrafos e ao redor deles (cadência de abertura, jargão sem glosa, fecho com ação e critério, enxurrada de versão, título como promessa, subtítulo sem fórmula, fichas no registro da aula), quase tudo como aviso; especificação e medição em `docs/ESPECIFICACAO_DIDATICA_20260922.md`. Em 27/09/2026 entraram seis verificações novas, todas como aviso e configuráveis por cliente no `client.yaml`: `guia_aplicavel_checker.py` (passos no imperativo, verificação, erro comum, decisão condicional e critério de pronto), `narrativa_checker.py` (teto de 20% de parágrafos com marcas de história no cliente default), `fontes_recentes_checker.py` (data por fonte e janela de recência), `vocabulario_checker.py` (palavras de uso exagerado), `crosslink_checker.py` (links entre aulas conferidos contra o catálogo do portal) e `planejamento_checker.py` (tamanho e ordem do curso).
 
 ### 6. Agentes falhando por API
 
@@ -420,6 +420,12 @@ python cli.py clients
 # Validar rascunhos via QualityGate (diretório de drafts)
 python cli.py validate output/drafts/
 
+# Tabela de proveniência (frases com número, data, versão ou produto) de um rascunho
+python cli.py proveniencia <arquivo>
+
+# Conferir data, recência e estado atual das fontes de uma aula
+python cli.py fontes-recentes <aula> --proveniencia <tabela>
+
 # Converter rascunhos JSON em páginas TSX (defaults: <output_dir>/drafts e
 # <output_dir>/converted_from_drafts do cliente)
 python cli.py drafts-to-tsx
@@ -438,6 +444,9 @@ python cli.py detection-report --since 2026-05-01 --client default
 
 # Limpar cache
 python cli.py cache-clear
+
+# Certificado verificável para um aluno
+python cli.py certify --help
 
 # Logging em DEBUG (tracebacks completos das etapas) em qualquer comando
 python cli.py -v create "Nome do Curso"
@@ -512,7 +521,10 @@ curso-factory/
 │       ├── html_validator.py  # Tags, acessibilidade, semântica
 │       ├── link_checker.py    # Acentos em URLs, links internos
 │       ├── visual_density.py  # Peso visual por módulo (camada visual_density do YAML)
-│       └── quality_gate.py    # Gate unificado de 5 camadas com auto-fix
+│       ├── abertura_checker.py, didatica_checker.py, guia_aplicavel_checker.py,
+│       │   narrativa_checker.py, fontes_recentes_checker.py, vocabulario_checker.py,
+│       │   crosslink_checker.py, planejamento_checker.py  # Avisos por aula (08/09 a 27/09/2026)
+│       └── quality_gate.py    # Gate unificado com auto-fix
 ├── tests/
 │   ├── fixtures/sample_course.json
 │   └── test_generators.py
@@ -538,6 +550,13 @@ curso-factory/
 | [docs/GEO_EARNED_MEDIA_2026.md](docs/GEO_EARNED_MEDIA_2026.md) | Por que earned media domina a citação por IA (84% vs paid 0,3%); framework EMGE e KPIs K-EM. |
 | [docs/DOUTRINA_VISUAL_CURSOS.md](docs/DOUTRINA_VISUAL_CURSOS.md) | **Antes de gerar curso.** Os três tetos de peso visual, os seis tipos de bloco que o gerador emite, o que o parser promove sozinho e os quatro lugares que precisam mudar juntos ao criar um tipo novo. |
 | [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
+| [DIRETRIZ_EDITORIAL.md](DIRETRIZ_EDITORIAL.md) e [GUIA_ESCRITA_HUMANIZADA.md](GUIA_ESCRITA_HUMANIZADA.md) | Ponteiros para a fonte única de escrita (`escrita-empreendedor`), com hash e data de sincronização. Não edite o conteúdo aqui. |
+| [docs/ESCRITA_SEO_GEO.md](docs/ESCRITA_SEO_GEO.md) | Como os critérios de fidelidade da fonte chegam aos prompts do pipeline. |
+| [docs/ESPECIFICACAO_DIDATICA_20260922.md](docs/ESPECIFICACAO_DIDATICA_20260922.md) | Especificação e medição do `didatica_checker.py`. |
+| [docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md](docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md) | Por que a aula virou guia aplicável, com orçamento de narrativa e fonte recente. |
+| [docs/AUDITORIA_PIPELINE_20260927.md](docs/AUDITORIA_PIPELINE_20260927.md) | Auditoria de 53 achados do pipeline e o que a refatoração de 27/09/2026 corrigiu. |
+| [docs/GOVERNANCA_PUBLICACAO_CURSO.md](docs/GOVERNANCA_PUBLICACAO_CURSO.md) | Fluxo de publicação de curso no portal e disciplina de git. |
+| [wiki/index.md](wiki/index.md) | Base de conhecimento do repositório: decisões, conceitos, entidades e clientes. |
 | [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
 
 ---
@@ -565,7 +584,7 @@ curso-factory/
 
 ## Autor
 
-**Alexandre Caramaschi** — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil.
+**Alexandre Caramaschi**, Chief Strategy Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq).
 
 - [alexandrecaramaschi.com](https://alexandrecaramaschi.com)
 - [LinkedIn](https://www.linkedin.com/in/alexandrecaramaschi/)

@@ -1,5 +1,15 @@
 # Changelog
 
+## 30/09/2026: documentação alinhada ao estado do código
+
+- README com o status medido em 30/09 (13 subcomandos da CLI, 671 testes coletados, 664
+  passando e 7 pulados), os comandos `proveniencia`, `fontes-recentes` e `certify`, os
+  verificadores de 27/09 e os documentos novos na tabela de documentação.
+- Credencial canônica do autor atualizada no README, no `CLAUDE.md`, na página do cliente
+  default do wiki e nos modelos de `docs/` que prescrevem bio ou JSON-LD. O
+  `config/clients/default/client.yaml` segue com a credencial antiga até decisão do dono,
+  porque a troca muda a saída do gerador e do voice guard.
+
 ## 27/09/2026: aula-guia aplicável, orçamento de narrativa e fonte recente
 
 Pedido do dono: a aula gerada vira guia de como fazer, a história só entra quando carrega o

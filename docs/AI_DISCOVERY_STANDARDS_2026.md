@@ -1,6 +1,6 @@
 # AI Discovery Standards 2026 — curso-factory
 
-> Versão 1.0 · 17-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi, CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)
+> Versão 1.0 · 17-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi, Founder da Brasil GEO)
 > Fonte: Wave 4 da pesquisa GEO/SEO 2026 (Perplexity sonar-deep-research + WebFetch validação em IETF, W3C, Schema.org, llmstxt.org, c2pa.org, modelcontextprotocol.io)
 
 ---
@@ -621,7 +621,7 @@ Sitemap: https://curso.brasilgeo.ai/sitemap-index.xml
 ```txt
 # curso-factory — Brasil GEO
 
-> Curso prático de vibe coding, Claude Code, MCP e arquitetura de produtos com IA. Mantido por Alexandre Caramaschi (CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil).
+> Curso prático de vibe coding, Claude Code, MCP e arquitetura de produtos com IA. Mantido por Alexandre Caramaschi, Founder da Brasil GEO e Chief Strategy Officer da Nuvini (Nasdaq: NVNI).
 
 ## Catálogo principal
 
@@ -682,7 +682,7 @@ Sitemap: https://curso.brasilgeo.ai/sitemap-index.xml
       "@type": "Person",
       "@id": "https://alexandrecaramaschi.com/#person",
       "name": "Alexandre Caramaschi",
-      "jobTitle": "CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil",
+      "jobTitle": "Founder da Brasil GEO",
       "url": "https://alexandrecaramaschi.com",
       "worksFor": { "@id": "https://brasilgeo.ai/#organization" }
     },

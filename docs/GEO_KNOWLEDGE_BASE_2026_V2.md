@@ -1,6 +1,6 @@
 # GEO Knowledge Base 2026 V2 — curso-factory
 
-> Versão 2.0 · 17-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)
+> Versão 2.0 · 17-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi, Founder da Brasil GEO)
 >
 > Delta sobre a V1 (13-05-2026): novos papers de 2026 verificados via arXiv, vendor landscape pós-funding Q1/Q2 2026 (US$ 192M em rodadas confirmadas), framework rigoroso de medição com 14 KPIs canônicos e desmonte de acrônimos infundados que circulam em material PT-BR secundário.
 >
