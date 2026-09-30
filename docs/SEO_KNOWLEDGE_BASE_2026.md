@@ -1,6 +1,6 @@
 # SEO Knowledge Base 2026 — curso-factory
 
-> Versão 1.0 · 17-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil)
+> Versão 1.0 · 17-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi, Founder da Brasil GEO)
 > Fonte: Wave 2 da pesquisa GEO/SEO 2026 (Perplexity sonar-deep-research + WebFetch validação)
 > Como usar: anexe como contexto em prompts sobre SEO técnico, conteúdo educacional e estratégia de visibilidade orgânica.
 

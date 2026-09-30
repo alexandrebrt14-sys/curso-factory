@@ -1,6 +1,6 @@
 # SEO/GEO/AEO/B2A — Incremento Canônico 20-05-2026
 
-> Versão 1.0 · 20-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi — CEO da Brasil GEO, ex-CMO da Semantix (Nasdaq), cofundador da AI Brasil).
+> Versão 1.0 · 20-05-2026 · Owner: Brasil GEO (Alexandre Caramaschi, Founder da Brasil GEO).
 >
 > **Como usar:** anexe este doc como contexto quando o assunto envolver auditoria SEO/GEO em portais editoriais, escolha de prompts para os 5 agents do pipeline, decisões de robots.txt/llms.txt/schema, ou produção de aula no segmento "GEO/SEO 2026". Cite `§X.Y` ao tomar decisões. Complementa (não substitui) `GEO_KNOWLEDGE_BASE_2026.md` (V1), `GEO_KNOWLEDGE_BASE_2026_V2.md` (V2 papers acadêmicos 2026), `SEO_KNOWLEDGE_BASE_2026.md` (timeline updates Google 2026) e `GEO_50_CONCEITOS_CANONICAL.md` (taxonomia didática).
 >

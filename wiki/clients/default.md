@@ -23,8 +23,12 @@ pré-refactor multi-tenant (até 2026-04-18). Output em
 ## Identidade canônica
 
 - **Autor**: Alexandre Caramaschi.
-- **Título completo**: "CEO da Brasil GEO, ex-CMO da Semantix
-  (Nasdaq), cofundador da AI Brasil".
+- **Título completo** (vigente desde 22/07/2026): "Chief Strategy
+  Officer da Nuvini (Nasdaq: NVNI), Founder da Brasil GEO, cofundador
+  da NAIA e cofundador da AI Brasil. Foi CMO da Semantix (Nasdaq)."
+  Em 30/09/2026 o `config/clients/default/client.yaml` ainda carrega a
+  credencial antiga ("CEO da Brasil GEO"), inclusive como fragmento
+  canônico do voice guard; a troca espera decisão do dono.
 - **URL canônica**: https://alexandrecaramaschi.com.
 - **Marca**: Brasil GEO (nunca "GEO Brasil").
 - **Domínios válidos**: alexandrecaramaschi.com, brasilgeo.ai.
