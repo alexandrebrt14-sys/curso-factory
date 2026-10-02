@@ -15,6 +15,25 @@ conduzem a aula (desde 27/09/2026, `docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`
 e a diferença entre projeção, exemplo hipotético e resultado observado ao simplificar.
 O detalhe da apuração fica no material de pesquisa; o limite que muda a decisão fica na prosa.
 
+## Padrão de armazenamento, velocidade e memória (obrigatório desde 02/10/2026)
+
+Toda ideia nova chega com o custo de armazenamento, velocidade e memória medido, sobretudo quando envolve imagem, vídeo, áudio, dependência ou arquivo gerado. Prefira sempre a opção mais barata e escalável que mantenha a qualidade. A decisão é do dono e vem de 02/10/2026, no landing-page-geo:
+- o `public/` chegou a 1,83 GB;
+- o acervo de criativos chegou a 1.029 peças, das quais 102 foram usadas em anúncio;
+- o teto de memória do CI subiu para 10 GiB por causa de um SDK (`googleapis`) usado só pelo autenticador.
+
+As regras:
+1. **Mídia pesada fica fora do git.** Vídeo e áudio acima de 5 MB vão para armazenamento de objetos (Cloudflare R2 ou Vercel Blob, com URL estável) ou direto para a plataforma (YouTube, Meta, Google Ads). O repositório guarda o manifesto e a capa.
+2. **Imagem vai no tamanho exibido**, em WebP, AVIF ou JPEG com qualidade 82, com miniatura de até 40 KB. A matriz de origem não é versionada.
+3. **Produção em lote nasce com teto e poda.** Isso vale para criativos, prints e figuras de curso. O que não entrou em anúncio nem em página em 30 dias sai do repositório, e o texto fica registrado.
+4. **Gerar pouco, medir e ampliar a vencedora.** É mais barato em créditos de API, em disco e em revisão.
+5. **Dependência pelo que se usa.** Importe o subpacote que entrega a função. Antes de adotar um SDK grande, meça no tsc (`--extendedDiagnostics`) e no início a frio.
+6. **Dado gerado grande fica fora do grafo de tipos.** Um JSON acima de 1 MB importado pelo código passa a ser string ou leitura em tempo de execução.
+7. **Teto de memória, de tamanho ou de tempo só sobe com a causa medida** e com o plano de redução no mesmo PR.
+8. **O PR com mídia ou dependência pesada traz os números:** tamanho somado, onde a mídia fica hospedada, custo mensal estimado, efeito no build e no CI, e a alternativa mais barata considerada.
+
+Regra completa em `~/AGENTS.md`, seção "Armazenamento, velocidade e memória"; histórico em `landing-page-geo/governance/decisions/armazenamento-velocidade-e-memoria.md`.
+
 ## Prompts e contratos
 
 O resolvedor lê `src/templates/prompts/pt-br/`; a raiz de `prompts/` guarda só o `tutor.md`
