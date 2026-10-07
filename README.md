@@ -11,7 +11,7 @@
 > **Status (2026-09-30, pacote 2.1.0):** CLI com 13 subcomandos e console script `curso-factory` instalável; 671 testes coletados, 664 passando e 7 pulados em 30/09/2026 (`python -m pytest -q`); lint e formato (ruff) obrigatórios no CI; I/O de ledger, cache e checkpoint atômico e tolerante a arquivo corrompido; rascunhos por cliente. Identidade do cliente 100% via `ClientContext` (sem hardcode). A régua de escrita vem da fonte única [escrita-empreendedor](https://github.com/alexandrebrt14-sys/escrita-empreendedor) pelo ponteiro `DIRETRIZ_EDITORIAL.md`, sincronizado em 27/09/2026. Desde 27/09 a aula gerada é um guia aplicável, com orçamento de narrativa e fonte recente datada (ver [CHANGELOG.md](CHANGELOG.md)). Para usar como base de outro portal educacional: ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 A revisão editorial de 10/09/2026 está em [Escrita de cursos com evidência](docs/ESCRITA_SEO_GEO.md).
-Os prompts em português aplicam os critérios de fidelidade da fonte 1.8.0, sem alterar
+Os prompts em português aplicam os critérios de fidelidade da fonte 1.9.0, sem alterar
 tetos ou contratos do pipeline.
 
 ## O que é
@@ -551,6 +551,7 @@ curso-factory/
 | [docs/DOUTRINA_VISUAL_CURSOS.md](docs/DOUTRINA_VISUAL_CURSOS.md) | **Antes de gerar curso.** Os três tetos de peso visual, os seis tipos de bloco que o gerador emite, o que o parser promove sozinho e os quatro lugares que precisam mudar juntos ao criar um tipo novo. |
 | [docs/FINOPS.md](docs/FINOPS.md) | Pricing, cost tracking, budget guard, análise de custos por curso. |
 | [DIRETRIZ_EDITORIAL.md](DIRETRIZ_EDITORIAL.md) e [GUIA_ESCRITA_HUMANIZADA.md](GUIA_ESCRITA_HUMANIZADA.md) | Ponteiros para a fonte única de escrita (`escrita-empreendedor`), com hash e data de sincronização. Não edite o conteúdo aqui. |
+| [GUIA_DESIGN_LAYOUT_UX.md](GUIA_DESIGN_LAYOUT_UX.md) | **Antes de mexer em template ou montar o curso na landing.** Design, layout e experiência de uso do curso gerado: hierarquia, navegação entre capítulos, alvo de toque, foco, movimento reduzido, figura com `alt` e dimensões, painel de números, metadados e a lista de conferência em 390 px nos dois temas. |
 | [docs/ESCRITA_SEO_GEO.md](docs/ESCRITA_SEO_GEO.md) | Como os critérios de fidelidade da fonte chegam aos prompts do pipeline. |
 | [docs/ESPECIFICACAO_DIDATICA_20260922.md](docs/ESPECIFICACAO_DIDATICA_20260922.md) | Especificação e medição do `didatica_checker.py`. |
 | [docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md](docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md) | Por que a aula virou guia aplicável, com orçamento de narrativa e fonte recente. |

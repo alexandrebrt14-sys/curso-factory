@@ -1,8 +1,8 @@
 # Diretriz editorial deste repositório (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: 6547f0ee6548d56a177b09c61984235e01fb5bf6b48617672368443cfdc28623
-sincronizado-em: 2026-09-27
+hash-fonte: c2ce4f0c58867b75aa8c8315f203e2c8673fb3251ea39e9972b169be30f425d8
+sincronizado-em: 2026-10-07
 
 A régua de escrita, os moldes de página, a tabela de tetos, o perfil do leitor e o glossário
 vivem na fonte acima. Este arquivo não repete nenhum número nem nenhuma lista. Quando algo aqui
@@ -21,6 +21,10 @@ três passadas, vícios de português, estruturas proibidas — passou a viver n
   `accordion`, `template`, `useCase`, `tabs`, `slides`, `tipCard`, `stepGuide`, `codeDownload`),
   o payload de cada uma e as armadilhas do renderizador estão em `docs/DOUTRINA_VISUAL_CURSOS.md`.
   `code`, `prompt` e `sourceNote` são aparato, não respiro, e não contam como peça visual.
+- **Camada visual do curso gerado.** Hierarquia, navegação entre capítulos, alvo de toque,
+  foco, movimento reduzido, figura com `alt` e dimensões, painel de números e metadados da
+  página, com critério numerado e o estado do que já virou template, estão em
+  `GUIA_DESIGN_LAYOUT_UX.md` (07/10/2026), adaptação da `DIRETRIZ_DESIGN_LAYOUT_UX.md` da fonte.
 - **Teto de parágrafo em caracteres, no motor.** A fonte mede parágrafo em palavras (a faixa
   da aula está em `tetos.D.paragrafo` do espelho). O motor de cursos mede também em caracteres
   (1.200), porque o bloco de prosa da landing rola dentro de si mesmo num celular de 390 pontos.
@@ -92,8 +96,8 @@ Os números (teto de narrativa, janela de recência, pisos por tipo de aula) viv
 
 Pedido do dono dos repositórios em 08/09/2026, literal na decisão
 `wiki/decisions/abertura-direta-sem-distracao-20260908.md`: o topo carregado dispersa o leitor
-e o card no meio compete com a leitura. A fonte de estilo 1.8.0 (ponteiro acima, ressincronizado
-em 27/09/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
+e o card no meio compete com a leitura. A fonte de estilo 1.9.0 (ponteiro acima, ressincronizado
+em 07/10/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
 `config/lexicos.json`, que o `abertura_checker` lê e soma aos padrões próprios; esta seção é o
 resumo local, e em divergência a fonte vence.
 
@@ -160,6 +164,14 @@ Os tetos do tipo D e os limiares são iguais aos da 1.7.1; a 1.8.0 acrescenta o 
 `didatica_checker` ainda não lê: os números de didática deste repositório seguem em
 `config/quality_rules.yaml > validation.didatica` (pendência registrada na decisão
 `wiki/decisions/boas-praticas-de-escrita-20260927.md`).
+
+## Compatibilidade editorial de 07/10/2026
+
+Espelho regerado a partir do commit `37289f40d2dc9edbcefd06cd8742cef52df7fdbc`, versão 1.9.0.
+Tetos, limiares e listas são iguais aos da 1.8.0: a 1.9.0 acrescenta à fonte a
+`DIRETRIZ_DESIGN_LAYOUT_UX.md` (critérios V1 a V54 de camada visual), que aqui vira o
+`GUIA_DESIGN_LAYOUT_UX.md`, adaptado ao que a fábrica gera: página de curso, capítulo em
+acordeão, peças visuais, metadados e certificado. Nenhum número de escrita mudou.
 
 ## Como sincronizar
 
