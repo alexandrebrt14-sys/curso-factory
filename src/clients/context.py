@@ -224,15 +224,19 @@ class PipelineConfig:
 
 @dataclass
 class Geo2026Config:
-    """Rubrica de citabilidade GEO (Generative Engine Optimization).
+    """Rubrica de verificabilidade e recorte para GEO (Generative Engine Optimization).
 
-    Liga a validacao por contagem das tecnicas de redacao com lift de
-    citacao medido (Aggarwal/Princeton, AutoGEO ICLR 2026). Ver
-    docs/GEO_REDACAO_CHECKLIST_2026.md e docs/GEO_KNOWLEDGE_BASE_2026_V3.md.
+    Revisada em 07/10/2026 (docs/GEO_REDACAO_CHECKLIST_2026.md, revisão 2.0).
+    Até essa data a docstring prometia "lift de citação medido" pelas
+    técnicas do paper de 2023; o reteste de 07/09/2026 (arXiv 2609.07559) não
+    reproduziu o efeito em dez famílias de motores atuais. As contagens agora
+    medem verificabilidade (fonte atribuída) e recorte (cápsula de resposta),
+    e nunca prometem citação.
 
-    Default OFF para preservar o comportamento de clientes nao-GEO: quando
-    desabilitado, as contagens viram avisos; quando habilitado, viram erros
-    bloqueantes no quality gate.
+    Default OFF para preservar o comportamento de clientes não-GEO. Ligado
+    (`princeton_playbook_enabled`, nome mantido por compatibilidade do YAML),
+    fontes atribuídas e cápsula viram erro bloqueante; estatísticas e
+    citações diretas continuam aviso em qualquer caso.
     """
 
     princeton_playbook_enabled: bool = False

@@ -49,6 +49,13 @@ De três a seis perguntas que o dono do negócio faria depois de terminar a tril
 com resposta de duas a quatro frases, direta, sem preâmbulo. Pergunta em negrito, resposta em
 prosa logo abaixo.
 
+Cubra formas diferentes da mesma dúvida, como o dono digitaria na busca: a comparação entre
+opções, o custo ou o tempo, o "funciona no meu caso" e o erro comum. Duas perguntas que pedem a
+mesma resposta viram uma. Cada resposta se sustenta sozinha, sem "como vimos acima", porque
+ela é recortada para o bloco de perguntas da página e para os dados estruturados. Esse bloco
+existe para o leitor e para a busca clássica; nenhum estudo mostrou que ele aumente a citação
+em IA, e a resposta nunca promete mais que as aulas mostram.
+
 ## Fontes
 
 Uma linha por fonte, no formato `Nome da fonte, título ou relatório, data de publicação` (dia,

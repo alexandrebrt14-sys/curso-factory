@@ -33,7 +33,7 @@ Liste de 5 a 10 tags que descrevam o conteúdo, priorizando:
 - Habilidades e competências desenvolvidas
 - Formato e metodologia pedagógica
 
-**Tags canônicas de GEO** (adicione quando o conteúdo for sobre, ou otimizado para, Generative Engine Optimization): `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`. Use `citation-ready` quando o módulo cumprir a rubrica de citabilidade (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule) — ver `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+**Tags canônicas de GEO** (adicione quando o conteúdo for sobre, ou otimizado para, Generative Engine Optimization): `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`. Use `citation-ready` quando o módulo tiver fontes atribuídas com nome e data e seções que abrem pela resposta e se sustentam sozinhas (revisão 2.0 de 07/10/2026 em `docs/GEO_REDACAO_CHECKLIST_2026.md`). A tag descreve verificabilidade e recorte; ela não prevê citação, e contagem de estatísticas ou de falas não entra no critério.
 
 ### 3. Pré-requisitos
 

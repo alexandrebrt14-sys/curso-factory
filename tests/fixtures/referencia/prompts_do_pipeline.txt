@@ -98,6 +98,20 @@ editoriais. Pesquisa de opinião não fornece pesos de ranking. Citação, menç
 apoio à afirmação, visita e venda são observações distintas. Faixa de palavras, quantidade
 de referências ou metadados não garantem presença em uma resposta de IA.
 
+Liste as variantes da pergunta central que o aluno digitaria (sinônimos, a comparação entre
+opções, o custo, o "como fazer" e o "vale a pena"), porque o motor desdobra a consulta em
+buscas internas e recupera fontes para cada uma. O estudo de 19/09/2026 (arXiv 2609.23162,
+observacional) registrou menção de marca entre 2,8% e 3,8% quando nem domínio nem marca
+apareciam no caminho de recuperação, contra 91,4% a 100% quando o domínio era citado e a marca
+aparecia nas buscas internas do motor. Ao trazer estado da arte de GEO, registre também estes limites, com a
+data: as alavancas do paper de 2023 (estatísticas, citações e falas atribuídas) não moveram
+citação em dez famílias de motores no reteste de 07/09/2026 (arXiv 2609.07559), então entram
+só como origem do conceito; os motores quase não citam as mesmas URLs entre si e 67% das URLs
+trocaram no mesmo motor de um dia para o outro (arXiv 2609.22655, 19/09/2026), então medição
+de visibilidade de uma rodada só, num motor só, não sustenta conclusão; e o mesmo intento em
+outro idioma expõe outro conjunto de fontes (arXiv 2609.24407, 21/09/2026), então dado medido
+em inglês não descreve o Google em português sem ressalva.
+
 Os níveis de confiança abaixo descrevem a procedência disponível. Eles não substituem
 a avaliação do método, da população pertinente e do apoio à afirmação escrita.
 
@@ -192,6 +206,14 @@ Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não po
 mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
 
 ## O molde da aula
 
@@ -389,6 +411,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
 - Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
 - Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Autoria enganosa: byline, credencial ou "revisado por especialista" que a pesquisa não traga
+  com nome de pessoa real não entra (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
   entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
@@ -551,6 +575,14 @@ mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite 
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
 
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
+
 ## O molde da aula
 
 A aula ensina UMA coisa a fazer, até o fim, e é LEITURA: o aluno termina sabendo fazer, sabendo
@@ -747,6 +779,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
 - Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
 - Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Autoria enganosa: byline, credencial ou "revisado por especialista" que a pesquisa não traga
+  com nome de pessoa real não entra (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
   entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
@@ -937,6 +971,14 @@ mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite 
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
 
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
+
 ## O molde da aula
 
 A aula ensina UMA coisa a fazer, até o fim, e é LEITURA: o aluno termina sabendo fazer, sabendo
@@ -1133,6 +1175,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
 - Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
 - Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Autoria enganosa: byline, credencial ou "revisado por especialista" que a pesquisa não traga
+  com nome de pessoa real não entra (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
   entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
@@ -1295,6 +1339,14 @@ mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite 
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
 
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
+
 ## O molde da aula
 
 A aula ensina UMA coisa a fazer, até o fim, e é LEITURA: o aluno termina sabendo fazer, sabendo
@@ -1491,6 +1543,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
 - Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
 - Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Autoria enganosa: byline, credencial ou "revisado por especialista" que a pesquisa não traga
+  com nome de pessoa real não entra (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
   entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.
@@ -1684,6 +1738,13 @@ de fato usam. Nome de API cru sem a explicação prática não entra.
 De três a seis perguntas que o dono do negócio faria depois de terminar a trilha, cada uma
 com resposta de duas a quatro frases, direta, sem preâmbulo. Pergunta em negrito, resposta em
 prosa logo abaixo.
+
+Cubra formas diferentes da mesma dúvida, como o dono digitaria na busca: a comparação entre
+opções, o custo ou o tempo, o "funciona no meu caso" e o erro comum. Duas perguntas que pedem a
+mesma resposta viram uma. Cada resposta se sustenta sozinha, sem "como vimos acima", porque
+ela é recortada para o bloco de perguntas da página e para os dados estruturados. Esse bloco
+existe para o leitor e para a busca clássica; nenhum estudo mostrou que ele aumente a citação
+em IA, e a resposta nunca promete mais que as aulas mostram.
 
 ## Fontes
 
@@ -2025,7 +2086,7 @@ Liste de 5 a 10 tags que descrevam o conteúdo, priorizando:
 - Habilidades e competências desenvolvidas
 - Formato e metodologia pedagógica
 
-**Tags canônicas de GEO** (adicione quando o conteúdo for sobre, ou otimizado para, Generative Engine Optimization): `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`. Use `citation-ready` quando o módulo cumprir a rubrica de citabilidade (Cite Sources ≥3, Statistics ≥5, Quotation ≥1, answer capsule) — ver `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+**Tags canônicas de GEO** (adicione quando o conteúdo for sobre, ou otimizado para, Generative Engine Optimization): `geo-2026`, `citation-ready`, `aeo`, `aso`, `b2a`, `entity-drift`, `query-fan-out`. Use `citation-ready` quando o módulo tiver fontes atribuídas com nome e data e seções que abrem pela resposta e se sustentam sozinhas (revisão 2.0 de 07/10/2026 em `docs/GEO_REDACAO_CHECKLIST_2026.md`). A tag descreve verificabilidade e recorte; ela não prevê citação, e contagem de estatísticas ou de falas não entra no critério.
 
 ### 3. Pré-requisitos
 
@@ -2216,6 +2277,8 @@ diga o que ficou resolvido e por que o próximo grupo vem agora.
   extremamente, realmente): troque pelo dado ou corte.
 - Atribuição vaga ("especialistas apontam", "estudos indicam"): nomeie a fonte que está na
   pesquisa ou corte a afirmação. Nunca invente a fonte.
+- Autoria enganosa: byline, credencial, selo de "revisado por especialista" ou fala atribuída a
+  pessoa que a pesquisa não traz saem do texto (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais", "descubra o
   poder"): corte.
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
@@ -2270,6 +2333,14 @@ Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não po
 mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
 
 ## Formato de saída
 
@@ -2505,6 +2576,8 @@ diga o que ficou resolvido e por que o próximo grupo vem agora.
   extremamente, realmente): troque pelo dado ou corte.
 - Atribuição vaga ("especialistas apontam", "estudos indicam"): nomeie a fonte que está na
   pesquisa ou corte a afirmação. Nunca invente a fonte.
+- Autoria enganosa: byline, credencial, selo de "revisado por especialista" ou fala atribuída a
+  pessoa que a pesquisa não traz saem do texto (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais", "descubra o
   poder"): corte.
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
@@ -2559,6 +2632,14 @@ Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não po
 mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
 
 ## Formato de saída
 

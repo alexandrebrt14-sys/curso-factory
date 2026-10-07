@@ -89,7 +89,7 @@ def test_capsula_mensagem_e_codigo_usam_a_mesma_faixa() -> None:
 
     cfg = Geo2026Config(princeton_playbook_enabled=True, require_answer_capsule=True)
     erros = check_content("## Título\n\n- item solto\n", "x", geo_config=cfg, unidade="modulo")
-    msg = next(e.mensagem for e in erros if "capsule" in e.mensagem.lower())
+    msg = next(e.mensagem for e in erros if "cápsula" in e.mensagem.lower())
     assert f"{CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras" in msg
 
 

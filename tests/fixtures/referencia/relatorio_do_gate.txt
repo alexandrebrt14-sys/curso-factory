@@ -7,7 +7,7 @@ FAIL Aula 1.2: Responder em cinco minutos: 2 erro(s), 19 aviso(s)
       - Conteúdo [crosslinks]: [crosslink-piso] 0 curso(s) do portal ligado(s) na aula; o piso é 2 cursos diferentes. O link entra na prosa, onde o assunto aparece, e no fecho.
 OK   Trilha 1: Resposta rápida: 0 erro(s), 3 aviso(s)
 FAIL curso (GEO): 2 erro(s), 0 aviso(s)
-      - Cite Sources: 1 fonte(s) externa(s) atribuída(s) (mínimo GEO: 3). Lift de citação +40% (até +115% fora do top-1).
-      - Answer capsule ausente: nenhum parágrafo resposta-primeiro (18 a 75 palavras) detectado após um heading. Lift de citação 1,9×.
+      - Fontes atribuídas: 1 fonte(s) externa(s) com nome e data (mínimo: 3). Sem fonte o leitor não confere a afirmação. Sinal de verificabilidade, não alavanca de citação: o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito em dez motores atuais.
+      - Cápsula de resposta ausente: nenhum parágrafo que abra pela resposta (18 a 75 palavras) logo após um heading. Cada seção precisa se sustentar sozinha, com condição e exceção na mesma frase, porque o motor generativo recorta trechos soltos.
 FAIL curso (sequência): 1 erro(s), 1 aviso(s)
       - [crosslink-curso] O curso liga para 0 curso(s) distinto(s) do portal; o piso é 8.

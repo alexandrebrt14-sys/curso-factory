@@ -2,13 +2,36 @@
 
 > **Documento canônico operacional.** Rubrica derivada de **lifts de citação medidos** em papers de 2024-2026 (Aggarwal/Princeton KDD 2024, AutoGEO ICLR 2026, GEO-SFE/Berkeley 2025, AgenticGEO mar/2026) e estudos de mercado verificados até 03-jun-2026.
 >
-> **Versão:** 1.0 · 2026-06-03 · Owner: Brasil GEO (Alexandre Caramaschi)
+> **Revisão 2.0 (07/10/2026):** a seção logo abaixo do cabeçalho vence o restante. Nenhuma técnica desta rubrica promete citação em IA.
+>
+> **Versão:** 2.0 · 2026-10-07 (1.0 de 2026-06-03) · Owner: Brasil GEO (Alexandre Caramaschi)
 >
 > **Para que serve:** transformar a orientação genérica "cite fontes" em uma rubrica **com número-alvo por técnica e o lift empírico que justifica cada uma**. É a resposta direta à pergunta "como o conteúdo deve ser escrito para ter o maior ganho possível em Generative Engine Optimization".
 >
 > **Precedência (08/09/2026):** as regras de abertura e distração R1 a R9 (`DIRETRIZ_EDITORIAL.md`) vencem esta rubrica onde colidirem. Fonte inline discreta "(Autor, Ano)" continua valendo para Cite Sources; o que NÃO entra mais é fonte em card, callout ou linha "Fonte:" no meio do texto: a lista de fontes vive num único bloco pequeno no rodapé (R7). Citação de especialista, se entrar, entra como prosa com atribuição, nunca como card. A camada GEO é cobrada sobre o curso inteiro (trilha e rodapé), não por aula: nenhuma cota de fonte, estatística ou citação por aula, e os mínimos do curso vêm do bloco `geo_2026` do `client.yaml` (no cliente default, citação direta tem piso 0 desde 03/09/2026). Citação atribuída em prosa, sem travessão de atribuição (27/09/2026).
 >
 > **Como usar:** este é o material que o prompt do redator (`src/templates/prompts/pt-br/draft.md`) carimba e que o `content_checker.py` valida por contagem. Complementa, sem substituir, o registro de linguagem simples da fonte de estilo (HSM, HBR e MIT Sloan valem como rigor de evidência, não como registro), os princípios de andragogia de Knowles e a barreira de acentuação PT-BR. Para a teoria por trás dos números, ver `GEO_KNOWLEDGE_BASE_2026_V3.md`; para os conceitos numerados, `GEO_50_CONCEITOS_CANONICAL.md`.
+
+
+---
+
+## Revisão 2.0 (07/10/2026): o que mudou e o que esta rubrica deixou de afirmar
+
+Esta seção vence o restante do documento onde colidirem. A versão 1.0 justificava cada técnica por um "lift de citação" medido em 2023-2024 e transformava as contagens em alvo. Três estudos do segundo semestre de 2026 tiram o chão dessa leitura, e o gate foi corrigido no mesmo commit desta revisão (`src/validators/content_checker.py > erros_de_geo`).
+
+| Regra antiga (1.0) | Regra nova (2.0) | Fonte e data |
+|---|---|---|
+| Estatística, citação de especialista e fonte inline aumentam a citação (+32,8%, +42,6%, +40%) | Fonte atribuída e número com origem são **verificabilidade**: o leitor confere a afirmação. Nenhuma contagem promete citação. Estatísticas e falas viram **aviso**, nunca erro, e nunca alvo a cumprir | arXiv 2609.07559 (Bajemon e Rochet, 07/09/2026): as alavancas de 2023 não moveram citação em dez famílias de motores atuais; escore de página sem consultar o motor teve correlação de 0,11 com a citação dentro da consulta |
+| Copiar o checklist de técnicas garante ganho | O ganho de cada heurística cai quando os concorrentes adotam a mesma tática; em categoria disputada, a tática da moda é a primeira a perder efeito | arXiv 2608.27631 (Sourirajan e outros, 27/08/2026) |
+| Reescrever a página é a alavanca principal | Estar no conjunto que o motor recupera pesa mais que polir texto: cobrir as **variantes da pergunta** (o motor desdobra a consulta em buscas internas) e estar nas fontes de terceiros que o motor consulta | arXiv 2609.23162 (19/09/2026, observacional): menção de 2,8% (GPT) e 3,8% (Gemini) sem domínio nem marca na recuperação; 91,4% e 100% com domínio citado e marca nas buscas internas |
+| Answer capsule rende 1,9× | A seção que abre pela resposta e se sustenta sozinha continua obrigatória, agora pelo motivo que se mantém: o motor recorta trechos soltos, e a condição precisa viajar na mesma frase | Doutrina editorial (COPY_PROMPT_PREFIX, item 27); o 1,9× saiu da mensagem do gate |
+| FAQ e schema como alavanca de citação | FAQ e dados estruturados servem ao leitor e à busca clássica e descrevem só o que está visível. O `page.tsx` deixou de emitir `FAQPage` vazio e instrutor sem nome | Ahrefs (maio/2026), já no curso; orientação do Google de 01/10/2026 |
+| Metadado gerado sai direto | Título, meta description, dados estruturados e texto alternativo gerados por IA passam por **checagem humana**; o `TsxGenerator.write` grava `REVISAO_HUMANA.md` com cada campo | Google Search Central, 01/10/2026 |
+| Autoria livre | Byline, credencial ou selo de "revisado por especialista" sem pessoa real é proibido nos prompts de redação e revisão | Google, alerta de 06/10/2026 |
+| Revisão trimestral | Curso publicado tem **próxima revisão** a cada 14 dias (`validation.revisao_publicacao.cadencia_revisao_dias`), com mudança editorial real | Profound (30/09/2026): meia-vida mediana da citação de 11 dias; 78% das páginas caem à metade em duas semanas |
+| Medir citação numa rodada | Visibilidade em IA se mede em várias rodadas, por motor, em português no Google Brasil | arXiv 2609.22655 (19/09/2026): 84,9% dos pares de motores sem URL em comum; 67% das URLs trocaram no mesmo motor em um dia. arXiv 2609.24407 (21/09/2026): 3,4% de domínios em comum entre inglês e chinês |
+
+O que continua igual: a rubrica de anti-invenção, a regra de não acrescentar número para parecer completo, o anti-padrão de keyword stuffing e a precedência das regras R1 a R9. As tabelas das seções 1 e 4 abaixo ficam como registro histórico da versão 1.0; a coluna de lift descreve o que os papers de 2023-2024 mediram, e não o que os motores de 2026 fazem.
 
 ---
 
@@ -53,7 +76,7 @@ A rubrica acima vira **gate automático**. Por módulo, com o `geo_2026.princeto
 | **Quotations** (citação direta atribuída) | **≥ 1** | blockquote com aspas + travessão de atribuição |
 | **Answer capsule** (BLUF após heading) | **≥ 1** por módulo | parágrafo curto (40-60 palavras) imediatamente após um H2 |
 
-Abaixo do mínimo: **erro bloqueante** quando o playbook está habilitado; **aviso** quando desabilitado (default conservador para clientes não-GEO). A contagem ignora blocos de código e metadados.
+Abaixo do mínimo, desde a revisão 2.0 (07/10/2026): fontes atribuídas e cápsula de resposta viram **erro bloqueante** quando o playbook está habilitado e **aviso** quando desabilitado; estatísticas e citações diretas são **sempre aviso**. A mensagem do gate não cita mais lift de citação. A contagem ignora blocos de código e metadados.
 
 ---
 

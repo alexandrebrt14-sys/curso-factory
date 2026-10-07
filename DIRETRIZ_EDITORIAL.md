@@ -1,7 +1,7 @@
 # Diretriz editorial deste repositório (ponteiro)
 
 fonte: https://github.com/alexandrebrt14-sys/escrita-empreendedor
-hash-fonte: c2ce4f0c58867b75aa8c8315f203e2c8673fb3251ea39e9972b169be30f425d8
+hash-fonte: f9c139ac16589c3b3f7bd6d8ecadfb6821f0f012c9ee2f0da3e49c3d0c521506
 sincronizado-em: 2026-10-07
 
 A régua de escrita, os moldes de página, a tabela de tetos, o perfil do leitor e o glossário
@@ -96,7 +96,7 @@ Os números (teto de narrativa, janela de recência, pisos por tipo de aula) viv
 
 Pedido do dono dos repositórios em 08/09/2026, literal na decisão
 `wiki/decisions/abertura-direta-sem-distracao-20260908.md`: o topo carregado dispersa o leitor
-e o card no meio compete com a leitura. A fonte de estilo 1.9.0 (ponteiro acima, ressincronizado
+e o card no meio compete com a leitura. A fonte de estilo 1.10.0 (ponteiro acima, ressincronizado
 em 07/10/2026) carrega as mesmas regras no bloco `aberturaEDistracao` do espelho
 `config/lexicos.json`, que o `abertura_checker` lê e soma aos padrões próprios; esta seção é o
 resumo local, e em divergência a fonte vence.
@@ -172,6 +172,28 @@ Tetos, limiares e listas são iguais aos da 1.8.0: a 1.9.0 acrescenta à fonte a
 `DIRETRIZ_DESIGN_LAYOUT_UX.md` (critérios V1 a V54 de camada visual), que aqui vira o
 `GUIA_DESIGN_LAYOUT_UX.md`, adaptado ao que a fábrica gera: página de curso, capítulo em
 acordeão, peças visuais, metadados e certificado. Nenhum número de escrita mudou.
+
+## Compatibilidade editorial de 07/10/2026 (1.10.0)
+
+Espelho regerado a partir do commit `79191d4`, versão 1.10.0. Tetos e limiares são iguais aos
+da 1.9.0. A 1.10.0 revisa a §10 da fonte (busca e IA no segundo semestre de 2026) e acrescenta
+a regra 46, "a página não promete citação nem posição", com quatro chaves novas no espelho
+(`promessaDeCitacaoRx`, `alavancaDeCitacaoRx`, `negacaoAntesRx`, `negacaoJanela`). O
+`content_checker` lê essas chaves e emite o aviso `promessa-de-citacao` em toda unidade, com a
+mesma regra de negação e de menção entre aspas da fonte.
+
+## SEO e GEO nos algoritmos (07/10/2026)
+
+Regra específica deste repositório, sem número próprio: a fábrica não promete citação em IA
+por técnica de escrita. Fonte atribuída e número com origem são cobrados como
+verificabilidade; a seção abre pela conclusão e se sustenta sozinha porque o motor generativo
+recorta trechos soltos (coerente com o item 27 do `COPY_PROMPT_PREFIX`); a aula e a FAQ cobrem
+as variantes da pergunta dentro do próprio escopo; autoria sem pessoa real não entra; e todo
+metadado gerado (título, descrição, dados estruturados, texto alternativo) passa por
+conferência humana antes de publicar. Regra antiga ao lado da nova, com fonte e data, na
+revisão 2.0 de `docs/GEO_REDACAO_CHECKLIST_2026.md`; aplicação por etapa em
+`docs/ESCRITA_SEO_GEO.md`; cadência de revisão em
+`config/quality_rules.yaml > validation.revisao_publicacao`.
 
 ## Como sincronizar
 

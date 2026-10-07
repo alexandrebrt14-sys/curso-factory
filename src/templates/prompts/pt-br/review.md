@@ -117,6 +117,8 @@ diga o que ficou resolvido e por que o próximo grupo vem agora.
   extremamente, realmente): troque pelo dado ou corte.
 - Atribuição vaga ("especialistas apontam", "estudos indicam"): nomeie a fonte que está na
   pesquisa ou corte a afirmação. Nunca invente a fonte.
+- Autoria enganosa: byline, credencial, selo de "revisado por especialista" ou fala atribuída a
+  pessoa que a pesquisa não traz saem do texto (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais", "descubra o
   poder"): corte.
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
@@ -161,6 +163,14 @@ Leia subtítulo, abertura, exemplo e legenda como trechos isolados. Eles não po
 mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite a ideia desta
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
+
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
 
 ## Formato de saída
 

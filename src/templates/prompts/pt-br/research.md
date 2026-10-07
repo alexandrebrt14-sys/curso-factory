@@ -91,6 +91,20 @@ editoriais. Pesquisa de opinião não fornece pesos de ranking. Citação, menç
 apoio à afirmação, visita e venda são observações distintas. Faixa de palavras, quantidade
 de referências ou metadados não garantem presença em uma resposta de IA.
 
+Liste as variantes da pergunta central que o aluno digitaria (sinônimos, a comparação entre
+opções, o custo, o "como fazer" e o "vale a pena"), porque o motor desdobra a consulta em
+buscas internas e recupera fontes para cada uma. O estudo de 19/09/2026 (arXiv 2609.23162,
+observacional) registrou menção de marca entre 2,8% e 3,8% quando nem domínio nem marca
+apareciam no caminho de recuperação, contra 91,4% a 100% quando o domínio era citado e a marca
+aparecia nas buscas internas do motor. Ao trazer estado da arte de GEO, registre também estes limites, com a
+data: as alavancas do paper de 2023 (estatísticas, citações e falas atribuídas) não moveram
+citação em dez famílias de motores no reteste de 07/09/2026 (arXiv 2609.07559), então entram
+só como origem do conceito; os motores quase não citam as mesmas URLs entre si e 67% das URLs
+trocaram no mesmo motor de um dia para o outro (arXiv 2609.22655, 19/09/2026), então medição
+de visibilidade de uma rodada só, num motor só, não sustenta conclusão; e o mesmo intento em
+outro idioma expõe outro conjunto de fontes (arXiv 2609.24407, 21/09/2026), então dado medido
+em inglês não descreve o Google em português sem ressalva.
+
 Os níveis de confiança abaixo descrevem a procedência disponível. Eles não substituem
 a avaliação do método, da população pertinente e do apoio à afirmação escrita.
 

@@ -1,5 +1,30 @@
 # Changelog
 
+## 07/10/2026: técnicas de GEO e SEO do segundo semestre de 2026 nos algoritmos
+
+Os achados de 01/07 a 07/10/2026 entraram no gate, nos prompts e no gerador. Regra antiga ao
+lado da nova, com fonte e data, na revisão 2.0 de `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+
+- **Gate `erros_de_geo`:** as mensagens deixaram de prometer lift de citação (+40%, +32,8%,
+  +42,6%, 1,9×). Fonte atribuída e cápsula de resposta seguem o playbook, como
+  verificabilidade e recorte; estatísticas e citações diretas viram aviso em qualquer caso. O
+  reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito das alavancas de 2023 em dez
+  famílias de motores.
+- **Regra 46 da fonte 1.10.0:** aviso `promessa-de-citacao` em toda unidade, com os padrões
+  lidos do espelho `config/lexicos.json`, negação na mesma frase e menção entre aspas
+  respeitadas como na fonte. Ponteiro e espelho ressincronizados com `escrita-empreendedor`
+  `79191d4` (1.10.0).
+- **Prompts pt-br:** pesquisa lista variantes da pergunta e registra com data os limites de
+  medição (arXiv 2609.23162, 2609.22655, 2609.24407); redação e revisão cobram seção que se
+  sustenta sozinha, variantes da pergunta dentro do escopo da aula e vetam autoria enganosa
+  (Google, 06/10/2026); a FAQ da trilha cobre formas diferentes da mesma dúvida sem prometer
+  citação; a tag `citation-ready` deixou de depender de contagem de estatística.
+- **Gerador:** `TsxGenerator.write` grava `REVISAO_HUMANA.md` com título, meta description,
+  JSON-LD, texto alternativo, autoria e próxima revisão (Google Search Central, 01/10/2026);
+  `page.tsx` só emite `FAQPage` com perguntas e `instructor` com pessoa real.
+- **Configuração:** `validation.revisao_publicacao.cadencia_revisao_dias: 14` (Profound,
+  30/09/2026: meia-vida mediana da citação de 11 dias).
+
 ## 07/10/2026: design, layout e experiência de uso do curso gerado
 
 Guia novo `GUIA_DESIGN_LAYOUT_UX.md`, a partir do guia "Frontends com vibecoding" (trilhas 1,

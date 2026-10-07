@@ -45,6 +45,14 @@ mais que a explicação. Perguntas semelhantes não pedem novas aulas; respeite 
 aula e a progressão das anteriores e seguintes. Nenhuma técnica de escrita garante ranking
 ou citação. Os tetos recebidos são critérios editoriais locais, não pesos de buscadores.
 
+Cada seção abre pela conclusão dela e se sustenta sozinha, com público, condição e exceção na
+mesma frase, porque o motor generativo recorta trechos soltos. Dentro do
+escopo da aula, responda as formas diferentes com que o aluno faria a mesma pergunta (outra
+palavra, a comparação, o custo), sem abrir aula nova para cada uma. Estatística, fala entre
+aspas e fonte entram para o aluno conferir a afirmação, nunca para "aumentar a chance de
+citação": o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito dessas alavancas em dez
+motores atuais.
+
 ## O molde da aula
 
 A aula ensina UMA coisa a fazer, até o fim, e é LEITURA: o aluno termina sabendo fazer, sabendo
@@ -218,6 +226,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   "em suma", "cabe destacar". "Porque", "por isso", "mas", "além disso" são livres.
 - Adjetivo vazio (robusto, crucial, estratégico, inovador, poderoso): troque pelo dado.
 - Atribuição vaga ("especialistas apontam", "estudos mostram"): nomeie a fonte ou corte.
+- Autoria enganosa: byline, credencial ou "revisado por especialista" que a pesquisa não traga
+  com nome de pessoa real não entra (Google, alerta de 06/10/2026).
 - Escassez fabricada e convite vazio ("vagas limitadas", "não perca", "saiba mais").
 - Clichê de máquina ("nos dias de hoje", "a boa notícia é", "vamos mergulhar", "é aí que
   entra"). A lista completa está no léxico da fonte de estilo e o gate reprova.

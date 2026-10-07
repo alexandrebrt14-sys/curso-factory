@@ -35,9 +35,28 @@ A revisão desta rodada cobre o caminho padrão em português e seu fallback na 
 
 Antes de preparar outro lote, confira o prompt que o resolvedor realmente carrega e a versão do léxico exportado. Registre na revisão a afirmação que mudou e a evidência que permite mudá-la.
 
+## O que mudou em 07/10/2026?
+
+Os achados de GEO e SEO do segundo semestre de 2026 entraram nos algoritmos da fábrica. Quem gera curso sente a diferença em cinco lugares:
+
+| Lugar | Regra nova | Fonte |
+|---|---|---|
+| Gate `erros_de_geo` | Fonte atribuída e cápsula de resposta continuam cobradas, como verificabilidade e recorte; estatísticas e falas viram aviso; nenhuma mensagem promete lift de citação | arXiv 2609.07559, 07/09/2026 |
+| Pesquisa, redação, revisão e trilha | Cobrir as variantes da pergunta dentro do escopo da aula e da FAQ; seção que se sustenta sozinha; limites de medição registrados com data | arXiv 2609.23162 e 2609.22655, 19/09/2026 |
+| Revisão e redação | Autoria, credencial ou selo de revisão sem pessoa real sai do texto | Google, 06/10/2026 |
+| `TsxGenerator.write` | Grava `REVISAO_HUMANA.md` com título, meta description, JSON-LD, texto alternativo, autoria e data da próxima revisão; `FAQPage` e instrutor só saem com conteúdo real | Google Search Central, 01/10/2026 |
+| `quality_rules.yaml` | `revisao_publicacao.cadencia_revisao_dias: 14` | Profound, 30/09/2026 |
+
+O quadro completo, com a regra antiga ao lado da nova, está na revisão 2.0 de `docs/GEO_REDACAO_CHECKLIST_2026.md`.
+
 ## Fontes
 
 - [Fonte editorial, diretriz e guia, commit de 10/09/2026](https://github.com/alexandrebrt14-sys/escrita-empreendedor/tree/2479179e199f768c4e96aebbadfa5d864523b34e).
 - [Pesquisa de SEO e IA, landing-page-geo #514](https://github.com/alexandrebrt14-sys/landing-page-geo/pull/514).
 - [Limites de medição, papers #63](https://github.com/alexandrebrt14-sys/papers/pull/63).
 - [Contrato da rubrica editorial, brasilgeo-worker #532](https://github.com/alexandrebrt14-sys/brasilgeo-worker/pull/532).
+- [Google Search Central, uso de IA generativa, revisão de 01/10/2026](https://developers.google.com/search/docs/fundamentals/using-gen-ai-content).
+- [arXiv 2609.07559, reteste das alavancas de GEO, 07/09/2026](https://arxiv.org/abs/2609.07559).
+- [arXiv 2609.23162, recuperação e menção, 19/09/2026](https://arxiv.org/abs/2609.23162).
+- [arXiv 2609.22655, sobreposição de citações entre motores, 19/09/2026](https://arxiv.org/abs/2609.22655).
+- [Profound, meia-vida da citação, 30/09/2026](https://www.tryprofound.com/blog/the-half-life-of-an-ai-citation-is-11-days).
