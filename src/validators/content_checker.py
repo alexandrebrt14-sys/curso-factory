@@ -57,6 +57,7 @@ from src.validators.lexicos_loader import (
     regex_de_metalinguagem,
     tetos_da_aula,
 )
+from src.validators.mascaras import texto_de_leitura
 from src.validators.peso_visual_aula import check_peso_visual_aula
 from src.validators.rules_loader import rules_list, validation_section
 from src.validators.vocabulario_checker import check_vocabulario
@@ -628,7 +629,7 @@ def _strip_noise(text: str) -> str:
 
 
 def _count_cite_sources(text: str) -> int:
-    """Conta fontes externas atribuídas (Cite Sources do playbook Princeton).
+    """Conta fontes externas atribuídas (verificabilidade; antes "Cite Sources").
 
     Sinais: citação parentética com ano "(Gartner, 2025)", marcadores
     "Segundo X (ano)"/"de acordo com (ano)" e links markdown externos.
@@ -1278,6 +1279,10 @@ def check_content(
     # 14. Citabilidade GEO (opt-in via client.yaml geo_2026): ver `erros_de_geo`.
     erros.extend(erros_de_geo(text, geo_config, mod))
 
+    # 14b. Regra 46 da fonte 1.10.0 (07/10/2026): promessa de citação ou de
+    #      posição, e estatística ou fala dada como causa de citação. Aviso.
+    erros.extend(erros_de_promessa_de_citacao(text, mod))
+
     # 15. Abertura e distração (R1 a R9, 08/09/2026): abertura em H1, subtítulo
     #     e parágrafo; sem "faça agora", "mockup no seu negócio", "checkpoint",
     #     "requer verificação" nem LGPD; fonte só no rodapé da trilha. Erro
@@ -1342,14 +1347,92 @@ def erros_de_vocabulario(text: str, module_name: str = "") -> list[ContentError]
     ]
 
 
-def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError]:
-    """Camada de citabilidade GEO (opt-in via `geo_2026` do client.yaml).
+#: Por que a camada GEO deixou de prometer lift de citação (07/10/2026).
+#: Até esta data as mensagens diziam "Lift de citação +40%", "+32,8%",
+#: "+42,6%" e "1,9×", números do paper de GEO de 2023 (Aggarwal et al.,
+#: KDD 2024). O reteste de 07/09/2026 (arXiv 2609.07559, Bajemon e Rochet)
+#: não achou efeito de citações, estatísticas e falas atribuídas em nenhuma
+#: de dez famílias de motores atuais, e a correlação do escore de página com
+#: a citação dentro da mesma consulta foi de 0,11. O arXiv 2608.27631
+#: (27/08/2026) mostra que o ganho de cada heurística cai quando os
+#: concorrentes adotam a mesma tática. Fonte atribuída e número com origem
+#: continuam cobrados, agora como verificabilidade (o leitor confere a
+#: afirmação), nunca como alavanca de citação.
+GEO_RESSALVA_CITACAO = (
+    "Sinal de verificabilidade, não alavanca de citação: o reteste de "
+    "07/09/2026 (arXiv 2609.07559) não achou efeito em dez motores atuais."
+)
 
-    Ver docs/GEO_REDACAO_CHECKLIST_2026.md. Severidade depende do playbook:
-    habilitado = erro bloqueante; desabilitado = aviso não-bloqueante. Função
+
+@lru_cache(maxsize=1)
+def _regex_promessa_de_citacao() -> tuple[list[re.Pattern[str]], re.Pattern[str] | None, int]:
+    """Padrões da regra 46 da fonte 1.10.0, lidos do espelho `config/lexicos.json`.
+
+    Nunca escritos aqui à mão: a fonte (`escrita/lexicos.py`) os compila com
+    `re.I`, e este módulo faz o mesmo com o texto exportado. Espelho sem as
+    chaves (fonte anterior a 1.10.0) desliga a checagem em silêncio.
+    """
+    lx = carregar_lexicos()
+    padroes = [
+        re.compile(lx[k], re.I)
+        for k in ("promessaDeCitacaoRx", "alavancaDeCitacaoRx")
+        if isinstance(lx.get(k), str) and lx[k]
+    ]
+    negacao = lx.get("negacaoAntesRx")
+    neg_rx = re.compile(negacao, re.I) if isinstance(negacao, str) and negacao else None
+    janela = int(lx.get("negacaoJanela", 40) or 40)
+    return padroes, neg_rx, janela
+
+
+def promessas_de_citacao(text: str) -> list[str]:
+    """Promessa de citação ou posição e alavanca de 2023 dada como causa (regra 46).
+
+    Mesma lógica de `escrita/prosa.py > _promessas_de_citacao` (fonte 1.10.0,
+    07/10/2026): negação na mesma frase, até `negacaoJanela` caracteres antes,
+    inverte o sentido; trecho entre aspas é menção e não conta.
+    """
+    padroes, neg_rx, janela = _regex_promessa_de_citacao()
+    uso = texto_de_leitura(text)
+    achados: list[str] = []
+    for rx in padroes:
+        for m in rx.finditer(uso):
+            antes = uso[max(0, m.start() - janela) : m.start()]
+            if neg_rx is None or not neg_rx.search(antes):
+                achados.append(m.group(0))
+    return achados
+
+
+def erros_de_promessa_de_citacao(text: str, mod: str = "") -> list[ContentError]:
+    """Regra 46 como aviso consultivo, em toda unidade (a fonte também só avisa)."""
+    return [
+        ContentError(
+            tipo="warning",
+            categoria="promessa-de-citacao",
+            mensagem=f"[promessa-de-citacao] '{e}': regra 46; diga o que a página faz, "
+            "sem garantir citação ou posição.",
+            modulo=mod,
+        )
+        for e in promessas_de_citacao(text)
+    ]
+
+
+def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError]:
+    """Camada de verificabilidade e recorte (opt-in via `geo_2026` do client.yaml).
+
+    Ver docs/GEO_REDACAO_CHECKLIST_2026.md (revisão 2.0, 07/10/2026). Função
     própria desde 27/09/2026: o `QualityGate.check_geo` rodava o `check_content`
-    inteiro sobre o curso (abertura, didática, bastidor, clichês...) só para
-    ficar com os achados desta camada.
+    inteiro sobre o curso só para ficar com os achados desta camada.
+
+    Severidade desde 07/10/2026:
+
+    - fontes atribuídas e cápsula de resposta seguem o playbook (habilitado =
+      erro bloqueante; desabilitado = aviso). Fonte atribuída é exigência de
+      verificabilidade; seção que abre pela resposta e se sustenta sozinha
+      continua valendo porque o motor recorta trechos, não páginas;
+    - contagem de estatísticas e de citações diretas é SEMPRE aviso. Cobrar
+      densidade de número como preditor de citação deixou de ter apoio
+      (`GEO_RESSALVA_CITACAO`) e convidava a acrescentar número para passar
+      no gate, o defeito que a régua anti-invenção combate.
     """
     erros: list[ContentError] = []
     if geo_config is None:
@@ -1368,8 +1451,9 @@ def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError
             ContentError(
                 tipo=geo_tipo,
                 categoria="geo",
-                mensagem=f"Cite Sources: {n_cite} fonte(s) externa(s) atribuída(s) "
-                f"(mínimo GEO: {min_cite}). Lift de citação +40% (até +115% fora do top-1).",
+                mensagem=f"Fontes atribuídas: {n_cite} fonte(s) externa(s) com nome e data "
+                f"(mínimo: {min_cite}). Sem fonte o leitor não confere a afirmação. "
+                + GEO_RESSALVA_CITACAO,
                 modulo=mod,
             )
         )
@@ -1378,10 +1462,11 @@ def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError
     if n_stats < min_stats:
         erros.append(
             ContentError(
-                tipo=geo_tipo,
+                tipo="warning",
                 categoria="geo",
-                mensagem=f"Statistics: {n_stats} dado(s) quantitativo(s) "
-                f"(mínimo GEO: {min_stats}). Lift de citação +32,8%.",
+                mensagem=f"Dados quantitativos: {n_stats} (referência: {min_stats}). "
+                "Só acrescente número que a pesquisa traga com origem, data e "
+                "denominador; nunca para cumprir a contagem. " + GEO_RESSALVA_CITACAO,
                 modulo=mod,
             )
         )
@@ -1390,10 +1475,11 @@ def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError
     if n_quotes < min_quotes:
         erros.append(
             ContentError(
-                tipo=geo_tipo,
+                tipo="warning",
                 categoria="geo",
-                mensagem=f"Quotation: {n_quotes} citação(ões) direta(s) atribuída(s) "
-                f"(mínimo GEO: {min_quotes}). Citação de especialista é o maior lift, +42,6%.",
+                mensagem=f"Citações diretas: {n_quotes} (referência: {min_quotes}). "
+                "Fala entre aspas só entra se a pesquisa trouxer a frase literal "
+                "com nome e data. " + GEO_RESSALVA_CITACAO,
                 modulo=mod,
             )
         )
@@ -1403,9 +1489,11 @@ def erros_de_geo(text: str, geo_config, mod: str = "curso") -> list[ContentError
             ContentError(
                 tipo=geo_tipo,
                 categoria="geo",
-                mensagem="Answer capsule ausente: nenhum parágrafo resposta-primeiro "
-                f"({CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras) detectado após "
-                "um heading. Lift de citação 1,9×.",
+                mensagem="Cápsula de resposta ausente: nenhum parágrafo que abra pela "
+                f"resposta ({CAPSULA_PALAVRAS[0]} a {CAPSULA_PALAVRAS[1]} palavras) logo "
+                "após um heading. Cada seção precisa se sustentar sozinha, com condição "
+                "e exceção na mesma frase, porque o motor generativo recorta trechos "
+                "soltos.",
                 modulo=mod,
             )
         )

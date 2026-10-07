@@ -14,6 +14,11 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from src.generators.revisao_humana import (
+    REVISAO_ARQUIVO,
+    checklist_revisao_humana,
+    pendencias_de_autoria,
+)
 from src.models import CourseDefinition
 from src.validators.abertura_checker import AberturaError, check_abertura_definicao
 from src.validators.didatica_checker import check_didatica_definicao
@@ -171,6 +176,8 @@ class TsxGenerator:
     def __init__(self) -> None:
         #: Achados de didática da última renderização (só leitura; nunca reprova).
         self.achados_didatica: list[str] = []
+        #: Caminho do REVISAO_HUMANA.md gravado pelo último `write`.
+        self.ultimo_checklist_revisao: Path | None = None
         self.env = Environment(
             loader=FileSystemLoader(str(TEMPLATES_DIR)),
             # Templates são código (.tsx.j2) — select_autoescape mantém escape
@@ -326,6 +333,12 @@ class TsxGenerator:
 
         Cria target_dir/slug/ se não existir.
         Retorna tupla (page_path, layout_path).
+
+        Desde 07/10/2026 grava também `REVISAO_HUMANA.md` na mesma pasta, com
+        título, meta description, JSON-LD, texto alternativo e autoria para
+        conferência humana antes do PR na landing (orientação do Google de
+        01/10/2026; ver `src/generators/revisao_humana.py`). O caminho fica em
+        `self.ultimo_checklist_revisao`; o retorno não muda.
         """
         course_dir = target_dir / course.slug
         course_dir.mkdir(parents=True, exist_ok=True)
@@ -339,5 +352,12 @@ class TsxGenerator:
         layout_path = course_dir / "layout.tsx"
         layout_path.write_text(layout_content, encoding="utf-8")
         logger.info("layout.tsx gerado: %s", layout_path)
+
+        checklist_path = course_dir / REVISAO_ARQUIVO
+        checklist_path.write_text(checklist_revisao_humana(course), encoding="utf-8")
+        self.ultimo_checklist_revisao = checklist_path
+        for pendencia in pendencias_de_autoria(course):
+            logger.warning("autoria (%s): %s", course.slug, pendencia)
+        logger.info("checklist de revisão humana gerado: %s", checklist_path)
 
         return page_path, layout_path

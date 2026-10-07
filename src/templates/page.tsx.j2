@@ -1246,12 +1246,15 @@ export default function {{ component_name }}() {
                   name: "{{ company_name | js_escape }}",
                   url: "{{ dominio }}",
                 },
+{# Instrutor só com pessoa real (alerta do Google contra autoria enganosa, 06/10/2026). #}
+{% if autor_nome %}
                 instructor: {
                   "@type": "Person",
                   name: "{{ autor_nome | js_escape }}",
                   url: "{{ dominio }}",
                   jobTitle: "{{ autor_credencial | js_escape }}",
                 },
+{% endif %}
                 educationalLevel: "{{ nivel_display | js_escape }}",
                 inLanguage: "pt-BR",
                 numberOfCredits: {{ steps | length }},
@@ -1262,6 +1265,8 @@ export default function {{ component_name }}() {
                   courseWorkload: "PT{{ duracao_total_minutos }}M",
                 },
               },
+{# FAQPage só com perguntas visíveis: dado estruturado descreve a página e serve à busca clássica, sem promessa de citação em IA (07/10/2026). #}
+{% if faq %}
               {
                 "@type": "FAQPage",
                 mainEntity: [
@@ -1277,6 +1282,7 @@ export default function {{ component_name }}() {
 {% endfor %}
                 ],
               },
+{% endif %}
               {
                 "@type": "BreadcrumbList",
                 itemListElement: [

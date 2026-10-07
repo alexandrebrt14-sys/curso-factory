@@ -160,18 +160,21 @@ pipeline:
   humanize_target_stylometry_score: 75
   humanize_max_iters: 2
 
-# Citabilidade GEO (Generative Engine Optimization) — rubrica de redação com
-# lift de citação medido empiricamente. Ver docs/GEO_REDACAO_CHECKLIST_2026.md
-# e docs/GEO_KNOWLEDGE_BASE_2026_V3.md. Brasil GEO é cliente GEO-first → ligado.
-# Quando princeton_playbook_enabled=true, as contagens abaixo viram ERROS
-# bloqueantes no quality gate; quando false, viram avisos não-bloqueantes.
+# Verificabilidade e recorte para GEO (Generative Engine Optimization).
+# Revisão 2.0 de 07/10/2026 em docs/GEO_REDACAO_CHECKLIST_2026.md: os lifts do
+# paper de 2023 (+40%, +32,8%, +42,6%, 1,9×) saíram dos comentários e do gate,
+# porque o reteste de 07/09/2026 (arXiv 2609.07559) não achou efeito em dez
+# motores atuais. Brasil GEO é cliente GEO-first, então a camada fica ligada.
+# Com princeton_playbook_enabled=true (nome mantido por compatibilidade),
+# fontes atribuídas e cápsula de resposta viram ERRO bloqueante; estatísticas
+# e citações diretas são sempre aviso, nunca alvo a cumprir.
 geo_2026:
   princeton_playbook_enabled: true
-  min_cite_sources: 3          # fontes externas atribuídas (lift +40%, até +115% fora do top-1)
-  min_statistics: 5            # dados quantitativos com fonte+ano (lift +32,8%)
+  min_cite_sources: 3          # fontes externas com nome e data (verificabilidade)
+  min_statistics: 5            # referência de dados com origem; só aviso desde 07/10/2026
   min_quotations: 0            # 03/09/2026: citação direta só entra se a pesquisa trouxer a frase
                                # literal com nome e data; cobrar uma por curso convidava a inventar
-  require_answer_capsule: true # parágrafo resposta-primeiro após heading (lift 1,9×)
+  require_answer_capsule: true # seção abre pela resposta e se sustenta sozinha (o motor recorta trechos)
   schema_authority_stack_enabled: true  # @graph Article→Person→Organization→Wikidata
 
 # Crosslinks por aula (pedido do dono, 27/09/2026). Cada aula liga, na prosa e

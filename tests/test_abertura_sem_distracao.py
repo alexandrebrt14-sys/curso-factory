@@ -404,17 +404,17 @@ def test_step_definition_nao_exige_mais_checkpoint_nem_tres_secoes() -> None:
     assert len(curso.steps[0].content) == 1
 
 
-# ─── Vínculo com a fonte de estilo (1.9.0, bloco aberturaEDistracao) ───
+# ─── Vínculo com a fonte de estilo (1.10.0, bloco aberturaEDistracao) ───
 
 
 def test_espelho_da_fonte_preserva_o_bloco_de_abertura() -> None:
-    """A fonte 1.9.0 (07/10/2026) preserva as famílias R1 a R9 introduzidas na 1.6.0."""
+    """A fonte 1.10.0 (07/10/2026) preserva as famílias R1 a R9 introduzidas na 1.6.0."""
     import json
 
     from src.validators.lexicos_loader import familias_de_abertura
 
     dados = json.loads((PROJECT_ROOT / "config" / "lexicos.json").read_text(encoding="utf-8"))
-    assert dados["versao"] == "1.9.0"
+    assert dados["versao"] == "1.10.0"
     fam = familias_de_abertura()
     for chave in (
         "percursoAlternativo",

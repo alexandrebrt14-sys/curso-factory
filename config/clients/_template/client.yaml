@@ -115,15 +115,17 @@ output:
 # editorial:
 #   language: "pt-br"                  # | "en" | "es"
 
-# Citabilidade GEO (Generative Engine Optimization). Default OFF: as contagens
-# viram avisos não-bloqueantes. Ligue princeton_playbook_enabled para tornar a
-# rubrica de redação um gate bloqueante. Ver docs/GEO_REDACAO_CHECKLIST_2026.md.
+# Verificabilidade e recorte para GEO (Generative Engine Optimization). Default
+# OFF: as contagens viram avisos não-bloqueantes. Ligado, fontes atribuídas e
+# cápsula de resposta bloqueiam; estatísticas e citações diretas são sempre
+# aviso. Nenhuma contagem promete citação em IA (revisão 2.0 de 07/10/2026 em
+# docs/GEO_REDACAO_CHECKLIST_2026.md).
 # geo_2026:
 #   princeton_playbook_enabled: true   # erro bloqueante; false = só aviso
-#   min_cite_sources: 3                # fontes externas atribuídas
-#   min_statistics: 5                  # dados quantitativos com fonte+ano
-#   min_quotations: 1                  # citação direta de especialista nomeado
-#   require_answer_capsule: true       # parágrafo resposta-primeiro após heading
+#   min_cite_sources: 3                # fontes externas com nome e data
+#   min_statistics: 5                  # referência de dados com origem (só aviso)
+#   min_quotations: 0                  # fala literal só se a pesquisa trouxer (só aviso)
+#   require_answer_capsule: true       # seção abre pela resposta e se sustenta sozinha
 #   schema_authority_stack_enabled: false
 
 # Aula-guia aplicável, orçamento de narrativa e fonte recente. Default OFF:

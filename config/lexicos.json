@@ -1,5 +1,5 @@
 {
-  "versao": "1.9.0",
+  "versao": "1.10.0",
   "limiares": {
     "fraseMaxPalavras": 28,
     "fraseToleranciaPalavras": 60,
@@ -414,6 +414,10 @@
     "clique aqui",
     "aproveite agora"
   ],
+  "promessaDeCitacaoRx": "\\bgarant\\w*\\s+(?:de\\s+|que\\s+)?(?:a\\s+|o\\s+|sua\\s+|seu\\s+)?(?:cita[çc][ãa]o|men[çc][ãa]o|primeir[oa]\\s+(?:lugar|posi[çc][ãa]o|p[áa]gina)|topo\\s+d[ao]s?\\s+(?:google|busca|resultados))|\\b(?:cita[çc][ãa]o|men[çc][ãa]o|primeiro\\s+lugar|topo\\s+do\\s+google|resposta\\s+d[ao]\\s+(?:ia|chatgpt|gemini))\\s+garantid[oa]|\\bgarant\\w*\\s+que\\s+(?:o\\s+|a\\s+)?(?:chatgpt|gemini|google|ia|assistente)\\s+(?:cite|recomende|mostre|indique)",
+  "alavancaDeCitacaoRx": "\\b(?:estat[íi]sticas?|cita[çc][õo]es|falas?\\s+de\\s+especialistas?|n[úu]meros)\\s+(?:aumentam|elevam|multiplicam|garantem|turbinam|dobram)\\s+(?:a\\s+|as\\s+|sua\\s+|suas\\s+)?(?:chance\\s+de\\s+(?:ser\\s+)?)?(?:cita[çc][ãa]o|cita[çc][õo]es|citad[oa]|visibilidade)",
+  "negacaoAntesRx": "\\b(?:n[ãa]o|nenhum[a]?|ningu[ée]m|nunca|jamais|sem)\\b[^.!?;]*$",
+  "negacaoJanela": 40,
   "gerundismo": "\\b(vou|vai|vamos|vão|irei|irá|iremos|irão|posso|pode|podemos|podem|estarei|estará|estaremos|estarão)\\s+estar\\s+\\w+(ando|endo|indo)\\b",
   "bastidorDeVerificacao": [
     "verificamos que",
