@@ -129,6 +129,13 @@ Markup the converter recognizes: a table with a header row, a separator row and 
 of cells in every row, one line of text per table row; a numbered list starting at 1; an image
 in the form `![caption that states a fact](file.svg)`.
 
+Visual layer of each piece (`GUIA_DESIGN_LAYOUT_UX.md`): the caption states the fact the figure
+shows and doubles as its alternative text, so it describes what is in the image, never the file
+name or "Chart 1"; text that must be read never sits painted inside an image, it goes to the prose
+or the caption; each step in the list opens with the verb and ends with what the learner sees on
+screen when it worked; a number in a table cell carries unit and period ("12 min, August 2026");
+titles of tables, figures and step guides in sentence case, never all caps.
+
 ## Freedom of form
 
 The mold above fixes what the lesson must contain, not how to say it. An analogy from the

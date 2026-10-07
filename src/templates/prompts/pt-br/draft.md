@@ -172,6 +172,13 @@ Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de s
 mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista
 numerada começando em 1; imagem no formato `![legenda que afirma um fato](arquivo.svg)`.
 
+Camada visual de cada peça (`GUIA_DESIGN_LAYOUT_UX.md`): a legenda afirma o fato que a figura
+mostra e também é o texto alternativo dela, por isso descreve o que está na imagem, nunca o nome
+do arquivo nem "Gráfico 1"; texto que precise ser lido não fica pintado dentro de imagem, vai
+para a prosa ou para a legenda; cada passo da lista abre com o verbo e termina com o que o aluno
+vê na tela quando acertou; número em célula de tabela vem com unidade e período ("12 min, agosto
+de 2026"); título de tabela, de figura e de passo a passo em caixa baixa normal, sem caixa alta.
+
 {bloco_peso_visual}
 
 ## Blocos auxiliares: ficha, dica, caso, legenda

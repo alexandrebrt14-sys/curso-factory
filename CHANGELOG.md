@@ -1,5 +1,28 @@
 # Changelog
 
+## 07/10/2026: design, layout e experiência de uso do curso gerado
+
+Guia novo `GUIA_DESIGN_LAYOUT_UX.md`, a partir do guia "Frontends com vibecoding" (trilhas 1,
+3, 4, 5, 6, 7, 9 e 10) e coerente com as diretrizes irmãs de `escrita-empreendedor` (1.9.0),
+`Escrita-Empresarial` e `Geo-Leadlovers`, adaptado ao que a fábrica emite: página de curso,
+capítulo em acordeão, peças visuais, player e quiz da landing, painel de números, metadados e
+certificado. Critérios D1 a D46 com número, exemplos antes e depois, lista de conferência e
+estado da implementação.
+
+- **Template `page.tsx.j2`:** alvo de toque de 44 px no cabeçalho do capítulo, no botão de
+  concluir, na pergunta da FAQ e no botão de recomeçar (32 px no botão de copiar código); anel de
+  foco visível em `--accent`; `aria-expanded` e `aria-controls` no acordeão; transições
+  desligadas sob `prefers-reduced-motion`; figura por caminho de imagem sai como `<img>` com
+  `alt` igual à legenda, `width`, `height`, `loading="lazy"` e `decoding="async"`.
+- **Gerador:** `render_layout` avisa no log quando a descrição da página sai da faixa de 70 a
+  160 caracteres; não bloqueia.
+- **Prompts:** camada visual das peças em `draft.md` (pt-br, en, es) e `review.md` (legenda que
+  afirma e serve de alt, texto fora da imagem, passo com verificação visível, número com unidade
+  e período, títulos sem caixa alta). Referência do pipeline regravada.
+- **Teste novo** `tests/test_template_design_ux.py`; ponteiros da doutrina ressincronizados na
+  fonte 1.9.0 (só a versão muda no espelho); links em README, AGENTS.md, CLAUDE.md e
+  DIRETRIZ_EDITORIAL.md.
+
 ## 30/09/2026: documentação alinhada ao estado do código
 
 - README com o status medido em 30/09 (13 subcomandos da CLI, 671 testes coletados, 664

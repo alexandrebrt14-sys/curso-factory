@@ -138,6 +138,25 @@ class VisualDensityError(ValueError):
         )
 
 
+#: Faixa da descrição da página (GUIA_DESIGN_LAYOUT_UX.md, D46): abaixo do piso
+#: ela não diz o que o curso ensina; acima do teto o buscador corta. Só avisa,
+#: porque o acervo publicado entra por linha de base congelada.
+DESCRICAO_MIN_CHARS = 70
+DESCRICAO_MAX_CHARS = 160
+
+
+def _avisar_descricao_fora_da_faixa(course: CourseDefinition) -> None:
+    tamanho = len((course.descricao or "").strip())
+    if tamanho < DESCRICAO_MIN_CHARS or tamanho > DESCRICAO_MAX_CHARS:
+        logger.warning(
+            "descrição da página com %d caracteres, fora da faixa de %d a %d (%s)",
+            tamanho,
+            DESCRICAO_MIN_CHARS,
+            DESCRICAO_MAX_CHARS,
+            course.slug,
+        )
+
+
 def _pascal_case(value: str) -> str:
     """Converte kebab-case para PascalCase.
 
@@ -285,6 +304,7 @@ class TsxGenerator:
     def render_layout(self, course: CourseDefinition) -> str:
         """Renderiza layout.tsx a partir do template layout.tsx.j2."""
         template = self.env.get_template("layout.tsx.j2")
+        _avisar_descricao_fora_da_faixa(course)
 
         context = {
             "slug": course.slug,

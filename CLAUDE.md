@@ -2,7 +2,7 @@
 
 ## Atualização editorial de 10/09/2026
 
-A fonte vigente é `escrita-empreendedor` 1.8.0 (espelho ressincronizado em 27/09/2026), declarada em `DIRETRIZ_EDITORIAL.md`.
+A fonte vigente é `escrita-empreendedor` 1.9.0 (espelho ressincronizado em 07/10/2026), declarada em `DIRETRIZ_EDITORIAL.md`.
 Leia `docs/ESCRITA_SEO_GEO.md` e `AGENTS.md` para aplicar fidelidade de trechos, pesquisa
 orientada à decisão e preservação de fatos no pipeline em português. Esta orientação vence
 os resumos históricos de v4 sobre abertura, número como prova e métricas de estilo.
@@ -50,6 +50,9 @@ Mudanças aplicadas datadas de abril/2026 — refactors (multi-tenant, 5 waves),
 
 ### Frontend — layout, UX, animação, contraste (LEIA ANTES de mexer em template visual)
 Playbook canônico: **`docs/FRONTEND_PLAYBOOK.md`** — como este repo é um GERADOR, corrija sempre no TEMPLATE para que todo curso gerado herde a prática. Cobre: layout/UX/navegabilidade de conteúdo longo, régua de stacks premium 2026, **REGRA inviolável de contraste WCAG AA nos dois temas** (dark/light; spans inline; `pre` com fundo escuro fixo), **parágrafos justificados** (`text-justify`), **animação à prova de falha** (nunca esconder dependendo de JS; CSS `fill:both`; `prefers-reduced-motion`), **auditoria da SAÍDA renderizada** (dois temas, transições mortas, cache-bust, iterar até zerar) e catálogo de **erros frequentes** (inclui acentuação em geração longa). Defeito no template multiplica por todos os cursos — pegue cedo.
+
+### Design, layout e experiência de uso do curso gerado (LEIA ANTES de mexer em template, prompt de peça visual ou montagem)
+Guia: **`GUIA_DESIGN_LAYOUT_UX.md`** (07/10/2026, a partir do guia "Frontends com vibecoding" e da `DIRETRIZ_DESIGN_LAYOUT_UX.md` da fonte 1.9.0). Critérios D1 a D46 com número: hierarquia da página de curso, navegação entre capítulos, alvo de toque de 44 px, foco visível, `aria-expanded` no acordeão, movimento reduzido, figura com `alt`, `width` e `height`, tabela de até três colunas no celular, uma pergunta por painel, descrição de 150 a 160 caracteres, lista de conferência em 390 px nos dois temas. A seção 12 diz o que já virou template e teste (`tests/test_template_design_ux.py`) e o que segue pendente.
 
 ### Peso visual do curso gerado (LEIA ANTES de gerar curso)
 Doutrina canônica: **`docs/DOUTRINA_VISUAL_CURSOS.md`**. Desde 27/08/2026 a obrigação editorial é o TETO de apoios visuais por aula (`tetos.D.figuras_max` em `config/lexicos.json`), e só quando a peça substitui texto; o piso por módulo e o teto de 1.200 caracteres por parágrafo seguem como rede do motor de renderização da landing (`config/quality_rules.yaml > validation.visual_density`), não como régua de escrita. **O que mudou no gerador:** o contrato de geração passou a emitir seis tipos de bloco visual (`figure`, `dataTable`, `comparison`, `statGrid`, `stepGuide`, `timeline`), declarados sempre nos mesmos quatro lugares (`src/models.py`, `src/schemas/course.schema.json`, `src/templates/page.tsx.j2` e o filtro `js_json` de `src/generators/tsx_generator.py`); o parser promove sozinho tabela, lista numerada de passos e imagem com legenda; e a camada `visual_density` do `config/quality_rules.yaml` deixou de ser declarativa e é cobrada dentro de `TsxGenerator.render_page`. Curso que nasce como coluna de texto **não chega a virar arquivo**: a cobrança levanta `VisualDensityError` antes da renderização. Curso legado atravessa com `cobrar_peso_visual=False`, com os achados só no log.

@@ -76,7 +76,9 @@ acentue URL, slug, código, variável ou atributo HTML.
 - Apoio visual só onde substitui texto (comparação, sequência, figura com legenda afirmativa).
   Peça decorativa sai; comparação escondida em prosa vira tabela. Tabela precisa de linha de
   separação e o mesmo número de células em todas as linhas. Não há cota de tabela, blockquote,
-  negrito ou figura.
+  negrito ou figura. Legenda que só nomeia a peça ("Gráfico 1", nome do arquivo) é reescrita
+  como fato afirmado, porque ela é também o texto alternativo; número em célula sem unidade ou
+  período ganha os dois (`GUIA_DESIGN_LAYOUT_UX.md`).
 
 ### 4. Parágrafo, frase e cadência
 

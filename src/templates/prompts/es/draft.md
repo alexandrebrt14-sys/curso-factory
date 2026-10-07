@@ -130,6 +130,13 @@ Marcado que reconoce el conversor: tabla con fila de encabezado, fila separadora
 número de celdas en todas las filas, una línea de texto por fila de la tabla; lista numerada
 que empieza en 1; imagen en el formato `![leyenda que afirma un hecho](archivo.svg)`.
 
+Capa visual de cada pieza (`GUIA_DESIGN_LAYOUT_UX.md`): la leyenda afirma el hecho que muestra la
+figura y es también su texto alternativo, por eso describe lo que hay en la imagen, nunca el nombre
+del archivo ni "Gráfico 1"; el texto que deba leerse no queda pintado dentro de una imagen, va a la
+prosa o a la leyenda; cada paso de la lista abre con el verbo y termina con lo que el alumno ve en
+pantalla cuando acertó; el número en una celda lleva unidad y período ("12 min, agosto de 2026");
+títulos de tabla, de figura y de paso a paso en minúsculas normales, sin mayúsculas sostenidas.
+
 ## Libertad de forma
 
 El molde de arriba fija lo que la lección necesita tener, no cómo decirlo. Analogía del día a

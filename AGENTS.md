@@ -15,6 +15,10 @@ conduzem a aula (desde 27/09/2026, `docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md`
 e a diferença entre projeção, exemplo hipotético e resultado observado ao simplificar.
 O detalhe da apuração fica no material de pesquisa; o limite que muda a decisão fica na prosa.
 
+A camada visual do curso gerado (hierarquia da página, navegação entre capítulos, alvo de toque,
+foco, movimento reduzido, figura com `alt` e dimensões, painel de números, metadados) segue
+`GUIA_DESIGN_LAYOUT_UX.md` (07/10/2026); corrija no template e no prompt, nunca na saída.
+
 ## Padrão de armazenamento, velocidade e memória (obrigatório desde 02/10/2026)
 
 Toda ideia nova chega com o custo de armazenamento, velocidade e memória medido, sobretudo quando envolve imagem, vídeo, áudio, dependência ou arquivo gerado. Prefira sempre a opção mais barata e escalável que mantenha a qualidade. A decisão é do dono e vem de 02/10/2026, no landing-page-geo:
