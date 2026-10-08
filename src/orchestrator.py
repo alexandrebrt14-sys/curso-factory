@@ -205,6 +205,9 @@ class Orchestrator:
         #: para que dois clientes com o mesmo slug não colidam e para que os
         #: comandos de publicação encontrem o que o pipeline gravou.
         self.drafts_dir: Path = drafts_dir or (client_context.output_dir / "drafts")
+        from src.output_paths import validate_intermediate_output
+
+        validate_intermediate_output(self.drafts_dir)
         # B-019/D8: factory decide o backend: legado (default) ou
         # geo_orchestrator_sdk via CURSO_FACTORY_LLM_BACKEND=sdk (herda
         # timeout por task_type, fallback chain e FinOps do orquestrador).
