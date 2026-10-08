@@ -1,11 +1,11 @@
-# Artefato canônico — consumido por landing-page-geo via worker, não por escrita direta
+# Artefato local para integração externa; emissão não comprova publicação.
 """Emite o catálogo canônico de cursos como artefato JSON.
 
 Lê os metadados dos cursos a partir de config/courses.yaml e dos diretórios
 em output/approved/ e output/deployed/, e grava output/course_catalog.json.
 
-A landing-page-geo NÃO é referenciada aqui. O artefato gerado é consumido
-por um processo externo (worker, CI/CD) que conhece a estrutura da landing page.
+O destino padrão é local. Um consumidor externo deve ser identificado e testado
+antes de tratar este catálogo como integrado ao portal.
 """
 
 from __future__ import annotations
@@ -14,6 +14,8 @@ import json
 import logging
 from datetime import UTC, datetime
 from pathlib import Path
+
+from src.output_paths import validate_intermediate_output
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +40,8 @@ class MetadataSync:
     def sync(self) -> dict:
         """Varre metadados internos e grava output/course_catalog.json.
 
-        Não acessa nenhum caminho externo ao curso-factory. A landing page
-        consome este artefato via worker independente.
+        Valida destinos reservados do portal quando sua configuração é reconhecida.
+        O JSON e o status derivado de pastas não comprovam deploy.
 
         Returns:
             Dicionário com status da operação:
@@ -57,8 +59,9 @@ class MetadataSync:
 
         # Garante que o diretório de saída existe
         try:
+            validate_intermediate_output(self.output_dir)
             self.output_dir.mkdir(parents=True, exist_ok=True)
-        except OSError as exc:
+        except (OSError, ValueError) as exc:
             result["errors"].append(f"Não foi possível criar output_dir: {exc}")
             return result
 

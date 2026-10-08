@@ -3,7 +3,7 @@
 > Catálogo navegável da wiki, organizado por categoria. Substitui infra
 > RAG até escala moderada. Mantido em ordem alfabética por slug.
 >
-> Última atualização: 2026-09-08.
+> Última atualização: 2026-10-08.
 
 ## Como usar
 
@@ -109,6 +109,13 @@ ADRs e decisões editoriais (índice próprio em [decisions/INDEX.md](decisions/
   adoção do padrão Karpathy em 2026-05-26.
 - [ADR-002-sync-automatico-courses-wiki](decisions/ADR-002-sync-automatico-courses-wiki.md)
   — sync `output/approved/` → `wiki/courses/` como hook pós-aprovação.
+
+## Propostas pendentes de avaliação
+
+Consulta documental, fora do índice de decisões compiladas e dos prompts:
+
+- [Publicação de conteúdo e mídia](proposals/publicacao-conteudo-midia-20261008.md)
+  — proposta de Codex de 08/10/2026, sem aprovação do dono.
 
 ## Sources
 

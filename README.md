@@ -465,6 +465,10 @@ em `src/config.py`.
 | Histórico de detecção (`detection-report`) | `output/.detection/history.jsonl` |
 | Cache de respostas LLM | `.cache/` (TTL `CACHE_TTL_SECONDS`, padrão 1 h) |
 
+A entrega ao portal segue [Publicação de conteúdo e mídia](docs/PUBLICACAO_CONTEUDO_MIDIA.md).
+Rascunhos e catálogo têm proteção de destino quando `LANDING_PAGE_DIR` identifica o portal;
+o TSX continua sendo revisado e integrado explicitamente. A fábrica não envia mídia ao R2.
+
 ### Pipeline opcional: humanizer (multi-pass adversarial)
 
 Quando o `client.yaml > pipeline.humanize_enabled: true` está ativo, o pipeline ganha uma 6ª etapa **depois** do reviewer (Claude): o `Humanizer` (também Claude Opus) roda em loop com signal de stylometry interno. A cada pass, mede burstiness/TTR/repetition, gera diagnóstico cirúrgico ("frases 12-18 têm 20-25 palavras; quebre frase 14 em duas, uma curta de 5 palavras") e reescreve. Itera até `humanize_target_stylometry_score` ou `humanize_max_iters` (defaults: 75 e 2).
@@ -512,7 +516,7 @@ curso-factory/
 │   │       └── review.md     # (~160 linhas) Revisão e correção ativa
 │   ├── generators/
 │   │   ├── schema_builder.py # Builds CourseDefinition from pipeline output
-│   │   └── metadata_sync.py  # Emits output/course_catalog.json (consumed externally, never writes to landing-page-geo)
+│   │   └── metadata_sync.py  # Emite catálogo local; consumidor externo precisa ser validado
 │   ├── schemas/
 │   │   └── course.schema.json # JSON Schema para CourseDefinition
 │   └── validators/
@@ -534,7 +538,7 @@ curso-factory/
 └── output/
     ├── drafts/               # Rascunhos em progresso
     ├── approved/             # Aprovados pelo quality gate
-    └── deployed/             # Deployados em produção
+    └── deployed/             # Convenção local de status; não comprova deploy
 ```
 
 ---
@@ -557,6 +561,7 @@ curso-factory/
 | [docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md](docs/DIAGNOSTICO_GUIA_APLICAVEL_20260927.md) | Por que a aula virou guia aplicável, com orçamento de narrativa e fonte recente. |
 | [docs/AUDITORIA_PIPELINE_20260927.md](docs/AUDITORIA_PIPELINE_20260927.md) | Auditoria de 53 achados do pipeline e o que a refatoração de 27/09/2026 corrigiu. |
 | [docs/GOVERNANCA_PUBLICACAO_CURSO.md](docs/GOVERNANCA_PUBLICACAO_CURSO.md) | Fluxo de publicação de curso no portal e disciplina de git. |
+| [docs/PUBLICACAO_CONTEUDO_MIDIA.md](docs/PUBLICACAO_CONTEUDO_MIDIA.md) | Autoria, intermediários, entrega revisada e mídia no R2; limites da automação. |
 | [wiki/index.md](wiki/index.md) | Base de conhecimento do repositório: decisões, conceitos, entidades e clientes. |
 | [CLAUDE.md](CLAUDE.md) | Convenções, regras editoriais e decisões históricas — usado como contexto pelo Claude Code quando trabalha no repo. |
 

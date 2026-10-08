@@ -57,6 +57,13 @@ wiki/
 
 ## Operações canônicas
 
+O mapa de autoria e entrega ao portal está em
+[Publicação de conteúdo e mídia](../docs/PUBLICACAO_CONTEUDO_MIDIA.md). Propostas pendentes
+ficam em `proposals/`, fora de `decisions/INDEX.md` e dos prompts. Elas documentam
+evidências para avaliação do dono; só uma aprovação explícita permite promovê-las a
+regras de contexto. Esta árvore é versionada no repositório, sem sincronização da wiki
+externa neste trabalho.
+
 - **Ingest** — `scripts/wiki/ingest-playbook.md`. Toda fonte nova
   (paper, dossiê, transcrição) atualiza 5 a 15 páginas wiki +
   apêndice no log.

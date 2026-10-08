@@ -1,5 +1,11 @@
 # Governança de publicação de curso (curso-factory to landing-page-geo)
 
+Atualização operacional de 08/10/2026: consulte
+[Publicação de conteúdo e mídia](PUBLICACAO_CONTEUDO_MIDIA.md) para os destinos atuais,
+a entrega revisada ao portal e o contrato R2. `deployed/` indica estado local, não prova
+de publicação. As observações datadas abaixo preservam o histórico dos incidentes;
+comportamento atual deve ser confirmado no código e no contrato do consumidor.
+
 Destilado do ciclo de publicação do curso "Reinforcement Learning para Vibecoding" (2026-07-09). Objetivo: parar a recorrência de gotchas que já apareceram em ciclos anteriores (curso agentic-operating-model, 2026-07-08) porque a lição não estava numa governança aplicada.
 
 ## Fluxo real (o `create` NÃO publica)
