@@ -57,12 +57,15 @@ integração; um arquivo sem import ou rota não está disponível ao leitor.
 
 ## Mídia no portal
 
-O contrato canônico está sendo preparado em
+O contrato canônico está publicado em
 [landing-page-geo/docs/operacao/publicacao-de-conteudo-e-midia.md](https://github.com/alexandrebrt14-sys/landing-page-geo/blob/master/docs/operacao/publicacao-de-conteudo-e-midia.md),
 com a
 [decisão de armazenamento, velocidade e memória](https://github.com/alexandrebrt14-sys/landing-page-geo/blob/master/governance/decisions/armazenamento-velocidade-e-memoria.md).
-**Dependência de publicação:** o novo runbook e a evolução do migrador fazem parte deste
-conjunto de 08/10/2026; seus links em `master` só estarão disponíveis após publicação.
+**Publicação confirmada:** o [PR #1252](https://github.com/alexandrebrt14-sys/landing-page-geo/pull/1252)
+foi integrado e publicado em 08/10/2026, no commit `ac673fd3`. O
+[registro da migração](https://github.com/alexandrebrt14-sys/landing-page-geo/blob/master/docs/operacao/midia-r2-20261008.md)
+reúne os recibos dessa publicação parcial. Ampliações posteriores exigem suas próprias
+evidências de integração e publicação.
 
 A fábrica não faz upload R2. Entregue uma lista explícita de mídias com origem, direito
 de uso, tamanho, SHA-256, MIME e, para imagens, dimensões e texto alternativo. O fluxo no
