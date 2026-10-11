@@ -44,21 +44,40 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# Limite de ocorrências de palavras sem acento toleradas pelo gate. Até este
-# número os achados viram aviso; acima dele o gate reprova. Configurável por
-# PTBR_ACCENT_MAX (decisão do dono em 11/10/2026, mesma regra do
-# scripts/ci/check-ptbr-accents.sh do landing-page-geo).
+# Limite de ocorrências de palavras sem acento toleradas pelo gate (decisão do
+# dono em 11/10/2026, mesma regra do scripts/ci/check-ptbr-accents.sh do
+# landing-page-geo). Até o limite os achados viram aviso; acima dele o gate
+# reprova. O limite comum é 20 (PTBR_ACCENT_MAX). Quando a verificação é
+# grande, com PTBR_ACCENT_PR_GRANDE_LINHAS linhas ou mais (padrão 1.000) ou
+# PTBR_ACCENT_PR_GRANDE_ARQUIVOS arquivos ou mais (padrão 30), o limite passa a
+# PTBR_ACCENT_MAX_PR_GRANDE (padrão 80).
+#
+# Escolha de contagem: `check_text` avalia um texto por chamada, então conta as
+# linhas desse texto e um arquivo. Não há chamada em lote no gate; quem
+# agregar vários arquivos numa chamada pode passar o total em `arquivos`.
 LIMITE_ACENTUACAO_PADRAO = 20
+LIMITE_ACENTUACAO_PR_GRANDE = 80
+PR_GRANDE_LINHAS = 1000
+PR_GRANDE_ARQUIVOS = 30
 
 
-def limite_acentuacao() -> int:
-    """Lê PTBR_ACCENT_MAX; valor ausente ou inválido vale o padrão de 20."""
-    bruto = os.environ.get("PTBR_ACCENT_MAX", "")
+def _int_env(nome: str, padrao: int) -> int:
+    """Lê um inteiro não negativo do ambiente; ausente ou inválido vale o padrão."""
     try:
-        valor = int(bruto)
+        valor = int(os.environ.get(nome, ""))
     except ValueError:
-        return LIMITE_ACENTUACAO_PADRAO
-    return valor if valor >= 0 else LIMITE_ACENTUACAO_PADRAO
+        return padrao
+    return valor if valor >= 0 else padrao
+
+
+def limite_acentuacao(linhas: int = 0, arquivos: int = 1) -> tuple[int, bool]:
+    """Devolve (limite, verificação grande) para o tamanho verificado."""
+    grande = linhas >= _int_env("PTBR_ACCENT_PR_GRANDE_LINHAS", PR_GRANDE_LINHAS) or (
+        arquivos >= _int_env("PTBR_ACCENT_PR_GRANDE_ARQUIVOS", PR_GRANDE_ARQUIVOS)
+    )
+    if grande:
+        return _int_env("PTBR_ACCENT_MAX_PR_GRANDE", LIMITE_ACENTUACAO_PR_GRANDE), True
+    return _int_env("PTBR_ACCENT_MAX", LIMITE_ACENTUACAO_PADRAO), False
 
 
 @dataclass
@@ -162,10 +181,18 @@ class QualityGate:
                 )
 
         # 1. Verificação de acentuação (no texto corrigido, para detectar residuais)
-        # Decisão do dono em 11/10/2026: tolera até `limite_acentuacao()`
-        # ocorrências (padrão 20) como aviso e só reprova acima disso.
+        # Decisão do dono em 11/10/2026: tolera até o limite (20, ou 80 em
+        # verificação grande) como aviso e só reprova acima disso.
         accent_errors = check_accents(working_text)
-        limite = limite_acentuacao()
+        linhas_verificadas = len(working_text.splitlines())
+        limite, grande = limite_acentuacao(linhas_verificadas, arquivos=1)
+        if grande:
+            regra_grande = (
+                f"PR grande ({linhas_verificadas} linhas em 1 arquivo): limite de {limite}"
+            )
+            result.relatorios.append(f"Acentuação: {regra_grande}.")
+            if accent_errors:
+                result.avisos.append(f"Acentuação: {regra_grande}.")
         if len(accent_errors) > limite:
             result.acentuacao_ok = False
             result.aprovado = False
