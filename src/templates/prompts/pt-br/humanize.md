@@ -32,7 +32,8 @@ com os fatos disponíveis, preservando condição, negação, população, perí
 5. NÃO use travessão nem hífen como recurso estilístico. Prefira vírgula, dois-pontos, parênteses ou duas frases.
 6. NÃO insira disclaimers de IA ("como modelo de linguagem", "espero que isso ajude").
 8. NÃO acrescente bloco que o dono pediu fora (R5 a R9): exercício, checkpoint, mockup, "requer
-   verificação", menção à LGPD, fonte no meio do texto. Mantenha a abertura na ordem título,
+   verificação", fonte no meio do texto. Menção à LGPD que já está na aula fica; não acrescente
+   menção desnecessária. Mantenha a abertura na ordem título,
    subtítulo, parágrafo (R1).
 7. NÃO aplique cota de ritmo: nada de uma frase curta por parágrafo, nada de alternância programada curta e longa, nada de contar palavras durante a escrita.
 

@@ -130,10 +130,12 @@ com a leitura. O gate reprova cada item abaixo, e a página não é publicada co
 - R8. Card de "checkpoint", "ponto de verificação", "recapitulando", "resumo do capítulo",
   "você aprendeu", "quiz".
 - R9. Marcador visível de verificação ("requer verificação", "a verificar", "[verificar]",
-  "dado não confirmado", "fonte pendente") e QUALQUER menção à LGPD, à Lei Geral de Proteção
-  de Dados ou à Lei 13.709, mesmo entre aspas. Verificação é bastidor; proteção de dados
-  entra como conduta prática ("peça autorização antes de mandar a primeira mensagem"), sem
-  nomear a lei.
+  "dado não confirmado", "fonte pendente"). Verificação é bastidor.
+
+Fora da lista, só aviso (11/10/2026): a lei de dados (LGPD). Evite menção desnecessária;
+quando citar, cite com precisão (nome e número da lei). A menção não é motivo para reprovar.
+Proteção de dados entra de preferência como conduta prática ("peça autorização antes de
+mandar a primeira mensagem").
 
 ## Título da aula: promessa do aluno, não índice de técnico
 
@@ -217,8 +219,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
   escolher o dado; na aula o número entra limpo ou não entra.
 - Aviso legal genérico ("consulte um advogado", "conforme a legislação vigente", "isenção de
   responsabilidade"). Lei entra só quando muda a decisão do aluno, e entra com número: qual
-  lei, qual artigo, qual prazo, qual valor. Exceção fixa (R9): a lei de proteção de dados não
-  é nomeada de forma nenhuma; a conduta entra, o nome da lei não.
+  lei, qual artigo, qual prazo, qual valor. A lei de proteção de dados segue a mesma regra:
+  evite a menção desnecessária e, quando citar, cite com precisão; não é motivo para reprovar.
 
 - Antítese que nega para afirmar ("não é X, é Y", "não se trata de X", "mais do que X, Y").
 - Tríade como ritmo (três adjetivos, três exemplos, três benefícios por hábito).
@@ -251,7 +253,8 @@ vício (clichê, escassez fabricada, culpa no aluno), nunca a figura.
    curto e percorre os passos.
 4. {h2_min} a {h2_max} H2; H3 só em H2 longo; nenhum H4.
 5. Extensão entre {palavras_alvo_min} e {palavras_alvo_max} palavras.
-6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem LGPD (lista R1 a R9).
+6. Nenhum exercício, checkpoint, mockup nem "requer verificação" (lista R1 a R9); LGPD só
+   quando necessária e citada com precisão.
 7. Nenhuma linha "Fonte:" e nenhum cabeçalho "Fontes" dentro da aula.
 8. Nenhum número sem origem na pesquisa; no máximo {marcadores_max_aula} marcadores `[FALTA EVIDÊNCIA]`.
 9. Parágrafos na faixa de {paragrafo_min} a {paragrafo_max} palavras na maior parte das vezes;

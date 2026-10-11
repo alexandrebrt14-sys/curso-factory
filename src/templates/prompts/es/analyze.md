@@ -92,9 +92,12 @@ Evalúa el contenido según los 6 principios de Knowles:
 - ¿Cada lección abre con subtítulo de una frase y después un párrafo, sin nada en medio (R1)?
 - Lista, por lección, cada bloque que el dueño pidió fuera (R5 a R9): ejercicio "hazlo ahora",
   sección "mockup"/"en tu negocio", tarjeta "checkpoint"/"recapitulando"/"quiz", marcador
-  "requiere verificación", la ley de protección de datos nombrada, línea "Fuente:" o encabezado
+  "requiere verificación", línea "Fuente:" o encabezado
   "Fuentes" dentro de la lección, recorrido alternativo ("si eres X ve a Y"). Un solo hallazgo
   de esos en una lección deja `aprobado` en false.
+- Ley de protección de datos (LGPD): evita la mención innecesaria; cuando la cites, cítala con
+  precisión (nombre y número de la ley); la mención no es motivo para reprobar: anótala como
+  aviso, sin cambiar `aprobado`.
 - ¿El cierre lleva el próximo paso en prosa (sin ejercicio)?
 
 ### 7. Acentuación ES y uso de `ñ`

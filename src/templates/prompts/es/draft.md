@@ -100,9 +100,12 @@ compite con la lectura. El gate rechaza cada ítem de abajo y la página no se p
   callout. La fuente va al bloque "Fuentes" del final del itinerario, una línea corta por fuente.
 - R8. Tarjeta "checkpoint", "recapitulando", "resumen del capítulo", "aprendiste", "quiz".
 - R9. Marcador visible de verificación ("requiere verificación", "a verificar", "[verificar]",
-  "dato no confirmado", "fuente pendiente") y CUALQUIER mención a la ley de protección de datos
-  por su nombre (LGPD, Lei 13.709), incluso entre comillas. La verificación es bastidor; la
-  protección de datos entra como conducta práctica.
+  "dato no confirmado", "fuente pendiente"). La verificación es bastidor.
+
+Fuera de la lista, solo aviso (11/10/2026): la ley de protección de datos (LGPD). Evita la
+mención innecesaria; cuando la cites, cítala con precisión (nombre y número de la ley). La
+mención no es motivo para reprobar. La protección de datos entra de preferencia como conducta
+práctica.
 
 ## Párrafo, frase, ritmo
 
@@ -158,8 +161,9 @@ nunca la figura.
   elegir el dato; en la lección el número entra limpio o no entra.
 - Aviso legal genérico ("consulte a un abogado", "conforme a la legislación vigente", "exención
   de responsabilidad"). La ley entra solo cuando cambia la decisión del alumno, y entra con
-  número: qué ley, qué artículo, qué plazo, qué valor. Excepción fija (R9): la ley de protección
-  de datos no se nombra de ninguna forma; la conducta entra, el nombre de la ley no.
+  número: qué ley, qué artículo, qué plazo, qué valor. La ley de protección de datos
+  sigue la misma regla: evita la mención innecesaria y, cuando la cites, cítala con precisión;
+  no es motivo para reprobar.
 
 - Antítesis que niega para afirmar ("no es X, es Y", "no se trata de X", "más que X, Y").
 - Tríada como ritmo (tres adjetivos, tres ejemplos, tres beneficios por costumbre).
@@ -188,7 +192,8 @@ nunca la figura.
    número.
 4. {h2_min} a {h2_max} H2; H3 solo en H2 largo; ningún H4.
 5. Extensión entre {palavras_alvo_min} y {palavras_alvo_max} palabras.
-6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R1 a R9).
+6. Ningún ejercicio, checkpoint, mockup ni "requiere verificación" (R1 a R9); la ley de datos
+   solo cuando hace falta y citada con precisión.
 7. Ninguna línea "Fuente:" y ningún encabezado "Fuentes" dentro de la lección.
 8. Ningún número sin origen en la investigación; como máximo {marcadores_max_aula} marcadores `[FALTA EVIDENCIA]`.
 9. Párrafos de {paragrafo_min} a {paragrafo_max} palabras; frases hasta {frase_max_palavras}.

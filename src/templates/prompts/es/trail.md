@@ -59,7 +59,8 @@ Se dibuja en el pie de la página, en cuerpo pequeño.
 ## Antes de entregar, comprueba
 
 1. Cinco secciones, en este orden, cada una con el encabezado de arriba como H2; "Fuentes" es la última.
-6. Ningún ejercicio, checkpoint, mockup, "requiere verificación" ni ley de datos por su nombre (R5 a R9).
+6. Ningún ejercicio, checkpoint, mockup ni "requiere verificación" (R5 a R9); la ley de datos
+   solo cuando hace falta y citada con precisión (aviso, no reprueba).
 2. Verbos de acción en los objetivos; ningún "entender" o "conocer".
 3. Glosa de hasta {glosa_max_palavras} palabras por término; ningún término que las lecciones no usen.
 4. Ninguna fuente inventada.

@@ -77,7 +77,8 @@ trilhas de um curso não podem começar todas com as mesmas duas palavras.
 ## Antes de entregar, confira
 
 1. Cinco seções, nesta ordem, cada uma com o cabeçalho acima como H2; "Fontes" é a última.
-6. Nenhum exercício, checkpoint, mockup, "requer verificação" nem menção à LGPD (R5 a R9).
+6. Nenhum exercício, checkpoint, mockup nem "requer verificação" (R5 a R9); LGPD só quando
+   necessária e citada com precisão (aviso, não reprova).
 2. Verbos de ação nos objetivos; nenhum "entender" ou "conhecer".
 3. Glosa de até {glosa_max_palavras} palavras por termo; nenhum termo que as aulas não usem.
 4. Nenhuma fonte inventada.

@@ -12,8 +12,9 @@ molde da aula: subtítulo em uma frase e dois ou três parágrafos diretos ao po
 a fazer, com o porquê curto e apoiado em fonte datada; o procedimento em passos com verbo no
 imperativo, verificação e erro comum com conserto; decisões "se isto, faça aquilo"; um exemplo
 curto que percorre os passos; fecho com critério de pronto e ponte para a próxima aula. A aula é
-leitura: sem exercício, sem checkpoint, sem mockup, sem "requer verificação", sem LGPD, sem
-fonte no meio (R5 a R9). Objetivos, pré-requisitos, glossário, FAQ e fontes vivem no nível da
+leitura: sem exercício, sem checkpoint, sem mockup, sem "requer verificação", sem
+fonte no meio (R5 a R9). Menção à LGPD é só aviso: evite a desnecessária e, quando citar,
+cite com precisão. Objetivos, pré-requisitos, glossário, FAQ e fontes vivem no nível da
 trilha.
 
 ## Identificação
@@ -48,8 +49,11 @@ ocupa mais espaço que o procedimento.
 A aula abre com subtítulo de uma frase e parágrafo, sem nada no meio? Aponte, com a
 aula, cada bloco que o dono pediu fora (R5 a R9): exercício "faça agora", "mockup"/"no seu
 negócio" como seção, card "checkpoint"/"recapitulando"/"quiz", marcador "requer
-verificação", menção à LGPD, linha "Fonte:" ou cabeçalho "Fontes" dentro da aula, percurso
+verificação", linha "Fonte:" ou cabeçalho "Fontes" dentro da aula, percurso
 alternativo ("se você é X vá para Y"). Um só desses achados numa aula deixa `aprovado` false.
+- Lei de dados (LGPD): evite menção desnecessária; quando citar, cite com precisão (nome e número
+  da lei); a menção não é motivo para reprovar: liste a menção como aviso, sem mexer em
+  `aprovado`.
 
 ### 3. Progressão entre aulas
 

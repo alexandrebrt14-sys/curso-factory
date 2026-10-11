@@ -6,8 +6,8 @@ ensinar a fazer: na abertura, o subtítulo em uma frase e dois ou três parágra
 ponto; no porquê, o conceito com a fonte e o que custa não saber disso na operação do aluno; no
 como fazer, os passos numerados com verbo no imperativo, como saber que cada um deu certo, o erro
 comum com o conserto e a decisão "se isto, faça aquilo"; o exemplo, curto, percorrendo os
-passos; no fecho, o critério de pronto e o próximo passo. Não cresça pela história do exemplo. Não acrescente exercício, checkpoint, mockup, "requer verificação" nem
-LGPD. Não repita parágrafo, não acrescente uma segunda ideia, não encha com adjetivo nem com
+passos; no fecho, o critério de pronto e o próximo passo. Não cresça pela história do exemplo. Não acrescente exercício, checkpoint, mockup nem "requer verificação";
+LGPD só se a aula precisar, citada com precisão. Não repita parágrafo, não acrescente uma segunda ideia, não encha com adjetivo nem com
 frase sobre a própria aula. Entregue só a aula reescrita.
 
 --- AULA CURTA ---
