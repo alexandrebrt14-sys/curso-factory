@@ -111,6 +111,68 @@ def test_quality_gate_texto_canonico() -> None:
     assert result.acentuacao_ok is True
 
 
+_ENVS_ACENTO = (
+    "PTBR_ACCENT_MAX",
+    "PTBR_ACCENT_MAX_PR_GRANDE",
+    "PTBR_ACCENT_PR_GRANDE_LINHAS",
+    "PTBR_ACCENT_PR_GRANDE_ARQUIVOS",
+)
+
+
+def _gate_acentos(monkeypatch) -> QualityGate:
+    for nome in _ENVS_ACENTO:
+        monkeypatch.delenv(nome, raising=False)
+    return QualityGate(client=load_client("default"), auto_fix=False)
+
+
+def _texto(ocorrencias: int, linhas: int) -> str:
+    """Texto com `ocorrencias` palavras sem acento, uma por linha, em `linhas` linhas."""
+    sujas = ["O nao chegou."] * ocorrencias
+    limpas = ["Texto limpo."] * (linhas - ocorrencias)
+    return "\n".join(sujas + limpas)
+
+
+def _erros_acento(result) -> int:
+    return sum(e.startswith("Acentuação:") for e in result.erros)
+
+
+def test_quality_gate_comum_tolera_vinte(monkeypatch) -> None:
+    """Texto comum: 20 ocorrências viram aviso (11/10/2026)."""
+    result = _gate_acentos(monkeypatch).check_text(_texto(20, 40), curso_id="smoke")
+    assert result.acentuacao_ok is True
+    assert _erros_acento(result) == 0
+    assert any(a.startswith("Acentuação (tolerada") for a in result.avisos)
+    assert not any("PR grande" in a for a in result.avisos)
+
+
+def test_quality_gate_comum_bloqueia_vinte_e_uma(monkeypatch) -> None:
+    result = _gate_acentos(monkeypatch).check_text(_texto(21, 40), curso_id="smoke")
+    assert result.acentuacao_ok is False
+    assert result.aprovado is False
+    assert _erros_acento(result) == 21
+
+
+def test_quality_gate_grande_tolera_oitenta(monkeypatch) -> None:
+    """Texto com 1.000 linhas ou mais: limite de 80, e a saída diz a regra."""
+    result = _gate_acentos(monkeypatch).check_text(_texto(80, 1000), curso_id="smoke")
+    assert result.acentuacao_ok is True
+    assert _erros_acento(result) == 0
+    assert any("PR grande (1000 linhas em 1 arquivo): limite de 80" in a for a in result.avisos)
+
+
+def test_quality_gate_grande_bloqueia_oitenta_e_uma(monkeypatch) -> None:
+    result = _gate_acentos(monkeypatch).check_text(_texto(81, 1000), curso_id="smoke")
+    assert result.acentuacao_ok is False
+    assert _erros_acento(result) == 81
+
+
+def test_quality_gate_limite_por_variavel_de_ambiente(monkeypatch) -> None:
+    gate = _gate_acentos(monkeypatch)
+    monkeypatch.setenv("PTBR_ACCENT_MAX", "1")
+    result = gate.check_text(_texto(2, 10), curso_id="smoke")
+    assert result.acentuacao_ok is False
+
+
 def test_quality_gate_autofix_corrige_acentos() -> None:
     client = load_client("default")
     gate = QualityGate(client=client, auto_fix=True)

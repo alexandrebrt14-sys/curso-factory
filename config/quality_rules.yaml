@@ -24,6 +24,16 @@ validation:
     enabled: true
     language: pt-BR
     fail_on_missing: true
+    # Tolera até 20 ocorrências sem acento (viram aviso) e reprova acima de 20.
+    # Em verificação grande (1.000 linhas ou mais, ou 30 arquivos ou mais) o
+    # limite passa a 80. Valores espelhados em src/validators/quality_gate.py e
+    # sobrescritos por PTBR_ACCENT_MAX, PTBR_ACCENT_MAX_PR_GRANDE,
+    # PTBR_ACCENT_PR_GRANDE_LINHAS e PTBR_ACCENT_PR_GRANDE_ARQUIVOS.
+    # Decisão do dono em 11/10/2026.
+    max_ocorrencias: 20
+    max_ocorrencias_pr_grande: 80
+    pr_grande_linhas: 1000
+    pr_grande_arquivos: 30
     auto_fix: true  # Corrige automaticamente antes de validar
     dictionary_size: 300  # 300+ mapeamentos
     known_exceptions:
