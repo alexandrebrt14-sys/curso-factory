@@ -166,14 +166,27 @@ def test_mencao_entre_aspas_nao_reprova_r6_nem_r8() -> None:
         "Dado a verificar com a equipe.",
         "Taxa de 12% [verificar].",
         "Fonte pendente para o dado de 2025.",
+    ],
+)
+def test_r9_verificacao_reprova(trecho: str) -> None:
+    assert "R9" in _regras(AULA_OK + f"\n{trecho}\n")
+
+
+@pytest.mark.parametrize(
+    "trecho",
+    [
         "Guarde os dados conforme a LGPD.",
         "A Lei Geral de Proteção de Dados manda pedir consentimento.",
         "Veja a Lei 13.709 antes de mandar mensagem.",
         'Ele disse: "isso é assunto de LGPD".',
     ],
 )
-def test_r9_verificacao_e_lgpd_reprovam_mesmo_entre_aspas(trecho: str) -> None:
-    assert "R9" in _regras(AULA_OK + f"\n{trecho}\n")
+def test_r9_lgpd_vira_aviso_e_nao_reprova(trecho: str) -> None:
+    """Desde 11/10/2026 a menção à LGPD é aviso: a revisão humana confere."""
+    resultado = check_abertura(AULA_OK + f"\n{trecho}\n")
+    avisos = [a for a in resultado.achados if a.regra == "R9"]
+    assert avisos and all(a.tipo == "warning" for a in avisos)
+    assert resultado.aprovado
 
 
 # ─── R7: fontes só no rodapé ────────────────────────────────────────────
@@ -313,7 +326,7 @@ def test_definicao_reprova_marcador_pendente_e_termos_proibidos() -> None:
             {"type": "text", "value": "Parágrafo de abertura [FALTA EVIDÊNCIA: taxa de retorno]."},
             {
                 "type": "tip",
-                "value": "Faça agora: abra a agenda e conforme a LGPD peça consentimento.",
+                "value": "Faça agora: abra a agenda e requer verificação o consentimento.",
             },
         ]
     )

@@ -300,7 +300,7 @@ validation:
   #   R1 H1 > subtítulo (uma frase) > parágrafo; nada entre eles
   #   R3 sem percursos alternativos       R5 sem "mockup no seu negócio"
   #   R6 sem exercício "faça agora"       R7 fontes só no rodapé, curtas
-  #   R8 sem card "checkpoint"            R9 sem "requer verificação" nem LGPD
+  #   R8 sem card "checkpoint"            R9 sem "requer verificação" (LGPD: aviso)
   # `termos` ACRESCENTA padrões aos padrões do código (nunca remove). Cada item
   # é texto literal; prefixe com "re:" para passar uma expressão regular.
   abertura:

@@ -105,3 +105,7 @@ O que este repositório emitia, medido no código antes da mudança:
   exercício (`test_regua_aula`, `test_parsers`, `test_parser_blocos_visuais`,
   `test_models_blocos_visuais`, `test_template_blocos_visuais`, `test_visual_density`,
   `test_agentic`, fixture `sample_course.json`).
+- **2026-10-11** — [revisão] por decisão do dono, a menção à LGPD deixa de reprovar e vira
+  aviso (`R9_lgpd`, tipo `warning`): a conformidade com a lei de dados passa a ser conferida
+  por revisão humana. O marcador visível de verificação segue reprovando. Parecer de Claude
+  Fable 5.1, GPT-6 Astra e Gemini 3.1 Pro pelo geo-orchestrator, unânimes.
