@@ -17,7 +17,8 @@ As nove regras, numeradas como no mandato e na decisão
 - R6 sem exercício "faça agora" e variantes.
 - R7 fontes só no rodapé, curtas, uma por linha.
 - R8 sem card "checkpoint" e variantes.
-- R9 sem "requer verificação" e sem LGPD no texto de leitura.
+- R9 sem "requer verificação" no texto de leitura; menção à LGPD gera aviso
+  (desde 11/10/2026, conformidade conferida por revisão humana).
 
 Duas superfícies são medidas:
 
@@ -169,11 +170,16 @@ _PADROES_PADRAO: dict[str, list[str]] = {
         r"\[\s*verificar\s*\]",
         r"\bdado\s+n[ãa]o\s+confirmado\b",
         r"\bfonte\s+pendente\b",
+        r"\bneeds\s+verification\b",
+        r"\brequiere\s+verificaci[óo]n\b",
+    ],
+    # R9 da lei de dados: aviso desde 11/10/2026, por decisão do dono. A
+    # conformidade é conferida por revisão humana; o bloqueio automático só
+    # atrasava a produção e pedia reescrita.
+    "R9_lgpd": [
         r"\bLGPD\b",
         r"\bLei\s+Geral\s+de\s+Prote[çc][ãa]o\s+de\s+Dados\b",
         r"\b13\.709\b",
-        r"\bneeds\s+verification\b",
-        r"\brequiere\s+verificaci[óo]n\b",
     ],
 }
 
@@ -190,7 +196,8 @@ _FAMILIAS_DA_FONTE: dict[str, tuple[str, ...]] = {
     "R5_rotulo": ("noSeuNegocio",),
     "R6": ("exercicioForte", "exercicioRotulo"),
     "R8": ("checkpointForte", "checkpointRotulo"),
-    "R9": ("verificacaoExplicita", "lgpd"),
+    "R9": ("verificacaoExplicita",),
+    "R9_lgpd": ("lgpd",),
 }
 _EXCLUIR_DA_FONTE = ("falta evidência", "falta evidencia")
 
@@ -454,9 +461,23 @@ def _check_r9(texto: str) -> list[AchadoAbertura]:
         texto,
         "R9",
         "R9",
-        "Marcador de verificação ou menção à LGPD visível ao leitor (verificação é bastidor)",
+        "Marcador de verificação visível ao leitor (verificação é bastidor)",
         respeita_mencao=False,
     )
+
+
+def _avisos_lgpd(texto: str) -> list[AchadoAbertura]:
+    """Menção à lei de dados: aviso para a revisão humana, não reprova (11/10/2026)."""
+    achados = _check_qualquer_linha(
+        texto,
+        "R9",
+        "R9_lgpd",
+        "Menção à LGPD no texto de leitura; confira com a revisão humana",
+        respeita_mencao=False,
+    )
+    for a in achados:
+        a.tipo = "warning"
+    return achados
 
 
 # ─── R7: fontes só no rodapé ────────────────────────────────────────────
@@ -562,6 +583,7 @@ def check_abertura(texto: str, unidade: str = "aula") -> ResultadoAbertura:
     resultado.achados += _check_r6(texto)
     resultado.achados += _check_r8(texto)
     resultado.achados += _check_r9(texto)
+    resultado.achados += _avisos_lgpd(texto)
     return resultado
 
 
