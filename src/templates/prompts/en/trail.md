@@ -58,7 +58,8 @@ rendered in the page footer, in small type.
 ## Before delivering, check
 
 1. Five sections, in this order, each with the heading above as H2; "Sources" is the last.
-6. No exercise, checkpoint, mockup, "needs verification" or data protection law by name (R5 to R9).
+6. No exercise, checkpoint, mockup or "needs verification" (R5 to R9); the data protection law
+   only when needed and cited precisely (a warning, not a failure).
 2. Action verbs in the objectives; no "understand" or "know".
 3. Gloss of up to {glosa_max_palavras} words per term; no term the lessons do not use.
 4. No invented source.

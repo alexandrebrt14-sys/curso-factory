@@ -45,10 +45,12 @@ por el contexto. Nunca acentúes URL, slug, código, variable o atributo HTML.
 - Los bloques prohibidos (R5 a R9) SALEN, sin sustituto: ejercicio ("hazlo ahora",
   "ejercicio", "manos a la obra", "tu turno", "practica", "tarea", "desafío", "Resultado
   esperado:", "Si te trabas:"), "mockup"/"en tu negocio" como sección, tarjeta
-  "checkpoint"/"recapitulando"/"quiz", marcador "requiere verificación"/"a verificar" y
-  cualquier mención a la ley de protección de datos por su nombre (la conducta queda, el nombre
-  sale). El paso práctico que llevaba el ejercicio se vuelve una o dos frases de prosa en el
+  "checkpoint"/"recapitulando"/"quiz" y marcador "requiere verificación"/"a verificar".
+  El paso práctico que llevaba el ejercicio se vuelve una o dos frases de prosa en el
   cierre. El recorrido alternativo ("si eres X ve a Y") se vuelve un solo camino.
+- Ley de protección de datos (LGPD): evita la mención innecesaria; cuando la cites, cítala con
+  precisión (nombre y número de la ley); la mención no es motivo para reprobar. No quites la
+  mención precisa; corrige solo la imprecisa o la innecesaria.
 - La fuente en medio de la lección (línea "Fuente:", encabezado "Fuentes", cita en tarjeta)
   sale; el dato queda limpio en la frase y la fuente pertenece al pie del itinerario (R7).
 - Cierre de 3 a 5 líneas por el ejemplo, con un puente hacia la siguiente lección. El cierre

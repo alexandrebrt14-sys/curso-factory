@@ -100,8 +100,11 @@ with the reading. The gate rejects each item below and the page is not published
   card or callout. Sources go to the "Sources" block at the end of the track, one short line each.
 - R8. "Checkpoint", "recap", "chapter summary", "you learned", "quiz" cards.
 - R9. Visible verification markers ("needs verification", "to verify", "[verify]", "unconfirmed
-  data", "pending source") and ANY mention of the data protection law by name (LGPD, Lei 13.709),
-  even in quotes. Verification is backstage; data protection enters as practical conduct.
+  data", "pending source"). Verification is backstage.
+
+Outside the list, a warning only (Oct 11, 2026): the data protection law (LGPD). Avoid
+unnecessary mentions; when you cite it, cite it precisely (name and number of the law). A
+mention is not a reason to fail a lesson. Data protection preferably enters as practical conduct.
 
 ## Paragraph, sentence, rhythm
 
@@ -157,8 +160,9 @@ never the figure.
   in the lesson the number enters clean or not at all.
 - Generic legal disclaimers ("consult a lawyer", "according to current legislation",
   "disclaimer"). Law enters only when it changes the student's decision, and it enters with a
-  number: which law, which article, which deadline, which amount. Fixed exception (R9): the data
-  protection law is never named; the conduct enters, the name of the law does not.
+  number: which law, which article, which deadline, which amount. The data protection law
+  follows the same rule: avoid unnecessary mentions and, when you cite it, cite it precisely;
+  it is not a reason to fail a lesson.
 
 - Antithesis that denies to affirm ("it is not X, it is Y", "it is not about X", "more than X,
   Y").
@@ -188,7 +192,8 @@ never the figure.
    with a number.
 4. {h2_min} to {h2_max} H2; H3 only in a long H2; no H4.
 5. Length between {palavras_alvo_min} and {palavras_alvo_max} words.
-6. No exercise, checkpoint, mockup, "needs verification" or data-protection law by name (R1 to R9).
+6. No exercise, checkpoint, mockup or "needs verification" (R1 to R9); the data protection law
+   only when needed and cited precisely.
 7. No "Source:" line and no "Sources" heading inside the lesson.
 8. No number without origin in the research; at most {marcadores_max_aula} `[MISSING EVIDENCE]` markers.
 9. Paragraphs of {paragrafo_min} to {paragrafo_max} words; sentences up to {frase_max_palavras}.

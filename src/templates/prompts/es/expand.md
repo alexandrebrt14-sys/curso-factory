@@ -6,7 +6,8 @@ desarrolla lo que falta: en la apertura, el subtítulo de una frase y dos o tres
 directos al punto; en el primer H2, de dónde viene la idea, qué cuesta no saberlo en la
 operación del alumno y el error común; en el segundo, el ejemplo contado de principio a fin, con
 número; en el cierre, qué cambió y el próximo paso en prosa. No agregues ejercicio, checkpoint,
-mockup, "requiere verificación" ni la ley de protección de datos por su nombre. No repitas
+mockup ni "requiere verificación"; la ley de protección de datos solo si la lección la necesita,
+citada con precisión. No repitas
 párrafos, no agregues
 una segunda idea, no rellenes con adjetivos ni con frases sobre la propia lección. Entrega solo
 la lección reescrita.

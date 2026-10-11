@@ -29,8 +29,9 @@ seguido do subtítulo em uma frase e dos parágrafos de abertura (regra R1 de
 08/09/2026), e usa H2 para as próprias seções, como manda o molde D da fonte
 de estilo. O parser (`src/parsers/markdown_parser.py`) reconhece esse H1 como
 fronteira de unidade e o subtítulo como `description` do step. A aula é
-leitura: sem exercício, checkpoint, mockup, "requer verificação" nem LGPD
-(R5 a R9); o gate `abertura_checker` reprova o que escapar.
+leitura: sem exercício, checkpoint, mockup nem "requer verificação" (R5 a R9);
+o gate `abertura_checker` reprova o que escapar. Menção à LGPD é só aviso desde
+11/10/2026: evitar a desnecessária e, quando citar, citar com precisão.
 """
 
 from __future__ import annotations
@@ -636,7 +637,8 @@ class Orchestrator:
             f"exercício, sem checkpoint, sem mockup), e fecha dizendo o que muda "
             f"no negócio do aluno e o próximo passo. As aulas se encadeiam: a "
             f"seguinte usa o que a anterior deixou pronto. Título sem 'faça "
-            f"agora', 'exercício', 'no seu negócio', 'checkpoint' ou LGPD.\n\n"
+            f"agora', 'exercício', 'no seu negócio' ou 'checkpoint'; evite LGPD no "
+            f"título sem necessidade (não é motivo para reprovar).\n\n"
             f"{ordem + chr(10) + chr(10) if ordem else ''}"
             f"Responda SOMENTE com uma linha por aula, neste formato, sem "
             f"comentário antes ou depois:\n"

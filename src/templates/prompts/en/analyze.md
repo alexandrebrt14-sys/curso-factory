@@ -92,8 +92,11 @@ Evaluate the content against Knowles's 6 principles:
 - Does each lesson open with a one-sentence subtitle and then a paragraph, nothing in between (R1)?
 - List, per lesson, every block the owner asked out (R5 to R9): "do it now" exercises, "mockup"/"in
   your business" sections, "checkpoint"/"recap"/"quiz" cards, "needs verification" markers,
-  the data protection law named, a "Source:" line or "Sources" heading inside a lesson,
+  a "Source:" line or "Sources" heading inside a lesson,
   alternative paths ("if you are X go to Y"). One such finding in a lesson makes `approved` false.
+- Data protection law (LGPD): avoid unnecessary mentions; when you cite it, cite it precisely
+  (name and number of the law); a mention is not a reason to fail a lesson: list it as a warning,
+  without changing `approved`.
 - Does the closing carry the next step in prose (no exercise)?
 
 ### 7. English usage and consistency

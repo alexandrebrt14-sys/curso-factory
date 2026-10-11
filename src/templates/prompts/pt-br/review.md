@@ -59,10 +59,12 @@ acentue URL, slug, código, variável ou atributo HTML.
 - Blocos proibidos (R5 a R9) SAEM, sem substituto: exercício ("faça agora", "exercício",
   "mão na massa", "sua vez", "pratique", "tarefa", "desafio", "Resultado esperado:",
   "Se travar:"), "mockup"/"no seu negócio" como seção, card "checkpoint"/"recapitulando"/
-  "quiz", marcador "requer verificação"/"a verificar" e qualquer menção à LGPD ou à Lei
-  13.709 (a conduta fica, o nome da lei sai). O passo prático que o exercício carregava vira
+  "quiz" e marcador "requer verificação"/"a verificar". O passo prático que o exercício carregava vira
   passo do procedimento, sem rótulo, com a verificação em prosa dentro dele. Percurso alternativo ("se você é X vá para Y") vira
   um caminho só.
+- Lei de dados (LGPD): evite menção desnecessária; quando citar, cite com precisão (nome e número
+  da lei); a menção não é motivo para reprovar. Não remova a menção precisa; ajuste só a imprecisa
+  ou a desnecessária.
 - Fonte no meio da aula (linha "Fonte:", cabeçalho "Fontes", citação em card) sai; o dado
   fica limpo na frase e a fonte pertence ao rodapé da trilha (R7).
 - Fecho de 3 a 5 linhas com critério de pronto (número, prazo ou condição), verbo no

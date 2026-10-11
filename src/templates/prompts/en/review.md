@@ -44,9 +44,11 @@ decided by context. Never add accents to URLs, slugs, code, variables or HTML at
 - Forbidden blocks (R5 to R9) GO, with no replacement: exercises ("do it now", "exercise",
   "hands on", "your turn", "practice", "task", "challenge", "Expected result:", "If
   stuck:"), "mockup"/"in your business" as a section, "checkpoint"/"recap"/"quiz" cards,
-  "needs verification"/"to verify" markers and any mention of the data protection law by name
-  (the conduct stays, the name goes). The practical step the exercise carried becomes one or two
+  "needs verification"/"to verify" markers. The practical step the exercise carried becomes one or two
   sentences of prose in the closing. Alternative paths ("if you are X go to Y") become one path.
+- Data protection law (LGPD): avoid unnecessary mentions; when you cite it, cite it precisely
+  (name and number of the law); a mention is not a reason to fail a lesson. Do not remove a
+  precise mention; fix only an imprecise or unnecessary one.
 - A source in the middle of the lesson (a "Source:" line, a "Sources" heading, a quote in a
   card) goes; the figure stays clean in the sentence and the source belongs to the track's
   footer (R7).
