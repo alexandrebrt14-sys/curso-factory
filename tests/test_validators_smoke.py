@@ -111,6 +111,37 @@ def test_quality_gate_texto_canonico() -> None:
     assert result.acentuacao_ok is True
 
 
+def test_quality_gate_tolera_ate_vinte_ocorrencias_sem_acento(monkeypatch) -> None:
+    """Até 20 ocorrências viram aviso e não reprovam a acentuação (11/10/2026)."""
+    monkeypatch.delenv("PTBR_ACCENT_MAX", raising=False)
+    client = load_client("default")
+    gate = QualityGate(client=client, auto_fix=False)
+    text = "Voce nao deve produzir informacao errada."
+    result = gate.check_text(text, curso_id="smoke")
+    assert result.acentuacao_ok is True
+    assert not any(e.startswith("Acentuação:") for e in result.erros)
+    assert any(a.startswith("Acentuação (tolerada") for a in result.avisos)
+
+
+def test_quality_gate_reprova_acima_de_vinte_ocorrencias(monkeypatch) -> None:
+    monkeypatch.delenv("PTBR_ACCENT_MAX", raising=False)
+    client = load_client("default")
+    gate = QualityGate(client=client, auto_fix=False)
+    text = " ".join(["Voce nao sabe."] * 11)  # 22 ocorrências
+    result = gate.check_text(text, curso_id="smoke")
+    assert result.acentuacao_ok is False
+    assert result.aprovado is False
+    assert sum(e.startswith("Acentuação:") for e in result.erros) > 20
+
+
+def test_quality_gate_limite_por_variavel_de_ambiente(monkeypatch) -> None:
+    monkeypatch.setenv("PTBR_ACCENT_MAX", "1")
+    client = load_client("default")
+    gate = QualityGate(client=client, auto_fix=False)
+    result = gate.check_text("Voce nao sabe.", curso_id="smoke")
+    assert result.acentuacao_ok is False
+
+
 def test_quality_gate_autofix_corrige_acentos() -> None:
     client = load_client("default")
     gate = QualityGate(client=client, auto_fix=True)

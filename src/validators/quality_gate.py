@@ -11,6 +11,7 @@ clichês) e abertura direta sem distração (R1 a R9).
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -42,6 +43,22 @@ if TYPE_CHECKING:
     from src.clients.context import ClientContext
 
 logger = logging.getLogger(__name__)
+
+# Limite de ocorrências de palavras sem acento toleradas pelo gate. Até este
+# número os achados viram aviso; acima dele o gate reprova. Configurável por
+# PTBR_ACCENT_MAX (decisão do dono em 11/10/2026, mesma regra do
+# scripts/ci/check-ptbr-accents.sh do landing-page-geo).
+LIMITE_ACENTUACAO_PADRAO = 20
+
+
+def limite_acentuacao() -> int:
+    """Lê PTBR_ACCENT_MAX; valor ausente ou inválido vale o padrão de 20."""
+    bruto = os.environ.get("PTBR_ACCENT_MAX", "")
+    try:
+        valor = int(bruto)
+    except ValueError:
+        return LIMITE_ACENTUACAO_PADRAO
+    return valor if valor >= 0 else LIMITE_ACENTUACAO_PADRAO
 
 
 @dataclass
@@ -145,13 +162,22 @@ class QualityGate:
                 )
 
         # 1. Verificação de acentuação (no texto corrigido, para detectar residuais)
+        # Decisão do dono em 11/10/2026: tolera até `limite_acentuacao()`
+        # ocorrências (padrão 20) como aviso e só reprova acima disso.
         accent_errors = check_accents(working_text)
-        if accent_errors:
+        limite = limite_acentuacao()
+        if len(accent_errors) > limite:
             result.acentuacao_ok = False
             result.aprovado = False
             for e in accent_errors:
                 result.erros.append(
                     f"Acentuação: '{e.palavra_errada}' → '{e.correcao}' (linha {e.linha})"
+                )
+        elif accent_errors:
+            for e in accent_errors:
+                result.avisos.append(
+                    f"Acentuação (tolerada, {len(accent_errors)} de até {limite}): "
+                    f"'{e.palavra_errada}' → '{e.correcao}' (linha {e.linha})"
                 )
         result.relatorios.append(accent_report(accent_errors))
 
