@@ -7,6 +7,14 @@ Leia `docs/ESCRITA_SEO_GEO.md` e `AGENTS.md` para aplicar fidelidade de trechos,
 orientada à decisão e preservação de fatos no pipeline em português. Esta orientação vence
 os resumos históricos de v4 sobre abertura, número como prova e métricas de estilo.
 
+## Formato final: JSON do portal (14/10/2026)
+
+O portal reorganizou os cursos: conteúdo em `src/content/cursos/<slug>.json` validado por
+schema, `steps.ts` fino, registro de conteúdo sob demanda e teto de 900 KB por página.
+Leia `docs/portal-educacao-estado-20261014.md` antes de gerar ou entregar curso; a seção
+"Formato de saída" do `AGENTS.md` resume o contrato, e `scripts/validar_curso_json.py`
+reproduz os gates do portal em segundos. Um PR por curso, nunca por capítulo.
+
 ## Memória de decisões do projeto
 
 Decisões de arquitetura, erros-a-evitar e insights vivem em `wiki/decisions/` como

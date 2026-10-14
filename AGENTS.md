@@ -19,6 +19,38 @@ A camada visual do curso gerado (hierarquia da página, navegação entre capít
 foco, movimento reduzido, figura com `alt` e dimensões, painel de números, metadados) segue
 `GUIA_DESIGN_LAYOUT_UX.md` (07/10/2026); corrija no template e no prompt, nunca na saída.
 
+## Formato de saída: curso em JSON do portal (obrigatório desde 14/10/2026)
+
+O portal /educacao (`landing-page-geo`) passou a guardar o conteúdo de cada curso em
+`src/content/cursos/<slug>.json`, validado pelo schema zod de
+`src/lib/educacao/conteudo/schema.ts` (piloto PR #1409; cursos #1421 e #1425; 55 a migrar).
+O `page.tsx` com conteúdo embutido e os `modulos/aula-*.ts` deixaram de ser formato final.
+Contexto completo, números e checklist em `docs/portal-educacao-estado-20261014.md`.
+
+O que a fábrica entrega por curso, num PR por curso no portal:
+1. `<slug>.json` no formato do schema (espelho em `config/schema-curso.json`, copiado da
+   `origin/master` em 14/10/2026): chaves na ordem `id`, `title`, `duration`, `icon`,
+   `description`, `content`, `faq`; ids ASCII minúsculos com hífen e estáveis (viram URL do
+   capítulo); sem `codeHtml` nem `contentDeferred` (o servidor acrescenta); bloco `code`
+   sempre com `language` que o Shiki aceita; indentação de 2 espaços e acento sem escape.
+2. `<slug>.glossario.json` (id da aula para `[{term, def}]`), só ids do curso.
+3. `<slug>.midia.json`: manifesto das figuras e imagens (origem, `alt`, dimensões); mídia
+   nova vai para `midia.brasilgeo.ai`, nunca para `public/` em tamanho de matriz.
+4. `<slug>.steps.ts` fino (`carregarCurso(slug)` mais guias em TS quando houver regra de
+   montagem; guia só de conteúdo vai inline como bloco `tabs` "Guia prático" com prompt e saída).
+
+Limites do portal reproduzidos aqui (`config/quality_rules.yaml > validation.curso_json`):
+capítulo aberto na página até 72.000 caracteres (erro; aviso em 60.000), demais capítulos
+até 110.000, curso até 1,2 milhão de caracteres ou 1,5 MB de JSON, acentos até 20 (80 em
+arquivo de 1.000 linhas ou mais), emoji zero, até 3 figuras por capítulo como aviso.
+Comandos: `python cli.py drafts-to-tsx --json`, `python cli.py exportar-json <CourseDefinition>`,
+`python scripts/validar_curso_json.py <slug>.json --contrato-completo` (piso de 25
+capítulos, mídia do capítulo 1, glossário e guia por capítulo quando o contrato pedir).
+Antes do PR no portal, o checklist da seção 5 do documento: os `--check` do CI
+(`llms`, `arquitetura:dominios`, `educacao:corpus`, `entity`, `curso:realce`), os testes que
+o curso arrasta, `tsc`, build local, `gate-peso-html-cursos.mjs` e comparação de HTML.
+O que não se corta para ganhar velocidade está na seção 7 (matriz qualidade x eficiência).
+
 ## Padrão de armazenamento, velocidade e memória (obrigatório desde 02/10/2026)
 
 Toda ideia nova chega com o custo de armazenamento, velocidade e memória medido, sobretudo quando envolve imagem, vídeo, áudio, dependência ou arquivo gerado. Prefira sempre a opção mais barata e escalável que mantenha a qualidade. A decisão é do dono e vem de 02/10/2026, no landing-page-geo:

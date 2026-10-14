@@ -176,7 +176,9 @@ numerada para processo em que a ordem importa (um verbo por passo, resultado obs
 mesmo item); imagem com legenda que afirma o que a figura mostra, entre colchetes, nunca vazia.
 Aula curta sem apoio visual passa; aula longa sem nenhum apoio recebe aviso do gate; peça
 decorativa reprova sempre. Blockquote, negrito e bloco de código não
-contam como apoio visual e não têm cota.
+contam como apoio visual e não têm cota. Todo bloco de código abre com a linguagem na
+cerca (```bash, ```python, ```typescript, ```json, ```yaml, ```html, ```sql, ```text para
+saída de terminal): o portal colore pelo nome e um bloco sem linguagem reprova na entrega.
 
 Marcação que o conversor reconhece: tabela com linha de cabeçalho, linha de separação e o
 mesmo número de células em todas as linhas, uma linha de texto por linha da tabela; lista

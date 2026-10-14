@@ -913,3 +913,153 @@ validation:
     # a cada duas semanas, o piso da faixa de 2 a 4 semanas do briefing de
     # 07/10/2026. Atualizar data sem mudança editorial real não conta.
     cadencia_revisao_dias: 14
+
+  # Curso em JSON para o portal /educacao (14/10/2026). Lido por
+  # src/validators/curso_json_checker.py (e por scripts/validar_curso_json.py).
+  # O portal passou a guardar o conteúdo dos cursos em
+  # src/content/cursos/<slug>.json, validado pelo schema zod de
+  # src/lib/educacao/conteudo/schema.ts (espelho em config/schema-curso.json).
+  # Os limites de tamanho vêm do teto de 900 KB de HTML por página de curso
+  # (scripts/gate-peso-html-cursos.mjs) e das medidas dos três cursos migrados
+  # em 14/10/2026; a conta está em docs/portal-educacao-estado-20261014.md.
+  curso_json:
+    enabled: true
+    # Capítulo que a página do curso entrega aberto (o primeiro do array):
+    # vai duas vezes no HTML (renderizado e no payload RSC). Medido:
+    # 62.083 caracteres -> página de 770 KB; 64.280 -> 769 KB. A página
+    # cresce cerca de 2,5 bytes por caractere do capítulo aberto (renderizado
+    # e no payload); 72.000 fica abaixo do teto de 900 KB com folga de 10%.
+    capitulo_aberto_aviso_chars: 60000
+    capitulo_aberto_erro_chars: 72000
+    # Demais capítulos vão só ao conteudo.json e à URL do capítulo. O maior
+    # capítulo migrado tem 103.616 caracteres (autoridade temática).
+    capitulo_aviso_chars: 80000
+    capitulo_erro_chars: 110000
+    # Soma do curso: os três migrados ficaram entre 848 mil e 1,09 milhão de
+    # caracteres (1,04 a 1,39 MB de JSON). Acima disso o diff do git e o
+    # realce de código ficam lentos (o manifesto de capítulos levou 12 s com
+    # 1,25 MB antes do ajuste do #1409).
+    curso_aviso_chars: 1200000
+    arquivo_aviso_bytes: 1500000
+    # Palavras sem acento em texto de leitura: mesma regra do portal
+    # (check-ptbr-accents.sh, 11/10/2026): até 20 é aviso, acima reprova; em
+    # mudança de 1.000 linhas ou mais (todo curso novo) o teto é 80. Slug,
+    # caminho, id com hífen, URL, código entre crases e sigla em caixa alta
+    # ficam de fora, como lá.
+    acentos_max_ocorrencias: 20
+    acentos_max_ocorrencias_pr_grande: 80
+    acentos_pr_grande_linhas: 1000
+    # Linguagens que o Shiki do portal aceita direto ou por alias
+    # (scripts/build-course-code-highlight.mjs). Fora da lista vira "text"
+    # e não realça; o validador avisa.
+    linguagens_de_codigo:
+      - bash
+      - sh
+      - shell
+      - console
+      - terminal
+      - javascript
+      - js
+      - typescript
+      - ts
+      - tsx
+      - jsx
+      - json
+      - yaml
+      - yml
+      - markdown
+      - md
+      - html
+      - htm
+      - css
+      - python
+      - sql
+      - toml
+      - csv
+      - text
+      - diff
+      - xml
+      - dockerfile
+      - powershell
+      - ini
+    # Chaves de ícone de src/components/course/courseIcons.tsx (14/10/2026),
+    # sem os ícones próprios de um curso (prefixo aom*). Fora da lista avisa.
+    icones:
+      - rocket
+      - cloud
+      - code
+      - shield
+      - zap
+      - database
+      - globe
+      - workflow
+      - barChart
+      - layers
+      - terminal
+      - server
+      - brain
+      - clock
+      - bookOpen
+      - trendUp
+      - users
+      - check
+      - alertTriangle
+      - lightbulb
+      - circleCheck
+      - clipboard
+      - clipboardCheck
+      - messageCircleQuestion
+      - cpu
+      - download
+      - messageSquare
+      - slashSquare
+      - fileCode
+      - play
+      - box
+      - gitFork
+      - functionSquare
+      - list
+      - fileText
+      - package
+      - binary
+      - search
+      - sparkles
+      - flag
+      - scale
+      - star
+      - mapPin
+      - building
+      - clipboardList
+      - network
+      - fingerprint
+      - edit
+      - link
+      - shoppingCart
+      - image
+      - monitor
+      - graduationCap
+      - checkCircle
+      - target
+      - laptop
+      - wifi
+      - userCheck
+      - briefcase
+    # Figuras por capítulo (figure, diagram, mockup): teto de
+    # tetos.D.figuras_max da fonte de estilo, espelhado em config/lexicos.json
+    # (hoje 3). Tabela, comparativo e passo a passo não têm cota. Só aviso.
+    figuras_max_por_capitulo: 3
+    # Regra do dono de 12/10/2026: construções que negam para afirmar e
+    # conectivos batidos saem do texto. Aviso por ocorrência.
+    padroes_de_escrita_proibidos:
+      - "não se trata de"
+      - "não é apenas"
+      - "não basta"
+      - "mais do que"
+      - "o problema não é"
+      - "além disso"
+      - "por outro lado"
+      - "nesse sentido"
+      - "nesse contexto"
+      - "vale destacar"
+      - "é importante ressaltar"
+      - "por fim"

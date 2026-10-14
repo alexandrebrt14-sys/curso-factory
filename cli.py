@@ -17,6 +17,7 @@ para selecionar um cliente em config/clients/<id>/. Sem flag, usa "default".
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import sys
@@ -433,6 +434,21 @@ def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
         print(f"ERRO: {result['error']}")
         return 1
 
+    if getattr(args, "json", False):
+        # 14/10/2026: o formato final do portal é o JSON de src/content/cursos/.
+        from src.converters.draft_to_course import convert_draft_to_course
+        from src.generators.json_exporter import exportar_curso_json
+        from src.validators.curso_json_checker import formatar, validar_arquivo
+
+        for item in result["files"]:
+            if item["status"] != "ok":
+                continue
+            course = convert_draft_to_course(input_dir / item["file"], client=client)
+            if course is None:
+                continue
+            caminhos = exportar_curso_json(course, output_dir / "cursos-json")
+            print(formatar(validar_arquivo(caminhos["curso"]), nome=caminhos["curso"].name))
+
     print(f"Total de drafts: {result['total']}")
     print(f"Convertidos: {result['converted']}")
     print(f"Falhados: {result['failed']}")
@@ -450,6 +466,42 @@ def cmd_drafts_to_tsx(args: argparse.Namespace) -> int:
         print("Revise manualmente antes de copiar para output/deployed/")
 
     return 0 if result["failed"] == 0 else 1
+
+
+# ─── exportar-json ─────────────────────────────────────────────────────
+
+
+def cmd_exportar_json(args: argparse.Namespace) -> int:
+    """Exporta um CourseDefinition (JSON da fábrica) no formato do portal e valida."""
+    from src.generators.json_exporter import exportar_curso_json
+    from src.models import CourseDefinition
+    from src.validators.curso_json_checker import formatar, validar_arquivo
+
+    origem = Path(args.curso)
+    try:
+        dados = json.loads(origem.read_text(encoding="utf-8"))
+        course = CourseDefinition(**dados)
+    except (OSError, ValueError) as exc:
+        return _erro(f"não consegui carregar {origem}: {exc}")
+    glossario = None
+    if args.glossario:
+        try:
+            glossario = json.loads(Path(args.glossario).read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            return _erro(f"não consegui carregar o glossário {args.glossario}: {exc}")
+    destino = Path(args.output) if args.output else Path("output") / "cursos-json"
+    caminhos = exportar_curso_json(course, destino, glossario=glossario)
+    for nome, caminho in caminhos.items():
+        print(f"  {nome:<10} {caminho}")
+    contrato = {
+        "min_capitulos": args.min_capitulos,
+        "midia_capitulo_1": args.midia_cap1,
+        "glossario_obrigatorio": bool(args.glossario),
+        "guia_por_capitulo": args.guia_por_capitulo,
+    }
+    resultado = validar_arquivo(caminhos["curso"], contrato=contrato)
+    print(formatar(resultado, nome=caminhos["curso"].name))
+    return 0 if resultado.aprovado else 1
 
 
 # ─── cache-clear ───────────────────────────────────────────────────────
@@ -690,8 +742,25 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="DIR",
         help="Diretório destino para os TSX (default: <output_dir>/converted_from_drafts)",
     )
+    p.add_argument(
+        "--json",
+        action="store_true",
+        help="Grava também o JSON do portal (src/content/cursos) em <output>/cursos-json e valida",
+    )
     _add_client_arg(p)
     p.set_defaults(func=cmd_drafts_to_tsx)
+
+    p = sub.add_parser(
+        "exportar-json",
+        help="Exporta um CourseDefinition no formato JSON do portal /educacao e valida",
+    )
+    p.add_argument("curso", metavar="CURSO_JSON", help="CourseDefinition em JSON (ex.: tests/fixtures/sample_course.json)")
+    p.add_argument("--output", default=None, metavar="DIR", help="Destino (default: output/cursos-json)")
+    p.add_argument("--glossario", default=None, help="JSON {id da aula: [{term, def}]} para o sidecar")
+    p.add_argument("--min-capitulos", type=int, default=None, help="Piso de capítulos do contrato")
+    p.add_argument("--midia-cap1", action="store_true", help="Exige mediaPlayer no capítulo 1")
+    p.add_argument("--guia-por-capitulo", action="store_true", help="Avisa capítulo sem guia prático")
+    p.set_defaults(func=cmd_exportar_json)
 
     p = sub.add_parser("cache-clear", help="Limpa o cache LLM em disco")
     p.set_defaults(func=cmd_cache_clear)

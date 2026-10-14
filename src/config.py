@@ -72,6 +72,13 @@ EDUCACAO_DIR: Path = LANDING_PAGE_DIR / "src" / "app" / "educacao"
 
 # --- Cache ---
 CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
+# Pesquisa por tópico (Perplexity) envelhece devagar e é a etapa mais cara
+# por chamada; regerar o mesmo curso, ou um curso vizinho com o mesmo módulo,
+# reaproveita a pesquisa por 7 dias (14/10/2026, eficiência do curso-factory).
+CACHE_TTL_PESQUISA_SECONDS: int = int(os.getenv("CACHE_TTL_PESQUISA_SECONDS", str(7 * 24 * 3600)))
+CACHE_PROVIDERS_DE_PESQUISA: tuple[str, ...] = tuple(
+    p.strip() for p in os.getenv("CACHE_PROVIDERS_DE_PESQUISA", "perplexity").split(",") if p.strip()
+)
 
 # --- Modelo Claude (AAA = Opus) ---
 CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")

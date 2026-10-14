@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alexandrebrt14-sys/curso-factory/config/schema-curso.json",
+  "title": "Curso em JSON do portal /educacao (src/content/cursos/<slug>.json)",
+  "description": "Espelho do schema zod de landing-page-geo/src/lib/educacao/conteudo/schema.ts (origin/master de 14/10/2026, PR #1409). O portal valida com z.strictObject: campo desconhecido reprova, por isso additionalProperties é false em todos os objetos. SECTION_TYPES copiada na mesma ordem. Ao mudar lá, copie de novo aqui e atualize 'origem'.",
+  "origem": {
+    "repositorio": "alexandrebrt14-sys/landing-page-geo",
+    "arquivo": "src/lib/educacao/conteudo/schema.ts",
+    "branch": "origin/master",
+    "copiado_em": "2026-10-14",
+    "pr_de_origem": 1409
+  },
+  "type": "array",
+  "minItems": 1,
+  "items": { "$ref": "#/$defs/step" },
+  "$defs": {
+    "sectionType": {
+      "type": "string",
+      "enum": [
+        "text", "code", "warning", "tip", "checkpoint", "figure", "callout", "diagram", "flow",
+        "mockup", "prompt", "matrix", "comparison", "statGrid", "useCase", "metaphor", "glossary",
+        "quote", "bullets", "timeline", "dataTable", "resourceLesson", "checklist", "calculator",
+        "decisionCase", "quizInline", "accordion", "template", "sourceNote", "fontes", "tabs",
+        "slides", "tipCard", "stepGuide", "codeDownload", "mediaPlayer", "visualLab",
+        "frontendLab", "liveLab"
+      ]
+    },
+    "valorJson": {
+      "description": "O que JSON.parse devolve: string, número finito, booleano, null, array ou objeto. Função, Date, Map, Set, NaN e Infinity não cabem (o gerador do portal reprova com o caminho).",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" },
+        { "type": "array", "items": { "$ref": "#/$defs/valorJson" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/valorJson" } }
+      ]
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "$ref": "#/$defs/sectionType" },
+        "value": { "type": "string" },
+        "language": { "type": "string" },
+        "codeHtml": { "type": "string", "description": "Acrescentado no servidor pelo realce; o curso-factory nunca emite." },
+        "label": { "type": "string" },
+        "title": { "type": "string" },
+        "data": { "$ref": "#/$defs/valorJson" }
+      }
+    },
+    "faqItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["q", "a"],
+      "properties": {
+        "q": { "type": "string" },
+        "a": { "type": "string" }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "duration", "icon", "description", "content"],
+      "properties": {
+        "legacyIds": { "type": "array", "items": { "type": "string" } },
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "duration": { "type": "string" },
+        "icon": { "type": "string", "minLength": 1, "description": "Nome da chave em src/components/course/courseIcons.tsx, nunca o componente." },
+        "description": { "type": "string" },
+        "content": { "type": "array", "items": { "$ref": "#/$defs/section" } },
+        "faq": { "type": "array", "items": { "$ref": "#/$defs/faqItem" } },
+        "contentDeferred": { "type": "boolean", "description": "Marca do corpo sob demanda; o servidor acrescenta por cópia. O curso-factory nunca emite." }
+      }
+    },
+    "glossarioDoCurso": {
+      "description": "Sidecar <slug>.glossario.json: id da aula -> termos. Toda chave precisa ser id de um Step do curso.",
+      "type": "object",
+      "propertyNames": { "minLength": 1 },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["term", "def"],
+          "properties": {
+            "term": { "type": "string", "minLength": 1 },
+            "def": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

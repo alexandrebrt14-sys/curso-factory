@@ -1,5 +1,27 @@
 # Changelog
 
+## 14/10/2026: formato final em JSON do portal, validador local e cache de pesquisa
+
+O portal /educacao reorganizou os cursos (Etapa 1 fechada em 14/10; piloto #1409 e cursos
+#1421, #1425 em JSON). A fábrica deixa de entregar `modulos/aula-*.ts` e `page.tsx` com
+conteúdo como formato final. Contexto, números e checklist em
+`docs/portal-educacao-estado-20261014.md`.
+
+- **Exportador** (`src/generators/json_exporter.py`, `python cli.py exportar-json`,
+  `drafts-to-tsx --json`): `<slug>.json` no formato de `src/content/cursos/`, sidecar
+  `<slug>.glossario.json`, manifesto `<slug>.midia.json` e `steps.ts` fino.
+- **Validador** (`scripts/validar_curso_json.py`, `src/validators/curso_json_checker.py`):
+  espelho do schema zod em `config/schema-curso.json` (origem e data registradas), ids
+  únicos em ASCII, peso por capítulo derivado do teto de 900 KB (capítulo aberto até
+  72.000 caracteres), `language` nos blocos de código, acentos (20; 80 em arquivo de
+  1.000 linhas ou mais), emoji zero, ícone, figuras e padrões de escrita do dono como
+  aviso; `--contrato-completo` cobra 25 capítulos, mídia do capítulo 1, glossário e guia
+  prático por capítulo. Os três cursos migrados do portal passam com 0 erros.
+- **Cache de pesquisa por tópico**: TTL de 7 dias para o Perplexity
+  (`CACHE_TTL_PESQUISA_SECONDS`, `CACHE_PROVIDERS_DE_PESQUISA`); os demais seguem em 1 h.
+- **Prompt de redação**: todo bloco de código abre com a linguagem na cerca.
+- **Configuração**: `validation.curso_json` em `config/quality_rules.yaml`.
+
 ## 07/10/2026: técnicas de GEO e SEO do segundo semestre de 2026 nos algoritmos
 
 Os achados de 01/07 a 07/10/2026 entraram no gate, nos prompts e no gerador. Regra antiga ao

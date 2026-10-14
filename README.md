@@ -426,6 +426,12 @@ python cli.py proveniencia <arquivo>
 # Conferir data, recência e estado atual das fontes de uma aula
 python cli.py fontes-recentes <aula> --proveniencia <tabela>
 
+# Exportar no formato final do portal (src/content/cursos/<slug>.json, 14/10/2026),
+# com sidecar de glossário, manifesto de mídia e steps.ts fino, já validado
+python cli.py drafts-to-tsx --json
+python cli.py exportar-json tests/fixtures/sample_course.json --output output/cursos-json
+python scripts/validar_curso_json.py output/cursos-json/<slug>.json --contrato-completo
+
 # Converter rascunhos JSON em páginas TSX (defaults: <output_dir>/drafts e
 # <output_dir>/converted_from_drafts do cliente)
 python cli.py drafts-to-tsx
@@ -580,6 +586,8 @@ curso-factory/
 - **Models**: Pydantic v2 para domínio, dataclass para infraestrutura
 - **Cache**: SHA-256 de provider+modelo+prompt como chave, TTL de 1 h (`CACHE_TTL_SECONDS`), em `.cache/`
 - **Custos**: registrados por chamada em `output/costs.json` (gravação atômica)
+- **Cache**: `.cache/` por hash de prompt; pesquisa (Perplexity) vale 7 dias (`CACHE_TTL_PESQUISA_SECONDS`), o resto 1 h
+- **Formato final para o portal**: JSON de `src/content/cursos/<slug>.json` (`docs/portal-educacao-estado-20261014.md`); TSX só para esqueleto e revisão local
 - **Lint e formato**: `ruff check .` e `ruff format --check .` verdes são exigidos pelo CI
 - **I/O de JSON**: sempre por `src/fsutil.py` (`write_json_atomic`, `read_json_or_none`); nunca `open(..., "w")` direto
 - **Templates**: Jinja2 para HTML/TSX, Markdown para prompts
