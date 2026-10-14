@@ -12,7 +12,12 @@ import logging
 import time
 from pathlib import Path
 
-from src.config import CACHE_DIR, CACHE_TTL_SECONDS
+from src.config import (
+    CACHE_DIR,
+    CACHE_PROVIDERS_DE_PESQUISA,
+    CACHE_TTL_PESQUISA_SECONDS,
+    CACHE_TTL_SECONDS,
+)
 from src.fsutil import write_json_atomic
 
 logger = logging.getLogger(__name__)
@@ -21,10 +26,23 @@ logger = logging.getLogger(__name__)
 class Cache:
     """Cache em disco baseado em hash SHA256 do prompt."""
 
-    def __init__(self, ttl: int | None = None) -> None:
+    def __init__(
+        self, ttl: int | None = None, ttl_por_provider: dict[str, int] | None = None
+    ) -> None:
         self.ttl = ttl if ttl is not None else CACHE_TTL_SECONDS
+        # TTL mais longo para a pesquisa por tópico (Perplexity): o resultado
+        # vale por dias, e é a chamada mais cara do pipeline. `ttl` explícito
+        # (testes e `cache-clear`) continua valendo para os demais providers.
+        if ttl_por_provider is None:
+            ttl_por_provider = {p: CACHE_TTL_PESQUISA_SECONDS for p in CACHE_PROVIDERS_DE_PESQUISA}
+        self.ttl_por_provider = dict(ttl_por_provider)
         self._dir = CACHE_DIR
         self._dir.mkdir(parents=True, exist_ok=True)
+
+    def ttl_de(self, provider: str) -> int:
+        """TTL que vale para este provider (o maior entre o geral e o específico)."""
+        especifico = self.ttl_por_provider.get(provider)
+        return max(self.ttl, especifico) if especifico is not None else self.ttl
 
     @staticmethod
     def _make_key(prompt: str, provider: str, model: str) -> str:
@@ -50,7 +68,7 @@ class Cache:
         created = data.get("created", 0)
         # `>=` (não `>`): com ttl=0 o cache deve expirar imediatamente, mesmo
         # quando set/get caem no mesmo tick de relógio (evita flakiness).
-        if time.time() - created >= self.ttl:
+        if time.time() - created >= self.ttl_de(provider):
             logger.debug("Cache expirado para chave %s", key[:12])
             path.unlink(missing_ok=True)
             return None
@@ -97,7 +115,7 @@ class Cache:
             try:
                 with open(path, encoding="utf-8") as f:
                     data = json.load(f)
-                if now - data.get("created", 0) >= self.ttl:
+                if now - data.get("created", 0) >= self.ttl_de(str(data.get("provider", ""))):
                     path.unlink()
                     count += 1
             except (json.JSONDecodeError, OSError):
