@@ -754,12 +754,22 @@ def build_parser() -> argparse.ArgumentParser:
         "exportar-json",
         help="Exporta um CourseDefinition no formato JSON do portal /educacao e valida",
     )
-    p.add_argument("curso", metavar="CURSO_JSON", help="CourseDefinition em JSON (ex.: tests/fixtures/sample_course.json)")
-    p.add_argument("--output", default=None, metavar="DIR", help="Destino (default: output/cursos-json)")
-    p.add_argument("--glossario", default=None, help="JSON {id da aula: [{term, def}]} para o sidecar")
+    p.add_argument(
+        "curso",
+        metavar="CURSO_JSON",
+        help="CourseDefinition em JSON (ex.: tests/fixtures/sample_course.json)",
+    )
+    p.add_argument(
+        "--output", default=None, metavar="DIR", help="Destino (default: output/cursos-json)"
+    )
+    p.add_argument(
+        "--glossario", default=None, help="JSON {id da aula: [{term, def}]} para o sidecar"
+    )
     p.add_argument("--min-capitulos", type=int, default=None, help="Piso de capítulos do contrato")
     p.add_argument("--midia-cap1", action="store_true", help="Exige mediaPlayer no capítulo 1")
-    p.add_argument("--guia-por-capitulo", action="store_true", help="Avisa capítulo sem guia prático")
+    p.add_argument(
+        "--guia-por-capitulo", action="store_true", help="Avisa capítulo sem guia prático"
+    )
     p.set_defaults(func=cmd_exportar_json)
 
     p = sub.add_parser("cache-clear", help="Limpa o cache LLM em disco")

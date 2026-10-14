@@ -26,7 +26,9 @@ logger = logging.getLogger(__name__)
 class Cache:
     """Cache em disco baseado em hash SHA256 do prompt."""
 
-    def __init__(self, ttl: int | None = None, ttl_por_provider: dict[str, int] | None = None) -> None:
+    def __init__(
+        self, ttl: int | None = None, ttl_por_provider: dict[str, int] | None = None
+    ) -> None:
         self.ttl = ttl if ttl is not None else CACHE_TTL_SECONDS
         # TTL mais longo para a pesquisa por tópico (Perplexity): o resultado
         # vale por dias, e é a chamada mais cara do pipeline. `ttl` explícito

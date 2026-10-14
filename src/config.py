@@ -77,7 +77,9 @@ CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
 # reaproveita a pesquisa por 7 dias (14/10/2026, eficiência do curso-factory).
 CACHE_TTL_PESQUISA_SECONDS: int = int(os.getenv("CACHE_TTL_PESQUISA_SECONDS", str(7 * 24 * 3600)))
 CACHE_PROVIDERS_DE_PESQUISA: tuple[str, ...] = tuple(
-    p.strip() for p in os.getenv("CACHE_PROVIDERS_DE_PESQUISA", "perplexity").split(",") if p.strip()
+    p.strip()
+    for p in os.getenv("CACHE_PROVIDERS_DE_PESQUISA", "perplexity").split(",")
+    if p.strip()
 )
 
 # --- Modelo Claude (AAA = Opus) ---
