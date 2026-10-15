@@ -310,3 +310,128 @@ navegador, porque o corpo dos capítulos fechados chega pelo `conteudo.json`.
 O que ganha velocidade sem tocar nessas práticas: cache de pesquisa por tópico (7 dias),
 um PR por curso, exportação direta para o formato final, validador local que reproduz os
 gates do portal em segundos, build local uma vez por curso em vez de uma por capítulo.
+
+## 8. Regras novas das Etapas 3 e 4 (14 e 15/10/2026): valem para todo curso gerado e publicado
+
+As Etapas 3 e 4 da reorganização do landing-page-geo migraram mais 17 cursos para JSON e
+mudaram a esteira. Nesse caminho, treze cursos ficaram presos: o padrão antigo os impedia de
+migrar. Esta seção diz o que a fábrica entrega a partir de agora e por quê. A conferência
+automática das regras P1 a P5 está em `scripts/conferir_pagina_portal.py`, com testes em
+`tests/test_pagina_portal.py`.
+
+### 8.1 A página do curso é de servidor (regra P1)
+
+Componente de servidor é a página que o Next.js monta no servidor. Ela pode ler o JSON do
+disco e manda ao navegador só o HTML e as partes interativas.
+
+- O `page.tsx` do curso **não** começa com `"use client"`. Toda interação (abas, progresso,
+  player, busca do glossário) fica em componentes cliente filhos, já prontos no portal
+  (`CoursePage`, `CourseGlossarySearch`, `MotionToggle`).
+- Motivo medido: o carregador `carregarCurso` usa `node:fs`. Em página de cliente o
+  `next build` reprova com "does not support external modules (node:fs)". Treze cursos
+  ficaram fora da Etapa 4 por isso, entre eles cro-experimentacao, mcp-avancado e
+  prompt-engineering-avancado.
+- O template legado `src/templates/page.tsx.j2` emite página de cliente com o conteúdo
+  embutido. Ele serve só para curso legado. Curso novo usa como modelo a página de um curso
+  já migrado no portal, como `src/app/educacao/meta-ads-2027/page.tsx`.
+
+### 8.2 `steps.ts` fino e conteúdo só no JSON (regras P2 e P4)
+
+- O `steps.ts` tem uma linha de trabalho: `export const STEPS = carregarCurso(SLUG)`. Nada
+  de `content: [...]` escrito no arquivo.
+- Nenhum arquivo do curso faz `import` do JSON. Um JSON importado entra no programa de tipos
+  de todo PR. O curso frontends-com-vibecoding tem 2,0 MB de JSON.
+- Conteúdo que não serializa (chamada de função, `${}` em template, referência a outra
+  constante) continua em TypeScript, documentado no `steps.ts`. O extrator do portal tem um
+  modo `--inline` que recusa esses casos apontando a linha (PR #1480).
+
+### 8.3 Conteúdo sob demanda por capítulo (regra P3)
+
+- A página serve no HTML o capítulo aberto e todo o texto indexável por buscadores e LLMs.
+  Os demais capítulos chegam pela rota estática `[curso]/[capitulo]/conteudo.json`, um
+  segmento de caminho por capítulo (PR #1464). Com query string a rota seria dinâmica e
+  cada capítulo custaria uma função na Vercel.
+- A página usa `deferStepContent` e `courseContentJsonPath`. Sem isso o HTML leva todos os
+  capítulos e passa do teto de 900 KB do gate de peso.
+- O astra-profundo, com 1,65 MB, passou para esse caminho na Etapa 4 (#1471 e #1475).
+
+### 8.4 Limites de tamanho que voltam a valer na geração
+
+- Capítulo até 72.000 caracteres (erro; aviso a partir de 60.000), medido em JSON compacto.
+  Na migração do frontends-com-vibecoding, dez capítulos passaram de 72 mil por causa de
+  figuras SVG escritas no texto. Curso novo não nasce assim: figura grande vai para
+  `midia.brasilgeo.ai` como arquivo, e o capítulo guarda o endereço.
+- Chave indefinida não existe em JSON (regra P5). Fonte sem link omite `url`, em vez de
+  `url: undefined`.
+
+### 8.5 O que mudou na esteira do portal e muda a entrega
+
+- **Gerados do painel fora do PR.** `src/generated/admin-conteudo.json` sai do git e é gerado
+  no build (#1458). Os mapas de arquitetura e o piso das linhas de base moram na branch
+  `gerados`, regravada por um robô depois de cada merge (#1451). O PR do curso não regrava
+  esses arquivos.
+- **Gerados do curso continuam no PR.** Capítulos atualizados, corpus de busca, realce de
+  código e `llms.txt` seguem versionados. Rode os `--check` antes do push: foram 21 corridas
+  vermelhas em 7 dias só por `capitulos-atualizados` defasado.
+- **Leitores do JSON.** Todo gerador que lia o TypeScript do curso precisa ler o JSON. Na
+  migração do frontends-com-vibecoding, o corpus ainda lia as aulas-fonte apagadas e
+  derrubava o piso de qualidade da busca (#1472).
+- **Modo de curso no CI.** Um PR que só muda `src/content/cursos/<slug>.json` roda 34
+  arquivos de teste em vez da suíte inteira: de 28 para 17 min (#1442). O `pre-pr` e o
+  `master-red` reconhecem o JSON como toque na rota do curso (#1460).
+- **Corte rápido.** O job `verificar` reprova tipos e lint em cerca de 7 min e cancela a
+  corrida (#1450). Erro de tipo no PR do curso aparece antes dos testes.
+- **Tracing no `next.config.ts`.** Cada curso tem uma chave. Dois cursos em paralelo
+  conflitam nessa linha. A resolução certa é unir os arrays, nunca ficar com a primeira
+  ocorrência.
+- **Merge não é publicação.** A produção publica em janela de 2 h em horário comercial, ou
+  pelo botão "Publicar agora" do `/admin/deploys`. Curso só está no ar quando a página
+  servida mostra o texto novo e não mostra o antigo.
+
+### 8.6 Ordem de entrega de um curso novo, com as regras novas
+
+1. Gerar e revisar pelo pipeline da fábrica (as seções 3 e 7 seguem valendo).
+2. `python cli.py exportar-json <CourseDefinition>`, depois
+   `python scripts/validar_curso_json.py <slug>.json --contrato-completo`.
+3. Colocar no portal: `<slug>.json`, `<slug>.glossario.json`, `steps.ts` fino, `layout.tsx`,
+   `page.tsx` de servidor copiada de um curso migrado, registro e catálogo.
+4. `python scripts/conferir_pagina_portal.py <portal>/src/app/educacao/<slug>`: P1 a P5 verdes.
+5. No portal: `--check` dos gerados do curso, `tsc` antes do `next build`, build, gate de
+   peso e capítulo aberto no navegador. Em curso já existente, comparar o HTML servido.
+6. Um PR por curso. Merge com CI verde e master verde, publicação pela janela e conferência
+   na página servida.
+
+### 8.7 Alterar curso já publicado: incremento, texto, estilo e frontend
+
+Curso publicado continua recebendo pedidos: capítulo novo, correção, reescrita de estilo,
+melhoria visual. Cada tipo de pedido tem um caminho próprio, do mais barato ao mais caro.
+Escolher o caminho certo é o que mantém a esteira rápida sem perder qualidade.
+
+| Pedido | O que muda | Caminho e custo de esteira | O que não pode faltar |
+| --- | --- | --- | --- |
+| Correção de texto, fato ou estilo num capítulo | Só `src/content/cursos/<slug>.json` | Modo de curso do CI: só os testes do conteúdo, cerca de 17 min | Validador do JSON, regras de escrita do dono, revisão por outro modelo, capítulo aberto no navegador |
+| Capítulo novo ou reordenação | JSON, glossário, ordem curada e gerados do curso | Modo de curso mais os `--check` dos gerados, porque capítulos atualizados, corpus e `llms.txt` mudam | Id novo ASCII e estável, sem renomear id existente; "Estude antes" na ordem curada; limite de 72 mil caracteres |
+| Mídia nova (figura, vídeo, áudio) | Manifesto `<slug>.midia.json` e endereço no JSON | Igual a um capítulo novo | Arquivo em `midia.brasilgeo.ai`, nunca em `public/`; imagem no tamanho exibido, em WebP ou AVIF; `alt` descritivo |
+| Estilo ou layout só deste curso | `page.tsx`, `hero-visual` ou componentes da pasta do curso | Esteira completa, mas só a fatia Educação no type check | A página continua de servidor (P1); interação vai para componente cliente filho; gate de peso e série de JavaScript da rota |
+| Melhoria de frontend em componente compartilhado (`CoursePage`, blocos, player, glossário) | `src/components/course/` ou `src/lib/educacao/` | Esteira completa, porque o componente vale para todos os cursos | Comparar o HTML servido de pelo menos três cursos (um com bloco de código, um com sob demanda, um com mídia) antes e depois; gate de peso de todas as rotas; testes de acessibilidade |
+| Lote de cursos com o mesmo ajuste | Vários JSON | Um PR por curso; 5 a 10 primeiro, medir, depois o resto | Mesma regra de qualidade em cada um; nunca um PR gigante que mistura cursos |
+
+Regras que valem para toda alteração:
+
+1. **Ids estáveis.** O id do capítulo é a URL e a chave do progresso salvo do aluno. Mudar o
+   título não muda o id. Renomear um id exige redirecionamento e só sai com pedido explícito.
+2. **O JSON é a fonte.** Edita-se o JSON, nunca o HTML gerado nem uma cópia em TypeScript.
+   Reabrir conteúdo em `steps.ts` reprova no conferidor (P2).
+3. **Rodar o conferidor e o validador** depois de cada alteração:
+   `conferir_pagina_portal.py` na pasta e `validar_curso_json.py` no JSON.
+4. **Busca e respostas do portal.** Texto novo muda o corpus de busca. O piso de qualidade da
+   busca roda no PR; se ele cair, a correção é no texto ou no gabarito, nunca no piso.
+   Regravar o fixture de vetores chama API paga e é decisão do dono.
+5. **Mudança de frontend não troca o padrão de entrega.** Animação, abas novas ou um bloco
+   visual novo entram como componente cliente filho ou como tipo de bloco no schema. O tipo
+   de bloco é declarado nos dois lados: no schema do portal e no `config/schema-curso.json`
+   da fábrica.
+6. **Peso medido antes e depois.** O gate de HTML continua em 900 KB por rota. Um ganho visual
+   que empurre a rota para cima do teto volta para o desenho.
+7. **Publicar não é mesclar.** A alteração só termina quando a página servida mostra a frase
+   nova e não mostra a antiga.

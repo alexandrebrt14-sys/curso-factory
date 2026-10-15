@@ -51,6 +51,23 @@ Antes do PR no portal, o checklist da seção 5 do documento: os `--check` do CI
 o curso arrasta, `tsc`, build local, `gate-peso-html-cursos.mjs` e comparação de HTML.
 O que não se corta para ganhar velocidade está na seção 7 (matriz qualidade x eficiência).
 
+**Regras novas das Etapas 3 e 4 (15/10/2026), na seção 8 do mesmo documento:**
+- Página do curso de servidor, nunca `"use client"` (P1).
+- `steps.ts` só com `carregarCurso` (P2).
+- Conteúdo sob demanda por capítulo pela rota `[curso]/[capitulo]/conteudo.json` (P3).
+- Nenhum `import` do JSON do curso (P4).
+- Nenhuma chave `url: undefined` (P5).
+
+Antes do PR no portal, rode `python scripts/conferir_pagina_portal.py <portal>/src/app/educacao/<slug>`.
+O template `src/templates/page.tsx.j2` é legado: curso novo copia a página de um curso já
+migrado.
+
+**Curso já publicado também segue o contrato** (seção 8.7): incremento, correção, estilo e
+frontend editam o JSON ou um componente cliente filho, nunca reabrem conteúdo em
+TypeScript nem viram página de cliente. Ids de capítulo são estáveis. Componente
+compartilhado exige comparar o HTML de pelo menos três cursos. A alteração só termina na
+página servida.
+
 ## Padrão de armazenamento, velocidade e memória (obrigatório desde 02/10/2026)
 
 Toda ideia nova chega com o custo de armazenamento, velocidade e memória medido, sobretudo quando envolve imagem, vídeo, áudio, dependência ou arquivo gerado. Prefira sempre a opção mais barata e escalável que mantenha a qualidade. A decisão é do dono e vem de 02/10/2026, no landing-page-geo:
