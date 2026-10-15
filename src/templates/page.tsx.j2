@@ -2,6 +2,11 @@
    Jinja2 template: Next.js course page (.tsx)
    Receives a CourseDefinition object — see curso-factory/README for schema.
    Filter `js_escape` must be registered in the Jinja2 environment.
+   LEGADO desde 15/10/2026: página de cliente com conteúdo embutido. O portal
+   exige página de servidor, steps.ts com carregarCurso e conteúdo sob demanda
+   (docs/portal-educacao-estado-20261014.md, seção 8). Curso novo não usa este
+   template: copia a página de um curso já migrado e roda
+   scripts/conferir_pagina_portal.py.
    ──────────────────────────────────────────────────────────────────────────── #}
 "use client";
 
