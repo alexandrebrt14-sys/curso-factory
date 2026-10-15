@@ -400,3 +400,38 @@ disco e manda ao navegador só o HTML e as partes interativas.
    peso e capítulo aberto no navegador. Em curso já existente, comparar o HTML servido.
 6. Um PR por curso. Merge com CI verde e master verde, publicação pela janela e conferência
    na página servida.
+
+### 8.7 Alterar curso já publicado: incremento, texto, estilo e frontend
+
+Curso publicado continua recebendo pedidos: capítulo novo, correção, reescrita de estilo,
+melhoria visual. Cada tipo de pedido tem um caminho próprio, do mais barato ao mais caro.
+Escolher o caminho certo é o que mantém a esteira rápida sem perder qualidade.
+
+| Pedido | O que muda | Caminho e custo de esteira | O que não pode faltar |
+| --- | --- | --- | --- |
+| Correção de texto, fato ou estilo num capítulo | Só `src/content/cursos/<slug>.json` | Modo de curso do CI: só os testes do conteúdo, cerca de 17 min | Validador do JSON, regras de escrita do dono, revisão por outro modelo, capítulo aberto no navegador |
+| Capítulo novo ou reordenação | JSON, glossário, ordem curada e gerados do curso | Modo de curso mais os `--check` dos gerados, porque capítulos atualizados, corpus e `llms.txt` mudam | Id novo ASCII e estável, sem renomear id existente; "Estude antes" na ordem curada; limite de 72 mil caracteres |
+| Mídia nova (figura, vídeo, áudio) | Manifesto `<slug>.midia.json` e endereço no JSON | Igual a um capítulo novo | Arquivo em `midia.brasilgeo.ai`, nunca em `public/`; imagem no tamanho exibido, em WebP ou AVIF; `alt` descritivo |
+| Estilo ou layout só deste curso | `page.tsx`, `hero-visual` ou componentes da pasta do curso | Esteira completa, mas só a fatia Educação no type check | A página continua de servidor (P1); interação vai para componente cliente filho; gate de peso e série de JavaScript da rota |
+| Melhoria de frontend em componente compartilhado (`CoursePage`, blocos, player, glossário) | `src/components/course/` ou `src/lib/educacao/` | Esteira completa, porque o componente vale para todos os cursos | Comparar o HTML servido de pelo menos três cursos (um com bloco de código, um com sob demanda, um com mídia) antes e depois; gate de peso de todas as rotas; testes de acessibilidade |
+| Lote de cursos com o mesmo ajuste | Vários JSON | Um PR por curso; 5 a 10 primeiro, medir, depois o resto | Mesma regra de qualidade em cada um; nunca um PR gigante que mistura cursos |
+
+Regras que valem para toda alteração:
+
+1. **Ids estáveis.** O id do capítulo é a URL e a chave do progresso salvo do aluno. Mudar o
+   título não muda o id. Renomear um id exige redirecionamento e só sai com pedido explícito.
+2. **O JSON é a fonte.** Edita-se o JSON, nunca o HTML gerado nem uma cópia em TypeScript.
+   Reabrir conteúdo em `steps.ts` reprova no conferidor (P2).
+3. **Rodar o conferidor e o validador** depois de cada alteração:
+   `conferir_pagina_portal.py` na pasta e `validar_curso_json.py` no JSON.
+4. **Busca e respostas do portal.** Texto novo muda o corpus de busca. O piso de qualidade da
+   busca roda no PR; se ele cair, a correção é no texto ou no gabarito, nunca no piso.
+   Regravar o fixture de vetores chama API paga e é decisão do dono.
+5. **Mudança de frontend não troca o padrão de entrega.** Animação, abas novas ou um bloco
+   visual novo entram como componente cliente filho ou como tipo de bloco no schema. O tipo
+   de bloco é declarado nos dois lados: no schema do portal e no `config/schema-curso.json`
+   da fábrica.
+6. **Peso medido antes e depois.** O gate de HTML continua em 900 KB por rota. Um ganho visual
+   que empurre a rota para cima do teto volta para o desenho.
+7. **Publicar não é mesclar.** A alteração só termina quando a página servida mostra a frase
+   nova e não mostra a antiga.

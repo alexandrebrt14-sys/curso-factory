@@ -17,7 +17,9 @@ reproduz os gates do portal em segundos. Um PR por curso, nunca por capítulo.
 Desde 15/10/2026 (Etapas 3 e 4) vale também a seção 8 do documento: página de servidor,
 `steps.ts` fino, conteúdo sob demanda por capítulo, JSON fora do grafo de tipos, gerados do
 painel fora do PR e publicação pela janela de deploy. `scripts/conferir_pagina_portal.py`
-confere a pasta do curso no portal (regras P1 a P5) antes do PR.
+confere a pasta do curso no portal (regras P1 a P5) antes do PR. Alterar curso já publicado
+(incremento, estilo, frontend) segue a seção 8.7: o caminho certo para cada tipo de pedido,
+ids estáveis e conferência na página servida.
 
 ## Memória de decisões do projeto
 
