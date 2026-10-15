@@ -62,30 +62,44 @@ def conferir_pasta(pasta: Path) -> Resultado:
     else:
         texto = page.read_text(encoding="utf-8")
         if _USE_CLIENT.search(texto):
-            res.erros.append(Achado(
-                "P1", page.name,
-                'página com "use client": o portal lê o JSON do disco no servidor; '
-                "mova a interação para um componente cliente filho",
-            ))
+            res.erros.append(
+                Achado(
+                    "P1",
+                    page.name,
+                    'página com "use client": o portal lê o JSON do disco no servidor; '
+                    "mova a interação para um componente cliente filho",
+                )
+            )
         if not _SOB_DEMANDA.search(texto):
-            res.erros.append(Achado(
-                "P3", page.name,
-                "página sem conteúdo sob demanda (deferStepContent ou courseContentJsonPath); "
-                "o HTML carregaria todos os capítulos",
-            ))
+            res.erros.append(
+                Achado(
+                    "P3",
+                    page.name,
+                    "página sem conteúdo sob demanda (deferStepContent ou courseContentJsonPath); "
+                    "o HTML carregaria todos os capítulos",
+                )
+            )
 
     if not steps.is_file():
         res.erros.append(Achado("P0", str(steps), "steps.ts ausente"))
     else:
         texto = steps.read_text(encoding="utf-8")
         if not _CARREGAR.search(texto):
-            res.erros.append(Achado(
-                "P2", steps.name, "steps.ts não chama carregarCurso(slug); o conteúdo deve vir do JSON",
-            ))
+            res.erros.append(
+                Achado(
+                    "P2",
+                    steps.name,
+                    "steps.ts não chama carregarCurso(slug); o conteúdo deve vir do JSON",
+                )
+            )
         if _CONTEUDO_INLINE.search(texto):
-            res.erros.append(Achado(
-                "P2", steps.name, "steps.ts com conteúdo escrito no arquivo (content: [...]); mova para o JSON",
-            ))
+            res.erros.append(
+                Achado(
+                    "P2",
+                    steps.name,
+                    "steps.ts com conteúdo escrito no arquivo (content: [...]); mova para o JSON",
+                )
+            )
 
     for arq in sorted(pasta.rglob("*.ts*")):
         if arq.suffix not in {".ts", ".tsx"}:
@@ -93,13 +107,21 @@ def conferir_pasta(pasta: Path) -> Resultado:
         texto = arq.read_text(encoding="utf-8")
         nome = str(arq.relative_to(pasta))
         if _IMPORT_JSON_CURSO.search(texto):
-            res.erros.append(Achado(
-                "P4", nome, "import do JSON do curso no código; use carregarCurso (leitura em tempo de execução)",
-            ))
+            res.erros.append(
+                Achado(
+                    "P4",
+                    nome,
+                    "import do JSON do curso no código; use carregarCurso (leitura em tempo de execução)",
+                )
+            )
         if _URL_UNDEFINED.search(texto):
-            res.erros.append(Achado(
-                "P5", nome, "url: undefined; omita a chave (o JSON não guarda chave indefinida)",
-            ))
+            res.erros.append(
+                Achado(
+                    "P5",
+                    nome,
+                    "url: undefined; omita a chave (o JSON não guarda chave indefinida)",
+                )
+            )
     return res
 
 

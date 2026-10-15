@@ -16,7 +16,9 @@ export const STEPS = carregarCurso("exemplo");
 """
 
 
-def _pasta(tmp_path: Path, page: str = PAGE_OK, steps: str = STEPS_OK, extra: dict[str, str] | None = None) -> Path:
+def _pasta(
+    tmp_path: Path, page: str = PAGE_OK, steps: str = STEPS_OK, extra: dict[str, str] | None = None
+) -> Path:
     (tmp_path / "page.tsx").write_text(page, encoding="utf-8")
     (tmp_path / "steps.ts").write_text(steps, encoding="utf-8")
     for nome, texto in (extra or {}).items():
